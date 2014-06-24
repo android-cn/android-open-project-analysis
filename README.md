@@ -30,3 +30,4 @@ Android 优秀开源项目实现原理解析
 [GreenDAO](https://github.com/greenrobot/greenDAO) | [洛子](https://github.com/)
 [xUtils](https://github.com/wyouflf/xUtils) | [夏殇](https://github.com/) 
 [CircleImageView](https://github.com/hdodenhof/CircleImageView) | [P. Seul](https://github.com/FFish)
+[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [lightSky](https://github.com/lightSky)
