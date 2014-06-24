@@ -26,7 +26,7 @@ Android 优秀开源项目实现原理解析
 :--|:--
 [EventBus](https://github.com/greenrobot/EventBus) | [Trinea](https://github.com/Trinea)
 [Dagger](https://github.com/square/dagger) | [朱凯](https://github.com/rengwuxian) 
-[Retrofit](https://github.com/square/retrofit) | [zongda](https://github.com/zondaOf2012) 
+[Retrofit](https://github.com/square/retrofit) | [zonda](https://github.com/zondaOf2012) 
 [GreenDAO](https://github.com/greenrobot/greenDAO) | [洛子](https://github.com/)
 [xUtils](https://github.com/wyouflf/xUtils) | [夏殇](https://github.com/) 
 [CircleImageView](https://github.com/hdodenhof/CircleImageView) | [P. Seul](https://github.com/FFish)
