@@ -34,3 +34,4 @@ Android 优秀开源项目实现原理解析
 [CircleImageView](https://github.com/hdodenhof/CircleImageView) | [P. Seul](https://github.com/FFish)
 [ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [lightSky](https://github.com/lightSky)
 [Butterknife](https://github.com/JakeWharton/butterknife) | [baoyz](https://github.com/baoyongzhang)
+[StickyListHeaders](https://github.com/emilsjolander/StickyListHeaders) | [lsjwzh](https://github.com/lsjwzh)
