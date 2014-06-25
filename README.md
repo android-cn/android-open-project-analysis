@@ -38,6 +38,6 @@ Android 优秀开源项目实现原理解析
 [Butterknife](https://github.com/JakeWharton/butterknife) | [baoyz](https://github.com/baoyongzhang)
 [StickyListHeaders](https://github.com/emilsjolander/StickyListHeaders) | [lsjwzh](https://github.com/lsjwzh)
 [Volley](https://android.googlesource.com/platform/frameworks/volley) | [geolo123](https://github.com/geolo123)
-[Otto](https://github.com/square/otto) | []()  
+[Otto](https://github.com/square/otto) | [promeG](https://github.com/promeG)  
 [Async Http](https://github.com/loopj/android-async-http) | [81813780](https://github.com/81813780)
 [android-calendar-card](https://github.com/kenumir/android-calendar-card) | [and0202](https://github.com/and0202)
