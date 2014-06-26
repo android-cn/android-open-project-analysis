@@ -31,7 +31,7 @@ Android 优秀开源项目实现原理解析
 [EventBus](https://github.com/greenrobot/EventBus) | [Trinea](https://github.com/Trinea)
 [Dagger](https://github.com/square/dagger) | [朱凯](https://github.com/rengwuxian) 
 [Retrofit](https://github.com/square/retrofit) | [zonda](https://github.com/zondaOf2012) 
-[GreenDAO](https://github.com/greenrobot/greenDAO) | [洛子](https://github.com/)
+[GreenDAO](https://github.com/greenrobot/greenDAO) | [洛子](https://github.com/lxp371180445)
 [xUtils](https://github.com/wyouflf/xUtils) | [夏殇](https://github.com/) 
 [CircleImageView](https://github.com/hdodenhof/CircleImageView) | [P. Seul](https://github.com/FFish)
 [ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [lightSky](https://github.com/lightSky)
@@ -41,3 +41,4 @@ Android 优秀开源项目实现原理解析
 [Otto](https://github.com/square/otto) | [promeG](https://github.com/promeG)  
 [Async Http](https://github.com/loopj/android-async-http) | [81813780](https://github.com/81813780)
 [android-calendar-card](https://github.com/kenumir/android-calendar-card) | [and0202](https://github.com/and0202)
+[PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip) | [over140](https://github.com/over140)
