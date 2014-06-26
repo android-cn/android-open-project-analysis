@@ -42,3 +42,4 @@ Android 优秀开源项目实现原理解析
 [Async Http](https://github.com/loopj/android-async-http) | [81813780](https://github.com/81813780)
 [android-calendar-card](https://github.com/kenumir/android-calendar-card) | [and0202](https://github.com/and0202)
 [PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip) | [over140](https://github.com/over140)
+[Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader) | [venciallee](https://github.com/venciallee)
