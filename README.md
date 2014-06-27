@@ -43,3 +43,4 @@ Android 优秀开源项目实现原理解析
 [android-calendar-card](https://github.com/kenumir/android-calendar-card) | [and0202](https://github.com/and0202)
 [PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip) | [over140](https://github.com/over140)
 [Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader) | [venciallee](https://github.com/venciallee)
+[photup](https://github.com/chrisbanes/photup) | [aiqianxian](https://github.com/aiqianxian)
