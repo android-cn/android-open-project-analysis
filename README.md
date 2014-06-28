@@ -44,3 +44,4 @@ Android 优秀开源项目实现原理解析
 [PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip) | [over140](https://github.com/over140)
 [Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader) | [venciallee](https://github.com/venciallee)
 [photup](https://github.com/chrisbanes/photup) | [aiqianxian](https://github.com/aiqianxian)
+[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations) | [waylife](https://github.com/waylife)
