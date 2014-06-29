@@ -29,7 +29,7 @@ Android 优秀开源项目实现原理解析
 开源库名 | 认领者
 :--|:--
 [EventBus](https://github.com/greenrobot/EventBus) | [Trinea](https://github.com/Trinea)
-[Dagger](https://github.com/square/dagger) | [朱凯](https://github.com/rengwuxian) 
+[Dagger](https://github.com/square/dagger) | [扔物线](https://github.com/rengwuxian) 
 [Retrofit](https://github.com/square/retrofit) | [zonda](https://github.com/zondaOf2012) 
 [GreenDAO](https://github.com/greenrobot/greenDAO) | [洛子](https://github.com/lxp371180445)
 [xUtils](https://github.com/wyouflf/xUtils) | [夏殇](https://github.com/) 
