@@ -18,11 +18,11 @@ Android 优秀开源项目实现原理解析
 
 ### 2. 开始认领
 认领自己有兴趣去分析原理的开源库  
-可直接在[已认领开源库列表](https://github.com/android-cn/android-open-project-analysis#%E4%BA%8C%E5%B7%B2%E8%AE%A4%E9%A2%86%E5%BC%80%E6%BA%90%E5%BA%93%E5%88%97%E8%A1%A8)编辑，或以开源库名为入群理由加入 协作 QQ 群，群号在上面 QQ群 公告内 
+直接在下面[已认领开源库列表](https://github.com/android-cn/android-open-project-analysis#%E4%BA%8C%E5%B7%B2%E8%AE%A4%E9%A2%86%E5%BC%80%E6%BA%90%E5%BA%93%E5%88%97%E8%A1%A8)编辑，并以开源库名为入群理由加入 协作 QQ 群，群号在上面 QQ群 公告内 
 ### 3. 寻找 Buddy  
 在 协作 QQ 群里找到一个后期帮忙做校验的 Buddy  
 #### 4. 开始
-初期编写计划：[编写步骤](https://github.com/android-cn/android-open-project-analysis/wiki)  
+初期编写计划：[编写步骤](https://github.com/android-cn/android-open-project-analysis/wiki)，后根据自己的时间安排，填写[时间计划表](https://github.com/android-cn/android-open-project-analysis/wiki/Schedule)    
 ## 二、已认领开源库列表  
 下面是目前已经被认领的开源库列表，可直接编辑  
 
