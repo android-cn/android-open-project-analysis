@@ -72,7 +72,7 @@ public class MainActivity extends Activity {
 }
 ```
 
-到此为止，使用Dagger将一个Boss对象注入到MainActivity的流程就完成了。上面这段代码中出现了两个雷：ObjectGraph和AppModule。其中ObjectGraph是由Dagger提供的类，可以简单理解为将一个工具类，它的create函数中参数为所有的Module，本文不详述，如果有兴趣可以跟进我之后的Dagger详解。AppModule是一个自定义类，代码如下：
+到此为止，使用Dagger将一个Boss对象注入到MainActivity的流程就完成了。上面这段代码中出现了两个类：ObjectGraph和AppModule。其中ObjectGraph是由Dagger提供的类，可以简单理解为一个工具类，它的create函数中参数为所有的Module，本文不详述，如果有兴趣可以跟进我之后的Dagger详解。AppModule是一个自定义类，代码如下：
 
 ```java
 @Module(injects = MainActivity.class)
@@ -80,7 +80,7 @@ public class AppModule {
 }
 ```
 
-可以看到，AppModule是一个空类，只有一行注解。@Module注解表示，这个类是一个Module，Module的作用是提供信息，让ObjectGraph知道应该怎样注入所有的依赖。例如，上面这段代码中声明了可注入对象的信息：MainActivity.class（使用显示声明这样看起来很麻烦、多此一举的方式和Dagger的原理有关，本文不详述）。
+可以看到，AppModule是一个空类，只有一行注解。@Module注解表示，这个类是一个Module，Module的作用是提供信息，让ObjectGraph知道应该怎样注入所有的依赖。例如，上面这段代码中声明了可注入对象的信息：MainActivity.class（使用显式声明这样的看起来很麻烦、多此一举的方式和Dagger的原理有关，本文不详述）。
 
 #### 自定义依赖
 
@@ -101,7 +101,7 @@ Coder provideCoder(Boss boss) {
 
 _同样，@Provides注解的方法如果含有参数，它的所有参数也要保证能够被Dagger获取到。_
 
-所有带有@Provides注解的方法都需要被封装到带有@Module注解的类中。
+所有带有@Provides注解的方法都需要被封装到带有@Module注解的类中：
 
 ```java
 @Module
@@ -114,7 +114,7 @@ public class AppModule {
 ```
 
 #### 单例
-Dagger支持单例，方式也十分简单：
+Dagger支持单例，实现方式也十分简单：
 
 ```java
 // @Inject注解构造方法的单例模式
@@ -133,8 +133,8 @@ public class Boss {
 
 ```java
 // @Provides注解提供初始化方法的单例模式
-@Singleton
 @Provides
+@Singleton
 Coder provideCoder(Boss boss) {
     return new Coder(boss);
 }
@@ -185,7 +185,7 @@ public @interface Level {
 #### 编译时检查
 实质上，Dagger会在编译时对代码进行检查，并在检查不通过的时候报编译错误（为什么？这和Dagger的原理有关，有兴趣的话可以关注我之后发布的Dagger详解）。检查内容主要有三点：
 
-1. 所有含有依赖注入的类，需要被显示声明在相应的Module中。
+1. 所有含有依赖注入的类，需要被显式 声明在相应的Module中。
 2. 一个Module中所有@Provides方法的参数都必须在这个Module种提供相应的@Provides方法，或者在@Module注解后添加“complete = false”注明这是一个不完整Module（即它会被其他Module所扩展）。
 3. 一个Module中所有的@Provides方法都要被它声明的注入对象所使用，或者在@Module注解后添加“library = ture”注明（即它是为了扩展其他Module而存在的）。
 
