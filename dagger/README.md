@@ -191,4 +191,6 @@ public @interface Level {
 
 _如果需要对Dagger有更多了解，可以参看[官方文档](http://square.github.io/dagger/)，或者关注我之后的详解文章。_
 
+_另外，我们公司[友邻小区](http://hiyoulin.com)招聘[Android开发](http://www.lagou.com/jobs/153948.html)一名，地址北京海淀紫竹桥。_
+
 _我的Github地址：https://github.com/rengwuxian_
