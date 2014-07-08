@@ -46,3 +46,4 @@ Android 优秀开源项目实现原理解析
 [photup](https://github.com/chrisbanes/photup) | [aiqianxian](https://github.com/aiqianxian)
 [PinnedSectionListView](https://github.com/beworker/pinned-section-listview) | [Selfimpr](https://github.com/CaesarZhao)
 [ListViewAnimations](https://github.com/nhaarman/ListViewAnimations) | [waylife](https://github.com/waylife)
+[HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary) | [xujinyang](https://github.com/xujinyang)
