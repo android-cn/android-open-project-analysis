@@ -1,8 +1,7 @@
 # ListViewAnimations分析
-====================================
 ---
 
-#1.功能介绍
+#功能介绍
     项目主页[https://github.com/nhaarman/ListViewAnimations/](https://github.com/nhaarman/ListViewAnimations/)     
 	    
 	正如名字所言，这是一个针对listview的动画库。通过它我们可以很方便的给listview（或grdview）增加item动画。  
@@ -17,7 +16,7 @@
 		* item（可以是多个item）删除动画  
 		* item展开以及动画  
 	
-#2.详细设计  
+#详细设计  
 	
 
 
