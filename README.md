@@ -22,7 +22,9 @@ Android 优秀开源项目实现原理解析
 ### 3. 寻找 Buddy  
 在 协作 QQ 群里找到一个后期帮忙做校验的 Buddy  
 #### 4. 开始
-初期编写计划：[编写步骤](https://github.com/android-cn/android-open-project-analysis/wiki)，后根据自己的时间安排，填写[时间计划表](https://github.com/android-cn/android-open-project-analysis/wiki/Schedule)    
+根据自己的时间安排，填写：[时间计划表](https://github.com/android-cn/android-open-project-analysis/wiki/Schedule)    
+开始编写：[编写步骤](https://github.com/android-cn/android-open-project-analysis/wiki)  
+  
 ## 二、已认领开源库列表  
 下面是目前已经被认领的开源库列表，可直接编辑  
 
