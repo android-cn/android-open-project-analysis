@@ -80,7 +80,6 @@ public class AppModule {
 }
 ```
 
-
 可以看到，AppModule是一个空类，只有一行注解。@Module注解表示，这个类是一个Module，Module的作用是提供信息，让ObjectGraph知道应该怎样注入所有的依赖。例如，上面这段代码中声明了可注入对象的信息：MainActivity.class（使用显式声明这样的看起来很麻烦、多此一举的方式和Dagger的原理有关，本文不详述）。
 
 #### 自定义依赖
