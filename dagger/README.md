@@ -2,7 +2,7 @@
 
 #### 简介
 
-Dagger是一款Java平台的依赖注入库（如果你还不了解依赖注入，务必先看[这篇文章](http:www.baidu.com)）。Java的依赖注入库中，最有名的应该属Google的Guice。Guice的功能非常强大，但它是通过在运行时读取注解来完成依赖的注入的，注解的读取需要依靠Java的反射机制，这对于对运行时性能非常敏感的Android来说是一个硬伤。基于此，Dagger应运而生。Dagger同样使用注解来实现依赖注入，不过由于原理的不同(_Dagger是在编译前读取注解并生成用于在运行时注入依赖的额外代码，因此运行时并不会用到反射_），Dagger对于程序的性能没有丝毫影响，因此更加适用于Android应用的开发。
+Dagger是一款Java平台的依赖注入库（如果你还不了解依赖注入，务必先看[这篇文章](https://github.com/android-cn/blog/tree/master/java/dependency-injection)）。Java的依赖注入库中，最有名的应该属Google的Guice。Guice的功能非常强大，但它是通过在运行时读取注解来完成依赖的注入的，注解的读取需要依靠Java的反射机制，这对于对运行时性能非常敏感的Android来说是一个硬伤。基于此，Dagger应运而生。Dagger同样使用注解来实现依赖注入，不过由于原理的不同(_Dagger是在编译前读取注解并生成用于在运行时注入依赖的额外代码，因此运行时并不会用到反射_），Dagger对于程序的性能没有丝毫影响，因此更加适用于Android应用的开发。
 
 #### 使用方式
 
