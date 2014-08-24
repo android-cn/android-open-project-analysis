@@ -54,7 +54,7 @@ ObjectGraph是Dagger的核心类，它在运行时生成整套依赖关系图，
 
 ### 其他
 
-1. 虽然Dagger使用到了APT，但本项是原理分析而非源码分析，如果想对APT了解更多，请自行Google。
+1. 虽然Dagger使用到了APT，但本项目是原理分析而非源码分析，如果想对APT了解更多，请自行Google。
 2. **Dagger的整体工作流程**一节中提到了ModuleAdapter和InjectAdapter这两种辅助类，我在之后会对这两个类给出更详细的分析，如果感兴趣请继续关注。
 
 _Dagger官方介绍：http://square.github.io/dagger/_
