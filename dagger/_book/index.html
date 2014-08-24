@@ -1,0 +1,351 @@
+<!DOCTYPE HTML>
+<html lang="en-US" manifest="./manifest.appcache">
+    
+    <head>
+        
+        <meta charset="UTF-8">
+        <title>Introduction | Dagger——java和Android的高速依赖注入工具</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Dagger是一款Java平台的依赖注入库（如果你还不了解依赖注入，务必先看这篇文章）。Java的依赖注入库中，最有名的应该属Google的Guice。Guice的功能非常强大，但它是通过在运行时读取注解来完成依赖的注入的，注解的读取需要依靠Java的反射机制，这对于对运行时性能非常敏感的Android来说是一个硬伤。基于此，Dagger应运而生。Dagger同样使用注解来实现依赖注入，不过由于原理的不同(Dagger是在编译前读取注解并生成用于在运行时注入依赖的额外代码，因此运行时并不会用到反射），Dagger对于程序的性能没有丝毫影响，因此更加适用于Android应用的开发。">
+        <meta name="generator" content="GitBook 0.7.0">
+        <meta name="HandheldFriendly" content="true"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+        
+    
+    
+    <meta name="author" content="android-cn">
+    
+    
+    <link rel="next" href="./principle/README.html" />
+    
+    
+
+        
+    </head>
+    <body>
+        
+        
+<link rel="stylesheet" href="gitbook/style.css">
+
+
+        
+    <div class="book" data-github="android-cn/android-open-project-analysis" data-level="0" data-basepath="." data-revision="1408891037546">
+    <div class="book-header">
+    <!-- Actions Left -->
+    <a href="#" class="btn pull-left toggle-summary" aria-label="Toggle summary"><i class="fa fa-align-justify"></i></a>
+    
+    <a href="https://github.com/android-cn/android-open-project-analysis" target="_blank" class="btn pull-left home-bookmark" aria-label="GitHub home"><i class="fa fa-bookmark-o"></i></a>
+    
+    <a href="#" class="btn pull-left toggle-search" aria-label="Toggle search"><i class="fa fa-search"></i></a>
+    <span id="font-settings-wrapper">
+        <a href="#" class="btn pull-left toggle-font-settings" aria-label="Toggle font settings"><i class="fa fa-font"></i>
+        </a>
+        <div class="dropdown-menu font-settings">
+    <div class="dropdown-caret">
+        <span class="caret-outer"></span>
+        <span class="caret-inner"></span>
+    </div>
+
+    <div class="btn-group btn-block">
+        <button id="reduce-font-size" class="btn btn-default">A</button>
+        <button id="enlarge-font-size" class="btn btn-default">A</button>
+    </div>
+
+    <ul class="list-group font-family-list">
+        <li class="list-group-item" data-font="0">Serif</li>
+        <li class="list-group-item" data-font="1">Sans</li>
+    </ul>
+
+    <div class="btn-group btn-group-xs btn-block color-theme-list">
+        <button type="button" class="btn btn-default" id="color-theme-preview-0" data-theme="0">White</button>
+        <button type="button" class="btn btn-default" id="color-theme-preview-1" data-theme="1">Sepia</button>
+        <button type="button" class="btn btn-default" id="color-theme-preview-2" data-theme="2">Night</button>
+    </div>
+</div>
+
+    </span>
+
+    <!-- Actions Right -->
+    
+    <a href="#" target="_blank" class="btn pull-right google-plus-sharing-link sharing-link" data-sharing="google-plus" aria-label="Share on Google Plus"><i class="fa fa-google-plus"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right facebook-sharing-link sharing-link" data-sharing="facebook" aria-label="Share on Facebook"><i class="fa fa-facebook"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right twitter-sharing-link sharing-link" data-sharing="twitter" aria-label="Share on Twitter"><i class="fa fa-twitter"></i></a>
+    
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-spinner fa-spin"></i>
+        <a href="./" >Dagger——java和Android的高速依赖注入工具</a>
+    </h1>
+</div>
+
+    
+
+<div class="book-summary">
+    <div class="book-search">
+        <input type="text" placeholder="Search" class="form-control" />
+    </div>
+    <ul class="summary">
+        
+        
+        
+        <li>
+            <a href="https://github.com/android-cn" target="blank" class="author-link">About the author</a>
+        </li>
+        
+
+        
+        
+        <li>
+            <a href="https://github.com/android-cn/android-open-project-analysis/issues" target="blank" class="issues-link">Questions and Issues</a>
+        </li>
+        
+
+        
+        
+        <li>
+            <a href="https://github.com/android-cn/android-open-project-analysis/edit/master/README.md" target="blank" class="contribute-link">Edit and Contribute</a>
+        </li>
+        
+
+	
+
+        
+        <li class="divider"></li>
+        
+
+        
+    
+        
+        <li class="chapter active" data-level="0" data-path="index.html">
+            
+                
+                    <a href="./index.html">
+                        <i class="fa fa-check"></i>
+                        
+                         Introduction
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="1" data-path="principle/README.html">
+            
+                
+                    <a href="./principle/README.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>1.</b>
+                        
+                         principle
+                    </a>
+                
+            
+            
+        </li>
+    
+
+
+        
+        <li class="divider"></li>
+        <li>
+            <a href="http://www.gitbook.io/" target="blank" class="gitbook-link">Generated using GitBook</a>
+        </li>
+        
+    </ul>
+</div>
+
+    <div class="book-body">
+        <div class="body-inner">
+            <div class="page-wrapper" tabindex="-1">
+                <div class="book-progress">
+    <div class="bar">
+        <div class="inner" style="width: 0%;min-width: 0%;"></div>
+    </div>
+    <div class="chapters">
+    
+        <a href="./index.html" title="Introduction" class="chapter done new-chapter" data-progress="0" style="left: 0%;"></a>
+    
+        <a href="./principle/README.html" title="principle" class="chapter  new-chapter" data-progress="1" style="left: 100%;"></a>
+    
+    </div>
+</div>
+
+                <div class="page-inner">
+                
+                    <section class="normal" id="section-gitbook_1613">
+                    
+                        <h1 id="daggerjavaandroid">Dagger——java和Android的高速依赖注入工具</h1>
+<h4 id="">简介</h4>
+<p>Dagger是一款Java平台的依赖注入库（如果你还不了解依赖注入，务必先看<a href="https://github.com/android-cn/blog/tree/master/java/dependency-injection" target="_blank">这篇文章</a>）。Java的依赖注入库中，最有名的应该属Google的Guice。Guice的功能非常强大，但它是通过在运行时读取注解来完成依赖的注入的，注解的读取需要依靠Java的反射机制，这对于对运行时性能非常敏感的Android来说是一个硬伤。基于此，Dagger应运而生。Dagger同样使用注解来实现依赖注入，不过由于原理的不同(<em>Dagger是在编译前读取注解并生成用于在运行时注入依赖的额外代码，因此运行时并不会用到反射</em>），Dagger对于程序的性能没有丝毫影响，因此更加适用于Android应用的开发。</p>
+<h4 id="">使用方式</h4>
+<p>本文将以一个简单的“老板和程序员”App为例。</p>
+<p>你想把一个Boss对象注入到一个Activity中，那么首先你要告诉程序一个Boss对象应该怎样被生成。在Boss类的构造方法前添加一个@Inject注解，Dagger就会在需要的时候获取Boss对象的时候，调用这个被标记的构造方法，从而获取一个Boss对象。</p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Boss</span> {</span>
+    ...
+
+    <span class="hljs-annotation">@Inject</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-title">Boss</span>() {
+        ...
+    }
+
+    ...
+}
+</code></pre>
+<p><em>需要注意的是，如果构造函数含有参数，Dagger会在构造对象的时候先去获取这些参数（不然谁来传参？），所以你要保证它的参数也能被Dagger获取到。（Dagger获取对象的方式有两种：除了注解构造方法之外，也可以通过提供相应的@Provides注解方法来获取，下面会讲到）</em></p>
+<p>通过@Inject注解了构造方法之后，在Activity中的Boss对象声明之前也添加@Inject注解。这个注解的目的是告诉Dagger哪些对象应该被注入依赖。</p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MainActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Activity</span> {</span>
+    <span class="hljs-annotation">@Inject</span> Boss boss;
+    ...
+}
+</code></pre>
+<p>最后，我们在合适的位置（本例是在onCreate()方法中）调用ObjectGraph.inject()方法，Dagger就会自动获取依赖并注入到当前对象（MainActivity）。</p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MainActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Activity</span> {</span>
+    <span class="hljs-annotation">@Inject</span> Boss boss;
+
+    <span class="hljs-annotation">@Override</span>
+    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onCreate</span>(Bundle savedInstanceState) {
+        ObjectGraph.create(AppModule.class).inject(<span class="hljs-keyword">this</span>);
+    }
+    ...
+}
+</code></pre>
+<p>到此为止，使用Dagger将一个Boss对象注入到MainActivity的流程就完成了。上面这段代码中出现了两个类：ObjectGraph和AppModule。其中ObjectGraph是由Dagger提供的类，可以简单理解为一个工具类，它的create函数中参数为所有的Module，本文不详述，如果有兴趣可以跟进我之后的Dagger详解。AppModule是一个自定义类，代码如下：</p>
+<pre><code class="lang-java"><span class="hljs-annotation">@Module</span>(injects = MainActivity.class)
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AppModule</span> {</span>
+}
+</code></pre>
+<p>可以看到，AppModule是一个空类，只有一行注解。@Module注解表示这个类是一个Module，Module的作用是提供信息，让ObjectGraph知道应该怎样注入所有的依赖。例如，上面这段代码中声明了可注入对象的信息：MainActivity.class（使用显式声明这样的看起来很麻烦、多此一举的方式和Dagger的原理有关，本文不详述）。</p>
+<h4 id="">自定义依赖</h4>
+<p>对构造方法进行注解是很好用的实现依赖的途径，然而它并不适用于所有情况。</p>
+<ul>
+<li>接口（Interface）是没有构造方法的</li>
+<li>第三方库提供的类，它们的构造方法不能被注解</li>
+<li>有些类需要灵活选择初始化的配置，而不是使用一个单一的构造方法</li>
+</ul>
+<p>对于以上三种情况，可以使用@Provides注解来提供自定义的初始化方法，实现自定义依赖。</p>
+<pre><code class="lang-java"><span class="hljs-annotation">@Provides</span>
+Coder provideCoder(Boss boss) {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Coder(boss);
+}
+</code></pre>
+<p><em>同样，@Provides注解的方法如果含有参数，它的所有参数也要保证能够被Dagger获取到。</em></p>
+<p>所有带有@Provides注解的方法都需要被封装到Module中：</p>
+<pre><code class="lang-java"><span class="hljs-annotation">@Module</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AppModule</span> {</span>
+    <span class="hljs-annotation">@Provides</span>
+    Coder provideCoder(Boss boss) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Coder(boss);
+    }
+}
+</code></pre>
+<h4 id="">单例</h4>
+<p>Dagger支持单例（事实上单例也是依赖注入最常用的场景），使用方式也很简单：</p>
+<pre><code class="lang-java"><span class="hljs-comment">// @Inject注解构造方法的单例模式</span>
+<span class="hljs-annotation">@Singleton</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Boss</span> {</span>
+    ...
+
+    <span class="hljs-annotation">@Inject</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-title">Boss</span>() {
+        ...
+    }
+
+    ...
+}
+</code></pre>
+<pre><code class="lang-java"><span class="hljs-comment">// @Provides注解提供对象的单例模式</span>
+<span class="hljs-annotation">@Provides</span>
+<span class="hljs-annotation">@Singleton</span>
+Coder provideCoder(Boss boss) {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Coder(boss);
+}
+</code></pre>
+<p>通过上面的方法添加@Singleton注解之后，对象只会被初始化一次，之后的每次都会被直接注入相同的对象。</p>
+<h4 id="qualifier">Qualifier（限定符）</h4>
+<p>如果有两类程序员，他们的能力值power分别是5和1000，应该怎样让Dagger对他们做出区分呢？使用@Qualifier注解</p>
+<p>首先，创建一个@Qualifier注解，用于区分两类程序员：</p>
+<pre><code class="lang-java"><span class="hljs-annotation">@Qualifier</span>
+<span class="hljs-annotation">@Documented</span>
+<span class="hljs-annotation">@Retention</span>(RUNTIME)
+<span class="hljs-keyword">public</span> @<span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Level</span> {</span>
+  String value() <span class="hljs-keyword">default</span> <span class="hljs-string">""</span>;
+}
+</code></pre>
+<p>然后，为这两类程序员分别设置@Provides方法，并使用@Qualifier注解对他们做出不同的标记：</p>
+<pre><code class="lang-java"><span class="hljs-annotation">@Provides</span> <span class="hljs-annotation">@Level</span>(<span class="hljs-string">"low"</span>) Coder provideLowLevelCoder() {
+    Coder coder = <span class="hljs-keyword">new</span> Coder();
+    coder.setName(<span class="hljs-string">"战五渣"</span>);
+    coder.setPower(<span class="hljs-number">5</span>);
+    <span class="hljs-keyword">return</span> coder;
+}
+
+<span class="hljs-annotation">@Provides</span> <span class="hljs-annotation">@Level</span>(<span class="hljs-string">"high"</span>) Coder provideHighLevelCoder() {
+    Coder coder = <span class="hljs-keyword">new</span> Coder();
+    coder.setName(<span class="hljs-string">"大神"</span>);
+    coder.setPower(<span class="hljs-number">1000</span>);
+    <span class="hljs-keyword">return</span> coder;
+}
+</code></pre>
+<p>最后，在使用的时候也用上相应的@Qualifier注解。</p>
+<pre><code class="lang-java"><span class="hljs-annotation">@Inject</span> <span class="hljs-annotation">@Level</span>(<span class="hljs-string">"low"</span>) Coder lowLevelCoder;
+<span class="hljs-annotation">@Inject</span> <span class="hljs-annotation">@Level</span>(<span class="hljs-string">"high"</span>) Coder highLevelCoder;
+</code></pre>
+<h4 id="">编译时检查</h4>
+<p>实质上，Dagger会在编译时对代码进行检查，并在检查不通过的时候报编译错误（为什么？这和Dagger的原理有关，有兴趣的话可以关注我之后发布的Dagger详解）。检查内容主要有三点：</p>
+<ol>
+<li>所有含有依赖注入的类，需要被显式 声明在相应的Module中。</li>
+<li>一个Module中所有@Provides方法的参数都必须在这个Module种提供相应的@Provides方法，或者在@Module注解后添加“complete = false”注明这是一个不完整Module（即它会被其他Module所扩展）。</li>
+<li>一个Module中所有的@Provides方法都要被它声明的注入对象所使用，或者在@Module注解后添加“library = ture”注明（即它是为了扩展其他Module而存在的）。</li>
+</ol>
+<p><em>如果需要对Dagger有更多了解，可以参看<a href="http://square.github.io/dagger/" target="_blank">官方文档</a>，或者关注我之后的详解文章。</em></p>
+<p><em>另外，我们公司<a href="http://hiyoulin.com" target="_blank">友邻小区</a>招聘<a href="http://www.lagou.com/jobs/153948.html" target="_blank">Android开发</a>一名，地址北京海淀紫竹桥。</em></p>
+<p><em>我的Github地址：<a href="https://github.com/rengwuxian" target="_blank">https://github.com/rengwuxian</a></em></p>
+
+                    
+                    </section>
+                
+                </div>
+            </div>
+        </div>
+
+        
+        
+        <a href="./principle/README.html" class="navigation navigation-next navigation-unique" aria-label="Next page: principle"><i class="fa fa-angle-right"></i></a>
+        
+    </div>
+</div>
+
+        
+<script src="gitbook/jsrepl/jsrepl.js" id="jsrepl-script"></script>
+<script src="gitbook/app.js"></script>
+
+    
+    <script src="https://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+    
+    <script src="gitbook/plugins/gitbook-plugin-mathjax/plugin.js"></script>
+    
+
+<script>
+require(["gitbook"], function(gitbook) {
+    var config = {};
+    gitbook.start(config);
+});
+</script>
+
+        
+    </body>
+    
+</html>
