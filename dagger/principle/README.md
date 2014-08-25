@@ -48,14 +48,14 @@ ObjectGraph是Dagger的核心类，它在运行时生成整套依赖关系图，
 
 ### Dagger的整体工作流程
 
-1. 编辑前，通过APT找到带有@Module注解的类，生成相应的名为XXX$$ModuleAdapter的帮助类，这些类继承自ModuleAdapter类，用于运行时辅助生成ObjectGraph；同时，找到这些@Module注解中injects参数中的value所对应的每一个类，并为他们一一生成名为YYY$$InjectAdapter的帮助类，这些类继承自Binding类，他们只专注于自己所对应的类的依赖注入。
+1. 编译前，通过APT找到带有@Module注解的类，生成相应的名为XXX$$ModuleAdapter的帮助类，这些类继承自ModuleAdapter类，用于运行时辅助生成ObjectGraph；同时，找到这些@Module注解中injects参数中的value所对应的每一个类，并为他们一一生成名为YYY$$InjectAdapter的帮助类，这些类继承自Binding类，他们只专注于自己所对应的类的依赖注入。
 2. 运行时，需要在合适的地方调用```ObjectGraph.create(Object... modules)```方法来组装依赖关系图。这个方法会根据传入的Modules获取到其对应的ModuleAdapter，并获取到相应的InjectAdapter类。
 3. 在需要的时候，你就可以调用```ObjecgGraph```的相应方法实现依赖注入了。实现依赖注入的方法有两个：```ObjectGraph.get(Class<T> type)```方法用于直接获取对象，```ObjectGraph.inject(T instance)```方法用于对指定对象进行成员变量的注入。在这两个方法的调用中，Dagger都会先获取到对应的InjectAdapter对象，然后调用这个InjectAdapter的```get()```方法或```injectMembers()```方法。
 
 ### 其他
 
 1. 虽然Dagger使用到了APT，但本项目是原理分析而非源码分析，如果想对APT了解更多，请自行Google。
-2. **Dagger的整体工作流程**一节中提到了ModuleAdapter和InjectAdapter这两种辅助类，我在之后会对这两个类给出更详细的分析，如果感兴趣请继续关注。
+2. [Dagger的整体工作流程](#dagger%E7%9A%84%E6%95%B4%E4%BD%93%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B)一节中提到了ModuleAdapter和InjectAdapter这两种辅助类，我在之后会对这两个类给出更详细的分析，如果感兴趣请继续关注。
 
 _Dagger官方介绍：http://square.github.io/dagger/_
 
