@@ -1,8 +1,6 @@
 open-project-analysis
 =====================
 
-Analysis of android open source project, include usage and implementation,About more,https://github.com/android-cn/android-open-project-analysis
-
 ### 1. 简介
 
 **功能介绍：**  
