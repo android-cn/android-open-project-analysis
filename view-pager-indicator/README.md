@@ -96,8 +96,18 @@ ViewPagerIndicator中的onTouchEvent中的代码也就是官方文档的模板�
 **核心函数**  
 onDraw  onTouchEvent
 
-这里就算对ViewPagerIndicator的实现原理介绍完毕了。可能大家说我图懒省事，其实并不然。第一，关于自定义控件的知识点并不是一下就能说清楚的。其内容之多，这里根本无法做详细的介绍。如果你把这些基础看明白了，一定会知道ViewPagerIndicator是如何实现的，其实该项目并不复杂。另外对于自定义控件的这些知识是非常重要的，真心想学习的同学，一定会认真研究这些基本的知识点，并做下笔记，因为在以后的学习或者研读其它优秀开源项目的时候，一定会遇到这些知识。
-	
+这里就算对ViewPagerIndicator的实现原理介绍完毕了。可能大家说我图懒省事，其实并不然。第一，关于自定义控件的知识点并不是一下就能说清楚的。其内容之多，这里根本无法做详细的介绍。如果你把这些基础看明白了，一定会知道ViewPagerIndicator是如何实现的，其实该项目并不复杂。另外对于自定义控件的这些知识是非常重要的，真心想学习的同学，一定会认真研究这些基本的知识点，并做下笔记，因为在以后的学习或者研读其它优秀开源项目的时候，一定会遇到这些知识。其实本人对这些知识也没有统一的梳理，会在最近的学习里，整理出来，供大家分享。
+  
+  先贴上几篇相关的文章链接：  
+  
+  View的绘制：  
+  	http://blog.csdn.net/wangjinyu501/article/details/9008271  
+  	http://blog.csdn.net/qinjuning/article/details/7110211
+  	
+  Touch事件传递：  
+  	http://blog.csdn.net/xiaanming/article/details/21696315
+  	http://blog.csdn.net/wangjinyu501/article/details/22584465
+  	
 **授人以鱼不如授人以渔。真正学到的，才是自己的**
 
 ### 4. 使用方法
