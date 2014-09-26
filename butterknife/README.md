@@ -192,5 +192,5 @@ ButterKnife 是一个 View 注入库， 使用注解配置， 可以简化开发
 # 原理
 
 ## 原理简析
-
+* see http://www.trinea.cn/android/java-annotation-android-open-source-analysis/
 ## 流程分析
