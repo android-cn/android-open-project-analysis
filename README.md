@@ -1,4 +1,4 @@
-Android 优秀开源项目实现原理解析
+﻿Android 优秀开源项目实现原理解析
 ====================================
 
 这是一个协作项目，最终多数开源库原理解析会在这里分享出来。
@@ -51,3 +51,4 @@ Android 优秀开源项目实现原理解析
 [ListViewAnimations](https://github.com/nhaarman/ListViewAnimations) | [waylife](https://github.com/waylife)
 [HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary) | [xujinyang](https://github.com/xujinyang)
 [FancyCoverFlow](https://github.com/davidschreiber/FancyCoverFlow) | [zmywly8866](https://github.com/zmywly8866)
+[Emojicon](https://github.com/rockerhieu/emojicon) | [18620385582](https://github.com/18620385582)
