@@ -1,9 +1,11 @@
 EventBus 源码解析
 ----------------
-本文为 [Android 开源项目原理解析](https://github.com/android-cn/android-open-project-analysis) 中 EventBus 部分  
-项目地址：[Greenrobot EventBus](https://github.com/greenrobot/EventBus)，Demo 地址：[EventBus Demo](https://github.com/android-cn/android-open-project-demo)  
-分析者：[Trinea](https://github.com/trinea)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;校对者：[Trinea](https://github.com/trinea)  
+> 本文为 [Android 开源项目原理解析](https://github.com/android-cn/android-open-project-analysis) 中 EventBus 部分  
+> 项目地址：[EventBus](https://github.com/greenrobot/EventBus)，分析的版本：[ccc2771](https://github.com/greenrobot/EventBus/commit/ccc2771199f958a34bd4ea6c90d0a8c671c2e70a "Commit id is ccc2771199f958a34bd4ea6c90d0a8c671c2e70a")，Demo 地址：[EventBus Demo](https://github.com/android-cn/android-open-project-demo/tree/master/eventbus-demo)    
+> 分析者：[Trinea](https://github.com/trinea)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;校对者：[Trinea](https://github.com/trinea)  
 
+
+http://www.slideshare.net/greenrobot/eventbus-for-android-15314813
 http://www.cnblogs.com/angeldevil/p/3715934.html  
 http://www.pocketdigi.com/20131227/1235.html  
 http://blog.csdn.net/huangyanan1989/article/details/10858695  
@@ -11,12 +13,102 @@ https://github.com/greenrobot/EventBus
 https://github.com/kevintanhongann/EventBusSample  
 
 ###1. 功能介绍
-EventBus 是一个优化的 Android 发布订阅事件总线。通过解耦发布者和订阅者简化 Android 事件传递，这里的事件既仅包括 Android 四大组件间传递，也包括异步返回的 UI 线程更新等  
-传统的事件传递方式包括：Handler、BroadCastReceiver、Interface 回调，相比之下 EventBus 的优点是代码简洁，使用简单  
+EventBus 是一个 Android 事件发布/订阅框架，通过解耦发布者和订阅者简化 Android 事件传递，这里的事件可以理解为消息，本文中统一称为事件。  
+事件传递即可用用语 Android 四大组件间通讯，也可以用户异步线程和主线程间通讯。    
+传统的事件传递方式包括：Handler、BroadCastReceiver、Interface 回调，相比之下 EventBus 的优点是代码简洁，使用简单，并将事件发布和订阅充分解耦。  
 传统的方式是定义一个统一的 Interface，每个接受者实现这个接口，然后发布者发布信息调用这个统一的接口  
+
+EventBus 分为事件发布者和订阅者  
+发布者通过 post 接口发布事件，订阅者通过 register 接口订阅事件，unregister 接口退订。  
+事件分为一般事件和 Sticky 事件。相对于一般事件，Sticky 事件不同处在于事件发布后，过一段时间有订阅者订阅该事件依然能收到刚才(TODO 最近？)的的 Sticky 事件。跟 Android 的广播类似，事件也分有序无序之分，不过 Android 的广播通过 sendOrderedBroadcast 发送有序广播，而 EventBus 所有事件都是有序的，默认优先级相同都为 0，且通过订阅者注册时声明自己的优先级  
+概念介绍：  
+事件(Event)：又可称为消息，本文中统一用事件表示。其实就是一个对象，可以是网络请求返回的字符串，也可以是某个开关状态等等。`事件类型`指事件的 Class Type。    
+订阅者(Subscriber)：订阅某种事件类型的对象。当有这类事件发送过来后，EventBus 会调用订阅者的某个函数执行，这个函数叫`事件响应函数`。  
+发布者(Poster)：发送某事件的对象。  
 ###2. 详细设计
 ###2.1 核心类功能介绍
+####EventBus.jva 
+EventBus 负责所有对外暴露的 API，其中的 register、post、unregister 函数配合上自定义的 Event 即可完成核心功能。
+EventBus 默认可通过 getDefault 获取单例，当然也可以通过 EventBusBuilder 或 构造函数新建一个 EventBus，每个新建的 EventBus 发布和订阅事件都是相互独立的，即同一事件的传递处理在不同 EventBus 之间相互隔离  
+这个类负责所有对外暴露的 API 调用，主要包括两类  
+#####register 订阅和 unregister 取消订阅
+register 函数有四个参数，分别为订阅者对象、事件响应函数名称、是否是 Sticky 事件、优先级。register 函数中会先根据类名去 subscriberMethodFinder 中查找事件响应函数，查找到后会循环每一个事件响应函数，依次执行 subscribe 函数，如下：  
+#####subscribe 函数  
+subscribe 函数分三步，第一步去 subscriptionsByEventType 中检查是否有其他 subscriber 订阅该 eventType，有的话根据 priority 添加到队列中合适的位置，没有则新建队列并插入  
+第二步去 typesBySubscriber 中检查这个订阅者是否订阅了其他事件，有的话则放到该 subscriber 订阅事件队列中，否则新建队列并插入队列  
+第三步是检查这个事件是否是 sticky 事件，如果是从 stickyEvents 事件保存队列中取出事件发送给这个订阅者  
+#####post 发布和 cancel 取消发布、removeStickEvent 删除 Sticky 事件
+post 函数会首先得到当前线程的事件存储队列将事件加入，然后循环去通过 postSingleEvent 函数发布队列中的每个事件。  
+postSingleEvent 会先去 eventTypesCache 得到事件对应类型的的父类及接口类型，没有缓存则查找并插入缓存。循环得到的每个类型和接口，通过 postSingleEventForEventType 函数发布每个事件到每个订阅者。  
+postSingleEventForEventType 在 subscriptionsByEventType 查找该事件订阅者订阅者队列，并通过 postToSubscription 向每个订阅者发布事件。  
+postToSubscription 中会判断订阅者的 ThreadMode，从而决定在什么 Mode 下执行事件响应函数，具体如下：  
+a. 如果是 PostThread，则直接调用 subscriber 的事件响应函数  
+b. 如果是 MainThread 并且发布线程就是主线程，则直接调用 subscriber 的事件响应函数，否则通过主线程的 Handler 发送消息在主线程中处理  
+b. 如果是 BackgroundThread 并且发布线程是主线程，则启动异步线程去处理，否则直接直接调用 subscriber 的事件响应函数  
+b. 如果是 Async，则启动异步线程去处理  
+主要变量含义：  
+defaultInstance 默认的 EventBus 实例，根据 EventBus.getDefault() 函数得到  
+DEFAULT_BUILDER 默认的 EventBus Builder，包含构造的 EventBus 实例的默认配置  
+eventTypesCache 事件对应类型及其父类和实现的接口的缓存，以 eventType 的 class 为 key，以 eventType 的父类或接口为元素的 ArrayList 为 Value。 
+subscriptionsByEventType 事件的订阅者的保存队列，以 eventType 为 key，由 Subscription 为元素的 ArrayList 为 Value，其中 Subscription 为订阅者信息，由 subscriber, subscriberMethod, priority 构成  
+typesBySubscriber 订阅者订阅的事件保存队列，以 subscribe 为 key，由 eventType 为元素组成的 ArrayList 为 Value  
+stickyEvents Sticky 事件保存队列，以 eventType 的 class 为 key，eventType 为元素，由此可以看出对于同一个类的 eventType 最多只会有一个 eventType 存在  
+currentPostingThreadState 当前线程 post 事件信息，包括事件队列、是否正在分发中、是否在主线程、订阅者信息、事件实例、是否取消  
+mainThreadPoster、backgroundPoster、asyncPoster  事件主线程处理者、事件 Background 处理者、事件异步处理者  
+subscriberMethodFinder 订阅者响应函数信息存储和查找类  
+executorService 异步和 BackGround 方式的线程池  
+throwSubscriberException 当调用事件处理函数异常时是否抛出异常，默认为 false，建议通过`EventBus.builder().throwSubscriberException(true).installDefaultEventBus()`打开   
+logSubscriberExceptions 当调用事件处理函数异常时是否打印异常信息，默认为 true   
+logNoSubscriberMessages 当没有订阅者订阅该事件时是否打印日志，默认为 true  
+sendSubscriberExceptionEvent 当调用事件处理函数异常时是否发送 SubscriberExceptionEvent 事件，若发送可通过 public void onEvent(SubscriberExceptionEvent event) 订阅该事件进行处理，默认为 true  
+sendNoSubscriberEvent 当没有事件处理函数对事件处理时是否发送 NoSubscriberEvent 事件，若发送可通过 public void onEvent(NoSubscriberEvent event) 订阅该事件进行处理，默认为 true  
+eventInheritance 是否支持事件继承，默认为 true  
+####EventBusBuilder.java
+跟一般 Builder 类似，当需要设置参数过多时用语构造 EventBus。包含的也是 EventBus 的一些设置参数，意义见 EventBus.java 的介绍，build 函数用于新建 EventBus 对象，installDefaultEventBus 函数将当前设置应用于 Default EventBus。  
+####SubscriberMethodFinder.java
+订阅者响应函数信息存储和查找类，由 HashMap 缓存，以 ${subscriberClassName}.${eventMethodName} 为 key，SubscriberMethod 对象为元素的 ArrayList 为 value。findSubscriberMethods 函数用于查找订阅者响应函数，如果不在缓存中，则遍历自己的每个函数并递归父类查找，查找成功后保存到缓存中。遍历及查找规则为：  
+a. 遍历 subscriberClass 每个方法，如果以 ${eventMethodName} 开头，则继续，否则检查下一个方法  
+b. 该方法是否是 public 的，并且不是 ABSTRACT、STATIC、BRIDGE、SYNTHETIC 修饰的，满足条件则继续。其中 BRIDGE、SYNTHETIC 为编译器生成的一些函数修饰符  
+c. 该方法是否只有 1 个参数，满足条件则继续  
+d. 该方法名为 ${eventMethodName} 则 threadMode 为 ThreadMode.PostThread；  
+该方法名为 ${eventMethodName}MainThread 则 threadMode 为 ThreadMode.MainThread；  
+该方法名为 ${eventMethodName}BackgroundThread 则 threadMode 为 ThreadMode.BackgroundThread；  
+该方法名为 ${eventMethodName}Async 则 threadMode 为 ThreadMode.Async；其他情况且不在忽略名单中则抛出异常  
+得到唯一的参数即事件类型 eventType，将这个方法、threadMode、eventType 一起构造 SubscriberMethod 对象放到 ArrayList 中。  
+在遍历完自己及父类后若 ArrayList 依然为空则抛出异常，否则会将 ArrayList 做为 value，${subscriberClassName}.${eventMethodName} 做为 key 放到缓存中  
+
+对于事件函数的查找有两个小的性能有话点：  
+a. 第一次查找后保存到了缓存中，即上面介绍的 HashMap  
+b. 遇到 java. javax. android. 开头的类会自动停止查找  
+skipMethodVerificationForClasses 表示跳过哪些类中非法以 {eventMethodName} 开头的函数检查  
+####SubscriberMethod.java
+订阅者事件响应函数信息，包括响应方法、线程 Mode、事件类型以及一个用来比较 SubscriberMethod 是否相等的特征值 methodString 共四个变量，其中 methodString 为 ${methodClassNmae}#${methodName}(${eventTypeClassName}
+####Subscription.java
+订阅者信息，包括 subscriber 对象、事件响应方法 SubscriberMethod、优先级 priority  
+####HandlerPoster.jva
+事件主线程处理，对应 ThreadMode.MainThread。继承自 Handler，enqueue 函数将事件放到队列中，并利用 handler 发送 message，handleMessage 函数从队列中取事件，invoke 事件响应函数处理  
+####AsyncPoster.java
+事件异步线程处理，对应 ThreadMode.Async，继承自 Runnable。enqueue 函数将事件放到队列中，并调用线程池执行当前任务，在 run  函数从队列中取事件，invoke 事件响应函数处理  
+####BackgroundPoster.java
+事件 Background 处理，对应 ThreadMode.BackgroundThread，继承自 Runnable。enqueue 函数将事件放到队列中，并调用线程池执行当前任务，在 run  函数从队列中取事件，invoke 事件响应函数处理，与 AsyncPoster.java 不同的是这里会循环等待 run，尚未想清楚原因  
+####PendingPost.java
+订阅者和事件信息实体类，并含有同一队列中指向下一个事件的指针。通过缓存存储不用的对象，减少下次创建的性能消耗。  
+####PendingPostQueue.java
+通过 head 和 tail 指针维护一个 `PendingPost` 队列。HandlerPoster、AsyncPoster、BackgroundPoster 都包含一个此队列实例，表示各自的订阅者及事件信息队列，在事件到来时进入队列，处理时从队列中取出一个元素进行处理   
+####SubscriberExceptionEvent.java
+当调用事件处理函数异常时发送的 EventBus 内部事件，通过 post 发送，可自行订阅这类事件进行处理  
+####NoSubscriberEvent.java
+当没有事件处理函数对事件处理时发送的 EventBus 内部事件，通过 post 发送，可自行订阅这类事件进行处理  
+####EventBusException.java
+封装于 RuntimeException 之上的 Exception，只是覆盖构造函数，相当于一个标记，标记是属于 EventBus 的 Exception 
+####ThreadMode.java
+线程 Mode 枚举类，表示事件响应函数执行线程信息，包括 ThreadMode.PostThread、ThreadMode.MainThread、ThreadMode.BackgroundThread、ThreadMode.Async 四种  
+   
 ###2.2 类关系图
 ###3. 流程图
 ###4. 总体设计
 ###5. 与 Otto 对比
+
+### 问题
+1、线程间通讯怎么做  
+2、
