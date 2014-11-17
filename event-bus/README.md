@@ -13,18 +13,18 @@ https://github.com/greenrobot/EventBus
 https://github.com/kevintanhongann/EventBusSample  
 
 ###1. 功能介绍
+####1.1 EventBus  
 EventBus 是一个 Android 事件发布/订阅框架，通过解耦发布者和订阅者简化 Android 事件传递，这里的事件可以理解为消息，本文中统一称为事件。  
-事件传递即可用用语 Android 四大组件间通讯，也可以用户异步线程和主线程间通讯。    
+事件传递即可用用于 Android 四大组件间通讯，也可以用户异步线程和主线程间通讯。    
 传统的事件传递方式包括：Handler、BroadCastReceiver、Interface 回调，相比之下 EventBus 的优点是代码简洁，使用简单，并将事件发布和订阅充分解耦。  
-传统的方式是定义一个统一的 Interface，每个接受者实现这个接口，然后发布者发布信息调用这个统一的接口  
 
-EventBus 分为事件发布者和订阅者  
-发布者通过 post 接口发布事件，订阅者通过 register 接口订阅事件，unregister 接口退订。  
-事件分为一般事件和 Sticky 事件。相对于一般事件，Sticky 事件不同处在于事件发布后，过一段时间有订阅者订阅该事件依然能收到刚才(TODO 最近？)的的 Sticky 事件。跟 Android 的广播类似，事件也分有序无序之分，不过 Android 的广播通过 sendOrderedBroadcast 发送有序广播，而 EventBus 所有事件都是有序的，默认优先级相同都为 0，且通过订阅者注册时声明自己的优先级  
-概念介绍：  
-事件(Event)：又可称为消息，本文中统一用事件表示。其实就是一个对象，可以是网络请求返回的字符串，也可以是某个开关状态等等。`事件类型`指事件的 Class Type。    
-订阅者(Subscriber)：订阅某种事件类型的对象。当有这类事件发送过来后，EventBus 会调用订阅者的某个函数执行，这个函数叫`事件响应函数`。  
-发布者(Poster)：发送某事件的对象。  
+####1.2 概念
+**事件(Event)：**又可称为消息，本文中统一用事件表示。其实就是一个对象，可以是网络请求返回的字符串，也可以是某个开关状态等等。`事件类型`指事件的 Class Type。  
+事件分为一般事件和 Sticky 事件，相对于一般事件，Sticky 事件不同之处在于，当事件发布后，有订阅者开始订阅该类型事件，依然能收到该类型事件最近的一个 Sticky 事件  
+**订阅者(Subscriber)：**订阅某种事件类型的对象。当有这类事件发送过来后，EventBus 会执行订阅者的某个函数，这个函数叫`事件响应函数`。订阅者通过 register 接口订阅事件类型，unregister 接口退订。订阅者存在优先级，优先级高的订阅者可以取消事件继续向优先级低的订阅者分发，默认所有订阅者优先级都为 0。    
+**发布者(Poster)：**发布某事件的对象，通过 post 接口发布事件。  
+###2. 总体设计
+###3. 流程图
 ###2. 详细设计
 ###2.1 核心类功能介绍
 ####EventBus.jva 
@@ -105,8 +105,7 @@ skipMethodVerificationForClasses 表示跳过哪些类中非法以 {eventMethodN
 线程 Mode 枚举类，表示事件响应函数执行线程信息，包括 ThreadMode.PostThread、ThreadMode.MainThread、ThreadMode.BackgroundThread、ThreadMode.Async 四种  
    
 ###2.2 类关系图
-###3. 流程图
-###4. 总体设计
+
 ###5. 与 Otto 对比
 
 ### 问题
