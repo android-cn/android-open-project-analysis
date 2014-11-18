@@ -47,14 +47,16 @@ subscribe 函数分三步
 post 函数用于发布事件，cancel 函数用于取消某订阅者订阅的所有事件类型、removeStickEvent 函数用于删除 sticky 事件。  
 post 函数流程图如下：
 ![eventbus img](image/post-flow-chart.png)  
-post 函数会首先得到当前线程的 post 信息`PostingThreadState`，其中包含事件队列，将当前事件添加到其事件队列中，然后循环调用`postSingleEvent`函数发布队列中的每个事件。  
-`postSingleEvent` 函数会先去`eventTypesCache`得到该事件对应类型的的父类及接口类型，没有缓存则查找并插入缓存。循环得到的每个类型和接口，调用`postSingleEventForEventType`函数发布每个事件到每个订阅者。  
-`postSingleEventForEventType` 在`subscriptionsByEventType`查找该事件订阅者订阅者队列，并通过`postToSubscription`向每个订阅者发布事件。  
-`postToSubscription` 中会判断订阅者的 ThreadMode，从而决定在什么 Mode 下执行事件响应函数，具体如下：  
+post 函数会首先得到当前线程的 post 信息`PostingThreadState`，其中包含事件队列，将当前事件添加到其事件队列中，然后循环调用 postSingleEvent 函数发布队列中的每个事件。  
+postSingleEvent 函数会先去`eventTypesCache`得到该事件对应类型的的父类及接口类型，没有缓存则查找并插入缓存。循环得到的每个类型和接口，调用 postSingleEventForEventType 函数发布每个事件到每个订阅者。  
+postSingleEventForEventType 函数在`subscriptionsByEventType`查找该事件订阅者订阅者队列，调用 postToSubscription 函数向每个订阅者发布事件。  
+postToSubscription 函数中会判断订阅者的 ThreadMode，从而决定在什么 Mode 下执行事件响应函数，具体如下：  
+```xml
 a. 如果是`PostThread`，则直接调用订阅者的事件响应函数；  
-b. 如果是`MainThread`并且发布线程就是主线程，则直接调用订阅者的事件响应函数，否则通过主线程的 Handler 发送消息在主线程中处理————调用订阅者的事件响应函数；  
-b. 如果是`BackgroundThread`并且发布线程是主线程，则启动异步线程去处理，否则直接直接调用订阅者的事件响应函数；  
-b. 如果是`Async`，则启动异步线程去处理————调用订阅者的事件响应函数。  
+b. 如果是`MainThread`并且发布线程就是主线程，则直接调用订阅者的事件响应函数，否则通过主线程的 Handler 发送消息在主线程中处理——调用订阅者的事件响应函数；  
+c. 如果是`BackgroundThread`并且发布线程是主线程，则启动异步线程去处理，否则直接直接调用订阅者的事件响应函数；  
+d. 如果是`Async`，则启动异步线程去处理——调用订阅者的事件响应函数。  
+```
 ####（4）主要成员变量含义   
 1. `defaultInstance` 默认的 EventBus 实例，根据`EventBus.getDefault()`函数得到。  
 2. `DEFAULT_BUILDER` 默认的 EventBus Builder。  
@@ -66,7 +68,11 @@ b. 如果是`Async`，则启动异步线程去处理————调用订阅者�
 8. `mainThreadPoster`、`backgroundPoster`、`asyncPoster` 事件主线程处理者、事件 Background 处理者、事件异步处理者。  
 9. `subscriberMethodFinder` 订阅者响应函数信息存储和查找类。  
 10. `executorService` 异步和 BackGround 处理方式的线程池。  
-11. `throwSubscriberException` 当调用事件处理函数异常时是否抛出异常，默认为 false，建议通过`EventBus.builder().throwSubscriberException(true).installDefaultEventBus()`打开。   
+11. `throwSubscriberException` 当调用事件处理函数异常时是否抛出异常，默认为 false，建议通过  
+```java
+EventBus.builder().throwSubscriberException(true).installDefaultEventBus()
+```
+打开。   
 12. `logSubscriberExceptions` 当调用事件处理函数异常时是否打印异常信息，默认为 true。   
 13. `logNoSubscriberMessages` 当没有订阅者订阅该事件时是否打印日志，默认为 true。  
 14. `sendSubscriberExceptionEvent` 当调用事件处理函数异常时是否发送 SubscriberExceptionEvent 事件，若此开关打开，订阅者可通过 public void onEvent(SubscriberExceptionEvent event) 订阅该事件进行处理，默认为 true。  
@@ -81,6 +87,7 @@ public void onEvent(NoSubscriberEvent event)
 跟一般 Builder 类似，用于在需要设置参数过多时构造 EventBus。包含的属性也是 EventBus 的一些设置参数，意义见 4.2.1 EventBus.java 的介绍，build 函数用于新建 EventBus 对象，installDefaultEventBus 函数将当前设置应用于 Default EventBus。  
 ####4.2.3 SubscriberMethodFinder.java
 订阅者响应函数信息存储和查找类，由 HashMap 缓存，以 ${subscriberClassName} 为 key，SubscriberMethod 对象为元素的 ArrayList 为 value。findSubscriberMethods 函数用于查找订阅者响应函数，如果不在缓存中，则遍历自己的每个函数并递归父类查找，查找成功后保存到缓存中。遍历及查找规则为：  
+```xml
 a. 遍历 subscriberClass 每个方法；  
 b. 该方法不以`java.`、`javax.`、`android.`这些 SDK 函数开头，并以 ${eventMethodName} 开头，表示可能是事件响应函数继续，否则检查下一个方法；  
 c. 该方法是否是 public 的，并且不是 ABSTRACT、STATIC、BRIDGE、SYNTHETIC 修饰的，满足条件则继续。其中 BRIDGE、SYNTHETIC 为编译器生成的一些函数修饰符；  
@@ -93,10 +100,13 @@ e. 该方法名为 ${eventMethodName} 则 threadMode 为`ThreadMode.PostThread`�
 f. 得到该方法唯一的参数即事件类型 eventType，将这个方法、threadMode、eventType 一起构造 SubscriberMethod 对象放到 ArrayList 中。  
 g. 回到 b 遍历 subscriberClass 的下一个方法，若方法遍历结束到 h；
 h. 回到 a 遍历自己的父类，若父类遍历结束回到 i；  
-i. 若 ArrayList 依然为空则抛出异常，否则会将 ArrayList 做为 value，${subscriberClassName} 做为 key 放到缓存 HashMap 中。  
+i. 若 ArrayList 依然为空则抛出异常，否则会将 ArrayList 做为 value，${subscriberClassName} 做为 key 放到缓存 HashMap 中。 
+``` 
 对于事件函数的查找有两个小的性能优化点：  
+```xml
 a. 第一次查找后保存到了缓存中，即上面介绍的 HashMap  
 b. 遇到 java. javax. android. 开头的类会自动停止查找  
+```
 类中的 skipMethodVerificationForClasses 属性表示跳过哪些类中非法以 {eventMethodName} 开头的函数检查，若不跳过泽辉抛出异常。  
 PS：在此之前的版本 EventBus 允许自定义事件响应函数名称，缓存的 HashMap key 为 ${subscriberClassName}.${eventMethodName}，这版本中此功能已经被去除。  
 ####4.2.4 SubscriberMethod.java
