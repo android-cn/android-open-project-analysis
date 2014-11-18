@@ -21,7 +21,7 @@ EventBus 是一个 Android 事件发布/订阅框架，通过解耦发布者和�
 ![eventbus img](uml/releation-flow-chart.png)  
 当有发布者发布事件时，EventBus 调用订阅者的事件响应函数。  
 ####3.2 事件响应流程
-![eventbus img](uml/event-response-flow-chart.png)
+![eventbus img](uml/event-response-flow-chart.png)  
 订阅者首先调用 EventBus 的 register 接口订阅固定类型的事件，当发布者通过 post 接口发布该类型的事件，EventBus 执行调用者的事件响应函数。  
 ###4. 详细设计
 ###4.1 类关系图
