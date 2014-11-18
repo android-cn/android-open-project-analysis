@@ -48,35 +48,38 @@ register 函数中会先根据订阅者类名去 subscriberMethodFinder 中查�
 subscribe 函数分三步，第一步： subscriptionsByEventType 中得到该事件类型所有订阅者信息，根据优先级将当前订阅者信息插入到订阅者队列 subscriptionsByEventType 中  
 第二步：在 typesBySubscriber 中得到当前订阅者订阅的所有事件队列，将此事件保存到队列 typesBySubscriber 中，用于后续取消订阅  
 第三步：检查这个事件是否是 sticky 事件，如果是则从 stickyEvents 事件保存队列中取出该事件类型最后一个事件发送给当前订阅者  
-#####post 发布和 cancel 取消发布、removeStickEvent 删除 Sticky 事件
-post 函数会首先得到当前线程的事件存储队列将事件加入，然后循环去通过 postSingleEvent 函数发布队列中的每个事件。  
-postSingleEvent 会先去 eventTypesCache 得到事件对应类型的的父类及接口类型，没有缓存则查找并插入缓存。循环得到的每个类型和接口，通过 postSingleEventForEventType 函数发布每个事件到每个订阅者。  
+#####post、cancel 、removeStickEvent
+post 函数用语发布事件，cancel 函数用于取消某订阅订阅的所有事件类型、removeStickEvent 函数用于删除 sticky 事件  
+post 函数流程图如下：
+![eventbus img](uml/post-flow-chart.png)  
+post 函数会首先得到当前线程的 post 信息，将当前事件添加到其事件队列中，然后循环调用 postSingleEvent 函数发布队列中的每个事件。  
+postSingleEvent 会先去 eventTypesCache 得到该事件对应类型的的父类及接口类型，没有缓存则查找并插入缓存。循环得到的每个类型和接口，调用 postSingleEventForEventType 函数发布每个事件到每个订阅者。  
 postSingleEventForEventType 在 subscriptionsByEventType 查找该事件订阅者订阅者队列，并通过 postToSubscription 向每个订阅者发布事件。  
 postToSubscription 中会判断订阅者的 ThreadMode，从而决定在什么 Mode 下执行事件响应函数，具体如下：  
 a. 如果是 PostThread，则直接调用 subscriber 的事件响应函数  
 b. 如果是 MainThread 并且发布线程就是主线程，则直接调用 subscriber 的事件响应函数，否则通过主线程的 Handler 发送消息在主线程中处理  
 b. 如果是 BackgroundThread 并且发布线程是主线程，则启动异步线程去处理，否则直接直接调用 subscriber 的事件响应函数  
 b. 如果是 Async，则启动异步线程去处理  
-主要变量含义：  
-defaultInstance 默认的 EventBus 实例，根据 EventBus.getDefault() 函数得到  
-DEFAULT_BUILDER 默认的 EventBus Builder，包含构造的 EventBus 实例的默认配置  
-eventTypesCache 事件对应类型及其父类和实现的接口的缓存，以 eventType 的 class 为 key，以 eventType 的父类或接口为元素的 ArrayList 为 Value。 
-subscriptionsByEventType 事件的订阅者的保存队列，以 eventType 为 key，由 Subscription 为元素的 ArrayList 为 Value，其中 Subscription 为订阅者信息，由 subscriber, subscriberMethod, priority 构成  
-typesBySubscriber 订阅者订阅的事件保存队列，以 subscribe 为 key，由 eventType 为元素组成的 ArrayList 为 Value  
-stickyEvents Sticky 事件保存队列，以 eventType 的 class 为 key，eventType 为元素，由此可以看出对于同一个类的 eventType 最多只会有一个 eventType 存在  
-currentPostingThreadState 当前线程 post 事件信息，包括事件队列、是否正在分发中、是否在主线程、订阅者信息、事件实例、是否取消  
-mainThreadPoster、backgroundPoster、asyncPoster  事件主线程处理者、事件 Background 处理者、事件异步处理者  
-subscriberMethodFinder 订阅者响应函数信息存储和查找类  
-executorService 异步和 BackGround 方式的线程池  
-throwSubscriberException 当调用事件处理函数异常时是否抛出异常，默认为 false，建议通过`EventBus.builder().throwSubscriberException(true).installDefaultEventBus()`打开   
-logSubscriberExceptions 当调用事件处理函数异常时是否打印异常信息，默认为 true   
-logNoSubscriberMessages 当没有订阅者订阅该事件时是否打印日志，默认为 true  
-sendSubscriberExceptionEvent 当调用事件处理函数异常时是否发送 SubscriberExceptionEvent 事件，若发送可通过 public void onEvent(SubscriberExceptionEvent event) 订阅该事件进行处理，默认为 true  
-sendNoSubscriberEvent 当没有事件处理函数对事件处理时是否发送 NoSubscriberEvent 事件，若发送可通过 public void onEvent(NoSubscriberEvent event) 订阅该事件进行处理，默认为 true  
-eventInheritance 是否支持事件继承，默认为 true  
-####EventBusBuilder.java
-跟一般 Builder 类似，当需要设置参数过多时用语构造 EventBus。包含的也是 EventBus 的一些设置参数，意义见 EventBus.java 的介绍，build 函数用于新建 EventBus 对象，installDefaultEventBus 函数将当前设置应用于 Default EventBus。  
-####SubscriberMethodFinder.java
+#####主要成员变量含义   
+(1). `defaultInstance` 默认的 EventBus 实例，根据 EventBus.getDefault() 函数得到。  
+(2). `DEFAULT_BUILDER` 默认的 EventBus Builder，包含构造的 EventBus 实例的默认配置。  
+(3). `eventTypesCache` 事件对应类型及其父类和实现的接口的缓存，以 eventType 的 class 为 key，由元素为 Object 的 ArrayList 为 Value，Object 对象指eventType 的父类或接口。 
+(4). `subscriptionsByEventType` 事件订阅者的保存队列，以 eventType 为 key，由元素为 Subscription 的 ArrayList 为 Value，其中 Subscription 为订阅者信息，由 subscriber, subscriberMethod, priority 构成。  
+(5). `typesBySubscriber` 订阅者订阅的事件的保存队列，以 subscribe 为 key，由 元素为 eventType 的 ArrayList 为 Value。  
+(6). `stickyEvents` Sticky 事件保存队列，以 eventType 为 key，event 为元素，由此可以看出对于同一个 eventType 最多只会有一个 event 存在。  
+(7). `currentPostingThreadState` 当前线程的 post 信息，包括事件队列、是否正在分发中、是否在主线程、订阅者信息、事件实例、是否取消。  
+(8). `mainThreadPoster`、`backgroundPoster`、`asyncPoster` 事件主线程处理者、事件 Background 处理者、事件异步处理者。  
+(9). `subscriberMethodFinder` 订阅者响应函数信息存储和查找类。  
+(10). `executorService` 异步和 BackGround 方式的线程池。  
+(11). `throwSubscriberException` 当调用事件处理函数异常时是否抛出异常，默认为 false，建议通过`EventBus.builder().throwSubscriberException(true).installDefaultEventBus()`打开。   
+(12). `logSubscriberExceptions` 当调用事件处理函数异常时是否打印异常信息，默认为 true。   
+(13). `logNoSubscriberMessages` 当没有订阅者订阅该事件时是否打印日志，默认为 true。  
+(14). `sendSubscriberExceptionEvent` 当调用事件处理函数异常时是否发送 SubscriberExceptionEvent 事件，若此开关打开，订阅者可通过 public void onEvent(SubscriberExceptionEvent event) 订阅该事件进行处理，默认为 true。  
+(15). `sendNoSubscriberEvent` 当没有事件处理函数对事件处理时是否发送 NoSubscriberEvent 事件，若此开关打开，订阅者可通过 public void onEvent(NoSubscriberEvent event) 订阅该事件进行处理，默认为 true。  
+(16). `eventInheritance` 是否支持事件继承，默认为 true。  
+####4.2.2 EventBusBuilder.java
+跟一般 Builder 类似，用于在需要设置参数过多时构造 EventBus。包含的属性也是 EventBus 的一些设置参数，意义见 4.2.1 EventBus.java 的介绍，build 函数用于新建 EventBus 对象，installDefaultEventBus 函数将当前设置应用于 Default EventBus。  
+####4.2.3 SubscriberMethodFinder.java
 订阅者响应函数信息存储和查找类，由 HashMap 缓存，以 ${subscriberClassName}.${eventMethodName} 为 key，SubscriberMethod 对象为元素的 ArrayList 为 value。findSubscriberMethods 函数用于查找订阅者响应函数，如果不在缓存中，则遍历自己的每个函数并递归父类查找，查找成功后保存到缓存中。遍历及查找规则为：  
 a. 遍历 subscriberClass 每个方法，如果以 ${eventMethodName} 开头，则继续，否则检查下一个方法  
 b. 该方法是否是 public 的，并且不是 ABSTRACT、STATIC、BRIDGE、SYNTHETIC 修饰的，满足条件则继续。其中 BRIDGE、SYNTHETIC 为编译器生成的一些函数修饰符  
@@ -92,33 +95,29 @@ d. 该方法名为 ${eventMethodName} 则 threadMode 为 ThreadMode.PostThread�
 a. 第一次查找后保存到了缓存中，即上面介绍的 HashMap  
 b. 遇到 java. javax. android. 开头的类会自动停止查找  
 skipMethodVerificationForClasses 表示跳过哪些类中非法以 {eventMethodName} 开头的函数检查  
-####SubscriberMethod.java
-订阅者事件响应函数信息，包括响应方法、线程 Mode、事件类型以及一个用来比较 SubscriberMethod 是否相等的特征值 methodString 共四个变量，其中 methodString 为 ${methodClassNmae}#${methodName}(${eventTypeClassName}
-####Subscription.java
-订阅者信息，包括 subscriber 对象、事件响应方法 SubscriberMethod、优先级 priority  
-####HandlerPoster.jva
-事件主线程处理，对应 ThreadMode.MainThread。继承自 Handler，enqueue 函数将事件放到队列中，并利用 handler 发送 message，handleMessage 函数从队列中取事件，invoke 事件响应函数处理  
-####AsyncPoster.java
-事件异步线程处理，对应 ThreadMode.Async，继承自 Runnable。enqueue 函数将事件放到队列中，并调用线程池执行当前任务，在 run  函数从队列中取事件，invoke 事件响应函数处理  
-####BackgroundPoster.java
-事件 Background 处理，对应 ThreadMode.BackgroundThread，继承自 Runnable。enqueue 函数将事件放到队列中，并调用线程池执行当前任务，在 run  函数从队列中取事件，invoke 事件响应函数处理，与 AsyncPoster.java 不同的是这里会循环等待 run，尚未想清楚原因  
-####PendingPost.java
+####4.2.4 SubscriberMethod.java
+订阅者事件响应函数信息，包括响应方法、线程 Mode、事件类型以及一个用来比较 SubscriberMethod 是否相等的特征值 methodString 共四个变量，其中 methodString 为 ${methodClassNmae}#${methodName}(${eventTypeClassName}。  
+####4.2.5 Subscription.java
+订阅者信息，包括 subscriber 对象、事件响应方法 SubscriberMethod、优先级 priority。  
+####4.2.6 HandlerPoster.jva
+事件主线程处理，对应 ThreadMode.MainThread。继承自 Handler，enqueue 函数将事件放到队列中，并利用 handler 发送 message，handleMessage 函数从队列中取事件，invoke 事件响应函数处理。  
+####4.2.7 AsyncPoster.java
+事件异步线程处理，对应 ThreadMode.Async，继承自 Runnable。enqueue 函数将事件放到队列中，并调用线程池执行当前任务，在 run  函数从队列中取事件，invoke 事件响应函数处理。  
+####4.2.8 BackgroundPoster.java
+事件 Background 处理，对应 ThreadMode.BackgroundThread，继承自 Runnable。enqueue 函数将事件放到队列中，并调用线程池执行当前任务，在 run  函数从队列中取事件，invoke 事件响应函数处理，与 AsyncPoster.java 不同的是这里会循环等待 run，尚未想清楚原因。  
+####4.2.9 PendingPost.java
 订阅者和事件信息实体类，并含有同一队列中指向下一个事件的指针。通过缓存存储不用的对象，减少下次创建的性能消耗。  
-####PendingPostQueue.java
-通过 head 和 tail 指针维护一个 `PendingPost` 队列。HandlerPoster、AsyncPoster、BackgroundPoster 都包含一个此队列实例，表示各自的订阅者及事件信息队列，在事件到来时进入队列，处理时从队列中取出一个元素进行处理   
-####SubscriberExceptionEvent.java
-当调用事件处理函数异常时发送的 EventBus 内部事件，通过 post 发送，可自行订阅这类事件进行处理  
-####NoSubscriberEvent.java
-当没有事件处理函数对事件处理时发送的 EventBus 内部事件，通过 post 发送，可自行订阅这类事件进行处理  
-####EventBusException.java
-封装于 RuntimeException 之上的 Exception，只是覆盖构造函数，相当于一个标记，标记是属于 EventBus 的 Exception 
-####ThreadMode.java
-线程 Mode 枚举类，表示事件响应函数执行线程信息，包括 ThreadMode.PostThread、ThreadMode.MainThread、ThreadMode.BackgroundThread、ThreadMode.Async 四种  
+####4.2.10 PendingPostQueue.java
+通过 head 和 tail 指针维护一个 `PendingPost` 队列。HandlerPoster、AsyncPoster、BackgroundPoster 都包含一个此队列实例，表示各自的订阅者及事件信息队列，在事件到来时进入队列，处理时从队列中取出一个元素进行处理。  
+####4.2.11 SubscriberExceptionEvent.java
+当调用事件处理函数异常时发送的 EventBus 内部事件，通过 post 发送，可自行订阅这类事件进行处理。  
+####4.2.12 NoSubscriberEvent.java
+当没有事件处理函数对事件处理时发送的 EventBus 内部事件，通过 post 发送，可自行订阅这类事件进行处理。  
+####4.2.13 EventBusException.java
+封装于 RuntimeException 之上的 Exception，只是覆盖构造函数，相当于一个标记，标记是属于 EventBus 的 Exception。  
+####4.2.14 ThreadMode.java
+线程 Mode 枚举类，表示事件响应函数执行线程信息，包括 ThreadMode.PostThread、ThreadMode.MainThread、ThreadMode.BackgroundThread、ThreadMode.Async 四种。  
    
-###2.2 类关系图
+###4.2 类关系图
 
 ###5. 与 Otto 对比
-
-### 问题
-1、线程间通讯怎么做  
-2、
