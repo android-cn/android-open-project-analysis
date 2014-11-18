@@ -4,7 +4,7 @@
 预计时间可参考：[Common README](https://github.com/android-cn/android-open-project-analysis/blob/master/common/README.md)  
 
 ####最新计划
-请在这张彪添加自己的计划  
+请在这张表添加自己的计划  
 
 开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
