@@ -70,8 +70,13 @@ b. 如果是`Async`，则启动异步线程去处理————调用订阅者�
 12. `logSubscriberExceptions` 当调用事件处理函数异常时是否打印异常信息，默认为 true。   
 13. `logNoSubscriberMessages` 当没有订阅者订阅该事件时是否打印日志，默认为 true。  
 14. `sendSubscriberExceptionEvent` 当调用事件处理函数异常时是否发送 SubscriberExceptionEvent 事件，若此开关打开，订阅者可通过 public void onEvent(SubscriberExceptionEvent event) 订阅该事件进行处理，默认为 true。  
-15. `sendNoSubscriberEvent` 当没有事件处理函数对事件处理时是否发送 NoSubscriberEvent 事件，若此开关打开，订阅者可通过 public void onEvent(NoSubscriberEvent event) 订阅该事件进行处理，默认为 true。  
+15. `sendNoSubscriberEvent` 当没有事件处理函数对事件处理时是否发送 NoSubscriberEvent 事件，若此开关打开，订阅者可通过
+```java
+public void onEvent(NoSubscriberEvent event)
+```
+订阅该事件进行处理，默认为 true。  
 16. `eventInheritance` 是否支持事件继承，默认为 true。  
+
 ####4.2.2 EventBusBuilder.java
 跟一般 Builder 类似，用于在需要设置参数过多时构造 EventBus。包含的属性也是 EventBus 的一些设置参数，意义见 4.2.1 EventBus.java 的介绍，build 函数用于新建 EventBus 对象，installDefaultEventBus 函数将当前设置应用于 Default EventBus。  
 ####4.2.3 SubscriberMethodFinder.java
