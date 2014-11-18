@@ -2,15 +2,7 @@ EventBus 源码解析
 ----------------
 > 本文为 [Android 开源项目原理解析](https://github.com/android-cn/android-open-project-analysis) 中 EventBus 部分  
 > 项目地址：[EventBus](https://github.com/greenrobot/EventBus)，分析的版本：[ccc2771](https://github.com/greenrobot/EventBus/commit/ccc2771199f958a34bd4ea6c90d0a8c671c2e70a "Commit id is ccc2771199f958a34bd4ea6c90d0a8c671c2e70a")，Demo 地址：[EventBus Demo](https://github.com/android-cn/android-open-project-demo/tree/master/eventbus-demo)    
-> 分析者：[Trinea](https://github.com/trinea)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;校对者：[Trinea](https://github.com/trinea)  
-
-
-http://www.slideshare.net/greenrobot/eventbus-for-android-15314813
-http://www.cnblogs.com/angeldevil/p/3715934.html  
-http://www.pocketdigi.com/20131227/1235.html  
-http://blog.csdn.net/huangyanan1989/article/details/10858695  
-https://github.com/greenrobot/EventBus  
-https://github.com/kevintanhongann/EventBusSample  
+> 分析者：[Trinea](https://github.com/trinea)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;校对者：[Trinea](https://github.com/trinea)   
 
 ###1. 功能介绍
 ####1.1 EventBus  
