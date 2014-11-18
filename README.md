@@ -14,20 +14,22 @@
 ### 我们不重复造轮子不表示我们不需要知道轮子该怎么造及如何更好的造！ 
 
 ## 一、具体计划
-### 1. 加入 QQ 群
-见上面几行，入群理由填写群简介问题答案  
+请先读完下面步骤  
+###1. 加入开源交流 QQ 群
+见上面几行，入群理由必须为群简介问题答案。  
 
-### 2. 开始认领
-认领自己有兴趣去分析原理的开源库  
-直接在下面[已认领开源库列表](https://github.com/android-cn/android-open-project-analysis#%E4%BA%8C%E5%B7%B2%E8%AE%A4%E9%A2%86%E5%BC%80%E6%BA%90%E5%BA%93%E5%88%97%E8%A1%A8)编辑，并以开源库名为入群理由加入 协作 QQ 群，群号在上面 QQ群 公告内 
-### 3. 寻找 Buddy  
-在 协作 QQ 群里找到一个后期帮忙做校验的 Buddy  
-#### 4. 开始
-根据自己的时间安排，填写：[时间计划表](https://github.com/android-cn/android-open-project-analysis/wiki/Schedule)    
-开始编写：[编写步骤](https://github.com/android-cn/android-open-project-analysis/wiki)  
-  
+###2. 开始认领
+问群主`协作 QQ 群`群号，以自己`有兴趣分析的开源库库名`申请加入`协作 QQ 群`。  
+
+###3. 寻找 Buddy  
+加入`协作 QQ 群`后，在群里找到一个后期帮忙做校验的 Buddy  
+
+###4. 开始
+了解编写步骤：[编写步骤](https://github.com/android-cn/android-open-project-analysis/blob/master/procedure.md)  
+填写自己的时间安排：[时间计划表](https://github.com/android-cn/android-open-project-analysis/blob/master/schedule.md)  
+
 ## 二、已认领开源库列表  
-下面是目前已经被认领的开源库列表，可直接编辑  
+下面是目前已经被认领的开源库列表，同一个库可重复认领  
 
 开源库名 | 认领者
 :--|:--
