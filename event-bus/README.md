@@ -29,7 +29,7 @@ EventBus 负责存储订阅者、事件相关信息，订阅者和发布者都�
 EventBus 类负责所有对外暴露的 API，其中的 register、post、unregister 函数配合上自定义的 EventType 及事件响应函数即可完成核心功能，见 3.2 图。  
 EventBus 默认可通过静态函数 getDefault 获取单例，当然有需要也可以通过 EventBusBuilder 或 构造函数新建一个 EventBus，每个新建的 EventBus 发布和订阅事件都是相互隔离的，即一个 EventBus 对象中的发布者发布事件，另一个 EventBus 对象中的订阅者不会收到该订阅。  
 EventBus 中对外 API，主要包括两类：  
-####（1）register 和 unregister  
+####(1) register 和 unregister  
 分别表示订阅事件和取消订阅。register 最底层函数有三个参数，分别为订阅者对象、是否是 Sticky 事件、优先级。  
 ```java
 private synchronized void register(Object subscriber, boolean sticky, int priority)
@@ -38,12 +38,12 @@ PS：在此之前的版本 EventBus 还允许自定义事件响应函数名称�
 register 函数流程图如下：
 ![eventbus img](image/register-flow-chart.png)  
 register 函数中会先根据订阅者类名去`subscriberMethodFinder`中查找当前订阅者所有事件响应函数，然后循环每一个事件响应函数，依次执行下面的 subscribe 函数：  
-####（2）subscribe   
+####(2) subscribe   
 subscribe 函数分三步  
 第一步：通过`subscriptionsByEventType`得到该事件类型所有订阅者信息队列，根据优先级将当前订阅者信息插入到订阅者队列`subscriptionsByEventType`中；  
 第二步：在`typesBySubscriber`中得到当前订阅者订阅的所有事件队列，将此事件保存到队列`typesBySubscriber`中，用于后续取消订阅；  
 第三步：检查这个事件是否是 Sticky 事件，如果是则从`stickyEvents`事件保存队列中取出该事件类型最后一个事件发送给当前订阅者。  
-####（3）post、cancel 、removeStickEvent
+####(3) post、cancel 、removeStickEvent
 post 函数用于发布事件，cancel 函数用于取消某订阅者订阅的所有事件类型、removeStickEvent 函数用于删除 sticky 事件。  
 post 函数流程图如下：
 ![eventbus img](image/post-flow-chart.png)  
@@ -57,7 +57,7 @@ b. 如果是`MainThread`并且发布线程就是主线程，则直接调用订�
 c. 如果是`BackgroundThread`并且发布线程是主线程，则启动异步线程去处理，否则直接直接调用订阅者的事件响应函数；  
 d. 如果是`Async`，则启动异步线程去处理——调用订阅者的事件响应函数。  
 ```
-####（4）主要成员变量含义   
+####(4) 主要成员变量含义   
 1. `defaultInstance` 默认的 EventBus 实例，根据`EventBus.getDefault()`函数得到。  
 2. `DEFAULT_BUILDER` 默认的 EventBus Builder。  
 3. `eventTypesCache` 事件对应类型及其父类和实现的接口的缓存，以 eventType 为 key，元素为 Object 的 ArrayList 为 Value，Object 对象为 eventType 的父类或接口。 
@@ -96,7 +96,7 @@ e. 该方法名为 ${eventMethodName} 则 threadMode 为`ThreadMode.PostThread`�
 该方法名为 ${eventMethodName}MainThread 则 threadMode 为`ThreadMode.MainThread`；  
 该方法名为 ${eventMethodName}BackgroundThread 则 threadMode 为`ThreadMode.BackgroundThread`；  
 该方法名为 ${eventMethodName}Async 则 threadMode 为`ThreadMode.Async`；  
-其他情况且不在忽略名单（skipMethodVerificationForClasses）中则抛出异常。  
+其他情况且不在忽略名单 (skipMethodVerificationForClasses) 中则抛出异常。  
 f. 得到该方法唯一的参数即事件类型 eventType，将这个方法、threadMode、eventType 一起构造 SubscriberMethod 对象放到 ArrayList 中。  
 g. 回到 b 遍历 subscriberClass 的下一个方法，若方法遍历结束到 h；
 h. 回到 a 遍历自己的父类，若父类遍历结束回到 i；  
