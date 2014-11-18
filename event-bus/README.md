@@ -15,7 +15,7 @@ EventBus 是一个 Android 事件发布/订阅框架，通过解耦发布者和�
 **订阅者(Subscriber)：**订阅某种事件类型的对象。当有发布者发布这类事件后，EventBus 会执行订阅者的 onEvent 函数，这个函数叫`事件响应函数`。订阅者通过 register 接口订阅某个事件类型，unregister 接口退订。订阅者存在优先级，优先级高的订阅者可以取消事件继续向优先级低的订阅者分发，默认所有订阅者优先级都为 0。    
 **发布者(Publisher)：**发布某事件的对象，通过 post 接口发布事件。  
 ###2. 总体设计
-本项目较为简单，总体设计请参考 4.1 类关系图 及 3.1 订阅者、发布者、EventBus 关系图  
+本项目较为简单，总体设计请参考 3.1 订阅者、发布者、EventBus 关系图 及 4.1 类关系图。  
 ###3. 流程图
 ####3.1 订阅者、发布者、EventBus 关系图
 ![eventbus img](image/relation-flow-chart.png)  
@@ -25,6 +25,8 @@ EventBus 负责存储订阅者、事件相关信息，订阅者和发布者都�
 订阅者首先调用 EventBus 的 register 接口订阅某种类型的事件，当发布者通过 post 接口发布该类型的事件时，EventBus 执行调用者的事件响应函数。  
 ###4. 详细设计
 ###4.1 类关系图
+![eventbus img](image/class-relation.png)  
+以上是 EventBus 主要类的关系图，从中我们也可以看出大部分类都与 EventBus 直接关联。上部分主要是订阅者相关信息，中间是 EventBus 类，下面是 发布者发布事件后的调用，具体类的功能请看下面的详细介绍。  
 ###4.2 核心类功能介绍
 ####4.2.1 EventBus.jva 
 EventBus 类负责所有对外暴露的 API，其中的 register、post、unregister 函数配合上自定义的 EventType 及事件响应函数即可完成核心功能，见 3.2 图。  
