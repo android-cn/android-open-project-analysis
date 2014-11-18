@@ -10,7 +10,6 @@
 
 **完成时间**  
 - 示例工程需要在认领后`三天内`完成全部提交，中间每天需要有一定的提交  
-- Buddy 在后续`一天内`完成校验，校验内容包括项目的完整运行，APK 包含主要的功能  
   
   
 #### 二. 编写原理文档  
@@ -19,5 +18,5 @@
 - 从 [common](https://github.com/android-cn/android-open-project-analysis/tree/master/common) 文件夹下拷贝模板文件 README.md.md，复制到上面的文件夹中，所有内容在 README.md 中用 [Markdown](https://github.com/android-cn/blog/blob/master/dev-tool/markdown.md) 编写。如果内容较多可分多个 md 文件，但 README.md 为总体的概括文件；  
 - 文件夹下可有名为`image`子文件夹存放相关流程图等图片，`uml`子文件夹存放 uml 文件。  
 
-#### 三、编写步骤及预计时间
+#### 三、文档包含的模块及预计时间
 具体编写的模块及各模块预计耗时请参考：[Common README](https://github.com/android-cn/android-open-project-analysis/blob/master/common/README.md)  
