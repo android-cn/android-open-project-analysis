@@ -3,6 +3,17 @@
 根据自己的时间安排补充 Demo、功能介绍、详细设计、流程图、总体设计、完成 6个阶段的 DeadLine 时间点。  
 预计时间可参考：[Common README](https://github.com/android-cn/android-open-project-analysis/blob/master/common/README.md)  
 
+####最新计划
+请在这张彪添加自己的计划  
+
+开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
+:--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
+[EventBus](https://github.com/greenrobot/EventBus) | [Trinea](https://github.com/Trinea) | [扔物线](https://github.com/rengwuxian) | 11/07 | 11/08 | 11/10 | 11/15 | 11/18 | 11/20 
+[Dagger](https://github.com/square/dagger) | [扔物线](https://github.com/rengwuxian) | [Trinea](https://github.com/Trinea) | | | | | |  
+
+
+####之前的计划
+
 开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
 [EventBus](https://github.com/greenrobot/EventBus) | [Trinea](https://github.com/Trinea) | [promeG](https://github.com/promeG) | 07/01 | 07/02 | 07/06 | 07/08 | 07/10 | 07/12 
