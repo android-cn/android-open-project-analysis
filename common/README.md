@@ -4,7 +4,10 @@ ${项目名} 实现原理解析
 > 项目地址：[${项目名}](${项目原地址})，分析的版本：[ccc2771](${项目原地址}/commit/${commitId} "Commit id is ${commitId}")，Demo 地址：[${项目名} Demo](https://github.com/android-cn/android-open-project-demo/tree/master/${项目 Demo 地址})    
 > 分析者：[${分析者}](${分析者 Github 地址})，校对者：[${校对者}](${校对者 Github 地址})，校对状态：未完成   
 
-`复制一份到自己的项目文件夹下，然后根据自己项目替换掉 ${} 内容，删掉本句内容。`  
+```
+复制一份到自己的项目文件夹下，然后根据自己项目替换掉 ${} 内容，删掉本句内容。
+项目中可能用到的工具: [tool](https://github.com/android-cn/android-open-project-analysis/blob/master/common/tool/README.md)
+```  
 ###1. 功能介绍  
 功能介绍，包括功能或优点等  
 
@@ -56,4 +59,5 @@ ${项目名} 实现原理解析
 
 **完成时间**  
 - `两天内`完成  
+
 **到此便大功告成，恭喜大家^_^**  
