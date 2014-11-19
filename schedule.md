@@ -11,7 +11,7 @@
 [EventBus](https://github.com/greenrobot/EventBus) | [Trinea](https://github.com/Trinea) | [扔物线](https://github.com/rengwuxian) | 11/07 | 11/08 | 11/10 | 11/15 | 11/18 | 11/20 
 [Dagger](https://github.com/square/dagger) | [扔物线](https://github.com/rengwuxian) | [Trinea](https://github.com/Trinea) | | | | | |  
 [AndroidViewHover](https://github.com/daimajia/AndroidViewHover) | [drakeet](https://github.com/drakeet) | [lightSky](https://github.com/lightSky) | 11/21 | 11/25 | 11/29 | 12/2 | 12/6 | 12/9
-
+[photup](https://github.com/chrisbanes/photup) | [aiqianxian](https://github.com/aiqianxian) | | 11/28 | 12/01 | 12/05 | 12/08 | 12/12 | 12/15
 
 ####之前的计划
 
