@@ -2,12 +2,12 @@
 ---------
 ####一. 准备
 - 进群后  
-按照群公告，群昵称以想分析的库开头。群里 @Trinea 给我发 Github 帐号  
+按照群公告修改群昵称，以想分析的库开头。群里 @Trinea 给我发 Github 帐号  
 - 填写时间计划表  
 读完本文档后，根据自己的时间安排，填写 [时间计划表](https://github.com/android-cn/android-open-project-analysis/blob/master/schedule.md) 
 - 寻找 Buddy  
 在协作群里找到一个后期帮忙做校验的 Buddy  
-- 项目中可能用到的工具: [Tool](https://github.com/android-cn/android-open-project-analysis/blob/master/common/tool/README.md)   
+- 项目中可能用到的工具 [Tool](https://github.com/android-cn/android-open-project-analysis/blob/master/common/tool/README.md)   
 
 ####二. 编写该开源库的使用示例
 到 [android-open-project-demo](https://github.com/android-cn/android-open-project-demo) 项目下新建文件夹，用于后续上传该开源库使用示例工程代码。  
@@ -30,4 +30,8 @@
 具体编写的模块及各模块预计耗时请参考：[Common README](https://github.com/android-cn/android-open-project-analysis/blob/master/common/README.md)。  
 
 ####五、Buddy Check
-Buddy 可在最终完成后开始 Check，包括 demo apk 功能是否完善以及原理文档是否清晰。  
+Buddy 可在最终完成后开始 Check，包括 demo apk 功能是否完善以及原理文档是否清晰。 
+
+项目中遇到的问题可汇总到 [项目过程中问题](https://github.com/android-cn/android-open-project-analysis/blob/master/problem.md)  
+<br/>
+**希望大家都能在分析和 Buddy 的过程中收获很多，同时分析文档能为其他开发者带来便利，一起加油！**   
