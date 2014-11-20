@@ -18,6 +18,7 @@
 [HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary) | [aaronplay](https://github.com/AaronPlay) | | 11/23 | 11/24 | 11/26 | 11/28 | 11/30 | 12/02
 [picasso](https://github.com/square/picasso) | [爱早起](https://github.com/liang7) | | 11/26 | 11/28 | 12/02 | 12/07 | 12/13 | 12/14
 [XUtils](https://github.com/wyouflf/xUtils) | [Caij](https://github.com/Caij) | | 11/24 | 11/27 | 12/07 | 12/11 | 12/16 | 12/17
+[DataDroid](https://github.com/foxykeep/DataDroid) | [cheyiliu](https://github.com/cheyiliu) | | 11/25 | 11/30 | 12/05 | 12/10 | 12/15 | 12/20
 
 ####之前的计划
 
