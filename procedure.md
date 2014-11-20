@@ -32,5 +32,6 @@
 ####五、Buddy Check
 Buddy 可在最终完成后开始 Check，包括 demo apk 功能是否完善以及原理文档是否清晰。 
 
-问题可汇总到 [项目过程中问题](https://github.com/android-cn/android-open-project-analysis/blob/master/problem.md)  
+项目中遇到的问题可汇总到 [项目过程中问题](https://github.com/android-cn/android-open-project-analysis/blob/master/problem.md)  
+<br/>
 **希望大家都能在分析和 Buddy 的过程中收获很多，同时分析文档能为其他开发者带来便利，一起加油！**   
