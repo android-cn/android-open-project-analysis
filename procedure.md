@@ -2,7 +2,7 @@
 ---------
 ####一. 准备
 - 进群后  
-按照群公告，群昵称以想分析的库开头。群里 @Trinea 给我发 Github 帐号  
+按照群公告修改群昵称，以想分析的库开头。群里 @Trinea 给我发 Github 帐号  
 - 填写时间计划表  
 读完本文档后，根据自己的时间安排，填写 [时间计划表](https://github.com/android-cn/android-open-project-analysis/blob/master/schedule.md) 
 - 寻找 Buddy  
