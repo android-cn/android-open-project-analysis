@@ -22,6 +22,7 @@ xUtils一个Android公共库框架，主要包括四个部分：View，Db, Http, Bitmap 四个模块。
 注解、反射和数据库操作知识这个模块的主要内容
 - DbUtils，主要功能数据库的创建，数据库的增删改查。
 - SqlInfoBuilder， sql语句的组合。
+
 #####2.1.3 Http模块
 Handler、AysnTask异步通信
 - HttpUtils，支持异步同步访问网络数据， 下载文件盒上传文件。
