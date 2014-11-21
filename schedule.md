@@ -21,6 +21,7 @@
 [DataDroid](https://github.com/foxykeep/DataDroid) | [cheyiliu](https://github.com/cheyiliu) | | 11/25 | 11/30 | 12/05 | 12/10 | 12/15 | 12/20
 [CircularFloatingActionMenu](https://github.com/oguzbilgener/CircularFloatingActionMenu) | [cpacm](https://github.com/cpacm) | | 11/24 | 11/25 | 11/27 | 11/29 | 12/01 | 12/03
 [ListViewAnimations](https://github.com/nhaarman/ListViewAnimations) | [waylife](https://github.com/waylife) | | 已完成 | 已完成 | 11/23 | 11/30 | 12/7 | 12/14
+[Android-Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader) | [huxian99](https://github.com/huxian99) | | 11/28 | 12/1 | 12/6 | 12/8 | 12/10 | 12/12
 
 ####之前的计划
 
