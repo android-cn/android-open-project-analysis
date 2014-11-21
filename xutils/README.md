@@ -14,14 +14,26 @@ xUtils一个Android公共库框架，主要包括四个部分：View，Db, Http, Bitmap 四个模块。
 ###2. 详细设计
 ####2.1 核心类功能介绍
 #####2.1.1 View模块
+注解和反射知识是这个模块的主要内容
 - ViewUtils，其实主要功能就是通过反射和注解将Ui和资源、事件和资源绑定。
+- EventListenerManager view和事件方法的绑定， 其中的设计是通过动态代理。
 
 #####2.1.2 Db模块
+注解、反射和数据库操作知识这个模块的主要内容
+- DbUtils，主要功能数据库的创建，数据库的增删改查。
+- SqlInfoBuilder， sql语句的组合。
 #####2.1.3 Http模块
+Handler、AysnTask异步通信
+- HttpUtils，支持异步同步访问网络数据， 下载文件盒上传文件。
+
 #####2.1.4 Bitmap模块  
+- BitmapUtils，图片的异步加载，支持本地和网络图片， 图片的压缩处理， 图片的内存缓存已经本地缓存。
+
 ####2.2 类关系图
 #####2.2.1 View模块
  ![View类图](image/ViewClass.png)
+#####2.2.1 Db模块
+类模快和关系层次较少， 所以不绘制类图
  
 类关系图，类的继承、组合关系图，可是用 StartUML 工具。  
 
@@ -32,7 +44,12 @@ xUtils一个Android公共库框架，主要包括四个部分：View，Db, Http, Bitmap 四个模块。
 主要功能流程图  
 ####3.1 View模块
 ![View时序图](image/ViewSequence.png)
-
+主要的顺序就是在ViewUtils的`inject(View)`将需要的绑定数据的对象传入，`injectObject(Object, ViewFinder)` 主要通过反射获取对象的成员变量和方法， 然后获取成员变量和方法的注解的值， 将成员变量赋值， 事件和方法绑定， 在EventListenerManager中是通过代理将事件和方法绑定。
+####3.2 DB模块
+![Db流程图](image/DbSequence.png)
+`DbUtils`中`getInstance()`获取XUtils的实例，里面的操作就是检查数据库版本和升级，然后就是创建数据库（单例模式， 如果存在数据库不会重复创建）。
+ `createDatabase()`通过配置创建数据库。save，find，update，delete 都是然后通过`SqlInfoBuilder`或者Selector组合对象的sql语句， 然后通过系统自带数据库api进行数据库操作。
+ `SqlInfoBuilder`的原理也是反射加注解。
 
 - 可使用 StartUML、Visio 或 Google Drawing 等工具完成，其他工具推荐？？  
 - 非所有项目必须，不需要的请先在群里反馈  
