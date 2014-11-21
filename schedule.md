@@ -22,7 +22,7 @@
 [CircularFloatingActionMenu](https://github.com/oguzbilgener/CircularFloatingActionMenu) | [cpacm](https://github.com/cpacm) | | 11/24 | 11/25 | 11/27 | 11/29 | 12/01 | 12/03
 [ListViewAnimations](https://github.com/nhaarman/ListViewAnimations) | [waylife](https://github.com/waylife) | | 已完成 | 已完成 | 11/23 | 11/30 | 12/7 | 12/14
 [GreenDAO](https://github.com/greenrobot/greenDAO) | [maogy](https://github.com/maogy) |[Caij](https://github.com/Caij) | 11/25 | 11/30 | 12/05 | 12/10 | 12/15 | 12/20
-
+[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [longtaoge](https://github.com/longtaoge) | | 已完成 | 11/30 | 12/05 | 12/10 | 12/15 | 12/20
 ####之前的计划
 
 开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
