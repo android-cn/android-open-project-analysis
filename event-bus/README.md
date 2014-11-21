@@ -78,7 +78,10 @@ EventBus.builder().throwSubscriberException(true).installDefaultEventBus()
 打开。   
 12.`logSubscriberExceptions`当调用事件处理函数异常时是否打印异常信息，默认为 true。   
 13.`logNoSubscriberMessages`当没有订阅者订阅该事件时是否打印日志，默认为 true。  
-14.`sendSubscriberExceptionEvent`当调用事件处理函数异常时是否发送 SubscriberExceptionEvent 事件，若此开关打开，订阅者可通过 public void onEvent(SubscriberExceptionEvent event) 订阅该事件进行处理，默认为 true。  
+14.`sendSubscriberExceptionEvent`当调用事件处理函数异常时是否发送 SubscriberExceptionEvent 事件，若此开关打开，订阅者可通过 
+```java
+public void onEvent(SubscriberExceptionEvent event) 订阅该事件进行处理，默认为 true。 
+``` 
 15.`sendNoSubscriberEvent`当没有事件处理函数对事件处理时是否发送 NoSubscriberEvent 事件，若此开关打开，订阅者可通过
 ```java
 public void onEvent(NoSubscriberEvent event)
