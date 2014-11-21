@@ -1,89 +1,90 @@
-XUtils ʵ��ԭ������
+﻿XUtils 实现原理解析
 ====================================
-> ����Ϊ [Android ��Դ��Ŀʵ��ԭ������](https://github.com/android-cn/android-open-project-analysis) �� XUtils ����  
-> �����ߣ�[Caij](https://github.com/Caij)��У���ߣ�[maogy](https://github.com/maogy)��У��״̬��δ���   
+> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 XUtils 部分  
+> 分析者：[Caij](https://github.com/Caij)，校对者：[maogy](https://github.com/maogy)，校对状态：未完成   
 
 
-###1. ���ܽ���  
-xUtilsһ��Android�������ܣ���Ҫ�����ĸ����֣�View��Db, Http, Bitmap �ĸ�ģ�顣
-- Viewģ����Ҫ�Ĺ�����ͨ��ע���UI����Դ���¼������ٴ������ࡣ
-- Dbģ����һ�����ݿ�orm��ܣ� �򵥵������ܽ������ݵĲ�����
-- Httpģ����Ҫ�������磬֧��ͬ�����첽��ʽ������֧���ļ������أ��ϴ���
-- Bitmapģ���Ǽ���ͼƬ�Լ�ͼƬ�Ĵ����� ֧�ּ��ر��أ�����ͼƬ������֧��ͼƬ���ڴ�ͱ��ػ��档
+###1. 功能介绍  
+xUtils一个Android公共库框架，主要包括四个部分：View，Db, Http, Bitmap 四个模块。
+- View模块主要的功能是通过注解绑定UI，资源，事件。减少代码冗余。
+- Db模块是一个数据库orm框架， 简单的语句就能进行数据的操作。
+- Http模块主要访问网络，支持同步，异步方式的请求，支持文件的下载，上传。
+- Bitmap模块是加载图片以及图片的处理， 支持加载本地，网络图片。而且支持图片的内存和本地缓存。
 
-###2. ��ϸ���
-####2.1 �����๦�ܽ���
-#####2.1.1 Viewģ��
-ע��ͷ���֪ʶ�����ģ�����Ҫ����
-- ViewUtils����ʵ��Ҫ���ܾ���ͨ�������ע�⽫Ui����Դ���¼�����Դ�󶨡�
-- EventListenerManager view���¼������İ󶨣� ���е������ͨ����̬������
+###2. 详细设计
+####2.1 核心类功能介绍
+#####2.1.1 View模块
+注解和反射知识是这个模块的主要内容
+- ViewUtils，其实主要功能就是通过反射和注解将Ui和资源、事件和资源绑定。
+- EventListenerManager view和事件方法的绑定， 其中的设计是通过动态代理。
 
-#####2.1.2 Dbģ��
-ע�⡢��������ݿ����֪ʶ���ģ�����Ҫ����
-- DbUtils����Ҫ�������ݿ�Ĵ��������ݿ����ɾ�Ĳ顣
-- SqlInfoBuilder�� sql������ϡ�
+#####2.1.2 Db模块
+注解、反射和数据库操作知识这个模块的主要内容
+- DbUtils，主要功能数据库的创建，数据库的增删改查。
+- SqlInfoBuilder， sql语句的组合。
+- Selector，WhereBuilder， sql条件语句的组合。
 
-#####2.1.3 Httpģ��
-Handler��AysnTask�첽ͨ��
-- HttpUtils��֧���첽ͬ�������������ݣ� �����ļ����ϴ��ļ���
+#####2.1.3 Http模块
+Handler、AysnTask异步通信
+- HttpUtils，支持异步同步访问网络数据， 下载文件盒上传文件。
 
-#####2.1.4 Bitmapģ��  
-- BitmapUtils��ͼƬ���첽���أ�֧�ֱ��غ�����ͼƬ�� ͼƬ��ѹ�������� ͼƬ���ڴ滺���Ѿ����ػ��档
+#####2.1.4 Bitmap模块  
+- BitmapUtils，图片的异步加载，支持本地和网络图片， 图片的压缩处理， 图片的内存缓存已经本地缓存。
 
-####2.2 ���ϵͼ
-#####2.2.1 Viewģ��
- ![View��ͼ](image/ViewClass.png)
-#####2.2.1 Dbģ��
-��ģ��͹�ϵ��ν��٣� ���Բ�������ͼ
+####2.2 类关系图
+#####2.2.1 View模块
+ ![View类图](image/ViewClass.png)
+#####2.2.1 Db模块
+类模快和关系层次较少， 所以不绘制类图
  
-���ϵͼ����ļ̳С���Ϲ�ϵͼ�������� StartUML ���ߡ�  
+类关系图，类的继承、组合关系图，可是用 StartUML 工具。  
 
-**���ʱ��**  
-- ������Ŀ��С������Ŀǰ�򵥸�����Ŀ Java �ļ����жϣ����ʱ�����Ϊ��`�ļ��� * 7 / 10`�죬������Ŀ����Դ�  
+**完成时间**  
+- 根据项目大小而定，目前简单根据项目 Java 文件数判断，完成时间大致为：`文件数 * 7 / 10`天，特殊项目具体对待  
 
-###3. ����ͼ
-��Ҫ��������ͼ  
-####3.1 Viewģ��
-![Viewʱ��ͼ](image/ViewSequence.png)
-��Ҫ��˳�������ViewUtils��`inject(View)`����Ҫ�İ����ݵĶ����룬`injectObject(Object, ViewFinder)` ��Ҫͨ�������ȡ����ĳ�Ա�����ͷ����� Ȼ���ȡ��Ա�����ͷ�����ע���ֵ�� ����Ա������ֵ�� �¼��ͷ����󶨣� ��EventListenerManager����ͨ���������¼��ͷ����󶨡�
-####3.2 DBģ��
-![Db����ͼ](image/DbSequence.png)
-`DbUtils`��`getInstance()`��ȡXUtils��ʵ��������Ĳ������Ǽ�����ݿ�汾��������Ȼ����Ǵ������ݿ⣨����ģʽ�� ����������ݿⲻ���ظ���������
- `createDatabase()`ͨ�����ô������ݿ⡣save��find��update��delete ����Ȼ��ͨ��`SqlInfoBuilder`����Selector��϶����sql��䣬 Ȼ��ͨ��ϵͳ�Դ����ݿ�api�������ݿ������
- `SqlInfoBuilder`��ԭ��Ҳ�Ƿ����ע�⡣
+###3. 流程图
+主要功能流程图  
+####3.1 View模块
+![View时序图](image/ViewSequence.png)
+主要的顺序就是在ViewUtils的`inject(View)`将需要的绑定数据的对象传入，`injectObject(Object, ViewFinder)` 主要通过反射获取对象的成员变量和方法， 然后获取成员变量和方法的注解的值， 将成员变量赋值， 事件和方法绑定， 在EventListenerManager中是通过代理将事件和方法绑定。
+####3.2 DB模块
+![Db流程图](image/DbSequence.png)
+`DbUtils`中`getInstance()`获取XUtils的实例，里面的操作就是检查数据库版本和升级，然后就是创建数据库（单例模式， 如果存在数据库不会重复创建）。
+ `createDatabase()`通过配置创建数据库。save，find，update，delete 都是然后通过`SqlInfoBuilder`或者Selector组合对象的sql语句， 然后通过系统自带数据库api进行数据库操作。
+ `SqlInfoBuilder`的原理也是反射加注解。
 
-- ��ʹ�� StartUML��Visio �� Google Drawing �ȹ�����ɣ����������Ƽ�����  
-- ��������Ŀ���룬����Ҫ��������Ⱥ�ﷴ��  
+- 可使用 StartUML、Visio 或 Google Drawing 等工具完成，其他工具推荐？？  
+- 非所有项目必须，不需要的请先在群里反馈  
 
-**���ʱ��**  
-- `������`���  
+**完成时间**  
+- `两天内`完成  
 
-###4. �������
-�������Ϊ��Щģ�鼰ģ��֮��ĵ��ù�ϵ��  
-- ������ͼƬ������Ϊ Loader �� Processer ��ģ�顣  
-- ��ʹ�� StartUML��Visio �� Google Drawing �ȹ�����ɣ����������Ƽ�����  
-- ��������Ŀ���룬����Ҫ��������Ⱥ�ﷴ����  
+###4. 总体设计
+整个库分为哪些模块及模块之间的调用关系。  
+- 如大多数图片缓存会分为 Loader 和 Processer 等模块。  
+- 可使用 StartUML、Visio 或 Google Drawing 等工具完成，其他工具推荐？？  
+- 非所有项目必须，不需要的请先在群里反馈。  
 
-**���ʱ��**  
-- `������`���  
+**完成时间**  
+- `两天内`完成  
 
-###5. ��̸
-����Ŀ���ڵ����⡢���Ż��㼰���ƹ�����Ŀ�Աȵȣ���������Ŀ���롣  
+###5. 杂谈
+该项目存在的问题、可优化点及类似功能项目对比等，非所有项目必须。  
 
-**���ʱ��**  
-- `������`���  
+**完成时间**  
+- `两天内`完成  
 
-###6. �޸�����  
-����������� 5 �����ֺ��ƶ�ģ��˳�򣬽�  
-`2. ��ϸ���` -> `2.1 �����๦�ܽ���` -> `2.2 ���ϵͼ` -> `3. ����ͼ` -> `4. �������`  
-˳���Ϊ  
-`2. �������` -> `3. ����ͼ` -> `4. ��ϸ���` -> `4.1 ���ϵͼ` -> `4.2 �����๦�ܽ���`  
-������У���Ż�һ�飬ȷ���������`У�� Buddy`����У�ԣ�`У�� Buddy`У����ɺ�  
-`У��״̬��δ���`  
-��Ϊ��  
-`У��״̬�������`  
+###6. 修改完善  
+在完成了上面 5 个部分后，移动模块顺序，将  
+`2. 详细设计` -> `2.1 核心类功能介绍` -> `2.2 类关系图` -> `3. 流程图` -> `4. 总体设计`  
+顺序变为  
+`2. 总体设计` -> `3. 流程图` -> `4. 详细设计` -> `4.1 类关系图` -> `4.2 核心类功能介绍`  
+并自行校验优化一遍，确认无误后，让`校对 Buddy`进行校对，`校对 Buddy`校队完成后将  
+`校对状态：未完成`  
+变为：  
+`校对状态：已完成`  
 
-**���ʱ��**  
-- `������`���  
+**完成时间**  
+- `两天内`完成  
 
-**���˱�󹦸�ɣ���ϲ���^_^**  
+**到此便大功告成，恭喜大家^_^**  
