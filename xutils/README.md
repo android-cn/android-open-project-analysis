@@ -1,7 +1,7 @@
 XUtils 实现原理解析
 ====================================
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 XUtils 部分  
-> 分析者：[Caij](https://github.com/Caij)，校对者：暂无，校对状态：未完成   
+> 分析者：[Caij](https://github.com/Caij)，校对者：[maogy](https://github.com/maogy)，校对状态：未完成   
 
 
 ###1. 功能介绍  
@@ -9,12 +9,20 @@ xUtils一个Android公共库框架，主要包括四个部分：View，Db, Http, Bitmap 四个模块。
 - View模块主要的功能是通过注解绑定UI，资源，事件。减少代码冗余。
 - Db模块是一个数据库orm框架， 简单的语句就能进行数据的操作。
 - Http模块主要访问网络，支持同步，异步方式的请求，支持文件的下载，上传。
-- Bitmap模块是加载图片以及图片的处理， 支持加载本地，网络图片。而且支持图片的缓存。
+- Bitmap模块是加载图片以及图片的处理， 支持加载本地，网络图片。而且支持图片的内存和本地缓存。
 
 ###2. 详细设计
-###2.1 核心类功能介绍
-核心类、函数功能介绍及核心功能流程图，流程图可使用 StartUML、Visio 或 Google Drawing。  
-###2.2 类关系图
+####2.1 核心类功能介绍
+#####2.1.1 View模块
+- ViewUtils，其实主要功能就是通过反射和注解将Ui和资源、事件和资源绑定。
+
+#####2.1.2 Db模块
+#####2.1.3 Http模块
+#####2.1.4 Bitmap模块  
+####2.2 类关系图
+#####2.2.1 View模块
+ ![View类图](image/ViewClass.png)
+ 
 类关系图，类的继承、组合关系图，可是用 StartUML 工具。  
 
 **完成时间**  
@@ -22,7 +30,10 @@ xUtils一个Android公共库框架，主要包括四个部分：View，Db, Http, Bitmap 四个模块。
 
 ###3. 流程图
 主要功能流程图  
-- 如 Retrofit、Volley 的请求处理流程，Android-Universal-Image-Loader 的图片处理流程图  
+####3.1 View模块
+![View时序图](image/ViewSequence.png)
+
+
 - 可使用 StartUML、Visio 或 Google Drawing 等工具完成，其他工具推荐？？  
 - 非所有项目必须，不需要的请先在群里反馈  
 
