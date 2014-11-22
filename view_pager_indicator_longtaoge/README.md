@@ -10,11 +10,11 @@ Android-ViewPagerIndicator实现原理解析
 
  
 
-#1. 功能介绍   #
+## 1. 功能介绍    ##
 
 功能介绍，包括功能或优点等  
 
-## Android ViewPagerIndicator ##
+### Android ViewPagerIndicator ###
 
 这是一个[ViewPager][2]的自定义扩展控件，提供了圆形，图标、线形、页签、标题、下划线共六种Viewpager的自定义指示器，使用方便，功能齐全。 同时兼容 [ActionBarSherlock][3]!
 
@@ -22,18 +22,22 @@ Android-ViewPagerIndicator实现原理解析
 ![ViewPagerIndicator Sample Screenshots][9]
 
 
-## 使用方法 ##
+### 使用方法 ##
 
 *请参阅代码示例文件夹中的例子*
 
-  1.首先要把这个组件放到布局文件中，这个组件主要是配合Viewpager使用的，所以，一般是在Viewpager的上方或者下方，挨着放就行了
+   
+1. 首先要把这个组件放到布局文件中，这个组件主要是配合Viewpager使用的，所以，一般是在Viewpager的上方或者下方，挨着放就行了
 
-        <com.viewpagerindicator.TitlePageIndicator
-            android:id="@+id/titles"
-            android:layout_height="wrap_content"
-            android:layout_width="fill_parent" />
+	        <com.viewpagerindicator.TitlePageIndicator
+	            android:id="@+id/titles"
+	            android:layout_height="wrap_content"
+	            android:layout_width="fill_parent" />
 
-  2. 在Activity中的 `onCreate` 方法中 (或 Fragment的`onCreateView`方法中), 初始化这个控件(findviewbyID，你懂的)
+
+
+
+1.   在Activity中的 `onCreate` 方法中 (或 Fragment的`onCreateView`方法中), 初始化这个控件(findviewbyID，你懂的)
     
 
          //设置适配器（Adapter）
@@ -44,14 +48,16 @@ Android-ViewPagerIndicator实现原理解析
          TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
          titleIndicator.setViewPager(pager);
 
-  3. *(可选项)* 如果你想在你的Viewpager上使用Viewpager的页面切换状态监听 `OnPageChangeListener`  
+
+1.  *(可选项)* 如果你想在你的Viewpager上使用Viewpager的页面切换状态监听 `OnPageChangeListener`  
      应该把监听设置到指示器个.
 
          //例如
          titleIndicator.setOnPageChangeListener(mPageChangeListener);
 
 
-## 主题与样式 ##
+
+### 主题与样式 ###
 有三种方式配置indicators指示器的样式 .
 
  1. **Theme XML**.主题文件 每个 indicator 都提供了配置属性，可能能过XML中的属性进行配置
@@ -64,7 +70,7 @@ Android-ViewPagerIndicator实现原理解析
 每种指示器 都有一个能过三种方法改变主题的示例
 
 
-## 导入并应用到你的项目 ##
+### 导入并应用到你的项目 ###
 
 由于Android-ViewPagerIndicator是一个基于 [Android library project][7]. 的项目库
 ，里面包含了主题、样式等XML属性文件，所以是不可能打包成一个单独的JAR包的，你可以通过Eclipse或ant作为一个[library][8]引入到你的项目中。
@@ -85,10 +91,10 @@ a dependency:
 
 
 
-## 开发者 ##
+### 开发者 ###
 
  * Jake Wharton - <jakewharton@gmail.com>
-## 参与人员 ##
+### 参与人员 ###
  * [Patrik Åkerfeldt][1] - [ViewFlow][4]的作者, ViewFlow是一个支持标题和圆形指示器视图的Viewpager指示器开源项目
  
  * [Francisco Figueiredo Jr.][5] - Idea and [first implementation][6] 支持Fragment的Viewpager
@@ -108,46 +114,8 @@ a dependency:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 **完成时间**  
-- `一天内`完成  
+11/22/2014 4:03:56 PM 完成  
 
 ###2. 详细设计
 ###2.1 核心类功能介绍
