@@ -1,55 +1,28 @@
 
-### 1. 简介
+ViewPagerindicator 源码解析
+----------------
+> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 ViewPagerindicator 部分，项目地址：[viewpagerindicator](http://viewpagerindicator.com)，分析的版本：[8cd549](https://github.com/JakeWharton/Android-ViewPagerIndicator/commit/8cd549f23f3d20ff920e19a2345c54983f65e26b "Commit id is 8cd549f23f3d20ff920e19a2345c54983f65e26b")，分析者：[lightSky](https://github.com/lightSky)，校对者：[drakeet](https://github.com/drakeet)，校对状态：未完成   
 
-**功能介绍：**  
-引用[viewpagerindicator](http://viewpagerindicator.com)项目主页的简短介绍：ViewPager适用于Android Support Library中的ViewPager和其开发的ActionBarSherlock，项目基于Patrik Åkerfeldt's ViewFlow。  
-应用于各种界面的导航。  
-	
 
-### 2. 主要特点：
-	* 使用简单
-	* 效果好 
-	* 样式多
+### 1. 功能介绍
 
-### 3. 详细设计
-	
+### 1.1 ViewPagerIndicator  
+ViewPagerIndicator用于各种基于AndroidSupportLibrary中ViewPager的界面导航。主要特点：使用简单、效果好、样式全。
 
-**归类**  
-	CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator 这三种是极其相似的。可以归为一类。
-	TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView，极其相似，可以归为一类。
-	TitlePagerIndicator：实现最复杂,单独介绍。
-		
-**结构**  
-	PageIndicator，接口类，定义了不同类型的Indicator的公用的方法。
-	IcsLinearLayout ：LinearLayout的扩展，支持了4.0以上的divider特性。在TabPagerIndicator中使用到。
+### 2. 总体设计
+该项目总体设计非常简单，一个pageIndicator接口类，具体样式的导航类实现该接口，然后根据具体样式去实现相应的逻辑。
+IcsLinearLayout：LinearLayout的扩展，支持了4.0以上的divider特性。
+CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator、TitlePagerIndicator继承自View。    
+TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView。  
 
-**实现**    
+### 3. 详细设计  
+####3.1 自定义控件相关知识  
+由于本项目主要就是自定义控件，那么项目的分析，总体上就是对自定义控件的分析。这里就分析一个自定义控件的创建步骤、View的绘制机制、Touch事件的处理。    
 
-**TabPageIndicator、IconPageIndicator**
+大家可能会担心这些相关知识点最权威和最系统的讲解，其实官方文档就有。英文费劲没关系（最好看英文版），GitHub协作项目[android-training-course-in-chinese](https://github.com/kesenhoo/android-training-course-in-chinese)已经出了中文版的，并且有PDF版本，大家可以去下载。（强烈建议大家去下载，一定会Android的整体知识架构有清晰的认识。从英文的角度完全把握官方文档，确实有些费劲，但还是建议有时间的时候，多看看官方的英文文档）
 
-继承自HorizontalScrollView,使用了IcsLinearLayout
-继承自HorizontalScrollView，拥有其左右滑动的效果，以及其它以实现的操作，比如对child的measure
-
-**CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator**    
-继承自View，关键字段和方法：  
-
-**mTouchSlop**  
-	“Touch slop”是指在用户触摸事件可被识别为移动手势前,移动过的那一段像素距离。Touchslop通常用来预防用户在做一些其他操作时意外地滑动，例如触摸屏幕上的元素时。
-
-[onTouchEvent](http://hukai.me/android-training-course-in-chinese/input/gestures/scale.html)		
-	对于pointer的处理是模板方法，在拖拽与缩放中有详细的讲解：
-
-**相关理论知识**  
-
-自定义控件的创建和Android的用户输入  
-介绍这两个模块的原因:所有的可交互的自定义控件一定都会有这两个模块，另外，介绍完这两个模块后，大家从整体上就可以看明白ViewPagerIndicator的实现了。  
-
-大家可能会担心这些知识点到哪里才能找到最权威和最系统的讲解，其实官方文档就有。已经有好心人把它翻译了：一个GitHub协作项目android-training-course-in-chinese，该项目就是对Google的官方文档进行翻译，现已有PDF版本了，大家可以去下载。（强烈建议大家直接去下载，一定会Android的整体知识架构有清晰的认识。我觉得特别有帮助，最好的学习资料肯定是官方文档，本人现在学习的主要资料）
-		
-Google官方中文文档翻译项目地址：[android-training-course-in-chinese](https://github.com/kesenhoo/android-training-course-in-chinese)
-		
-下面就简单的介绍自定义控件的整个流程:
-		（以下的分析中就直接引用了其中的一些篇章前言，具体内容大家直接点击链接就可以看到，这里就不再赘述，建议大家做下笔记，内容还是比较多的）
+####3.1.1 自定义控件步骤  
+以下直接引用了其中的一些篇章前言，具体内容大家直接点击链接进入正文
 
 1. [自定义控件创建步骤](http://hukai.me/android-training-course-in-chinese/ui/custom-view/index.html) ：  
 	* 继承一个View。
@@ -67,9 +40,9 @@ Google官方中文文档翻译项目地址：[android-training-course-in-chinese
 4. [Android的用户输入](http://hukai.me/android-training-course-in-chinese/best-user-input.html)  
 这里着重要看一下拖拽与缩放这一部分。因为在ViewPagerIndicator的几种实现：Circle，Title，UnderLine的onTouchEvent里的处理逻辑是一样的，而且和官方文档中的代码逻辑也是一样的，看了讲解之后，相信大家就会有所了解了：http://hukai.me/android-training-course-in-chinese/input/gestures/scale.html
     
-	
-用户的输入部分要注意的有以下几点（具体可以参考原文）：
-		
+####3.1.2 Android的用户输入  	
+要注意的有以下几点（更详细的介绍可以参考原文）  
+
 **1. 保持对最初点的追踪**  
 拖拽操作时，即使有额外的手指放置到屏幕上了，app也必须保持对最初的点（手指）的追踪。比如，想象在拖拽图片时，用户放置了第二根手指在屏幕上，并且抬起了第一根手指。如果你的app只是单独地追踪每个点，它会把第二个点当做默认的点，并且把图片移到该点的位置。
 	
@@ -78,11 +51,14 @@ Google官方中文文档翻译项目地址：[android-training-course-in-chinese
 	
 **3. 确保操作中的点的ID(the active pointer ID)不会引用已经不在触摸屏上的触摸点**  
 当ACTION_POINTER_UP事件发生时，示例程序会移除对该点的索引值的引用，确保操作中的点的ID(the active pointer ID)不会引用已经不在触摸屏上的触摸点。这种情况下，app会选择另一个触摸点来作为操作中(active)的点，并保存它当前的x、y值。由于在ACTION_MOVE事件时，这个保存的位置会被用来计算屏幕上的对象将要移动的距离，所以app会始终根据正确的触摸点来计算移动的距离。
+  
+mTouchSlop  
+指在用户触摸事件可被识别为移动手势前,移动过的那一段像素距离。Touchslop通常用来预防用户在做一些其他操作时意外地滑动，例如触摸屏幕上的元素时。
 
-ViewPagerIndicator中的onTouchEvent中的代码也就是官方文档的模板代码，就是为了确保以上几点，拿到可用，确信的点然后处理ViewPager相应的偏移和滑动
+[onTouchEvent](http://hukai.me/android-training-course-in-chinese/input/gestures/scale.html)		
+对于pointer的处理是模板方法，在拖拽与缩放中有详细的讲解。ViewPagerIndicator中的onTouchEvent中的代码也就是官方文档的模板代码，就是为了确保以上几点，获取到可用、确信的点，然后处理ViewPager相应的偏移和滑动。
 
-**View绘制机制**  
-我们扩展一下View的绘制机制，因为在viewpagerindicator的源码中会有相关的涉及  
+####3.1.3 View绘制机制  
 参考文献：http://developer.android.com/guide/topics/ui/how-android-draws.html
 
 当Activity接收到焦点的时候，它会被请求绘制布局。Android framework将会处理绘制的流程，但Activity必须提供View层级的根节点。绘制是从根节点开始的，需要measure和draw布局树。绘制会遍历和渲染每一个与无效区域相交的view。相反，每一个ViewGroup负责绘制它所有的childrenview，而View会负责绘制自身。树的遍历是有序的，parent view要先于child View被绘制，
@@ -92,7 +68,7 @@ measure过程的实现在measure(int,int)方法中，而且从上到下的有序
 layout过程从layout(int, int, int, int)方法开始，也是自上而下遍历。在这个过程中，每个parent view根据measure过程计算出来
 的尺寸为所有的child view指定位置。  
 
-注意：该框架不会绘制无效区域之外的部分,同时会注意绘制视图的背景。你可以使用 invalidate()去强制一个view重绘。  
+注意：Android框架不会绘制无效区域之外的部分,但会考虑绘制视图的背景。你可以使用invalidate()去强制对一个view进行重绘。  
 
 当一个View的measure()执行完的时候，它自己以及所有的孩子节点的getMeasuredWidth()和getMeasuredHeight()方法的值就必须被设置了。一个视图的测量宽度和测量高度值必须在父视图约束范围之内，这可以保证在measure的最后,所有的父母都接受所有孩子的测量。
 一个父视图，可以在其child view上多次的调用measure()方法。比如，父视图可以先根据未指明的dimension调用measure方法去测量每一个
@@ -102,29 +78,28 @@ measure过程使用了两个类来传递尺寸：
 一个是ViewGroup.LayoutParams类（View自身的布局参数）  
 一个是MeasureSpecs类（父视图对子视图的测量要求）
 
-ViewGroup.LayoutParams类被子视图用于告诉他们的父视图他们应该怎样被测量和放置（就是子视图自身的布局参数）。一个是基本的LayoutParams，只是用来描述视图的高度和宽度。它的尺寸可以有三种表示方法：  
+ViewGroup.LayoutParams类被子视图用于告诉他们的父视图他们应该怎样被测量和放置（就是子视图自身的布局参数）。一个基本的LayoutParams只用来描述视图的高度和宽度。对于，每一方面的尺寸，你可以指定下列方式之一：  
 1、具体数值   
 2、MATCH_PARENT 表示子视图希望和父视图一样大(不含padding)   
 3、WRAP_CONTENT 表示视图为正好能包裹其内容大小(包含padding)    
 
-还有一些ViewGroup.LayoutParams的子类，例如RelativeLayout有相应的LayoutParams的子类,拥有设置子视图水平和垂直的能力。
+对于ViewGroup的子类，也有相应的ViewGroup.LayoutParams的子类，例如RelativeLayout有相应的ViewGroup.LayoutParams的子类,拥有设置子视图水平和垂直的能力。
 
 MeasureSpecs用于从上到下传递父视图对子视图测量需求。
 MeasureSpec有三种模式:      
 
-UNSPECIFIED  
+**UNSPECIFIED**  
 父视图可以为子视图设置它所期望的大小。比如一个LinearLayout可以在它的子view上调用measure()方法去测量一个高设置为UNSPECIFIED模式，宽为240pixels的view大小。    
 
-EXACTLY  
+**EXACTLY**  
 父视图决定子视图的确切大小，子视图必须使用该大小，并确保它所有的子视图可以适应在该尺寸的范围内；相对应属性的是MATCH_PARENT   
 
-AT_MOST  
+**AT_MOST**  
 父视图为子视图指定一个最大值。子视图必须确保它自己的所有子视图在该尺寸范围内，相应的属性为WRAP_CONTENT
-
   
-**源码分析 CirclePageIndicator **  
+####3.1.3 CirclePageIndicator 源码分析  
 
-```
+```java
 public class CirclePageIndicator extends View implements PageIndicator {
     private static final int INVALID_POINTER = -1;
 
@@ -486,40 +461,11 @@ public class CirclePageIndicator extends View implements PageIndicator {
 
 ```
 
-  
-  几篇相关的文章链接：  
-  
-  View的绘制：  
-  	http://blog.csdn.net/wangjinyu501/article/details/9008271  
-  	http://blog.csdn.net/qinjuning/article/details/7110211
+####3.1.4 相关文章  
+View的绘制：  
+http://blog.csdn.net/wangjinyu501/article/details/9008271  
+http://blog.csdn.net/qinjuning/article/details/7110211
   	
-  Touch事件传递：  
-  	http://blog.csdn.net/xiaanming/article/details/21696315
-  	http://blog.csdn.net/wangjinyu501/article/details/22584465
-  	
-
-### 4. 使用方法
-
-	在你的布局文件中，需要导航的位置添加类似如下代码：
-```
-	<com.viewpagerindicator.TitlePageIndicator
-	    android:id="@+id/titles"
-	    android:layout_height="wrap_content"
-	    android:layout_width="fill_parent" />
-```
-	在你的Activity中的onCreate方法中将该Indicator绑定到ViewPager
-```	
-	 //Set the pager with an adapter
-	 ViewPager pager = (ViewPager)findViewById(R.id.pager);
-	 pager.setAdapter(new TestAdapter(getSupportFragmentManager()));
-```
-	绑定Indicator到Adapter
-```
-	 TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
-	 titleIndicator.setViewPager(pager);
-```
-	如果你实现了OnPageChangeListener，你应该将它设置到Indicator当中去，而不是直接设置到ViewPager上：
-
-	`titleIndicator.setOnPageChangeListener(mPageChangeListener);`
-
-
+Touch事件传递：  
+http://blog.csdn.net/xiaanming/article/details/21696315
+http://blog.csdn.net/wangjinyu501/article/details/22584465
