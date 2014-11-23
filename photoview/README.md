@@ -1,15 +1,24 @@
 PhotoView 实现原理解析
 ====================================
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 PhotoView 部分  
-> 项目地址：[PhotoView](https://github.com/chrisbanes/PhotoView)，分析的版本：[48427bf](https://github.com/chrisbanes/PhotoView/commit/48427bff9bb1a408cfebf6697aa019c0788ded76)，Demo 地址：[PhotoView-demo](https://github.com/android-cn/android-open-project-demo/tree/master/)    
+> 项目地址：[PhotoView](https://github.com/chrisbanes/PhotoView)，分析的版本：[48427bf](https://github.com/chrisbanes/PhotoView/commit/48427bff9bb1a408cfebf6697aa019c0788ded76)，Demo 地址：[PhotoView-demo](https://github.com/android-cn/android-open-project-demo/tree/master/photoview-demo)    
 > 分析者：[dkmeteor](https://github.com/dkmeteor)，校对者：[${校对者}](${校对者 Github 地址})，校对状态：未完成   
 
 
-###1. 功能介绍  
-功能介绍，包括功能或优点等  
+###1. 功能介绍\
 
-**完成时间**  
-- `一天内`完成  
+#####特性(Features)：
+- 支持Pinch手势自由缩放。
+- 支持双击放大/还原。
+- 支持平滑滚动。
+- 在滑动父控件下能够运行良好。（例如：ViewPager）
+- 支持基于Matrix变化（放大/缩小/移动）的事件监听。
+
+#####优势：
+- PhotoView是ImageView的子类，自然的支持所有ImageView的源生行为。
+- 任意项目可以非常方便的从ImageView升级到PhotoView，不用做任何额外的修改。
+- 可以非常方便的与ImageLoader/Picasso之类的异步网络图片读取库集成使用。
+- 事件分发做了很好的处理，可以方便的与ViewPager,Gallery等同样支持滑动手势的控件集成。
 
 ###2. 详细设计
 ###2.1 核心类功能介绍
