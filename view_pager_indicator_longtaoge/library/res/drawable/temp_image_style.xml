@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true" android:drawable="@drawable/custom_tab_indicator_unselected_pressed"></item>
+    <item android:state_checked="true" android:drawable="@drawable/custom_tab_indicator_unselected_pressed"></item>
+    <item android:state_selected="true" android:drawable="@drawable/custom_tab_indicator_unselected_pressed"></item>
+    <item android:state_enabled="false" android:drawable="@drawable/custom_tab_indicator_unselected_pressed"></item>
+    <item android:state_window_focused="false" android:drawable="@drawable/custom_tab_indicator_unselected_pressed"></item>
+    <item android:drawable="@drawable/custom_tab_indicator_unselected"></item>
+
+</selector>

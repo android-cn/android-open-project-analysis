@@ -304,25 +304,28 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static int default_underline_indicator_fades=0x7f050004;
     }
     public static final class color {
-        public static int default_circle_indicator_fill_color=0x7f040008;
-        public static int default_circle_indicator_page_color=0x7f040009;
-        public static int default_circle_indicator_stroke_color=0x7f04000a;
-        public static int default_line_indicator_selected_color=0x7f04000b;
-        public static int default_line_indicator_unselected_color=0x7f04000c;
-        public static int default_title_indicator_footer_color=0x7f04000d;
-        public static int default_title_indicator_selected_color=0x7f04000e;
-        public static int default_title_indicator_text_color=0x7f04000f;
-        public static int default_underline_indicator_selected_color=0x7f040010;
-        public static int vpi__background_holo_dark=0x7f040000;
-        public static int vpi__background_holo_light=0x7f040001;
-        public static int vpi__bright_foreground_disabled_holo_dark=0x7f040004;
-        public static int vpi__bright_foreground_disabled_holo_light=0x7f040005;
-        public static int vpi__bright_foreground_holo_dark=0x7f040002;
-        public static int vpi__bright_foreground_holo_light=0x7f040003;
-        public static int vpi__bright_foreground_inverse_holo_dark=0x7f040006;
-        public static int vpi__bright_foreground_inverse_holo_light=0x7f040007;
-        public static int vpi__dark_theme=0x7f040011;
-        public static int vpi__light_theme=0x7f040012;
+        public static int default_circle_indicator_fill_color=0x7f03000a;
+        public static int default_circle_indicator_page_color=0x7f03000b;
+        public static int default_circle_indicator_stroke_color=0x7f03000c;
+        public static int default_line_indicator_selected_color=0x7f03000d;
+        public static int default_line_indicator_unselected_color=0x7f03000e;
+        public static int default_title_indicator_footer_color=0x7f03000f;
+        public static int default_title_indicator_selected_color=0x7f030010;
+        public static int default_title_indicator_text_color=0x7f030011;
+        public static int default_underline_indicator_selected_color=0x7f030012;
+        public static int defs=0x7f030001;
+        public static int press=0x7f030000;
+        public static int temp_text_style=0x7f030013;
+        public static int vpi__background_holo_dark=0x7f030002;
+        public static int vpi__background_holo_light=0x7f030003;
+        public static int vpi__bright_foreground_disabled_holo_dark=0x7f030006;
+        public static int vpi__bright_foreground_disabled_holo_light=0x7f030007;
+        public static int vpi__bright_foreground_holo_dark=0x7f030004;
+        public static int vpi__bright_foreground_holo_light=0x7f030005;
+        public static int vpi__bright_foreground_inverse_holo_dark=0x7f030008;
+        public static int vpi__bright_foreground_inverse_holo_light=0x7f030009;
+        public static int vpi__dark_theme=0x7f030014;
+        public static int vpi__light_theme=0x7f030015;
     }
     public static final class dimen {
         public static int default_circle_indicator_radius=0x7f070000;
@@ -340,20 +343,25 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static int default_title_indicator_top_padding=0x7f07000c;
     }
     public static final class drawable {
-        public static int vpi__tab_indicator=0x7f020000;
-        public static int vpi__tab_selected_focused_holo=0x7f020001;
-        public static int vpi__tab_selected_holo=0x7f020002;
-        public static int vpi__tab_selected_pressed_holo=0x7f020003;
-        public static int vpi__tab_unselected_focused_holo=0x7f020004;
-        public static int vpi__tab_unselected_holo=0x7f020005;
-        public static int vpi__tab_unselected_pressed_holo=0x7f020006;
+        public static int custom_tab_indicator_unselected=0x7f020000;
+        public static int custom_tab_indicator_unselected_pressed=0x7f020001;
+        public static int perm_group_device_alarms_normal=0x7f020002;
+        public static int perm_group_device_alarms_selected=0x7f020003;
+        public static int temp_image_style=0x7f020004;
+        public static int vpi__tab_indicator=0x7f020005;
+        public static int vpi__tab_selected_focused_holo=0x7f020006;
+        public static int vpi__tab_selected_holo=0x7f020007;
+        public static int vpi__tab_selected_pressed_holo=0x7f020008;
+        public static int vpi__tab_unselected_focused_holo=0x7f020009;
+        public static int vpi__tab_unselected_holo=0x7f02000a;
+        public static int vpi__tab_unselected_pressed_holo=0x7f02000b;
     }
     public static final class id {
-        public static int bottom=0x7f030003;
-        public static int none=0x7f030000;
-        public static int top=0x7f030004;
-        public static int triangle=0x7f030001;
-        public static int underline=0x7f030002;
+        public static int bottom=0x7f040003;
+        public static int none=0x7f040000;
+        public static int top=0x7f040004;
+        public static int triangle=0x7f040001;
+        public static int underline=0x7f040002;
     }
     public static final class integer {
         public static int default_circle_indicator_orientation=0x7f060000;
@@ -368,6 +376,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static int Widget=0x7f080001;
         public static int Widget_IconPageIndicator=0x7f080004;
         public static int Widget_TabPageIndicator=0x7f080002;
+        public static int textss=0x7f080005;
     }
     public static final class styleable {
         /** Attributes that can be used with a CirclePageIndicator.
