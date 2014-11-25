@@ -4,7 +4,7 @@
 **请大家在相应阶段完成后改为`Done`，其中`校验阶段`由 Buddy 校验完成后改为 `Done`**  
 
 开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成 | 校验  
-:--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
+:--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
 [EventBus](https://github.com/greenrobot/EventBus) | [Trinea](https://github.com/Trinea) | [扔物线](https://github.com/rengwuxian) | Done | Done | Done | Done | Done | Done |  
 [Dagger](https://github.com/square/dagger) | [扔物线](https://github.com/rengwuxian) | [Trinea](https://github.com/Trinea) | | | | | | |  
 [AndroidViewHover](https://github.com/daimajia/AndroidViewHover) | [drakeet](https://github.com/drakeet) | [lightSky](https://github.com/lightSky) | 11/21 | 11/25 | 11/29 | 12/2 | 12/6 | 12/9 |  
