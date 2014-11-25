@@ -5,7 +5,7 @@
 
 开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 校验  
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
-[EventBus](https://github.com/greenrobot/EventBus) | [Trinea](https://github.com/Trinea) | [扔物线](https://github.com/rengwuxian) | Done | Done | Done | Done | Done | Done 
+[EventBus](https://github.com/greenrobot/EventBus) | [Trinea](https://github.com/Trinea) | [扔物线](https://github.com/rengwuxian) | Done | Done | Done | Done | Done | 11/30 
 [Dagger](https://github.com/square/dagger) | [扔物线](https://github.com/rengwuxian) | [Trinea](https://github.com/Trinea) | | | | | |  
 [AndroidViewHover](https://github.com/daimajia/AndroidViewHover) | [drakeet](https://github.com/drakeet) | [lightSky](https://github.com/lightSky) | 11/21 | 11/25 | 11/29 | 12/2 | 12/6 | 12/9
 [photup](https://github.com/chrisbanes/photup) | [aiqianxian](https://github.com/aiqianxian) | | 11/28 | 12/01 | 12/05 | 12/08 | 12/12 | 12/15
