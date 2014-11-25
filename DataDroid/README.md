@@ -1,7 +1,7 @@
-${项目名} 实现原理解析
+DataDroid实现原理解析
 ====================================
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 DataDroid 部分  
-> 项目地址：[DataDroid](https://github.com/foxykeep/DataDroid)，分析的版本：[0553cada0d6c508eca3a9295fa7729deba8a75e4](https://github.com/foxykeep/DataDroid/commit/0553cada0d6c508eca3a9295fa7729deba8a75e4} "Commit id is 0553cada0d6c508eca3a9295fa7729deba8a75e4")，Demo 地址：[${项目名} Demo](https://github.com/android-cn/android-open-project-demo/tree/master/${项目 Demo 地址})    
+> 项目地址：[DataDroid](https://github.com/foxykeep/DataDroid)，分析的版本：[0553cada0d6c508eca3a9295fa7729deba8a75e4](https://github.com/foxykeep/DataDroid/commit/0553cada0d6c508eca3a9295fa7729deba8a75e4} "Commit id is 0553cada0d6c508eca3a9295fa7729deba8a75e4")，Demo 地址：[dataddroid demo](https://github.com/android-cn/android-open-project-demo/tree/master/dataddroid-demo)    
 > 分析者：[cheyiliu](https://github.com/cheyiliu)，校对者：[${校对者}](${校对者 Github 地址})，校对状态：未完成   
 
 
