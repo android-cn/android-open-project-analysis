@@ -10,7 +10,7 @@
 [AndroidViewHover](https://github.com/daimajia/AndroidViewHover) | [drakeet](https://github.com/drakeet) | [lightSky](https://github.com/lightSky) | 11/21 | 11/25 | 11/29 | 12/2 | 12/6 | 12/9 |  
 [photup](https://github.com/chrisbanes/photup) | [aiqianxian](https://github.com/aiqianxian) | | 11/28 | 12/01 | 12/05 | 12/08 | 12/12 | 12/15 |  
 [Volley](https://android.googlesource.com/platform/frameworks/volley) | [grumoon](https://github.com/grumoon) | [promeG](https://github.com/promeG) |11/26 |11/28 | 12/03| 12/05|12/08 | 12/11 |  
-[Otto](https://github.com/square/otto) | [promeG](https://github.com/promeG) | [grumoon](https://github.com/grumoon) | 11/23 | 11/27 | 12/03 | 12/10 | 12/17 | 12/20 |  
+[Otto](https://github.com/square/otto) | [promeG](https://github.com/promeG) | [grumoon](https://github.com/grumoon) | Done | 11/27 | 12/03 | 12/10 | 12/17 | 12/20 |  
 [ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [lightSky](https://github.com/lightSky) | [drakeet](https://github.com/drakeet)  |11/26 |11/27 | 11/30| 12/02|12/05 | 12/08 |  
 [HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary) | [aaronplay](https://github.com/AaronPlay) | | 11/23 | 11/24 | 11/26 | 11/28 | 11/30 | 12/02 |  
 [picasso](https://github.com/square/picasso) | [爱早起](https://github.com/liang7) | | 11/26 | 11/28 | 12/02 | 12/07 | 12/13 | 12/14 |  
