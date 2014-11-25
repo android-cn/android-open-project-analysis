@@ -1,4 +1,4 @@
-${项目名} 实现原理解析
+CircularFloatingActionMenu 实现原理解析
 ====================================
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 circular-foating-action-menu 部分  
 > 项目地址：[CircularFloatingActionMenu](https://github.com/oguzbilgener/CircularFloatingActionMenu)，分析的版本：[e9ccdad](https://github.com/android-cn/android-open-project-demo/commit/1306e632d5a7734cd8451f4e10dff763f9ab4097)，Demo 地址：[circular-foating-action-menu](https://github.com/android-cn/android-open-project-demo/tree/master/CircularFloatingActionMenu-demo)    
@@ -12,11 +12,7 @@ ${项目名} 实现原理解析
 可以根据提供的基础库自己编辑动画类，实现自制的动画效果。
 ####1.2 多方面
 不止是在ImageView上可实现，大部分的view都可以充当菜单按钮从而呼出子菜单
-
-
-
-**完成时间**  
-- `一天内`完成  
+![Alt text](https://github.com/android-cn/android-open-project-analysis/blob/master/circular-floating-action-menu/demo.gif "图片样例")
 
 ###2. 详细设计
 ###2.1 核心类功能介绍
