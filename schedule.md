@@ -4,9 +4,9 @@
 预计时间可参考：[Common README](https://github.com/android-cn/android-open-project-analysis/blob/master/common/README.md)  
 
 ####进行中计划
-请在这张表添加自己的计划，并在响应阶段完成后改为`Done`  
+请在这张表添加自己的计划，**并在相应阶段完成后改为`Done`**  
 
-开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
+开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | Buddy 校验  
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
 [EventBus](https://github.com/greenrobot/EventBus) | [Trinea](https://github.com/Trinea) | [扔物线](https://github.com/rengwuxian) | Done | Done | Done | Done | Done | Done 
 [Dagger](https://github.com/square/dagger) | [扔物线](https://github.com/rengwuxian) | [Trinea](https://github.com/Trinea) | | | | | |  
@@ -19,11 +19,11 @@
 [picasso](https://github.com/square/picasso) | [爱早起](https://github.com/liang7) | | 11/26 | 11/28 | 12/02 | 12/07 | 12/13 | 12/14
 [XUtils](https://github.com/wyouflf/xUtils) | [Caij](https://github.com/Caij) | | 11/24 | 11/27 | 12/07 | 12/11 | 12/16 | 12/17
 [DataDroid](https://github.com/foxykeep/DataDroid) | [cheyiliu](https://github.com/cheyiliu) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20
-[CircularFloatingActionMenu](https://github.com/oguzbilgener/CircularFloatingActionMenu) | [cpacm](https://github.com/cpacm) | | 11/24 | 11/25 | 11/27 | 11/29 | 12/01 | 12/03
+[CircularFloat…](https://github.com/oguzbilgener/CircularFloatingActionMenu "CircularFloatingActionMenu") | [cpacm](https://github.com/cpacm) | | 11/24 | 11/25 | 11/27 | 11/29 | 12/01 | 12/03
 [ListViewAnimations](https://github.com/nhaarman/ListViewAnimations) | [waylife](https://github.com/waylife) | | Done | Done | 11/23 | 11/30 | 12/7 | 12/14
 [GreenDAO](https://github.com/greenrobot/greenDAO) | [maogy](https://github.com/maogy) |[Caij](https://github.com/Caij) | 11/25 | 11/30 | 12/05 | 12/10 | 12/15 | 12/20
 [ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [longtaoge](https://github.com/longtaoge) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20
-[Android-Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader) | [huxian99](https://github.com/huxian99) | | 11/28 | 12/1 | 12/6 | 12/8 | 12/10 | 12/12  
+[UniversalImage…](https://github.com/nostra13/Android-Universal-Image-Loader "Android-Universal-Image-Loader") | [huxian99](https://github.com/huxian99) | | 11/28 | 12/1 | 12/6 | 12/8 | 12/10 | 12/12  
 ####之前的计划安排
 
 开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
