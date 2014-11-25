@@ -18,7 +18,7 @@
 - 文件夹下需要有名为 README.md 的介绍文件，其中包含以下内容。  
 (1). Demo Download  
 (2). Screenshot 截图可使用 [licecap](http://www.cockos.com/licecap/)  
-具体可参考：[EventBus Demo ReadMe](https://github.com/android-cn/android-open-project-demo/tree/master/eventbus-demo)  
+具体可参考：[EventBus Demo ReadMe](https://github.com/android-cn/android-open-project-demo/tree/master/event-bus-demo)  
 
 **完成时间**  
 - 示例工程需要在认领后`三天内`完成全部提交，中间每天需要有一定的提交。  
