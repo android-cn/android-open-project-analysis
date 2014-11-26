@@ -75,7 +75,7 @@ onProgressUpdate()调用RequestCallback，完成回调流程。
 - 2.BitmapGlobalConfig 获取缓存。 如果图片在运行内存缓存中存在， 就直接回调DefaultBitmapLoadCallBack。
 - 3.如果图片在运行内存缓存中不存在， 则开启异步任务BitmapLoadTask， 在doInBackground中优先从sd缓存中读取， 再从网络读取。
 - 4.下载的过程在BitmapCache中，  下载完优先存入sd缓存， 再加入运行内存缓存。
-- 5. 其中机制和http模块尅死，有些细节可以看demo里面的源码， 很多都写了注释。
+- 5. 其中机制和http模块类似，有些细节可以看demo里面的源码， 很多都写了注释。
 
 ###4. 总体设计
 整个库分为哪些模块及模块之间的调用关系。  
