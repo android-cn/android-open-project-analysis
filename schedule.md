@@ -16,7 +16,7 @@
 [picasso](https://github.com/square/picasso) | [爱早起](https://github.com/liang7) | | 11/26 | 11/28 | 12/02 | 12/07 | 12/13 | 12/14 |  
 [XUtils](https://github.com/wyouflf/xUtils) | [Caij](https://github.com/Caij) | [maogy](https://github.com/maogy) | Done| 11/27 | 12/07 | 12/11 | 12/16 | 12/17 |  
 [DataDroid](https://github.com/foxykeep/DataDroid) | [cheyiliu](https://github.com/cheyiliu) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
-[CircularFloat…](https://github.com/oguzbilgener/CircularFloatingActionMenu "CircularFloatingActionMenu") | [cpacm](https://github.com/cpacm) | | 11/24 | 11/25 | 11/27 | 11/29 | 12/01 | 12/03 |  
+[CircularFloat…](https://github.com/oguzbilgener/CircularFloatingActionMenu "CircularFloatingActionMenu") | [cpacm](https://github.com/cpacm) | | Done | Done | 11/27 | 11/29 | 12/01 | 12/03 |  
 [ListViewAnimations](https://github.com/nhaarman/ListViewAnimations) | [waylife](https://github.com/waylife) | | Done | Done | 11/23 | 11/30 | 12/7 | 12/14 |  
 [GreenDAO](https://github.com/greenrobot/greenDAO) | [maogy](https://github.com/maogy) |[Caij](https://github.com/Caij) | 11/25 | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
 [ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [longtaoge](https://github.com/longtaoge) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
