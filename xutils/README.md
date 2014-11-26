@@ -25,12 +25,14 @@ xUtils一个Android公共库框架，主要包括四个部分：View，Db, Http,
 - Selector，WhereBuilder， sql条件语句的组合。
 
 #####2.1.3 Http模块
-Handler、AysnTask异步通信
+Handler异步通信，Http网络请求， IO流。
 - HttpUtils，支持异步同步访问网络数据， 断点下载文件和上传文件。
 - HttpHandler，获取网络数据逻辑的实现。
+- Handler实现线程的通信
 
 #####2.1.4 Bitmap模块  
 - BitmapUtils，图片的异步加载，支持本地和网络图片， 图片的压缩处理， 图片的内存缓存已经本地缓存。
+- BitmapLoadTask， 加载图片的异步任务。
 
 ####2.2 类关系图
 #####2.2.1 View模块
@@ -42,11 +44,9 @@ Handler、AysnTask异步通信
 #####2.2.3Http模块
  ![Http类图](image/HttpClass.png)
  
-类关系图，类的继承、组合关系图，可是用 StartUML 工具。  
-
-**完成时间**  
-- 根据项目大小而定，目前简单根据项目 Java 文件数判断，完成时间大致为：`文件数 * 7 / 10`天，特殊项目具体对待  
-
+#####2.2.4Bitmap模块
+ ![Bitmap类图](image/BitmapClass.png)
+ 
 ###3. 流程图
 主要功能流程图  
 ####3.1 View模块
@@ -69,12 +69,13 @@ updateProgress()是在DownloadHandler数据读写时候的回调， 次方法又
 publishProgress()通过Handler回调onProgressUpdate() ,
 onProgressUpdate()调用RequestCallback，完成回调流程。
 - 3.DownloadHandler， handleEntity()将网络数据转化为需要的数据格式。 在读写数据的时候会回调HttpHandler的updateProgress(), 如果当用户选择停止的时候直接停止数据读写。
-
-- 可使用 StartUML、Visio 或 Google Drawing 等工具完成，其他工具推荐？？  
-- 非所有项目必须，不需要的请先在群里反馈  
-
-**完成时间**  
-- `两天内`完成  
+####3.3 Bitmap模块
+![Bitmap流程图](image/BitmapSequence.png)
+- 1.BitmapUtils，display。
+- 2.BitmapGlobalConfig 获取缓存。 如果图片在运行内存缓存中存在， 就直接回调DefaultBitmapLoadCallBack。
+- 3.如果图片在运行内存缓存中不存在， 则开启异步任务BitmapLoadTask， 在doInBackground中优先从sd缓存中读取， 再从网络读取。
+- 4.下载的过程在BitmapCache中，  下载完优先存入sd缓存， 再加入运行内存缓存。
+- 5. 其中机制和http模块尅死，有些细节可以看demo里面的源码， 很多都写了注释。
 
 ###4. 总体设计
 整个库分为哪些模块及模块之间的调用关系。  
@@ -86,10 +87,17 @@ onProgressUpdate()调用RequestCallback，完成回调流程。
 - `两天内`完成  
 
 ###5. 杂谈
-该项目存在的问题、可优化点及类似功能项目对比等，非所有项目必须。  
-
-**完成时间**  
-- `两天内`完成  
+主要和Volley框架相比
+相同点：
+- 1.都采用了缓存机制。  
+- 2.都是通过handler进行线程通信
+- 3.Bitmap 模块都采用运行内存缓存， 本地缓存， 图片的压缩处理。 
+不同点：
+- 1. Volley的Http请求在 android 2.3 版本之前是通过HttpClient ，在之后的版本是通过URLHttpConnection。xUtils都是通过HttpClient请求网络。 在2.3以后URLHttpConnection也很稳定， 扩展和维护性好， 速度也快， 推荐采用URLHttpConnection。
+- 2.Volley在Http请求数据下载完成后是先缓存进byte[]， 然后是分配给不同的请求自己转化为自己需要的格式。xUtils是直接转化为想要的格式。 觉得各有优劣， Volley这样做的扩展性比较好， 但是不能存在大数据请求，否则就OOM。xUtils不缓存入byte[] 就支持大数据的请求， 速度比Volley稍快。
+- 3.Volley最终是将网络请求的数据缓存进sd卡文件， xUtils是缓存在运行内存中。 如果频繁访问相同的网络地址， xUtils比Volley更快。
+— 4.Volley访问网络数据时直接开启固定个数线程访问网络， 在run方法中执行死循环， 阻塞等待请求队列。 xUtils是开启线程池来管理线程。Volley请求数据更快，消耗资源更大，xUtils反之。
+  
 
 ###6. 修改完善  
 在完成了上面 5 个部分后，移动模块顺序，将  
