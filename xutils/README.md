@@ -95,6 +95,7 @@ onProgressUpdate()调用RequestCallback，完成回调流程。
 - 1.都采用了缓存机制。  
 - 2.都是通过handler进行线程通信
 - 3.Bitmap 模块都采用运行内存缓存， 本地缓存， 图片的压缩处理。 
+
 ####不同点：
 - 1. Volley的Http请求在 android 2.3 版本之前是通过HttpClient ，在之后的版本是通过URLHttpConnection。xUtils都是通过HttpClient请求网络（bitmap模块图片下载是通过URLHttpConnection）。 在2.3以后URLHttpConnection也很稳定， 扩展和维护性好， 速度也快， 推荐采用URLHttpConnection。
 - 2.Volley在Http请求数据下载完成后是先缓存进byte[]， 然后是分配给不同的请求自己转化为自己需要的格式。xUtils是直接转化为想要的格式。 觉得各有优劣， Volley这样做的扩展性比较好， 但是不能存在大数据请求，否则就OOM。xUtils不缓存入byte[] 就支持大数据的请求， 速度比Volley稍快，但扩展性就低。
