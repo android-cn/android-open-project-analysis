@@ -15,7 +15,7 @@ Volley是Google推出的Android异步网络调用框架和图片加载框架。�
 
 **Volley的主要特点**
 > 1.默认Android2.3及以上基于HttpURLConnection，2.3以下使用基于HttpClient   
-> 2.符合Http**缓存语义**的缓存机制   
+> 2.符合Http **缓存语义** 的缓存机制   
 > 3.请求队列的优先级排序   
 > 4.提供多样的取消机制   
 > 5.提供简便的图片加载工具    
