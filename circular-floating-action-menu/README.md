@@ -1,16 +1,18 @@
-${项目名} 实现原理解析
+CircularFloatingActionMenu 实现原理解析
 ====================================
-> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 ${项目名} 部分  
-> 项目地址：[${项目名}](${项目原地址})，分析的版本：[${commitId}.substring(0, 7)](${项目原地址}/commit/${commitId} "Commit id is ${commitId}")，Demo 地址：[${项目名} Demo](https://github.com/android-cn/android-open-project-demo/tree/master/${项目 Demo 地址})    
-> 分析者：[${分析者}](${分析者 Github 地址})，校对者：[${校对者}](${校对者 Github 地址})，校对状态：未完成   
-
-`复制一份到自己的项目文件夹下，然后根据自己项目替换掉 ${} 内容，删掉本句内容。`  
+> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 circular-foating-action-menu 部分  
+> 项目地址：[CircularFloatingActionMenu](https://github.com/oguzbilgener/CircularFloatingActionMenu)，分析的版本：[e9ccdad](https://github.com/android-cn/android-open-project-demo/commit/1306e632d5a7734cd8451f4e10dff763f9ab4097)，Demo 地址：[circular-foating-action-menu](https://github.com/android-cn/android-open-project-demo/tree/master/CircularFloatingActionMenu-demo)    
+> 分析者：[cpacm](https://github.com/cpacm)，校对者：[${校对者}](${校对者 Github 地址})，校对状态：未完成   
 
 ###1. 功能介绍  
-功能介绍，包括功能或优点等  
+“一个灵感来自Path路径的Android上可定制圆形浮动菜单动画”  
 
-**完成时间**  
-- `一天内`完成  
+一个可定制的圆形浮动菜单，我们可以往里面添加子项使其充当一个可缩放的菜单按钮。
+####1.1 可定制
+可以根据提供的基础库自己编辑动画类，实现自制的动画效果。
+####1.2 多方面
+不止是在ImageView上可实现，大部分的view都可以充当菜单按钮从而呼出子菜单
+![Alt text](https://github.com/android-cn/android-open-project-analysis/blob/master/circular-floating-action-menu/demo.gif "图片样例")
 
 ###2. 详细设计
 ###2.1 核心类功能介绍

@@ -1,16 +1,15 @@
 ${项目名} 实现原理解析
 ====================================
-> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 ${项目名} 部分  
-> 项目地址：[${项目名}](${项目原地址})，分析的版本：[${commitId}.substring(0, 7)](${项目原地址}/commit/${commitId} "Commit id is ${commitId}")，Demo 地址：[${项目名} Demo](https://github.com/android-cn/android-open-project-demo/tree/master/${项目 Demo 地址})    
-> 分析者：[${分析者}](${分析者 Github 地址})，校对者：[${校对者}](${校对者 Github 地址})，校对状态：未完成   
+> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 HoloGraphLibrary部分  
+> 项目地址：[HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary)，分析的版本：[ccc2771](https://github.com/Androguide/HoloGraphLibrary/commit/028cd2ae6916308bbb96472aafa9ecd8b1343d5c"Commit id is 28cd2ae6916308bbb96472aafa9ecd8b1343d5c")，Demo 地址：[HoloGraphLibrary Demo](https://github.com/android-cn/android-open-project-demo/tree/master/holo-graph-library-demo)    
+> 分析者：[AaronPlay](https://github.com/AaronPlay)，校对者：[${校对者}](${校对者 Github 地址})，校对状态：未完成   
 
 `复制一份到自己的项目文件夹下，然后根据自己项目替换掉 ${} 内容，删掉本句内容。`  
 
 ###1. 功能介绍  
 功能介绍，包括功能或优点等  
-
-**完成时间**  
-- `一天内`完成  
+HoloGraphLibrary是一个封装了折线图、柱状图以及饼状图等基本的制表图。在柱状图还有一个功能，可以使原来的条形数据发生叠加。
+优点：图形设计友好，使用方便。
 
 ###2. 详细设计
 ###2.1 核心类功能介绍

@@ -3,10 +3,10 @@
 > 本文介绍 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 可能用到的工具  
 > 有其他工具欢迎补充和推荐  
 
-###1. Macdown
-- Macdown 语法  
+###1. Markdown
+- Markdown 语法  
 [Markdown 入门手册](https://github.com/android-cn/blog/blob/master/dev-tool/markdown.md)  
-- Macdown 工具  
+- Markdown 工具  
 [Macdown](http://macdown.uranusjr.com/)、[Mou](http://25.io/mou/)、[马克飞象](http://maxiang.info/)
 
 ###2. 绘图
