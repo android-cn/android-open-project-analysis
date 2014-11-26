@@ -33,6 +33,8 @@ Handler异步通信，Http网络请求， IO流。
 #####2.1.4 Bitmap模块  
 - BitmapUtils，图片的异步加载，支持本地和网络图片， 图片的压缩处理， 图片的内存缓存已经本地缓存。
 - BitmapLoadTask， 加载图片的异步任务。
+- BitmapCache， 图片的下载， 缓存， 压缩。
+- BitmapGlobalConfig， 配置， 包括线程池， 缓存的大小。
 
 ####2.2 类关系图
 #####2.2.1 View模块
@@ -69,7 +71,8 @@ updateProgress()是在DownloadHandler数据读写时候的回调， 次方法又
 publishProgress()通过Handler回调onProgressUpdate() ,
 onProgressUpdate()调用RequestCallback，完成回调流程。
 - 3.DownloadHandler， handleEntity()将网络数据转化为需要的数据格式。 在读写数据的时候会回调HttpHandler的updateProgress(), 如果当用户选择停止的时候直接停止数据读写。
-####3.3 Bitmap模块
+
+####3.4 Bitmap模块
 ![Bitmap流程图](image/BitmapSequence.png)
 - 1.BitmapUtils，display。
 - 2.BitmapGlobalConfig 获取缓存。 如果图片在运行内存缓存中存在， 就直接回调DefaultBitmapLoadCallBack。
@@ -88,13 +91,13 @@ onProgressUpdate()调用RequestCallback，完成回调流程。
 
 ###5. 杂谈
 主要和Volley框架相比
-相同点：
+####相同点：
 - 1.都采用了缓存机制。  
 - 2.都是通过handler进行线程通信
 - 3.Bitmap 模块都采用运行内存缓存， 本地缓存， 图片的压缩处理。 
-不同点：
-- 1. Volley的Http请求在 android 2.3 版本之前是通过HttpClient ，在之后的版本是通过URLHttpConnection。xUtils都是通过HttpClient请求网络。 在2.3以后URLHttpConnection也很稳定， 扩展和维护性好， 速度也快， 推荐采用URLHttpConnection。
-- 2.Volley在Http请求数据下载完成后是先缓存进byte[]， 然后是分配给不同的请求自己转化为自己需要的格式。xUtils是直接转化为想要的格式。 觉得各有优劣， Volley这样做的扩展性比较好， 但是不能存在大数据请求，否则就OOM。xUtils不缓存入byte[] 就支持大数据的请求， 速度比Volley稍快。
+####不同点：
+- 1. Volley的Http请求在 android 2.3 版本之前是通过HttpClient ，在之后的版本是通过URLHttpConnection。xUtils都是通过HttpClient请求网络（bitmap模块图片下载是通过URLHttpConnection）。 在2.3以后URLHttpConnection也很稳定， 扩展和维护性好， 速度也快， 推荐采用URLHttpConnection。
+- 2.Volley在Http请求数据下载完成后是先缓存进byte[]， 然后是分配给不同的请求自己转化为自己需要的格式。xUtils是直接转化为想要的格式。 觉得各有优劣， Volley这样做的扩展性比较好， 但是不能存在大数据请求，否则就OOM。xUtils不缓存入byte[] 就支持大数据的请求， 速度比Volley稍快，但扩展性就低。
 - 3.Volley最终是将网络请求的数据缓存进sd卡文件， xUtils是缓存在运行内存中。 如果频繁访问相同的网络地址， xUtils比Volley更快。
 — 4.Volley访问网络数据时直接开启固定个数线程访问网络， 在run方法中执行死循环， 阻塞等待请求队列。 xUtils是开启线程池来管理线程。Volley请求数据更快，消耗资源更大，xUtils反之。
   
