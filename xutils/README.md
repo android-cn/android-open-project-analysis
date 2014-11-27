@@ -83,8 +83,10 @@ onProgressUpdate()调用RequestCallback，完成回调流程。
 ###4. 总体设计
  
 - 1.View和Bb模块 主要是以反射加注解为主。 
-- 2.Http和Bitmap模块的构架
+- 2.Http和Bitmap模块的构架。
+
 ![整体构建思路](image/design.png)
+
  其实一些优秀的开源框架原理差不多。
 
 ###5. 杂谈
