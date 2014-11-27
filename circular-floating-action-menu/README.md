@@ -22,10 +22,12 @@ CircularFloatingActionMenu 实现原理解析
 
 这个类继承自FrameLayout控件，实现一个自定义图标的功能
 可以根据构造函数传进来的参数来选择不同风格的图案底纹
-然后将其传给menu菜单以便控制.
+然后将其传给menu菜单以便控制.  
+
 (2)FloatingActionButton 菜单按钮，点击即可唤出SubActionButton按钮  
 
-这个类跟SubActionButton基本相似，同样可以通过内部自定义的build构造器来定制自己的按钮。
+这个类跟SubActionButton基本相似，同样可以通过内部自定义的build构造器来定制自己的按钮。  
+
 （3）FloatingActionMenu 那么最重要的类来了，它存放着所有的按钮以及动画操作。
 基本结构图如下
 ![Alt text](https://github.com/android-cn/android-open-project-analysis/blob/master/circular-floating-action-menu/menu.jpg "menu")  
