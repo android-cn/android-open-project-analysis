@@ -16,12 +16,64 @@ CircularFloatingActionMenu 实现原理解析
 
 ###2. 详细设计
 ###2.1 核心类功能介绍
-核心类、函数功能介绍及核心功能流程图，流程图可使用 StartUML、Visio 或 Google Drawing。  
-###2.2 类关系图
-类关系图，类的继承、组合关系图，可是用 StartUML 工具。  
+主要分成两部分，一部分是构成菜单的view部分，另一部分是动画的操作类
+首先是view的部分，主要是三个部件组成:
+(1)SubActionButton 选项按钮，即按菜单键弹出来的选项按钮。
+这个类继承自FrameLayout控件，实现一个自定义图标的功能
+可以根据构造函数传进来的参数来选择不同风格的图案底纹
+然后将其传给menu菜单以便控制.
+(2)FloatingActionButton 菜单按钮，点击即可唤出SubActionButton按钮
+这个类跟SubActionButton基本相似，同样可以通过内部自定义的build构造器来定制自己的按钮。
+（3）FloatingActionMenu 那么最重要的类来了，它存放着所有的按钮以及动画操作。
+基本结构图如下
+![Alt text](https://github.com/android-cn/android-open-project-analysis/blob/master/circular-floating-action-menu/menu.jpg "menu")
+接下来是动画部分
+(1)MenuAnimationHandler
+这是是所有动画类的父类，它主要定义了菜单打开，关闭，以及运行结束后状态的保存的方法 
+    restoreSubActionViewAfterAnimation(FloatingActionMenu.Item subActionItem, ActionType actionType)
+	animateMenuOpening(Point center)
+	animateMenuClosing(Point center)
+（2）DefaultAnimationHandler
+这一个默认的动画类，当我们不对动画做修改时就会默认使用这个类里面的动画效果。我们也可以参考这个类来进行设计新的动画效果
+动画效果主要是通过
+    bjectAnimator.ofPropertyValuesHolder(menu.getSubActionItems().get(i).view, pvhX, pvhY, pvhR, pvhsX, pvhsY, pvhA);
+来实现
 
-**完成时间**  
-- 根据项目大小而定，目前简单根据项目 Java 文件数判断，完成时间大致为：`文件数 * 7 / 10`天，特殊项目具体对待  
+###2.2 如何使用
+    // Set up the white button on the lower right corner
+        // more or less with default parameter
+        ImageView fabIconNew = new ImageView(this);
+        fabIconNew.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new_light));
+        FloatingActionButton rightLowerButton = new FloatingActionButton.Builder(this)
+                .setContentView(fabIconNew)
+                .build();
+
+        SubActionButton.Builder rLSubBuilder = new SubActionButton.Builder(this);
+        ImageView rlIcon1 = new ImageView(this);
+        ImageView rlIcon2 = new ImageView(this);
+        ImageView rlIcon3 = new ImageView(this);
+        ImageView rlIcon4 = new ImageView(this);
+
+        rlIcon1.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_chat_light));
+        rlIcon2.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_camera_light));
+        rlIcon3.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_video_light));
+        rlIcon4.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_place_light));
+
+        // Build the menu with default options: light theme, 90 degrees, 72dp radius.
+        // Set 4 default SubActionButtons
+        FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(this)
+                .addSubActionView(rLSubBuilder.setContentView(rlIcon1).build())
+                .addSubActionView(rLSubBuilder.setContentView(rlIcon2).build())
+                .addSubActionView(rLSubBuilder.setContentView(rlIcon3).build())
+                .addSubActionView(rLSubBuilder.setContentView(rlIcon4).build())
+                .setAnimationHandler(new SliderAnimationHandler())
+                .attachTo(rightLowerButton)
+                .build();
+如以上代码所示
+（1）先建立一个view来作为一个总容器，设置好图片，然后作为菜单的按钮
+（2）建立好选项菜单的视图，添加属性后，添加到FloatingActionMenu中的ArrayList<item>数组中，并同时绑定上面的菜单按钮。
+（3）如果使用自己定义的动画，setAnimationHandler(new SliderAnimationHandler())。
+这样子，一个简单的案例就做好了
 
 ###3. 流程图
 主要功能流程图  
