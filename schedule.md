@@ -10,7 +10,7 @@
 [photup](https://github.com/chrisbanes/photup) | [aiqianxian](https://github.com/aiqianxian) | | 11/28 | 12/01 | 12/05 | 12/08 | 12/12 | 12/15 |  
 [Volley](https://android.googlesource.com/platform/frameworks/volley) | [grumoon](https://github.com/grumoon) | [promeG](https://github.com/promeG) |Done |11/28 | 12/03| 12/05|12/08 | 12/11 |  
 [Otto](https://github.com/square/otto) | [promeG](https://github.com/promeG) | [grumoon](https://github.com/grumoon) | Done | 11/27 | 12/03 | 12/10 | 12/17 | 12/20 |  
-[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [lightSky](https://github.com/lightSky) | [drakeet](https://github.com/drakeet)  |11/26 |11/27 | 11/30| 12/02|12/05 | 12/08 |  
+[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [lightSky](https://github.com/lightSky) | [drakeet](https://github.com/drakeet)  |11/27 |11/27 | 11/30| 12/02|12/05 | 12/08 |  
 [HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary) | [aaronplay](https://github.com/AaronPlay) | | Done | Done | Done | 11/28 | 11/30 | 12/02 |  
 [picasso](https://github.com/square/picasso) | [爱早起](https://github.com/liang7) | | 11/26 | 11/28 | 12/02 | 12/07 | 12/13 | 12/14 |  
 [XUtils](https://github.com/wyouflf/xUtils) | [Caij](https://github.com/Caij) | [maogy](https://github.com/maogy) | Done| 11/27 | 12/07 | 12/11 | 12/16 | 12/17 |  
