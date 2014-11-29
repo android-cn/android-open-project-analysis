@@ -16,7 +16,7 @@ CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator、TitlePagerInd
 TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView。  
 ### 3. 详细设计    
 ####3.1类关系图
-![viewpagerindicator img](image/class-relation.png)  
+![viewpagerindicator img](image/class_relation.png)  
 ####3.2 自定义控件相关知识  
 ####3.2.1 自定义控件步骤  
 以下直接引用了其中的一些篇章前言，具体内容大家直接点击链接进入正文
