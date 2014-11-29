@@ -1,38 +1,30 @@
 
-### 1. 简介
+ViewPagerindicator 源码解析
+----------------
+> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 ViewPagerindicator 部分，项目地址：[viewpagerindicator](http://viewpagerindicator.com)，分析的版本：[8cd549](https://github.com/JakeWharton/Android-ViewPagerIndicator/commit/8cd549f23f3d20ff920e19a2345c54983f65e26b "Commit id is 8cd549f23f3d20ff920e19a2345c54983f65e26b")，分析者：[lightSky](https://github.com/lightSky)，校对者：[drakeet](https://github.com/drakeet)，校对状态：未完成   
 
-**功能介绍：**  
-引用[viewpagerindicator](http://viewpagerindicator.com)项目主页的简短介绍：ViewPager适用于Android Support Library中的ViewPager和其开发的ActionBarSherlock，项目基于Patrik Åkerfeldt's ViewFlow。  
-应用于各种界面的导航。  
-	
 
-### 2. 主要特点：
-	* 使用简单
-	* 效果好 
+### 1. 功能介绍
 
-### 3. 详细设计
-	
+### 1.1 ViewPagerIndicator  
+ViewPagerIndicator用于各种基于AndroidSupportLibrary中ViewPager的界面导航。主要特点：使用简单、效果好、样式全。
 
-**归类**  
-	CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator 这三种是极其相似的。可以归为一类。
-	TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView，极其相似，可以归为一类。
-	TitlePagerIndicator：实现最复杂,单独介绍。
-		
-**结构**  
-	PageIndicator，接口类，定义了不同类型的Indicator的公用的方法。
-	IcsLinearLayout ：LinearLayout的扩展，支持了4.0以上的divider特性。在TabPagerIndicator中使用到。
+### 2. 总体设计
+该项目总体设计非常简单，一个pageIndicator接口类，具体样式的导航类实现该接口，然后根据具体样式去实现相应的逻辑。
+IcsLinearLayout：LinearLayout的扩展，支持了4.0以上的divider特性。
+CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator、TitlePagerIndicator继承自View。    
+TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView。  
 
-**实现**  
-	这里先介绍两个模块：自定义控件的创建和Android的用户输入。  
-介绍这两个模块的原因是:所有的可交互的自定义控件一定都会有这两个模块，另外，介绍完这两个模块后，我相信，大家把这两个模块的基本知识点都看明白后，一定都能看懂ViewPagerIndicator的实现了。本人只做简单的介绍，就不再详细的赘述了。  
+### 3. 详细设计    
+####3.1类关系图
+![viewpagerindicator img](image/class-relation.png)  
+####3.2 自定义控件相关知识  
+由于本项目主要就是自定义控件，那么项目的分析，总体上就是对自定义控件的分析。这里就分析一个自定义控件的创建步骤、View的绘制机制、Touch事件的处理。    
 
-大家可能会担心这些知识点到哪里才能找到最权威和最系统的讲解，其实官方文档就有，到如今我也没有很耐心的把官方文档看个遍。已已经有好心人把它翻译了：一个GitHub协作项目android-training-course-in-chinese，该项目就是对Google的官方文档进行翻译，现已有PDF版本了，大家可以去下载。（强烈建议大家直接去下载。然后慢慢咀嚼，一定会Android的整体知识架构有清晰的认识。我觉得特别有帮助，最好的学习资料莫过官方文档）
-		
-Google官方中文文档翻译项目地址：[android-training-course-in-chinese](https://github.com/kesenhoo/android-training-course-in-chinese)
+大家可能会担心这些相关知识点最权威和最系统的讲解，其实官方文档就有。英文费劲没关系（最好看英文版），GitHub协作项目[android-training-course-in-chinese](https://github.com/kesenhoo/android-training-course-in-chinese)已经出了中文版的，并且有PDF版本，大家可以去下载。（强烈建议大家去下载，一定会Android的整体知识架构有清晰的认识。从英文的角度完全把握官方文档，确实有些费劲，但还是建议有时间的时候，多看看官方的英文文档）
 
-		
-下面就简单的介绍一下整个流程:
-		（以下的分析中就直接引用了其中的一些篇章前言，具体内容大家直接点击链接就可以看到，这里就不再赘述，建议大家做下笔记，内容还是比较多的）
+####3.2.1 自定义控件步骤  
+以下直接引用了其中的一些篇章前言，具体内容大家直接点击链接进入正文
 
 1. [自定义控件创建步骤](http://hukai.me/android-training-course-in-chinese/ui/custom-view/index.html) ：  
 	* 继承一个View。
@@ -49,89 +41,433 @@ Google官方中文文档翻译项目地址：[android-training-course-in-chinese
 
 4. [Android的用户输入](http://hukai.me/android-training-course-in-chinese/best-user-input.html)  
 这里着重要看一下拖拽与缩放这一部分。因为在ViewPagerIndicator的几种实现：Circle，Title，UnderLine的onTouchEvent里的处理逻辑是一样的，而且和官方文档中的代码逻辑也是一样的，看了讲解之后，相信大家就会有所了解了：http://hukai.me/android-training-course-in-chinese/input/gestures/scale.html
+    
+####3.2.2 View绘制机制  
+参考文献：http://developer.android.com/guide/topics/ui/how-android-draws.html
 
+#####3.2.2.1  基础概念 
+当Activity接收到焦点的时候，它会被请求绘制布局。Android framework将会处理绘制的流程，但Activity必须提供View层级的根节点。绘制是从根节点开始的，需要measure和draw布局树。绘制会遍历和渲染每一个与无效区域相交的view。相反，每一个ViewGroup负责绘制它所有的childrenview，而View会负责绘制自身。树的遍历是有序的，parent view要先于child View被绘制，
 
-**TabPageIndicator、IconPageIndicator**
+绘制布局有两步：measure和layout  
+measure过程的实现在measure(int,int)方法中，而且从上到下的有序绘制view。在递归的过程中，每一个视图（View）将尺寸规格向下传递给View，在measure过程的最后，每个视图存储了它的尺寸。
+layout过程从layout(int, int, int, int)方法开始，也是自上而下遍历。在这个过程中，每个parent view根据measure过程计算出来
+的尺寸确定所有的child view具体位置。  
 
-继承自HorizontalScrollView,使用了IcsLinearLayout
-继承自HorizontalScrollView，拥有其左右滑动的效果，以及其它以实现的操作，比如对child的measure
+注意：Android框架不会绘制无效区域之外的部分,但会考虑绘制视图的背景。你可以使用invalidate()去强制对一个view进行重绘。  
 
-**IconPageIndicator**  
-	notifyDataSetChanged：
-		像IcsLinearLayout中添加child,同时请求requestLayout(),该方法会触发measure和layout这两个步骤，measure是测绘每个看控件的大小，layout是为了给每个View确定好位置，有了大小和位置后，接下来就是draw了。
+当一个View的measure()执行完的时候，它自己以及所有的孩子节点的getMeasuredWidth()和getMeasuredHeight()方法的值就必须被设置了。一个视图的测量宽度和测量高度值必须在父视图约束范围之内，这可以保证在measure的最后,所有的父母都接受所有孩子的测量。
+一个父视图，可以在其child view上多次的调用measure()方法。比如，父视图可以先根据未指明的dimension调用measure方法去测量每一个
+child view的大小，如果所有child的未约束尺寸太大或者太小的时候，则会使用一个确切的大小，然后在每一个childview上再次调用measure方法去测量每一个view的大小。（也就是说，如果children对于获取到的大小不满意的时候，父视图会介入并设置测量规则进行第二次measure）
 
-	onAttachedToWindow：
-		开辟一块绘画层，即将开始draw。应确保在onDraw之前调用，但在measure之前和之后调用都可。
-	onDetachedFromWindow
-		当View 从window脱离时被调用，之时就不再拥有绘画层。
-		在这两个方法里主要针对Runnable 做操作，从消息队列中加入和移除该message。  
-	removeCallbacks（）；可以再UI线程之外触发，但只有在View 依附到window时。
-	
-**TabPageIndicator**  
-	onMeasure：MeasureSpec 的三种方式及处理
-	setFillViewport：测量子View，以便其填充可见区域。这里除EXACTLY模式外，都填充。
+measure过程使用了两个类来传递尺寸：  
+一个是ViewGroup.LayoutParams类（View自身的布局参数）  
+一个是MeasureSpecs类（父视图对子视图的测量要求）
 
+ViewGroup.LayoutParams  
+被子视图用于告诉他们的父视图他们应该怎样被测量和放置（就是子视图自身的布局参数）。一个基本的LayoutParams只用来描述视图的高度和宽度。对于，每一方面的尺寸，你可以指定下列方式之一：  
+1、具体数值   
+2、MATCH_PARENT 表示子视图希望和父视图一样大(不含padding)   
+3、WRAP_CONTENT 表示视图为正好能包裹其内容大小(包含padding)    
 
-**CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator**
+对于ViewGroup的子类，也有相应的ViewGroup.LayoutParams的子类，例如RelativeLayout有相应的ViewGroup.LayoutParams的子类,拥有设置子视图水平和垂直的能力。
 
-**mTouchSlop**  
-	“Touch slop”是指在用户触摸事件可被识别为移动手势前,移动过的那一段像素距离。Touchslop通常用来预防用户在做一些其他操作时意外地滑动，例如触摸屏幕上的元素时。
+MeasureSpecs  
+用于从上到下传递父视图对子视图测量需求,其有三种模式:      
 
-[onTouchEvent](http://hukai.me/android-training-course-in-chinese/input/gestures/scale.html)		
-	对于pointer的处理是模板方法，在拖拽与缩放中有详细的讲解：
-	
-要注意的有以下几点（结合原文以及代码，立马就清晰了）：
-		
-**1. 保持对最初点的追踪**  
+**UNSPECIFIED**  
+父视图可以为子视图设置它所期望的大小。比如一个LinearLayout可以在它的子view上调用measure()方法去测量一个高设置为UNSPECIFIED模式，宽为240pixels的view大小。    
+
+**EXACTLY**  
+父视图决定子视图的确切大小，子视图必须使用该大小，并确保它所有的子视图可以适应在该尺寸的范围内；相对应属性的是MATCH_PARENT   
+
+**AT_MOST**  
+父视图为子视图指定一个最大值。子视图必须确保它自己的所有子视图在该尺寸范围内，相应的属性为WRAP_CONTENT   
+ 
+#####3.2.2.2 measure核心方法  
+measure(int widthMeasureSpec, int heightMeasureSpec)方法  
+该方法定义在View.java类中，final修饰符修饰，因此不能被重载，但measure调用链会回调View/ViewGroup对象的onMeasure()方法，因此我们只需要复写onMeasure()方法去计算自己的控件尺寸即可。  
+该方法的两个参数分别是父视图提供的测量规格MeasureSpec。当父视图调用子视图的measure函数对子视图进行测量时，会传入这两个参数。通过这两个参数以及子视图本身的LayoutParams来共同决定子视图的测量规格MeasureSpec。其实整个measure过程就是从上到下遍历，不断的根据父视图的MeasureSpec和子视图自身的LayotuParams获取子视图自己的MeasureSpec，最终调用子视图的measure(int widthMeasureSpec, int heightMeasureSpec)方法确定最终的mMeasuredWidth和mMeasuredHeight。ViewGroup的measureChildWithMargins函数中体现了这个过程。  
+具体过程分析可以参考：http://blog.csdn.net/wangjinyu501/article/details/9008271
+
+setMeasuredDimension()方法  
+View在测量阶段的最终大小的设定是由setMeasuredDimension()方法决定的,该方法最终会对每个View的mMeasuredWidth和mMeasuredHeight进行赋值，一旦这两个变量被赋值，则意味着该View的测量工作结束，setMeasuredDimension()也是必须要调用的方法，否则会报异常。在setMeasuredDimension()方法内部，你可以根据需求，去计算View的尺寸。  
+
+#####3.2.2.2 layout相关核心概念及方法  
+子视图的具体位置都是相对与父视图的位置。与onMeasure过程类似，ViewGroup在onLayout函数中通过调用其children的layout函数来设置子视图相对与父视图中的位置，具体位置由函数layout的参数决定，当我们继承ViewGroup时必须重载onLayout函数（ViewGroup中onLayout是abstract修饰），然而onMeasure并不要求必须重载，因为相对与layout来说，measure过程并不是必须的。  
+
+实现onLayout通常做法就是进行一个for循环调用每一个子视图的layout(l, t, r, b)函数，传入不同的参数l, t, r, b来确定每个子视图在父视图中的显示位置。onLayout过程会通过调用getMeasuredWidth()和getMeasuredHeight()方法获取到measure过程得到的mMeasuredWidth和mMeasuredHeight,这两个参数为layout过程提供了一个很重要的参考值（不是必须的）。    
+
+之所以说measure过程不是必须的，是因为layout过程中的4个参数l, t, r,b完全可以由视图设计者任意指定，如果在自定义的onLayout中手动指定了layout的参数，而不用measure过程的值，也是可以的，当然一般没人会这么做，这样也违背了Android框架的绘制机制，通常的做法是根据需求在measure过程决定尺寸，layout步骤决定位置，除非你只是指定View的位置，而不考虑View的尺寸。  
+
+####3.2.3 Android的用户输入  	
+要注意的有以下几点（更详细的介绍可以参考原文）  
+
+##### 3.2.3.1 保持对最初点的追踪  
 拖拽操作时，即使有额外的手指放置到屏幕上了，app也必须保持对最初的点（手指）的追踪。比如，想象在拖拽图片时，用户放置了第二根手指在屏幕上，并且抬起了第一根手指。如果你的app只是单独地追踪每个点，它会把第二个点当做默认的点，并且把图片移到该点的位置。
 	
-**2. 区分原始点及之后的任意触摸点**   
+##### 3.2.3.2 区分原始点及之后的任意触摸点   
 为了防止这种情况发生，你的app需要区分初始点以及之后任意的触摸点。要做到这一点，它需要追踪处理多触摸手势中提到过的ACTION_POINTER_DOWN、 ACTION_POINTER_UP事件。每当第二根手指按下或拿起时，ACTION_POINTER_DOWN、ACTION_POINTER_UP事件就会传递给onTouchEvent())回调函数。
 	
-**3. 确保操作中的点的ID(the active pointer ID)不会引用已经不在触摸屏上的触摸点**  
+##### 3.2.3.3 确保操作中的点的ID(the active pointer ID)不会引用已经不在触摸屏上的触摸点  
 当ACTION_POINTER_UP事件发生时，示例程序会移除对该点的索引值的引用，确保操作中的点的ID(the active pointer ID)不会引用已经不在触摸屏上的触摸点。这种情况下，app会选择另一个触摸点来作为操作中(active)的点，并保存它当前的x、y值。由于在ACTION_MOVE事件时，这个保存的位置会被用来计算屏幕上的对象将要移动的距离，所以app会始终根据正确的触摸点来计算移动的距离。
-
-ViewPagerIndicator中的onTouchEvent中的代码也就是官方文档的模板代码，就是为了确保以上几点，拿到可用，确信的点然后处理ViewPager相应的偏移和滑动
-
-**核心函数**  
-onDraw  onTouchEvent
-
-这里就算对ViewPagerIndicator的实现原理介绍完毕了。可能大家说我图懒省事，其实并不然。第一，关于自定义控件的知识点并不是一下就能说清楚的。其内容之多，这里根本无法做详细的介绍。如果你把这些基础看明白了，一定会知道ViewPagerIndicator是如何实现的，其实该项目并不复杂。另外对于自定义控件的这些知识是非常重要的，真心想学习的同学，一定会认真研究这些基本的知识点，并做下笔记，因为在以后的学习或者研读其它优秀开源项目的时候，一定会遇到这些知识。其实本人对这些知识也没有统一的梳理，会在最近的学习里，整理出来，供大家分享。
   
-  先贴上几篇相关的文章链接：  
+mTouchSlop  
+指在用户触摸事件可被识别为移动手势前,移动过的那一段像素距离。Touchslop通常用来预防用户在做一些其他操作时意外地滑动，例如触摸屏幕上的元素时。
+
+[onTouchEvent](http://hukai.me/android-training-course-in-chinese/input/gestures/scale.html)		
+对于pointer的处理是模板方法，在拖拽与缩放中有详细的讲解。ViewPagerIndicator中的onTouchEvent中的代码也就是官方文档的模板代码，就是为了确保以上几点，获取到可用、确信的点，然后处理ViewPager相应的偏移和滑动。
   
-  View的绘制：  
-  	http://blog.csdn.net/wangjinyu501/article/details/9008271  
-  	http://blog.csdn.net/qinjuning/article/details/7110211
+####3.2.4 CirclePageIndicator 源码分析  
+
+```java
+public class CirclePageIndicator extends View implements PageIndicator {
+    private static final int INVALID_POINTER = -1;
+
+    /**当前界面的索引*/
+    private int mCurrentPage;
+
+    /**当前界面的索引，和mCurrentPage值一样*/
+    private int mSnapPage;
+
+    /**ViewPager的水平偏移量 */
+    private float mPageOffset;
+
+    /**ViewPager的滑动状态 */
+    private int mScrollState;
+
+    /**Indicator的模式：水平、竖直*/
+    private int mOrientation;
+
+    /**每一次onTouch事件产生时水平位置的最后偏移量 */
+    private float mLastMotionX = -1;
+
+    /**当前处于活动中pointer的ID*/
+    private int mActivePointerId = INVALID_POINTER;
+
+    /** 用户是否主观的滑动屏幕的标识*/
+    private boolean mIsDragging;
+
+    /**
+     * circle有2种绘制模式:
+     * mSnap = true：circle之间不绘制，只绘制最终的实心点
+     * mSnap = false：viewPager滑动过程中，相邻circle之间根据mPageOffset实时绘制circle
+     */
+    private boolean mSnap;
+
+    /**
+     * “Touch slop”是指在用户触摸事件可被识别为移动手势前,移动过的那一段像素距离。
+     * Touchslop通常用来预防用户在做一些其他操作时意外地滑动，例如触摸屏幕上的元素时产生的滑动。
+     */
+    private int mTouchSlop;
+
+    public CirclePageIndicator(Context context) {
+        this(context, null);
+    }
+
+    public CirclePageIndicator(Context context, AttributeSet attrs) {
+        this(context, attrs, R.attr.vpiCirclePageIndicatorStyle);
+    }
+
+    public CirclePageIndicator(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        if (isInEditMode()) return;
+
+        //Load defaults from resources
+        final Resources res = getResources();
+        final int defaultPageColor = res.getColor(R.color.default_circle_indicator_page_color);
+        final int defaultFillColor = res.getColor(R.color.default_circle_indicator_fill_color);
+
+        ......
+
+        //Retrieve styles attributes
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CirclePageIndicator, defStyle, 0);
+
+        ......
+
+        a.recycle();//这里记得及时释放资源
+
+        final ViewConfiguration configuration = ViewConfiguration.get(context);
+        mTouchSlop = ViewConfigurationCompat.getScaledPagingTouchSlop(configuration);
+    }
+
+    public void setOrientation(int orientation) {
+        switch (orientation) {
+            case HORIZONTAL:
+            case VERTICAL:
+                mOrientation = orientation;
+                requestLayout();//设置完方向之后，就开始请求布局,会执行 measure , layout步骤
+                break;
+
+            default:
+                throw new IllegalArgumentException("Orientation must be either HORIZONTAL or VERTICAL.");
+        }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        if (mViewPager == null) {
+            return;
+        }
+        final int count = mViewPager.getAdapter().getCount();
+        if (count == 0) {
+            return;
+        }
+
+        if (mCurrentPage >= count) {
+            setCurrentItem(count - 1);
+            return;
+        }
+
+        /**
+         * CirclePageIndicator 分为水平和竖直放置两种模式
+         */
+
+        //TODO 这里给出图，更好。。。。。。。。。
+        int longSize;	/** 当前方向的Indicator宽度*/
+        int longPaddingBefore;/** 当前方向的Indicator起始位置 */
+        int longPaddingAfter;	/** 当前方向的Indicator结束位置 */
+        int shortPaddingBefore;	/** 如果Indicator是水平方向，则取：padding Top ，竖直方向则取：padding Left */
+        if (mOrientation == HORIZONTAL) {//水平方向，则由上、右、左三个方向来确定绘制范围
+            longSize = getWidth();
+            longPaddingBefore = getPaddingLeft();
+            longPaddingAfter = getPaddingRight();
+            shortPaddingBefore = getPaddingTop();
+        } else {//垂直方向，则由左、上、下、来确定绘制的范围。
+            longSize = getHeight();
+            longPaddingBefore = getPaddingTop();
+            longPaddingAfter = getPaddingBottom();
+            shortPaddingBefore = getPaddingLeft();
+        }
+
+
+        final float threeRadius = mRadius * 3;//两相邻circle的间距
+        final float shortOffset = shortPaddingBefore + mRadius;//当前方向的垂直方向的圆心坐标位置
+        float longOffset = longPaddingBefore + mRadius;//当前方向的圆心位置
+        if (mCentered) {
+            longOffset += ((longSize - longPaddingBefore - longPaddingAfter) / 2.0f) - ((count * threeRadius) / 2.0f);
+        }
+
+        float dX;
+        float dY;
+
+        float pageFillRadius = mRadius;
+        if (mPaintStroke.getStrokeWidth() > 0) {
+            pageFillRadius -= mPaintStroke.getStrokeWidth() / 2.0f;
+        }
+
+        //循环的 draw circle
+        for (int iLoop = 0; iLoop < count; iLoop++) {
+            float drawLong = longOffset + (iLoop * threeRadius);//计算当前方向的每个circle偏移量
+            if (mOrientation == HORIZONTAL) {
+                dX = drawLong;
+                dY = shortOffset;
+            } else {
+                dX = shortOffset;
+                dY = drawLong;
+            }
+
+            //只绘制透明度 > 0的circle
+            if (mPaintPageFill.getAlpha() > 0) {
+                canvas.drawCircle(dX, dY, pageFillRadius, mPaintPageFill);
+            }
+
+            // Only paint stroke if a stroke width was non-zero
+            //有pageFillRadius时才绘制
+            if (pageFillRadius != mRadius) {
+                canvas.drawCircle(dX, dY, mRadius, mPaintStroke);
+            }
+        }
+
+        //Draw the filled circle according to the current scroll
+        //根据滑动的位置画出实心的点
+        float cx = (mSnap ? mSnapPage : mCurrentPage) * threeRadius;//计算实心点的目标位置
+        if (!mSnap) {//不是跳跃模式，则根据当前界面的偏移量平滑地绘制
+            cx += mPageOffset * threeRadius;
+        }
+        if (mOrientation == HORIZONTAL) {//计算实心圆的坐标
+            dX = longOffset + cx;
+            dY = shortOffset;
+        } else {
+            dX = shortOffset;
+            dY = longOffset + cx;
+        }
+        canvas.drawCircle(dX, dY, mRadius, mPaintFill);
+    }
+
+    /**
+     * 模板代码
+     */
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (super.onTouchEvent(ev)) {
+            return true;
+        }
+        if ((mViewPager == null) || (mViewPager.getAdapter().getCount() == 0)) {//无效的ViewPager，啥也不做
+            return false;
+        }
+
+        final int action = ev.getAction() & MotionEventCompat.ACTION_MASK;
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                mActivePointerId = MotionEventCompat.getPointerId(ev, 0);//记录第一触摸点的ID
+                mLastMotionX = ev.getX();//获取当前水平移动距离
+                break;
+
+            case MotionEvent.ACTION_MOVE: {
+                final int activePointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);//获取第一点的索引
+                final float x = MotionEventCompat.getX(ev, activePointerIndex);//根据第一点的索引获取其X坐标
+                final float deltaX = x - mLastMotionX;//计算X方向的偏移
+
+                if (!mIsDragging) {
+                    if (Math.abs(deltaX) > mTouchSlop) {//如果用户是主观的滑动屏幕，则设置标识为 mIsDragging = true
+                        mIsDragging = true;
+                    }
+                }
+
+                if (mIsDragging) {//如果用户拖拽了屏幕，处理ViewPager移动相应的偏移量
+                    mLastMotionX = x;//重新赋值当前的X坐标，以便下次重新计算偏移量
+                    if (mViewPager.isFakeDragging() || mViewPager.beginFakeDrag()) {
+                        mViewPager.fakeDragBy(deltaX);
+                    }
+                }
+
+                break;
+            }
+
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                if (!mIsDragging) {
+                    final int count = mViewPager.getAdapter().getCount();
+                    final int width = getWidth();
+                    final float halfWidth = width / 2f;
+                    final float sixthWidth = width / 6f;
+
+                    if ((mCurrentPage > 0) && (ev.getX() < halfWidth - sixthWidth)) {// 向后滑动，回退，以1/3屏幕宽度 为分界线。。。。。。。。。因为布局文件设置为fill_parent????????
+                        if (action != MotionEvent.ACTION_CANCEL) {
+                            mViewPager.setCurrentItem(mCurrentPage - 1);
+                        }
+                        return true;
+                    } else if ((mCurrentPage < count - 1) && (ev.getX() > halfWidth + sixthWidth)) {//向前滑动
+                        if (action != MotionEvent.ACTION_CANCEL) {
+                            mViewPager.setCurrentItem(mCurrentPage + 1);
+                        }
+                        return true;
+                    }
+                }
+
+                mIsDragging = false;//设置ViewPager滑动标识为false.
+                mActivePointerId = INVALID_POINTER;//设置第一个触摸点的ID为invalid
+                if (mViewPager.isFakeDragging()) mViewPager.endFakeDrag();//结束ViewPager的临时滑动
+                break;
+
+            case MotionEventCompat.ACTION_POINTER_DOWN: {//除最初点外的第一个外出现在屏幕上的点
+                final int index = MotionEventCompat.getActionIndex(ev);
+                mLastMotionX = MotionEventCompat.getX(ev, index);
+                mActivePointerId = MotionEventCompat.getPointerId(ev, index);
+                break;
+            }
+
+            case MotionEventCompat.ACTION_POINTER_UP://当非第一点离开屏幕时
+                final int pointerIndex = MotionEventCompat.getActionIndex(ev);//获取抬起手指的索引
+                final int pointerId = MotionEventCompat.getPointerId(ev, pointerIndex);//获取抬起手指的ID
+                if (pointerId == mActivePointerId) {//如果之前跟踪的mActivePointerId是当前抬起的手指ID，那么就重新为mActivePointerId 赋值另一个活动中的pointerId
+                    final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+                    mActivePointerId = MotionEventCompat.getPointerId(ev, newPointerIndex);
+                }
+                mLastMotionX = MotionEventCompat.getX(ev, MotionEventCompat.findPointerIndex(ev, mActivePointerId));//获取仍活动在屏幕上pointer的X坐标值
+                break;
+        }
+
+        return true;
+    }
+
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see android.view.View#onMeasure(int, int)
+     * View在测量阶段的最终大小的设定是由setMeasuredDimension()方法决定的,也是必须要调用的方法，否则会报异常，
+     * 这里就直接调用了setMeasuredDimension()方法设置值了。
+     */
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        if (mOrientation == HORIZONTAL) {
+            setMeasuredDimension(measureLong(widthMeasureSpec), measureShort(heightMeasureSpec));
+        } else {
+            setMeasuredDimension(measureShort(widthMeasureSpec), measureLong(heightMeasureSpec));
+        }
+    }
+
+    /**
+     * 决定View的宽度
+     *
+     * Determines the width of this view
+     *
+     * @param measureSpec
+     *            A measureSpec packed into an int
+     * @return The width of the view, honoring constraints from measureSpec
+     *
+     * 测量的步骤分为获取MeasureSpec模式，获取系统建议的值、自己计算height和width（需要考虑自身的padding）
+     */
+    private int measureLong(int measureSpec) {
+        int result;
+        int specMode = MeasureSpec.getMode(measureSpec);//获取MeasureSpec模式
+        int specSize = MeasureSpec.getSize(measureSpec);//获取系统建议的值
+
+        if ((specMode == MeasureSpec.EXACTLY) || (mViewPager == null)) {//用户指定了具体的值
+            //We were told how big to be
+            result = specSize;
+        } else {
+            //UNSPECIFIED 或者 AT_MOST 模式，则根据ViewPager的page数量计算宽度
+            final int count = mViewPager.getAdapter().getCount();//
+            result = (int)(getPaddingLeft() + getPaddingRight()
+                    + (count * 2 * mRadius) + (count - 1) * mRadius + 1);
+            //Respect AT_MOST value if that was what is called for by measureSpec
+            //AT_MOST 特殊处理，从系统建议值和自己计算值中取一个较小值
+            if (specMode == MeasureSpec.AT_MOST) {
+                result = Math.min(result, specSize);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 决定View的高度
+     *
+     * @param measureSpec
+     *            A measureSpec packed into an int
+     * @return The height of the view, honoring constraints from measureSpec
+     */
+    private int measureShort(int measureSpec) {
+        int result;
+        int specMode = MeasureSpec.getMode(measureSpec);
+        int specSize = MeasureSpec.getSize(measureSpec);
+
+        if (specMode == MeasureSpec.EXACTLY) {
+            //We were told how big to be
+            result = specSize;
+        } else {
+            //Measure the height
+            result = (int)(2 * mRadius + getPaddingTop() + getPaddingBottom() + 1);
+            //Respect AT_MOST value if that was what is called for by measureSpec
+            if (specMode == MeasureSpec.AT_MOST) {//获取一个合适的值
+                result = Math.min(result, specSize);
+            }
+        }
+        return result;
+    }
+}
+
+```
+
+
+####3.1.4 相关文章  
+View的绘制：  
+http://blog.csdn.net/wangjinyu501/article/details/9008271  
+http://blog.csdn.net/qinjuning/article/details/7110211
   	
-  Touch事件传递：  
-  	http://blog.csdn.net/xiaanming/article/details/21696315
-  	http://blog.csdn.net/wangjinyu501/article/details/22584465
-  	
-**授人以鱼不如授人以渔。真正学到的，才是自己的**
-
-### 4. 使用方法
-
-	在你的布局文件中，需要导航的位置添加类似如下代码：
-```
-	<com.viewpagerindicator.TitlePageIndicator
-	    android:id="@+id/titles"
-	    android:layout_height="wrap_content"
-	    android:layout_width="fill_parent" />
-```
-	在你的Activity中的onCreate方法中将该Indicator绑定到ViewPager
-```	
-	 //Set the pager with an adapter
-	 ViewPager pager = (ViewPager)findViewById(R.id.pager);
-	 pager.setAdapter(new TestAdapter(getSupportFragmentManager()));
-```
-	绑定Indicator到Adapter
-```
-	 TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
-	 titleIndicator.setViewPager(pager);
-```
-	如果你实现了OnPageChangeListener，你应该将它设置到Indicator当中去，而不是直接设置到ViewPager上：
-
-	`titleIndicator.setOnPageChangeListener(mPageChangeListener);`
-
-
+Touch事件传递：  
+http://blog.csdn.net/xiaanming/article/details/21696315
+http://blog.csdn.net/wangjinyu501/article/details/22584465
