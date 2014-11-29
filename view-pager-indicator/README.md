@@ -14,15 +14,10 @@ ViewPagerIndicator用于各种基于AndroidSupportLibrary中ViewPager的界面�
 IcsLinearLayout：LinearLayout的扩展，支持了4.0以上的divider特性。
 CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator、TitlePagerIndicator继承自View。    
 TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView。  
-
 ### 3. 详细设计    
 ####3.1类关系图
 ![viewpagerindicator img](image/class-relation.png)  
 ####3.2 自定义控件相关知识  
-由于本项目主要就是自定义控件，那么项目的分析，总体上就是对自定义控件的分析。这里就分析一个自定义控件的创建步骤、View的绘制机制、Touch事件的处理。    
-
-大家可能会担心这些相关知识点最权威和最系统的讲解，其实官方文档就有。英文费劲没关系（最好看英文版），GitHub协作项目[android-training-course-in-chinese](https://github.com/kesenhoo/android-training-course-in-chinese)已经出了中文版的，并且有PDF版本，大家可以去下载。（强烈建议大家去下载，一定会Android的整体知识架构有清晰的认识。从英文的角度完全把握官方文档，确实有些费劲，但还是建议有时间的时候，多看看官方的英文文档）
-
 ####3.2.1 自定义控件步骤  
 以下直接引用了其中的一些篇章前言，具体内容大家直接点击链接进入正文
 
@@ -92,7 +87,7 @@ measure(int widthMeasureSpec, int heightMeasureSpec)方法
 setMeasuredDimension()方法  
 View在测量阶段的最终大小的设定是由setMeasuredDimension()方法决定的,该方法最终会对每个View的mMeasuredWidth和mMeasuredHeight进行赋值，一旦这两个变量被赋值，则意味着该View的测量工作结束，setMeasuredDimension()也是必须要调用的方法，否则会报异常。在setMeasuredDimension()方法内部，你可以根据需求，去计算View的尺寸。  
 
-#####3.2.2.2 layout相关核心概念及方法  
+#####3.2.2.3 layout相关核心概念及方法  
 子视图的具体位置都是相对与父视图的位置。与onMeasure过程类似，ViewGroup在onLayout函数中通过调用其children的layout函数来设置子视图相对与父视图中的位置，具体位置由函数layout的参数决定，当我们继承ViewGroup时必须重载onLayout函数（ViewGroup中onLayout是abstract修饰），然而onMeasure并不要求必须重载，因为相对与layout来说，measure过程并不是必须的。  
 
 实现onLayout通常做法就是进行一个for循环调用每一个子视图的layout(l, t, r, b)函数，传入不同的参数l, t, r, b来确定每个子视图在父视图中的显示位置。onLayout过程会通过调用getMeasuredWidth()和getMeasuredHeight()方法获取到measure过程得到的mMeasuredWidth和mMeasuredHeight,这两个参数为layout过程提供了一个很重要的参考值（不是必须的）。    
@@ -109,6 +104,7 @@ View在测量阶段的最终大小的设定是由setMeasuredDimension()方法决
 为了防止这种情况发生，你的app需要区分初始点以及之后任意的触摸点。要做到这一点，它需要追踪处理多触摸手势中提到过的ACTION_POINTER_DOWN、 ACTION_POINTER_UP事件。每当第二根手指按下或拿起时，ACTION_POINTER_DOWN、ACTION_POINTER_UP事件就会传递给onTouchEvent())回调函数。
 	
 ##### 3.2.3.3 确保操作中的点的ID(the active pointer ID)不会引用已经不在触摸屏上的触摸点  
+
 当ACTION_POINTER_UP事件发生时，示例程序会移除对该点的索引值的引用，确保操作中的点的ID(the active pointer ID)不会引用已经不在触摸屏上的触摸点。这种情况下，app会选择另一个触摸点来作为操作中(active)的点，并保存它当前的x、y值。由于在ACTION_MOVE事件时，这个保存的位置会被用来计算屏幕上的对象将要移动的距离，所以app会始终根据正确的触摸点来计算移动的距离。
   
 mTouchSlop  
@@ -461,7 +457,6 @@ public class CirclePageIndicator extends View implements PageIndicator {
 }
 
 ```
-
 
 ####3.1.4 相关文章  
 View的绘制：  
