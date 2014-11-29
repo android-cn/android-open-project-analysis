@@ -88,12 +88,7 @@ CircularFloatingActionMenu 实现原理解析
 
 ###3. 流程图
 主要功能流程图  
-- 如 Retrofit、Volley 的请求处理流程，Android-Universal-Image-Loader 的图片处理流程图  
-- 可使用 StartUML、Visio 或 Google Drawing 等工具完成，其他工具推荐？？  
-- 非所有项目必须，不需要的请先在群里反馈  
-
-**完成时间**  
-- `两天内`完成  
+![流程图](https://github.com/android-cn/android-open-project-analysis/blob/master/circular-floating-action-menu/流程图.jpg "流程图")
 
 ###4. 总体设计
 整个库分为哪些模块及模块之间的调用关系。  
