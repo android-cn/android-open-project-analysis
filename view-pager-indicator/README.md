@@ -14,14 +14,11 @@ ViewPagerIndicator用于各种基于AndroidSupportLibrary中ViewPager的界面�
 IcsLinearLayout：LinearLayout的扩展，支持了4.0以上的divider特性。
 CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator、TitlePagerIndicator继承自View。    
 TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView。  
-
-### 3. 详细设计  
-####3.1 自定义控件相关知识  
-由于本项目主要就是自定义控件，那么项目的分析，总体上就是对自定义控件的分析。这里就分析一个自定义控件的创建步骤、View的绘制机制、Touch事件的处理。    
-
-大家可能会担心这些相关知识点最权威和最系统的讲解，其实官方文档就有。英文费劲没关系（最好看英文版），GitHub协作项目[android-training-course-in-chinese](https://github.com/kesenhoo/android-training-course-in-chinese)已经出了中文版的，并且有PDF版本，大家可以去下载。（强烈建议大家去下载，一定会Android的整体知识架构有清晰的认识。从英文的角度完全把握官方文档，确实有些费劲，但还是建议有时间的时候，多看看官方的英文文档）
-
-####3.1.1 自定义控件步骤  
+### 3. 详细设计    
+####3.1类关系图
+![viewpagerindicator img](image/class_relation.png)  
+####3.2 自定义控件相关知识  
+####3.2.1 自定义控件步骤  
 以下直接引用了其中的一些篇章前言，具体内容大家直接点击链接进入正文
 
 1. [自定义控件创建步骤](http://hukai.me/android-training-course-in-chinese/ui/custom-view/index.html) ：  
@@ -40,10 +37,10 @@ TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView。
 4. [Android的用户输入](http://hukai.me/android-training-course-in-chinese/best-user-input.html)  
 这里着重要看一下拖拽与缩放这一部分。因为在ViewPagerIndicator的几种实现：Circle，Title，UnderLine的onTouchEvent里的处理逻辑是一样的，而且和官方文档中的代码逻辑也是一样的，看了讲解之后，相信大家就会有所了解了：http://hukai.me/android-training-course-in-chinese/input/gestures/scale.html
     
-####3.1.2 View绘制机制  
+####3.2.2 View绘制机制  
 参考文献：http://developer.android.com/guide/topics/ui/how-android-draws.html
 
-#####3.1.2.1  基础概念 
+#####3.2.2.1  基础概念 
 当Activity接收到焦点的时候，它会被请求绘制布局。Android framework将会处理绘制的流程，但Activity必须提供View层级的根节点。绘制是从根节点开始的，需要measure和draw布局树。绘制会遍历和渲染每一个与无效区域相交的view。相反，每一个ViewGroup负责绘制它所有的childrenview，而View会负责绘制自身。树的遍历是有序的，parent view要先于child View被绘制，
 
 绘制布局有两步：measure和layout  
@@ -81,7 +78,7 @@ MeasureSpecs
 **AT_MOST**  
 父视图为子视图指定一个最大值。子视图必须确保它自己的所有子视图在该尺寸范围内，相应的属性为WRAP_CONTENT   
  
-#####3.1.2.2 measure核心方法  
+#####3.2.2.2 measure核心方法  
 measure(int widthMeasureSpec, int heightMeasureSpec)方法  
 该方法定义在View.java类中，final修饰符修饰，因此不能被重载，但measure调用链会回调View/ViewGroup对象的onMeasure()方法，因此我们只需要复写onMeasure()方法去计算自己的控件尺寸即可。  
 该方法的两个参数分别是父视图提供的测量规格MeasureSpec。当父视图调用子视图的measure函数对子视图进行测量时，会传入这两个参数。通过这两个参数以及子视图本身的LayoutParams来共同决定子视图的测量规格MeasureSpec。其实整个measure过程就是从上到下遍历，不断的根据父视图的MeasureSpec和子视图自身的LayotuParams获取子视图自己的MeasureSpec，最终调用子视图的measure(int widthMeasureSpec, int heightMeasureSpec)方法确定最终的mMeasuredWidth和mMeasuredHeight。ViewGroup的measureChildWithMargins函数中体现了这个过程。  
@@ -90,23 +87,24 @@ measure(int widthMeasureSpec, int heightMeasureSpec)方法
 setMeasuredDimension()方法  
 View在测量阶段的最终大小的设定是由setMeasuredDimension()方法决定的,该方法最终会对每个View的mMeasuredWidth和mMeasuredHeight进行赋值，一旦这两个变量被赋值，则意味着该View的测量工作结束，setMeasuredDimension()也是必须要调用的方法，否则会报异常。在setMeasuredDimension()方法内部，你可以根据需求，去计算View的尺寸。  
 
-#####3.1.2.2 layout相关核心概念及方法  
+#####3.2.2.3 layout相关核心概念及方法  
 子视图的具体位置都是相对与父视图的位置。与onMeasure过程类似，ViewGroup在onLayout函数中通过调用其children的layout函数来设置子视图相对与父视图中的位置，具体位置由函数layout的参数决定，当我们继承ViewGroup时必须重载onLayout函数（ViewGroup中onLayout是abstract修饰），然而onMeasure并不要求必须重载，因为相对与layout来说，measure过程并不是必须的。  
 
 实现onLayout通常做法就是进行一个for循环调用每一个子视图的layout(l, t, r, b)函数，传入不同的参数l, t, r, b来确定每个子视图在父视图中的显示位置。onLayout过程会通过调用getMeasuredWidth()和getMeasuredHeight()方法获取到measure过程得到的mMeasuredWidth和mMeasuredHeight,这两个参数为layout过程提供了一个很重要的参考值（不是必须的）。    
 
 之所以说measure过程不是必须的，是因为layout过程中的4个参数l, t, r,b完全可以由视图设计者任意指定，如果在自定义的onLayout中手动指定了layout的参数，而不用measure过程的值，也是可以的，当然一般没人会这么做，这样也违背了Android框架的绘制机制，通常的做法是根据需求在measure过程决定尺寸，layout步骤决定位置，除非你只是指定View的位置，而不考虑View的尺寸。  
 
-####3.1.3 Android的用户输入  	
+####3.2.3 Android的用户输入  	
 要注意的有以下几点（更详细的介绍可以参考原文）  
 
-##### 3.1.3.1 保持对最初点的追踪  
+##### 3.2.3.1 保持对最初点的追踪  
 拖拽操作时，即使有额外的手指放置到屏幕上了，app也必须保持对最初的点（手指）的追踪。比如，想象在拖拽图片时，用户放置了第二根手指在屏幕上，并且抬起了第一根手指。如果你的app只是单独地追踪每个点，它会把第二个点当做默认的点，并且把图片移到该点的位置。
 	
-##### 3.1.3.2 区分原始点及之后的任意触摸点   
+##### 3.2.3.2 区分原始点及之后的任意触摸点   
 为了防止这种情况发生，你的app需要区分初始点以及之后任意的触摸点。要做到这一点，它需要追踪处理多触摸手势中提到过的ACTION_POINTER_DOWN、 ACTION_POINTER_UP事件。每当第二根手指按下或拿起时，ACTION_POINTER_DOWN、ACTION_POINTER_UP事件就会传递给onTouchEvent())回调函数。
 	
-##### 3.1.3.3 确保操作中的点的ID(the active pointer ID)不会引用已经不在触摸屏上的触摸点  
+##### 3.2.3.3 确保操作中的点的ID(the active pointer ID)不会引用已经不在触摸屏上的触摸点  
+
 当ACTION_POINTER_UP事件发生时，示例程序会移除对该点的索引值的引用，确保操作中的点的ID(the active pointer ID)不会引用已经不在触摸屏上的触摸点。这种情况下，app会选择另一个触摸点来作为操作中(active)的点，并保存它当前的x、y值。由于在ACTION_MOVE事件时，这个保存的位置会被用来计算屏幕上的对象将要移动的距离，所以app会始终根据正确的触摸点来计算移动的距离。
   
 mTouchSlop  
@@ -115,7 +113,7 @@ mTouchSlop
 [onTouchEvent](http://hukai.me/android-training-course-in-chinese/input/gestures/scale.html)		
 对于pointer的处理是模板方法，在拖拽与缩放中有详细的讲解。ViewPagerIndicator中的onTouchEvent中的代码也就是官方文档的模板代码，就是为了确保以上几点，获取到可用、确信的点，然后处理ViewPager相应的偏移和滑动。
   
-####3.1.4 CirclePageIndicator 源码分析  
+####3.2.4 CirclePageIndicator 源码分析  
 
 ```java
 public class CirclePageIndicator extends View implements PageIndicator {
@@ -457,8 +455,6 @@ public class CirclePageIndicator extends View implements PageIndicator {
         return result;
     }
 }
-
-```
 
 ```
 

@@ -10,14 +10,14 @@
 [photup](https://github.com/chrisbanes/photup) | [aiqianxian](https://github.com/aiqianxian) | | 11/28 | 12/01 | 12/05 | 12/08 | 12/12 | 12/15 |  
 [Volley](https://android.googlesource.com/platform/frameworks/volley) | [grumoon](https://github.com/grumoon) | [promeG](https://github.com/promeG) |Done |11/28 | 12/03| 12/05|12/08 | 12/11 |  
 [Otto](https://github.com/square/otto) | [promeG](https://github.com/promeG) | [grumoon](https://github.com/grumoon) | Done | 11/27 | 12/03 | 12/10 | 12/17 | 12/20 |  
-[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [lightSky](https://github.com/lightSky) | [drakeet](https://github.com/drakeet)  |11/27 |11/27 | 11/30| 12/02|12/05 | 12/08 |  
+[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [lightSky](https://github.com/lightSky) | [drakeet](https://github.com/drakeet)  |Done|Done| 11/30| 12/02|12/05 | 12/08 |  
 [HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary) | [aaronplay](https://github.com/AaronPlay) | | Done | Done | Done | 11/28 | 11/30 | 12/02 |  
 [picasso](https://github.com/square/picasso) | [爱早起](https://github.com/liang7) | | 11/26 | 11/28 | 12/02 | 12/07 | 12/13 | 12/14 |  
 [XUtils](https://github.com/wyouflf/xUtils) | [Caij](https://github.com/Caij) | [maogy](https://github.com/maogy) | Done| 11/27 | 12/07 | 12/11 | 12/16 | 12/17 |  
 [DataDroid](https://github.com/foxykeep/DataDroid) | [cheyiliu](https://github.com/cheyiliu) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
 [CircularFloat…](https://github.com/oguzbilgener/CircularFloatingActionMenu "CircularFloatingActionMenu") | [cpacm](https://github.com/cpacm) | | Done | Done | 11/27 | 11/29 | 12/01 | 12/03 |  
 [ListViewAnimations](https://github.com/nhaarman/ListViewAnimations) | [waylife](https://github.com/waylife) | | Done | Done | 11/23 | 11/30 | 12/7 | 12/14 |  
-[GreenDAO](https://github.com/greenrobot/greenDAO) | [maogy](https://github.com/maogy) |[Caij](https://github.com/Caij) | 11/25 | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
+[GreenDAO](https://github.com/greenrobot/greenDAO) | [maogy](https://github.com/maogy) |[Caij](https://github.com/Caij) | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
 [ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [longtaoge](https://github.com/longtaoge) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
 [UniversalImage…](https://github.com/nostra13/Android-Universal-Image-Loader "Android-Universal-Image-Loader") | [huxian99](https://github.com/huxian99) | | 11/28 | 12/1 | 12/6 | 12/8 | 12/10 | 12/12 |   
 [PhotoView](https://github.com/chrisbanes/PhotoView/) | [dkmeteor](https://github.com/dkmeteor) | | Done | Done | 12/6 | 12/8 | 12/10 | 12/12 |   
