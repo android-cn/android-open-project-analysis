@@ -87,30 +87,31 @@ measure(int widthMeasureSpec, int heightMeasureSpec)方法
 setMeasuredDimension()方法  
 View在测量阶段的最终大小的设定是由setMeasuredDimension()方法决定的,该方法最终会对每个View的mMeasuredWidth和mMeasuredHeight进行赋值，一旦这两个变量被赋值，则意味着该View的测量工作结束，setMeasuredDimension()也是必须要调用的方法，否则会报异常。在setMeasuredDimension()方法内部，你可以根据需求，去计算View的尺寸。  
 
-#####3.2.2.3 layout相关核心概念及方法  
+#####3.2.2.3 layout相关概念及核心方法  
 子视图的具体位置都是相对与父视图的位置。与onMeasure过程类似，ViewGroup在onLayout函数中通过调用其children的layout函数来设置子视图相对与父视图中的位置，具体位置由函数layout的参数决定，当我们继承ViewGroup时必须重载onLayout函数（ViewGroup中onLayout是abstract修饰），然而onMeasure并不要求必须重载，因为相对与layout来说，measure过程并不是必须的。  
 
 实现onLayout通常做法就是进行一个for循环调用每一个子视图的layout(l, t, r, b)函数，传入不同的参数l, t, r, b来确定每个子视图在父视图中的显示位置。onLayout过程会通过调用getMeasuredWidth()和getMeasuredHeight()方法获取到measure过程得到的mMeasuredWidth和mMeasuredHeight,这两个参数为layout过程提供了一个很重要的参考值（不是必须的）。    
 
 之所以说measure过程不是必须的，是因为layout过程中的4个参数l, t, r,b完全可以由视图设计者任意指定，如果在自定义的onLayout中手动指定了layout的参数，而不用measure过程的值，也是可以的，当然一般没人会这么做，这样也违背了Android框架的绘制机制，通常的做法是根据需求在measure过程决定尺寸，layout步骤决定位置，除非你只是指定View的位置，而不考虑View的尺寸。  
 
-#####3.2.2.4 绘制流程相关核心概念及方法    
+#####3.2.2.4 绘制流程相关概念及核心方法    
 draw过程在measure()和layout()之后进行，最终会调用到mView的draw()函数，这里的mView对于Actiity来说就是PhoneWindow.DecorView。  
+整个View树的绘图流程是在ViewRoot.java类的performTraversals()函数展开的，该函数做的执行过程可简单概况为根据之前设置的状态，判断是否需要重新计算视图大小(measure)、是否重新需要安置视图的位置(layout)、以及是否需要重绘(draw)，这里就不做延展了，我们只介绍在自定义View中直接涉及到的一些部分。
 
-首先来看下与draw过程相关的函数：  
+先来看下与draw过程相关的函数：  
 
 ViewRootImpl.draw()：仅在ViewRootImpl.performTraversals()的内部调用
 
-DecorView.draw()：ViewRootImpl.draw()会调用到该函数，DecorView.draw()继承自Framelayout由于DecorView、FrameLayout以及FrameLayout的父类ViewGroup都未复写draw(),而ViewGroup的父类是View，因此DecorView.draw()调用的就是View.draw()。
+DecorView.draw()：ViewRootImpl.draw()方法会调用该函数，DecorView.draw()继承自Framelayout，由于DecorView、FrameLayout以及FrameLayout的父类ViewGroup都未复写draw(),而ViewGroup的父类是View，因此DecorView.draw()调用的就是View.draw()。
 
-View.onDraw()：绘制View本身，自定义View往往会重载该函数来绘制View本身的内容
+View.onDraw()：绘制View本身，自定义View往往会重载该函数来绘制View本身的内容。
 
-View.dispatchDraw()： View中的dispatchDraw是空实现，ViewGroup复写了该函数，内部循环调用View.drawChild()来发起对子视图的绘制，你不应该重载ViewGroup的dispatchDraw，因为该函数的默认实现代表了View的绘制流程
+View.dispatchDraw()： View中的dispatchDraw是空实现，ViewGroup复写了该函数，内部循环调用View.drawChild()来发起对子视图的绘制，你不应该重载View的dispatchDraw()方法，因为该函数的默认实现代表了View的绘制流程，你不可能也没必要把系统的绘制流程写一遍吧。
 
-ViewGroup.drawChild()：该函数只在ViewGroup中实现，因为只有ViewGroup才需要绘制child，drawChild内部又会调用View.draw()来完成子视图的绘制（也有可能直接调用dispatchDraw）  
+ViewGroup.drawChild()：该函数只在ViewGroup中实现，因为只有ViewGroup才需要绘制child，drawChild内部还是调用View.draw()来完成子视图的绘制（也有可能直接调用dispatchDraw）。
 
 View.draw(Canvas)方法：  
-```
+```java
  /**
      * Manually render this view (and all of its children) to the given Canvas.
      * The view must have already done a full layout before this function is
@@ -162,10 +163,10 @@ View.draw(Canvas)方法：
 View的背景绘制-----> View本身内容的绘制----->子视图的绘制（如果包含子视图）----->渐变框的绘制---->滚动条的绘制。  
 onDraw()和dispatchDraw()分别为View本身内容和子视图绘制的函数。  
 View和ViewGroup的onDraw()都是空实现，因为具体View如何绘制由设计者来决定的，默认不绘制任何东西。
-ViewGroup复写了dispatchDraw()来对其子视图进行绘制，通常应用程序不应该对dispatchDraw()进行复写，其默认实现体现了View系统的绘制流程。
+ViewGroup复写了dispatchDraw()来对其子视图进行绘制，通常你自己定义的ViewGroup不应该对dispatchDraw()进行复写，因为它的默认实现体现了View系统的绘制流程，该流程所做的一系列工作你不用去管，你要做的就是复写View.onDraw(Canvas)方法或者ViewGroup.draw(Canvas)方法，但在ViewGroup.draw(Canvas)方法调用前，记得先调用super.draw(canvas)方法，先去绘制基础的View，然后你可以ViewGroup.draw(Canvas)方法里做一些自己的绘制，在高级的自定义中会有这样的需求。
 
-dispatchDraw()的核心代码就是通过for循环调用drawChild()对ViewGroup的每个子视图进行动画以及绘制:
-```
+dispatchDraw(Canvas)的核心代码就是通过for循环调用drawChild(canvas, child, drawingTime)方法对ViewGroup的每个子视图进行动画以及绘制:
+```java
 dispatchDraw(Canvas canvas){
 
 ...
@@ -209,9 +210,20 @@ dispatchDraw(Canvas canvas){
 
 }
 
+protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+        return child.draw(canvas, this, drawingTime);
+}
+
 ```
-drawChild()方法：  
-核心过程：为子视图分配合适的cavas剪切区，剪切区的大小正是由layout过程决定的，而剪切区的位置取决于滚动值以及子视图当前的动画。设置完剪切区后就会调用子视图的draw()函数进行具体的绘制，如果子视图的包含SKIP_DRAW标识，那么仅调用dispatchDraw()，即跳过子视图本身的绘制，但要绘制视图可能包含的字视图。完成了dispatchDraw()过程后，View系统会调用onDrawScrollBars()来绘制滚动条。
+drawChild(canvas, this, drawingTime)方法：  
+直接调用了View的child.draw(canvas, this,drawingTime)方法，和View.draw(canvas)不同的是：draw(canvas, this,drawingTime)方法是ViewGroup.drawChild()内部调用的，用于绘制其子视图，而且文档中也说明了，除了被ViewGroup.drawChild()方法外，你不应该去复写该方法或者在其它任何地方调用该方法，也就是说，该方法其实我们永远也接触不到，它是ViewGroup绘制流程中的一步。而View.draw(Canvas) 方法是我们自定义控件中可以复写的方法，具体可以参考上述对view.draw(Canvas)的说明。
+child.draw(canvas, this,drawingTime)肯定是处理了和父视图相关的逻辑，但对于View的绘制，最终调用的还是View.draw(Canvas)方法。
+
+invalidate()方法:
+请求重绘View树，即draw()过程，假如视图发生大小没有变化就不会调用layout()过程，并且只绘制那些调用了invalidate()方法的View。
+
+requestLayout()方法 ：
+会触发measure()和layout()过程（不会进行draw）。
 
 ####3.2.3 Android的用户输入  	
 要注意的有以下几点（更详细的介绍可以参考原文）  
