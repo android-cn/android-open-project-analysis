@@ -91,19 +91,11 @@ CircularFloatingActionMenu 实现原理解析
 ![流程图](https://github.com/android-cn/android-open-project-analysis/blob/master/circular-floating-action-menu/流程图.jpg "流程图")
 
 ###4. 总体设计
-整个库分为哪些模块及模块之间的调用关系。  
-- 如大多数图片缓存会分为 Loader 和 Processer 等模块。  
-- 可使用 StartUML、Visio 或 Google Drawing 等工具完成，其他工具推荐？？  
-- 非所有项目必须，不需要的请先在群里反馈。  
-
-**完成时间**  
-- `两天内`完成  
+整个库没有复杂的关系，只是在应用的时候调用导入一下library就行了。
 
 ###5. 杂谈
-该项目存在的问题、可优化点及类似功能项目对比等，非所有项目必须。  
+动画的类型有点少，以及不支持分辨率奇葩的机型，如魅族3
 
-**完成时间**  
-- `两天内`完成  
 
 ###6. 修改完善  
 在完成了上面 5 个部分后，移动模块顺序，将  
