@@ -40,7 +40,9 @@ TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView。
     
 ####3.2.2 View绘制机制  
 #####3.2.2.1 View树的绘图流程
+整个View树的绘图流程是由ViewRoot.java类的performTraversals()函数发起的，整个流程如下
 ![view_mechanism_flow img](image/view_mechanism_flow.png)  
+
 #####3.2.2.2  概念 
 参考文献：http://developer.android.com/guide/topics/ui/how-android-draws.html  
 
