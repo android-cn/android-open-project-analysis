@@ -4,6 +4,7 @@ universal-image-loader-demo-huxian99 部分
 项目地址：[Android-Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader)
 分析的版本：1.9.3，Demo 地址：[Android-Universal-Image-Loader Demo](https://github.com/android-cn/android-open-project-demo/tree/master/universal-image-loader-demo-huxian99)
 分析者：[huxian99](https://github.com/huxian99)，校对者：校对状态：未完成
+
 ##1. 功能介绍
 #####简单的说就做了一件事, 将**图片**显示在**相应的控件**上.
 看似简单的一句话, 但实际项目里会碰到各种各样问题，比如多图片的缓存策略，磁盘缓存，网络请求的线程池策略等等. 好在Universal-Image-Loader这个库都帮我们做好了，只需要简单配置就可以使用了.
