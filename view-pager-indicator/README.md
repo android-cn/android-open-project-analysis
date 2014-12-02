@@ -41,6 +41,7 @@ TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView。
 ####3.2.2 View绘制机制  
 #####3.2.2.1 View树的绘图流程
 整个View树的绘图流程是由ViewRoot.java类的performTraversals()函数发起的，整个流程如下
+
 ![view_mechanism_flow img](image/view_mechanism_flow.png)  
 
 #####3.2.2.2  概念 
@@ -237,7 +238,8 @@ child.draw(canvas, this,drawingTime)肯定是处理了和父视图相关的逻�
 会触发measure()和layout()过程（不会进行draw）。
 
 ####3.2.3 Android的用户输入  	
-要注意的有以下几点（更详细的介绍可以参考原文）  
+要注意的有以下几点（更详细的介绍可以参考[拖拽与缩放](http://hukai.me/android-training-course-in-chinese/input/gestures/scale.html)部分）
+
 
 ##### 3.2.3.1 保持对最初点的追踪  
 拖拽操作时，即使有额外的手指放置到屏幕上了，app也必须保持对最初的点（手指）的追踪。比如，想象在拖拽图片时，用户放置了第二根手指在屏幕上，并且抬起了第一根手指。如果你的app只是单独地追踪每个点，它会把第二个点当做默认的点，并且把图片移到该点的位置。
