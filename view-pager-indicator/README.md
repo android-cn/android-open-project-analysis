@@ -76,22 +76,148 @@ MeasureSpecs
 用于从上到下传递父视图对子视图测量需求,其有三种模式:      
 
 - UNSPECIFIED  
-父视图可以为子视图设置它所期望的大小。比如一个LinearLayout可以在它的子view上调用measure()方法去测量一个高设置为UNSPECIFIED模式，宽为240pixels的view大小。    
+父视图不对子视图有任何约束，它可以达到所期望的任意尺寸。
 
 - EXACTLY  
-父视图决定子视图的确切大小，子视图必须使用该大小，并确保它所有的子视图可以适应在该尺寸的范围内；相对应属性的是MATCH_PARENT   
+父视图为子视图指定一个确切的尺寸，而且无论子视图期望多大，它都必须在该指定大小的边界内。
 
 - AT_MOST  
-父视图为子视图指定一个最大值。子视图必须确保它自己的所有子视图在该尺寸范围内，相应的属性为WRAP_CONTENT   
+父视图为子视图指定一个最大尺寸。子视图必须确保它自己的所有子视图可以适应在该尺寸范围内。
  
 #####3.2.2.3 measure核心方法  
 - measure(int widthMeasureSpec, int heightMeasureSpec)  
-该方法定义在View.java类中，final修饰符修饰，因此不能被重载，但measure调用链会回调View/ViewGroup对象的onMeasure()方法，因此我们只需要复写onMeasure()方法去计算自己的控件尺寸即可。  
-该方法的两个参数分别是父视图提供的测量规格MeasureSpec。当父视图调用子视图的measure函数对子视图进行测量时，会传入这两个参数。通过这两个参数以及子视图本身的LayoutParams来共同决定子视图的测量规格MeasureSpec。其实整个measure过程就是从上到下遍历，不断的根据父视图的MeasureSpec和子视图自身的LayotuParams获取子视图自己的MeasureSpec，最终调用子视图的measure(int widthMeasureSpec, int heightMeasureSpec)方法确定最终的mMeasuredWidth和mMeasuredHeight。ViewGroup的measureChildWithMargins函数中体现了这个过程。  
-具体过程分析可以参考：http://blog.csdn.net/wangjinyu501/article/details/9008271
+该方法定义在View.java类中，final修饰符修饰，因此不能被重载，但measure调用链会回调View/ViewGroup对象的onMeasure()方法，因此我们只需要复写onMeasure()方法去计算自己的控件尺寸即可。
+
+- onMeasure(int widthMeasureSpec, int heightMeasureSpec)  
+该方法的两个参数分别是父视图提供的测量规格MeasureSpec。当父视图调用子视图的measure函数对子视图进行测量时，会传入这两个参数。通过这两个参数以及子视图本身的LayoutParams来共同决定子视图的测量规格MeasureSpec。其实整个measure过程就是从上到下遍历，不断的根据父视图宽高MeasureSpec:widthMeasureSpec、heightMeasureSpec和子视图自身的LayotuParams获取子视图自己的宽高MeasureSpec：widthMeasureSpec、heightMeasureSpec，最终调用子视图的measure(int widthMeasureSpec, int heightMeasureSpec)方法确定mMeasuredWidth和mMeasuredHeight。ViewGroup的measureChildWithMargins函数中体现了这个过程。  
 
 - setMeasuredDimension()  
 View在测量阶段的最终大小的设定是由setMeasuredDimension()方法决定的,该方法最终会对每个View的mMeasuredWidth和mMeasuredHeight进行赋值，一旦这两个变量被赋值，则意味着该View的测量工作结束，setMeasuredDimension()也是必须要调用的方法，否则会报异常。在setMeasuredDimension()方法内部，你可以根据需求，去计算View的尺寸。  
+
+ViewGroup中，含有两个对子视图Measure的方法:  
+```java
+    /**
+     * 只包含子View的padding   
+     */
+ measureChildren(int widthMeasureSpec, int heightMeasureSpec)
+```
+
+```java
+    /**
+     * 包含子View的padding和margin  
+     */
+measureChildWithMargins(View child,
+            int parentWidthMeasureSpec, int widthUsed,
+            int parentHeightMeasureSpec, int heightUsed)
+```
+下面就通过measureChildren（int widthMeasureSpec, int heightMeasureSpec)方法来对整个流程遍历过程进行分析：
+```java
+    /**
+     * 请求所有子View去measure自己，要考虑的部分有对子View的测绘要求MeasureSpec以及其自身的padding
+     * 这里跳过所有为GONE状态的子View，最繁重的工作在getChildMeasureSpec方法中完成
+     *
+     * @param widthMeasureSpec  对该View的width测绘要求
+     * @param heightMeasureSpec 对该View的height测绘要求
+     */
+    protected void measureChildren(int widthMeasureSpec, int heightMeasureSpec) {
+        final int size = mChildrenCount;
+        final View[] children = mChildren;
+        for (int i = 0; i < size; ++i) {
+            final View child = children[i];
+            if ((child.mViewFlags & VISIBILITY_MASK) != GONE) {
+                measureChild(child, widthMeasureSpec, heightMeasureSpec);
+            }
+        }
+    }
+    
+    protected void measureChild(View child, int parentWidthMeasureSpec,
+            int parentHeightMeasureSpec) {
+        final LayoutParams lp = child.getLayoutParams();
+
+        final int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec,//获取ChildView的widthMeasureSpec
+                mPaddingLeft + mPaddingRight, lp.width);
+        final int childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,//获取ChildView的heightMeasureSpec
+                mPaddingTop + mPaddingBottom, lp.height);
+
+        child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+    }
+
+
+  /** 
+     * 该方法是measureChildren中最繁重的部分，为每一个ChildView计算出正确的MeasureSpec，
+     * 目标是将ChildView的MeasureSpec和LayoutParams结合起来去得到一个最合适的结果。
+     * 比如，如果该View知道自己的尺寸（假设它的MeasureSpec Mode为EXACTLY），并且该Child已经在它的
+     * LayoutParams中表明了想获得一个和parent View相同的大小，那么parent应该请求该Child以一个给定
+     * 的尺寸放置
+     *
+     * @param spec 对该view的测绘要求
+     * @param padding 当前View在当前唯独上的paddingand，也有可能含有margins
+     *
+     * @param childDimension 在当前维度上希望的大小
+     * @return a MeasureSpec integer for the child
+     */
+    public static int getChildMeasureSpec(int spec, int padding, int childDimension) {
+    	...
+    }
+    
+   /**
+     *
+     * 用于获取View最终的大小，父视图提供了宽高参数中的约束信息
+     * 一个View的真正的测量工作是在onMeasure(int,int)中，由该方法调用。因此，只有onMeasure(int,int)
+     * 可以而且必须被子类复写（因为onMeasure是abstract的）
+     *
+     * @param widthMeasureSpec 在水平方向上，父视图指定的的Measure要求
+     * @param heightMeasureSpec 在竖直方向上，控件上父视图指定的Measure要求
+     *
+     */
+    public final void measure(int widthMeasureSpec, int heightMeasureSpec) {
+      ...
+      
+      onMeasure(widthMeasureSpec, heightMeasureSpec);
+      
+      ...
+    }
+    
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        setMeasuredDimension(getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec),
+                getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec));
+    }
+    
+    /**
+     * 返回默认值的方法，如果MeasureSpec没有约束（Mode为UNSPECIFIED），则使用给定的值
+     * 如果MeasureSpec允许，将得到一个更大的值。 
+     * @param size 该View的默认值
+     * @param measureSpec 父视图的约束
+     * @return 该View应该的大小
+     */
+    public static int getDefaultSize(int size, int measureSpec) {
+        int result = size;
+        int specMode = MeasureSpec.getMode(measureSpec);
+        int specSize = MeasureSpec.getSize(measureSpec);
+
+        switch (specMode) {
+        case MeasureSpec.UNSPECIFIED:
+            result = size;
+            break;
+        case MeasureSpec.AT_MOST:
+        case MeasureSpec.EXACTLY:
+            result = specSize;
+            break;
+        }
+        return result;
+    }
+    
+    /**
+     * 返回建议的最小宽度值。会在View的最小值和背景图片的最小值之间获取一个较大的值
+     * 当在onMeasure(int,int)方法中使用的时候，调用者应该始终保证返回的宽度值在其父视图
+     * 要求的范围内
+     * @return 当前View的建议最小宽度值
+     */
+    protected int getSuggestedMinimumWidth() {
+        return (mBackground == null) ? mMinWidth : max(mMinWidth, mBackground.getMinimumWidth());
+    }
+```
+
 
 #####3.2.2.4 layout相关概念及核心方法  
 子视图的具体位置都是相对与父视图的位置。与onMeasure过程类似，ViewGroup在onLayout函数中通过调用其children的layout函数来设置子视图相对与父视图中的位置，具体位置由函数layout的参数决定，当我们继承ViewGroup时必须重载onLayout函数（ViewGroup中onLayout是abstract修饰），然而onMeasure并不要求必须重载，因为相对与layout来说，measure过程并不是必须的。  
