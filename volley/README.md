@@ -14,23 +14,23 @@ Volley是Google推出的Android异步网络调用框架和图片加载框架。�
 从名字由来和配图中无数急促的火箭可以看出Volley的特点：特别适合**数据量小，通信频繁**的网络操作。（个人认为Android应用中绝大多数的网络操作都属于这种类型）。
 
 **Volley的主要特点**
-> 1.默认Android2.3及以上基于HttpURLConnection，2.3以下使用基于HttpClient   
-> 2.符合Http **缓存语义** 的缓存机制   
-> 3.请求队列的优先级排序   
-> 4.提供多样的取消机制   
-> 5.提供简便的图片加载工具    
+> 1.默认Android2.3及以上基于HttpURLConnection，2.3以下使用基于HttpClient  
+> 2.符合Http **缓存语义** 的缓存机制  
+> 3.请求队列的优先级排序  
+> 4.提供多样的取消机制  
+> 5.提供简便的图片加载工具  
 
 ###2. 详细设计
 ###2.1 核心类功能介绍
 ####2.1.1 Volley.java 
-这个和Volley框架同名的类，其实是个工具类。作用是帮助构建一个RequestQueue对象。有两个重载的静态方法。
+这个和Volley框架同名的类，其实是个工具类。作用是帮助构建一个RequestQueue对象。有两个重载的静态方法。  
 ```java
 public static RequestQueue newRequestQueue(Context context)
 
 public static RequestQueue newRequestQueue(Context context, HttpStack stack)
 ```
-第一个方法的实现调用第二个方法，传HttpStack参数为null。
-第二个方法中，如果HttpStatck为null，则默认情况下如果系统版本大于等于9，采用基于UrlConnection的HrulStack，如果小于9，采用基于HttpClient的HttpClientStack。
+第一个方法的实现调用第二个方法，传HttpStack参数为null。  
+第二个方法中，如果HttpStatck为null，则默认情况下如果系统版本大于等于9，采用基于UrlConnection的HurlStack，如果小于9，采用基于HttpClient的HttpClientStack。  
 ```java
 if (stack == null) {
     if (Build.VERSION.SDK_INT >= 9) {
@@ -41,8 +41,8 @@ if (stack == null) {
 }
 ```
 
-得到了HttpStack,然后通过它构造一个代表网络（Network）的实现BasicNetwork。
-接着构造一个代表缓存（Cache）的基于Disk的实现DiskBasedCache。
+得到了HttpStack,然后通过它构造一个代表网络（Network）的具体实现BasicNetwork。  
+接着构造一个代表缓存（Cache）的基于Disk的具体实现DiskBasedCache。  
 最后将网络（Network）对象和缓存（Cache）对象传入构建一个RequestQueue，启动这个RequestQueue，并返回。
 ```java
 Network network = new BasicNetwork(stack);
@@ -50,17 +50,17 @@ RequestQueue queue = new RequestQueue(new DiskBasedCache(cacheDir), network);
 queue.start();
 return queue;
 ```
-> 我们平时大多采用`Volly.newRequestQueue(context)`的默认实现，构建RequestQueue。
-> 通过源码可以看出，我们可以抛开Volley工具类构建自定义的RequestQueue，采用自定义的HttpStatck，采用自定义的Network实现，采用自定义的Cache实现等来构建RequestQueue。
+> 我们平时大多采用`Volly.newRequestQueue(context)`的默认实现，构建RequestQueue。  
+> 通过源码可以看出，我们可以抛开Volley工具类构建自定义的RequestQueue，采用自定义的HttpStatck，采用自定义的Network实现，采用自定义的Cache实现等来构建RequestQueue。  
 **优秀框架的高可拓展性的魅力来源于此啊**
 
 ####2.1.2 Request.java
-代表一个网络请求的抽象类。我们通过构建Request类的具体实现（StringRequest,JsonRequest,ImageRequest等），并且将其加入到RequestQueue中来完成网络请求操作。
+代表一个网络请求的抽象类。我们通过构建Request类的具体实现（StringRequest,JsonRequest,ImageRequest等），并且将其加入到RequestQueue中来完成网络请求操作。  
 
-Volley支持8个http请求方法**GET,POST,PUT,DELETE,HEAD,OPTIONS,TRACE,PATCH**
-Request类中包含了，请求url，请求方法，请求Header，请求Body，请求的优先级等信息。
+Volley支持8个http请求方法**GET,POST,PUT,DELETE,HEAD,OPTIONS,TRACE,PATCH**  
+Request类中包含了，请求url，请求方法，请求Header，请求Body，请求的优先级等信息。  
 
-**因为是抽象类，子类必须重写的两个方法。**
+**因为是抽象类，子类必须重写的两个方法。**  
 ```java
 abstract protected Response<T> parseNetworkResponse(NetworkResponse response);
 ```
@@ -80,29 +80,30 @@ protected Map<String, String> getParams()
 ```java
 public byte[] getBody()
 ```
-重写此方法，可以构建POST或者PUT的最终Body字节内容。
+重写此方法，可以构建POST或者PUT的Body字节内容。
 
 
 ####2.1.3 RequestQueue.java
-Volley核心类，将请求Request请求加入到一个运行的RequestQueue中，来完成请求操作。
+Volley框架的核心类，将请求Request加入到一个运行的RequestQueue中，来完成请求操作。
 ####(1)主要成员变量
-RequestQueue中维护了两个基于优先级的Request队列，缓存请求队列和网络请求队列.
+RequestQueue中维护了两个基于优先级的Request队列，缓存请求队列和网络请求队列.  
+放在缓存请求队列中的Request，将从缓存中获取数据；放在网络请求队列中的Request，将通过网络获取数据。  
 ```java
 private final PriorityBlockingQueue<Request<?>> mCacheQueue = new PriorityBlockingQueue<Request<?>>();
 private final PriorityBlockingQueue<Request<?>> mNetworkQueue = new PriorityBlockingQueue<Request<?>>();
 ```
-维护了一个当前正在处理的请求的集合
+维护了一个当前正在处理的请求的集合  
 ```java
 private final Set<Request<?>> mCurrentRequests = new HashSet<Request<?>>();
 ```
-维护了一个等待请求的集合
-如果一个请求正在被处理并且可以被缓存，后续的相同url的请求，将进入等待队列。
+维护了一个等待请求的集合  
+如果一个请求正在被处理并且可以被缓存，后续的相同url的请求，将进入等待队列。  
 ```java
 private final Map<String, Queue<Request<?>>> mWaitingRequests = new HashMap<String, Queue<Request<?>>>();
 ```
 
 ####(2)启动队列
-new出RequestQueue以后，必须start，然后才能加入请求。
+创建出RequestQueue以后，调用start方法，启动队列。  
 
 ```java
 /**
@@ -123,42 +124,83 @@ public void start() {
     }
 }
 ```
-start操作，开启一个**缓存调度线程**和默认的4个**网络调度线程**。
+start方法，开启一个**缓存调度线程**和默认的4个**网络调度线程**。  
 缓存调度线程不断的从缓存请求队列中取出Request去处理，网络调度线程不断的从网络请求队列中取出Request去处理。
 ####(3)加入请求
+```java
+public <T> Request<T> add(Request<T> request);
+```
+流程图
 ####(4)请求完成
+```java
+void finish(Request<?> request)
+```
+完成参数所传入的请求  
+首先在当前请求集合`mCurrentRequests`中移除所传请求。  
+然后如果所传请求存在等待队列，则将等待队列移除，将等待队列所有的请求添加到缓存请求队列中。  
+
 ####(5)请求取消
+```java
+public void cancelAll(RequestFilter filter)
+public void cancelAll(final Object tag)
+```
+取消当前请求集合中所有符合条件的请求  
+
+
 ####2.1.4 CacheDispatcher.java
-缓存调度线程类，不断的从缓存请求队列中取出Request处理。
+缓存调度线程类，不断的从缓存请求队列中取出Request去处理。
 ####(1)成员变量
-####(2)处理流程
+`BlockingQueue<Request<?>> mCacheQueue` 缓存请求队列
+`BlockingQueue<Request<?>> mNetworkQueue` 网络请求队列  
+`Cache mCache` 缓存类，代表了一个可以获取请求结果，存储请求结果的缓存  
+`ResponseDelivery mDelivery` 请求结果传递类  
+####(2)处理流程图
 ####2.1.5 NetworkDispatcher.java
-网络调度线程类，不断的从网络请求队列中取出Request处理。
+网络调度线程类，不断的从网络请求队列中取出Request去处理。
 ####(1)成员变量
-####(2)处理流程
+`BlockingQueue<Request<?>> mQueue` 网络请求队列  
+`Network mNetwork` 网络类，代表了一个可以执行请求的网络  
+`Cache mCache`  缓存类，代表了一个可以获取请求结果，存储请求结果的缓存  
+`ResponseDelivery mDelivery` 请求结果传递类，可以传递请求的结果或者错误到调用者  
+####(2)处理流程图
 
 ####2.1.6 Cache.java
-缓存接口
+缓存接口，代表了一个可以获取请求结果，存储请求结果的缓存。
+####(1)主要方法：  
+`public Entry get(String key);` 通过key获取请求的缓存实体  
+`public void put(String key, Entry entry);` 存入一个请求的缓存实体  
+`public void remove(String key);` 移除指定的缓存实体
+`public void clear();` 清空缓存  
+####(2)代表缓存的实体类Entry
+成员变量和方法
+`byte[] data` 请求返回的数据（Body实体）  
+`String etag` Http返回值用于缓存控制的ETag  
+`long serverDate` Http返回的响应产生的服务器时间  
+`long ttl` 缓存过期时间  
+`long softTtl` 缓存的新鲜时间  
+`Map<String, String> responseHeaders` 请求返回的Headers  
+`boolean isExpired()` 判断缓存是否过期，过期请求不能继续使用  
+`boolean refreshNeeded()` 判断缓存是否新鲜，不新鲜的请求需要发到服务端做新鲜度的检测  
 ####2.1.7 DiskBasedCache.java
 Volley中基于Disk的缓存实现类
 ####2.1.8 NoCache.java
 不做任何操作的缓存实现类
 
 ####2.1.9 Network.java
-代表网络的接口
+代表网络的接口  
 唯一的方法，用于执行特定请求
 ```java
 public NetworkResponse performRequest(Request<?> request) throws VolleyError;
 ```
 ####2.1.10 NetworkResponse.java
-Network中方法performRequest的返回值。
-封装了网络请求响应的StatusCode，Headers和Body等。
-成员变量：
-`int statusCode` Http状态码
-`byte[] data` Body数据
-`Map<String, String> headers` 响应Headers
-`boolean notModified` 表示是否为304响应
-`long networkTimeMs` 请求耗时
+Network中方法performRequest的返回值。  
+封装了网络请求响应的StatusCode，Headers和Body等。  
+成员变量：  
+`int statusCode` Http状态码  
+`byte[] data` Body数据  
+`Map<String, String> headers` 响应Headers  
+`boolean notModified` 表示是否为304响应  
+`long networkTimeMs` 请求耗时  
 ####2.1.11 BasicNetwork.java
 Volley中默认的网络接口实现类
 
@@ -188,7 +230,7 @@ Http header的解析工具类
 ####2.1.22 ExecutorDelivery.java
 请求结果传输实现类
 ####2.1.23 StringRequest.java
-继承Request类,代表了一个返回值为String的请求。
+继承Request类,代表了一个返回值为String的请求。  
 将网络返回结果，解析为String。
 ####2.1.24 JsonRequest.java
 抽象类，继承自Request，代表了JSON请求。
@@ -197,36 +239,35 @@ Http header的解析工具类
 ####2.1.26 JsonArrayRequest.java
 继承自JsonRequest，将网络返回值解析为JsonArray。
 ####2.1.27 ImageRequest.java
-继承Request类,代表了一个返回值为Image的请求。
+继承Request类,代表了一个返回值为Image的请求。  
 将网络返回结果，Bitmap。
 ####2.1.28 ImageLoader.java
 封装了了ImageRequst的方便使用的工具类
 ####2.1.29 NetworkImageView.java
-可以记在网络图片的ImageView
+可以加载网络图片的ImageView
 ####2.1.30 ClearCacheRequest.java
 用于人为清空Http缓存的请求，添加到RequestQueue后能很快执行，因为优先级很高，为`Priority.IMMEDIATE`
-####2.1.31 RequestFuture.java
-代表了一个Volley Request的Future
-####2.1.32 Authenticator.java
+####2.1.31 Authenticator.java
 Http认证交互接口，用于基本认证或者摘要认证
-####2.1.33 AndroidAuthenticator.java
+####2.1.32 AndroidAuthenticator.java
 默认的Android认证交互实现类
-####2.1.34 VolleyLog.java
+####2.1.33 VolleyLog.java
 Volley的Log工具类
-####2.1.35 VolleyError.java
+####2.1.34 VolleyError.java
 Volley中所有错误异常的父类，继承自Exception，可通过此类设置和获取NetworkResponse或者请求的耗时。
-####2.1.36 AuthFailureError.java
+####2.1.35 AuthFailureError.java
 继承自VelleyError，代表认证失败错误。
-####2.1.37 NetworkError.java
+####2.1.36 NetworkError.java
 继承自VolleyError，代表网络错误。
-####2.1.38 ParseError.java
+####2.1.37 ParseError.java
 继承自VolleyError，代表内容解析错误。
-####2.1.49 ServerError.java
+####2.1.38 ServerError.java
 继承自VolleyError，代表服务端错误。
-####2.1.40 TimeoutError.java
+####2.1.39 TimeoutError.java
 继承自VolleyError，代表请求超时错误。
-####2.1.41 NoConnectionError.java
-继承自NetworkError，代表无法建立连接错误。
+####2.1.40 NoConnectionError.java
+继承自NetworkError，代表无法建立连接错误。  
+
 ###2.2 类关系图
 
 ###3. 流程图
