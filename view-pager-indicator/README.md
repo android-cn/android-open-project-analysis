@@ -14,14 +14,12 @@ ViewPagerIndicator用于各种基于AndroidSupportLibrary中ViewPager的界面�
 IcsLinearLayout：LinearLayout的扩展，支持了4.0以上的divider特性。
 CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator、TitlePagerIndicator继承自View。    
 TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView。  
-
-### 3. 详细设计  
-####3.1 自定义控件相关知识  
-由于本项目主要就是自定义控件，那么项目的分析，总体上就是对自定义控件的分析。这里就分析一个自定义控件的创建步骤、View的绘制机制、Touch事件的处理。    
-
-大家可能会担心这些相关知识点最权威和最系统的讲解，其实官方文档就有。英文费劲没关系（最好看英文版），GitHub协作项目[android-training-course-in-chinese](https://github.com/kesenhoo/android-training-course-in-chinese)已经出了中文版的，并且有PDF版本，大家可以去下载。（强烈建议大家去下载，一定会Android的整体知识架构有清晰的认识。从英文的角度完全把握官方文档，确实有些费劲，但还是建议有时间的时候，多看看官方的英文文档）
-
-####3.1.1 自定义控件步骤  
+### 3. 详细设计    
+####3.1类关系图
+![viewpagerindicator img](image/class_relation.png)  
+####3.2 自定义控件相关知识  
+由于ViewPagerIndicator项目全部都是自定义View，因此对于其原理的分析，就是对自定义View的分析，自定义View涉及到的核心部分有：View的绘制机制和Touch事件传递机制。对于View的绘制机制，这里做了详细的阐述，而对于Touch事件，由于该项目只是Indicator，因此没有涉及到复杂的Touch传递机制，该项目中与Touch机制相关只有onTouch(Event)方法，因此只对该方法涉及到的相关知识进行介绍。
+####3.2.1 自定义控件步骤  
 以下直接引用了其中的一些篇章前言，具体内容大家直接点击链接进入正文
 
 1. [自定义控件创建步骤](http://hukai.me/android-training-course-in-chinese/ui/custom-view/index.html) ：  
@@ -40,14 +38,19 @@ TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView。
 4. [Android的用户输入](http://hukai.me/android-training-course-in-chinese/best-user-input.html)  
 这里着重要看一下拖拽与缩放这一部分。因为在ViewPagerIndicator的几种实现：Circle，Title，UnderLine的onTouchEvent里的处理逻辑是一样的，而且和官方文档中的代码逻辑也是一样的，看了讲解之后，相信大家就会有所了解了：http://hukai.me/android-training-course-in-chinese/input/gestures/scale.html
     
-####3.1.2 View绘制机制  
-参考文献：http://developer.android.com/guide/topics/ui/how-android-draws.html
+####3.2.2 View绘制机制  
+#####3.2.2.1 View树的绘图流程
+整个View树的绘图流程是由ViewRoot.java类的performTraversals()函数发起的，整个流程如下
 
-#####3.1.2.1  基础概念 
+![view_mechanism_flow img](image/view_mechanism_flow.png)  
+
+#####3.2.2.2  概念 
+参考文献：http://developer.android.com/guide/topics/ui/how-android-draws.html  
+
 当Activity接收到焦点的时候，它会被请求绘制布局。Android framework将会处理绘制的流程，但Activity必须提供View层级的根节点。绘制是从根节点开始的，需要measure和draw布局树。绘制会遍历和渲染每一个与无效区域相交的view。相反，每一个ViewGroup负责绘制它所有的childrenview，而View会负责绘制自身。树的遍历是有序的，parent view要先于child View被绘制，
 
-绘制布局有两步：measure和layout  
-measure过程的实现在measure(int,int)方法中，而且从上到下的有序绘制view。在递归的过程中，每一个视图（View）将尺寸规格向下传递给View，在measure过程的最后，每个视图存储了它的尺寸。
+**measure和layout**  
+measure过程的发起是在measure(int,int)方法中，而且从上到下的有序绘制view。在递归的过程中，每一个视图（View）将尺寸规格向下传递给View，在measure过程的最后，每个视图存储了它的尺寸。
 layout过程从layout(int, int, int, int)方法开始，也是自上而下遍历。在这个过程中，每个parent view根据measure过程计算出来
 的尺寸确定所有的child view具体位置。  
 
@@ -57,56 +60,195 @@ layout过程从layout(int, int, int, int)方法开始，也是自上而下遍历
 一个父视图，可以在其child view上多次的调用measure()方法。比如，父视图可以先根据未指明的dimension调用measure方法去测量每一个
 child view的大小，如果所有child的未约束尺寸太大或者太小的时候，则会使用一个确切的大小，然后在每一个childview上再次调用measure方法去测量每一个view的大小。（也就是说，如果children对于获取到的大小不满意的时候，父视图会介入并设置测量规则进行第二次measure）
 
-measure过程使用了两个类来传递尺寸：  
-一个是ViewGroup.LayoutParams类（View自身的布局参数）  
-一个是MeasureSpecs类（父视图对子视图的测量要求）
+**measure过程传递传递尺寸的两个类**  
+- ViewGroup.LayoutParams类（View自身的布局参数）  
+- MeasureSpecs类（父视图对子视图的测量要求）
 
 ViewGroup.LayoutParams  
 被子视图用于告诉他们的父视图他们应该怎样被测量和放置（就是子视图自身的布局参数）。一个基本的LayoutParams只用来描述视图的高度和宽度。对于，每一方面的尺寸，你可以指定下列方式之一：  
-1、具体数值   
-2、MATCH_PARENT 表示子视图希望和父视图一样大(不含padding)   
-3、WRAP_CONTENT 表示视图为正好能包裹其内容大小(包含padding)    
+- 具体数值   
+- MATCH_PARENT 表示子视图希望和父视图一样大(不含padding)   
+- WRAP_CONTENT 表示视图为正好能包裹其内容大小(包含padding)    
 
 对于ViewGroup的子类，也有相应的ViewGroup.LayoutParams的子类，例如RelativeLayout有相应的ViewGroup.LayoutParams的子类,拥有设置子视图水平和垂直的能力。
 
 MeasureSpecs  
 用于从上到下传递父视图对子视图测量需求,其有三种模式:      
 
-**UNSPECIFIED**  
+- UNSPECIFIED  
 父视图可以为子视图设置它所期望的大小。比如一个LinearLayout可以在它的子view上调用measure()方法去测量一个高设置为UNSPECIFIED模式，宽为240pixels的view大小。    
 
-**EXACTLY**  
+- EXACTLY  
 父视图决定子视图的确切大小，子视图必须使用该大小，并确保它所有的子视图可以适应在该尺寸的范围内；相对应属性的是MATCH_PARENT   
 
-**AT_MOST**  
+- AT_MOST  
 父视图为子视图指定一个最大值。子视图必须确保它自己的所有子视图在该尺寸范围内，相应的属性为WRAP_CONTENT   
  
-#####3.1.2.2 measure核心方法  
-measure(int widthMeasureSpec, int heightMeasureSpec)方法  
+#####3.2.2.3 measure核心方法  
+- measure(int widthMeasureSpec, int heightMeasureSpec)  
 该方法定义在View.java类中，final修饰符修饰，因此不能被重载，但measure调用链会回调View/ViewGroup对象的onMeasure()方法，因此我们只需要复写onMeasure()方法去计算自己的控件尺寸即可。  
 该方法的两个参数分别是父视图提供的测量规格MeasureSpec。当父视图调用子视图的measure函数对子视图进行测量时，会传入这两个参数。通过这两个参数以及子视图本身的LayoutParams来共同决定子视图的测量规格MeasureSpec。其实整个measure过程就是从上到下遍历，不断的根据父视图的MeasureSpec和子视图自身的LayotuParams获取子视图自己的MeasureSpec，最终调用子视图的measure(int widthMeasureSpec, int heightMeasureSpec)方法确定最终的mMeasuredWidth和mMeasuredHeight。ViewGroup的measureChildWithMargins函数中体现了这个过程。  
 具体过程分析可以参考：http://blog.csdn.net/wangjinyu501/article/details/9008271
 
-setMeasuredDimension()方法  
+- setMeasuredDimension()  
 View在测量阶段的最终大小的设定是由setMeasuredDimension()方法决定的,该方法最终会对每个View的mMeasuredWidth和mMeasuredHeight进行赋值，一旦这两个变量被赋值，则意味着该View的测量工作结束，setMeasuredDimension()也是必须要调用的方法，否则会报异常。在setMeasuredDimension()方法内部，你可以根据需求，去计算View的尺寸。  
 
-#####3.1.2.2 layout相关核心概念及方法  
+#####3.2.2.4 layout相关概念及核心方法  
 子视图的具体位置都是相对与父视图的位置。与onMeasure过程类似，ViewGroup在onLayout函数中通过调用其children的layout函数来设置子视图相对与父视图中的位置，具体位置由函数layout的参数决定，当我们继承ViewGroup时必须重载onLayout函数（ViewGroup中onLayout是abstract修饰），然而onMeasure并不要求必须重载，因为相对与layout来说，measure过程并不是必须的。  
 
 实现onLayout通常做法就是进行一个for循环调用每一个子视图的layout(l, t, r, b)函数，传入不同的参数l, t, r, b来确定每个子视图在父视图中的显示位置。onLayout过程会通过调用getMeasuredWidth()和getMeasuredHeight()方法获取到measure过程得到的mMeasuredWidth和mMeasuredHeight,这两个参数为layout过程提供了一个很重要的参考值（不是必须的）。    
 
 之所以说measure过程不是必须的，是因为layout过程中的4个参数l, t, r,b完全可以由视图设计者任意指定，如果在自定义的onLayout中手动指定了layout的参数，而不用measure过程的值，也是可以的，当然一般没人会这么做，这样也违背了Android框架的绘制机制，通常的做法是根据需求在measure过程决定尺寸，layout步骤决定位置，除非你只是指定View的位置，而不考虑View的尺寸。  
 
-####3.1.3 Android的用户输入  	
-要注意的有以下几点（更详细的介绍可以参考原文）  
+#####3.2.2.5 绘制流程相关概念及核心方法    
+draw过程在measure()和layout()之后进行，最终会调用到mView的draw()函数，这里的mView对于Actiity来说就是PhoneWindow.DecorView。  
+整个View树的绘图流程是在ViewRoot.java类的performTraversals()函数展开的，该函数做的执行过程可简单概况为根据之前设置的状态，判断是否需要重新计算视图大小(measure)、是否重新需要安置视图的位置(layout)、以及是否需要重绘(draw)，这里就不做延展了，我们只介绍在自定义View中直接涉及到的一些部分。
 
-##### 3.1.3.1 保持对最初点的追踪  
+先来看下与draw过程相关的函数：  
+
+- ViewRootImpl.draw()：  
+仅在ViewRootImpl.performTraversals()的内部调用
+
+- DecorView.draw()：  
+ViewRootImpl.draw()方法会调用该函数，DecorView.draw()继承自Framelayout，由于DecorView、FrameLayout以及FrameLayout的父类ViewGroup都未复写draw(),而ViewGroup的父类是View，因此DecorView.draw()调用的就是View.draw()。
+
+- View.onDraw()：  
+绘制View本身，自定义View往往会重载该函数来绘制View本身的内容。
+
+- View.dispatchDraw()：   
+View中的dispatchDraw是空实现，ViewGroup复写了该函数，内部循环调用View.drawChild()来发起对子视图的绘制，你不应该重载View的dispatchDraw()方法，因为该函数的默认实现代表了View的绘制流程，你不可能也没必要把系统的绘制流程写一遍吧。
+
+- ViewGroup.drawChild()：  
+该函数只在ViewGroup中实现，因为只有ViewGroup才需要绘制child，drawChild内部还是调用View.draw()来完成子视图的绘制（也有可能直接调用dispatchDraw）。
+
+- View.draw(Canvas)  
+```java
+ /**
+     * Manually render this view (and all of its children) to the given Canvas.
+     * The view must have already done a full layout before this function is
+     * called.  When implementing a view, implement
+     * {@link #onDraw(android.graphics.Canvas)} instead of overriding this method.
+     * If you do need to override this method, call the superclass version.
+     *
+     * @param canvas The Canvas to which the View is rendered.  
+     *
+     * 根据给定的Canvas自动渲染View（包括其所有子View）。在调用该方法之前必须要完成layout。当你自定义view的时候，
+     * 应该去是实现onDraw(Canvas)方法，而不是draw(canvas)方法。如果你确实需要复写该方法，请记得先调用父类的方法。
+     */
+    public void draw(Canvas canvas) {
+    
+        / * Draw traversal performs several drawing steps which must be executed
+         * in the appropriate order:
+         *
+         *      1. Draw the background if need
+         *      2. If necessary, save the canvas' layers to prepare for fading
+         *      3. Draw view's content
+         *      4. Draw children (dispatchDraw)
+         *      5. If necessary, draw the fading edges and restore layers
+         *      6. Draw decorations (scrollbars for instance)
+         */
+
+ 	// Step 1, draw the background, if needed
+        if (!dirtyOpaque) {
+            drawBackground(canvas);
+        }
+        
+        // Step 2, save the canvas' layers
+        
+        // Step 3, draw the content
+        if (!dirtyOpaque) 
+        	onDraw(canvas);
+
+        // Step 4, draw the children
+        dispatchDraw(canvas);
+
+        // Step 5, draw the fade effect and restore layers
+        
+        // Step 6, draw decorations (scrollbars)
+        onDrawScrollBars(canvas);
+    }
+
+```
+
+源码中已经清楚的注释了整个绘制过程：  
+View的背景绘制----> View本身内容的绘制---->子视图的绘制（如果有子视图）---->渐变框的绘制---->滚动条的绘制  
+onDraw()和dispatchDraw()分别为View本身内容和子视图绘制的函数。  
+View和ViewGroup的onDraw()都是空实现，因为具体View如何绘制由设计者来决定的，默认不绘制任何东西。
+ViewGroup复写了dispatchDraw()来对其子视图进行绘制，通常你自己定义的ViewGroup不应该对dispatchDraw()进行复写，因为它的默认实现体现了View系统的绘制流程，该流程所做的一系列工作你不用去管，你要做的就是复写View.onDraw(Canvas)方法或者ViewGroup.draw(Canvas)方法，但在ViewGroup.draw(Canvas)方法调用前，记得先调用super.draw(canvas)方法，先去绘制基础的View，然后你可以在ViewGroup.draw(Canvas)方法里做一些自己的绘制，在高级的自定义中会有这样的需求。
+
+- dispatchDraw(Canvas)  
+核心代码就是通过for循环调用drawChild(canvas, child, drawingTime)方法对ViewGroup的每个子视图进行动画以及绘制:
+```java
+dispatchDraw(Canvas canvas){
+
+...
+
+ if ((flags & FLAG_RUN_ANIMATION) != 0 && canAnimate()) {//处理ChildView的动画
+ 	final boolean buildCache = !isHardwareAccelerated();
+            for (int i = 0; i < childrenCount; i++) {
+                final View child = children[i];
+                if ((child.mViewFlags & VISIBILITY_MASK) == VISIBLE) {
+                    final LayoutParams params = child.getLayoutParams();
+                    attachLayoutAnimationParameters(child, params, i, childrenCount);
+                    bindLayoutAnimation(child);
+                    if (cache) {
+                        child.setDrawingCacheEnabled(true);
+                        if (buildCache) {
+                            child.buildDrawingCache(true);
+                        }
+                    }
+                }
+            }
+            
+ 	final LayoutAnimationController controller = mLayoutAnimationController;
+            if (controller.willOverlap()) {
+                mGroupFlags |= FLAG_OPTIMIZE_INVALIDATE;
+            }
+
+	controller.start();//启动View的动画
+}
+
+ //绘制ChildView
+ for (int i = 0; i < childrenCount; i++) {
+            int childIndex = customOrder ? getChildDrawingOrder(childrenCount, i) : i;
+            final View child = (preorderedList == null)
+                    ? children[childIndex] : preorderedList.get(childIndex);
+            if ((child.mViewFlags & VISIBILITY_MASK) == VISIBLE || child.getAnimation() != null) {
+                more |= drawChild(canvas, child, drawingTime);
+            }
+        }
+
+...
+
+}
+
+protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+        return child.draw(canvas, this, drawingTime);
+}
+
+```
+- drawChild(canvas, this, drawingTime)  
+直接调用了View的child.draw(canvas, this,drawingTime)方法，和View.draw(canvas)不同的是：draw(canvas, this,drawingTime)方法是ViewGroup.drawChild()内部调用的，用于绘制其子视图，而且文档中也说明了，除了被ViewGroup.drawChild()方法外，你不应该去复写该方法或者在其它任何地方调用该方法，也就是说，该方法其实我们永远也接触不到，它是ViewGroup绘制流程中的一步。而View.draw(Canvas) 方法是我们自定义控件中可以复写的方法，具体可以参考上述对view.draw(Canvas)的说明。
+child.draw(canvas, this,drawingTime)肯定是处理了和父视图相关的逻辑，但对于View的绘制，最终调用的还是View.draw(Canvas)方法。
+
+- invalidate()  
+请求重绘View树，即draw()过程，假如视图发生大小没有变化就不会调用layout()过程，并且只绘制那些调用了invalidate()方法的View。
+
+- requestLayout()  
+会触发measure()和layout()过程（不会进行draw）。
+
+####3.2.3 Android的用户输入  	
+要注意的有以下几点（更详细的介绍可以参考[拖拽与缩放](http://hukai.me/android-training-course-in-chinese/input/gestures/scale.html)部分）
+
+
+##### 3.2.3.1 保持对最初点的追踪  
 拖拽操作时，即使有额外的手指放置到屏幕上了，app也必须保持对最初的点（手指）的追踪。比如，想象在拖拽图片时，用户放置了第二根手指在屏幕上，并且抬起了第一根手指。如果你的app只是单独地追踪每个点，它会把第二个点当做默认的点，并且把图片移到该点的位置。
 	
-##### 3.1.3.2 区分原始点及之后的任意触摸点   
+##### 3.2.3.2 区分原始点及之后的任意触摸点   
 为了防止这种情况发生，你的app需要区分初始点以及之后任意的触摸点。要做到这一点，它需要追踪处理多触摸手势中提到过的ACTION_POINTER_DOWN、 ACTION_POINTER_UP事件。每当第二根手指按下或拿起时，ACTION_POINTER_DOWN、ACTION_POINTER_UP事件就会传递给onTouchEvent())回调函数。
 	
-##### 3.1.3.3 确保操作中的点的ID(the active pointer ID)不会引用已经不在触摸屏上的触摸点  
+##### 3.2.3.3 确保操作中的点的ID(the active pointer ID)不会引用已经不在触摸屏上的触摸点  
+
 当ACTION_POINTER_UP事件发生时，示例程序会移除对该点的索引值的引用，确保操作中的点的ID(the active pointer ID)不会引用已经不在触摸屏上的触摸点。这种情况下，app会选择另一个触摸点来作为操作中(active)的点，并保存它当前的x、y值。由于在ACTION_MOVE事件时，这个保存的位置会被用来计算屏幕上的对象将要移动的距离，所以app会始终根据正确的触摸点来计算移动的距离。
   
 mTouchSlop  
@@ -115,7 +257,7 @@ mTouchSlop
 [onTouchEvent](http://hukai.me/android-training-course-in-chinese/input/gestures/scale.html)		
 对于pointer的处理是模板方法，在拖拽与缩放中有详细的讲解。ViewPagerIndicator中的onTouchEvent中的代码也就是官方文档的模板代码，就是为了确保以上几点，获取到可用、确信的点，然后处理ViewPager相应的偏移和滑动。
   
-####3.1.4 CirclePageIndicator 源码分析  
+####3.2.4 CirclePageIndicator 源码分析  
 
 ```java
 public class CirclePageIndicator extends View implements PageIndicator {
@@ -460,9 +602,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
 
 ```
 
-```
-
-####3.1.4 相关文章  
+####3.1.4 参考文献  
 View的绘制：  
 http://blog.csdn.net/wangjinyu501/article/details/9008271  
 http://blog.csdn.net/qinjuning/article/details/7110211
