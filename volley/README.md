@@ -25,9 +25,10 @@ Volley是Google推出的Android异步网络调用框架和图片加载框架。�
 ####2.1.1 Volley.java 
 这个和Volley框架同名的类，其实是个工具类。作用是帮助构建一个RequestQueue对象。有两个重载的静态方法。
 ```java
-public static RequestQueue newRequestQueue(Context context)```
-```java
-public static RequestQueue newRequestQueue(Context context, HttpStack stack)```
+public static RequestQueue newRequestQueue(Context context)
+
+public static RequestQueue newRequestQueue(Context context, HttpStack stack)
+```
 第一个方法的实现调用第二个方法，传HttpStack参数为null。
 第二个方法中，如果HttpStatck为null，则默认情况下如果系统版本大于等于9，采用基于UrlConnection的HrulStack，如果小于9，采用基于HttpClient的HttpClientStack。
 ```java
@@ -87,8 +88,8 @@ Volley核心类，将请求Request请求加入到一个运行的RequestQueue中�
 ####(1)主要成员变量
 RequestQueue中维护了两个基于优先级的Request队列，缓存请求队列和网络请求队列.
 ```java
-    private final PriorityBlockingQueue<Request<?>> mCacheQueue = new PriorityBlockingQueue<Request<?>>();
-    private final PriorityBlockingQueue<Request<?>> mNetworkQueue = new PriorityBlockingQueue<Request<?>>();
+private final PriorityBlockingQueue<Request<?>> mCacheQueue = new PriorityBlockingQueue<Request<?>>();
+private final PriorityBlockingQueue<Request<?>> mNetworkQueue = new PriorityBlockingQueue<Request<?>>();
 ```
 维护了一个当前正在处理的请求的集合
 ```java
@@ -257,6 +258,16 @@ Volley中所有错误异常的父类，继承自Exception，可通过此类设�
 `2. 详细设计` -> `2.1 核心类功能介绍` -> `2.2 类关系图` -> `3. 流程图` -> `4. 总体设计`  
 顺序变为  
 `2. 总体设计` -> `3. 流程图` -> `4. 详细设计` -> `4.1 类关系图` -> `4.2 核心类功能介绍`  
+并自行校验优化一遍，确认无误后，让`校对 Buddy`进行校对，`校对 Buddy`校队完成后将  
+`校对状态：未完成`  
+变为：  
+`校对状态：已完成`  
+
+**完成时间**  
+- `两天内`完成  
+
+**到此便大功告成，恭喜大家^_^**  
+
 并自行校验优化一遍，确认无误后，让`校对 Buddy`进行校对，`校对 Buddy`校队完成后将  
 `校对状态：未完成`  
 变为：  
