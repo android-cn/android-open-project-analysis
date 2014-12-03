@@ -56,7 +56,6 @@ return queue;
 
 ####2.1.2 Request.java
 代表一个网络请求的抽象类。我们通过构建Request类的具体实现（StringRequest,JsonRequest,ImageRequest等），并且将其加入到RequestQueue中来完成网络请求操作。  
-
 Volley支持8个http请求方法**GET,POST,PUT,DELETE,HEAD,OPTIONS,TRACE,PATCH**  
 Request类中包含了，请求url，请求方法，请求Header，请求Body，请求的优先级等信息。  
 
@@ -86,7 +85,7 @@ public byte[] getBody()
 ####2.1.3 RequestQueue.java
 Volley框架的核心类，将请求Request加入到一个运行的RequestQueue中，来完成请求操作。
 ####(1)主要成员变量
-RequestQueue中维护了两个基于优先级的Request队列，缓存请求队列和网络请求队列.  
+RequestQueue中维护了两个基于优先级的Request队列，缓存请求队列和网络请求队列。  
 放在缓存请求队列中的Request，将从缓存中获取数据；放在网络请求队列中的Request，将通过网络获取数据。  
 ```java
 private final PriorityBlockingQueue<Request<?>> mCacheQueue = new PriorityBlockingQueue<Request<?>>();
@@ -150,7 +149,7 @@ public void cancelAll(final Object tag)
 ####2.1.4 CacheDispatcher.java
 缓存调度线程类，不断的从缓存请求队列中取出Request去处理。
 ####(1)成员变量
-`BlockingQueue<Request<?>> mCacheQueue` 缓存请求队列
+`BlockingQueue<Request<?>> mCacheQueue` 缓存请求队列  
 `BlockingQueue<Request<?>> mNetworkQueue` 网络请求队列  
 `Cache mCache` 缓存类，代表了一个可以获取请求结果，存储请求结果的缓存  
 `ResponseDelivery mDelivery` 请求结果传递类  
@@ -169,9 +168,9 @@ public void cancelAll(final Object tag)
 ####(1)主要方法：  
 `public Entry get(String key);` 通过key获取请求的缓存实体  
 `public void put(String key, Entry entry);` 存入一个请求的缓存实体  
-`public void remove(String key);` 移除指定的缓存实体
+`public void remove(String key);` 移除指定的缓存实体  
 `public void clear();` 清空缓存  
-####(2)代表缓存的实体类Entry
+####(2)代表缓存实体的内部类Entry
 成员变量和方法
 `byte[] data` 请求返回的数据（Body实体）  
 `String etag` Http返回值用于缓存控制的ETag  
@@ -202,23 +201,34 @@ Network中方法performRequest的返回值。
 `boolean notModified` 表示是否为304响应  
 `long networkTimeMs` 请求耗时  
 ####2.1.11 BasicNetwork.java
-Volley中默认的网络接口实现类
+继承Network，Volley中默认的网络接口实现类  
+主要实现了以下功能：  
+1）利用HttpStack执行网络请求。  
+2）如果Request中带有实体信息，如Etag,Last-Modify等，则进行缓存新鲜度的验证，并处理304（Not Modify）响应。  
+3）如果发生超时，认证失败等错误，进行重试操作。
 
 
 ####2.1.12 HttpStack.java
-代表Http请求栈的接口
+代表Http栈的接口
+唯一方法，执行请求  
+```java
+public HttpResponse performRequest(Request<?> request, Map<String, String> additionalHeaders)
+        throws IOException, AuthFailureError;
+```
+执行request代表的请求，第二个参数表示添加额外的Headers
 ####2.1.13 HttpClientStack.java
-基于HttpClient的http栈的实现类
+继承HttpStack，基于HttpClient的http栈的实现类
 ####2.1.14 HurlStack.java
-基于urlconnection的http栈的实现类
+继承HttpStack，基于urlconnection的http栈的实现类
 
 ####2.1.15 Response.java
 封装了经过解析后的数据，请求调度线程向主线程传输用途
+####2.1.16 ByteArrayPool.java
+Byte[] 的缓存池，用于Byte[]的回收再利用，减少了内存的分配和回收。  
+**Volley提高性能的优化之一**
+####2.1.17 PoolingByteArrayOutputStream.java
+继承ByteArrayOutputStream，使用了ByteArrayPool来提高性能。
 
-####2.1.16 PoolingByteArrayOutputStream.java
-集成自ByteArrayOutputStream
-####2.1.17 ByteArrayPool.java
-ByteArray 池
 ####2.1.18 HttpHeaderParser.java
 Http header的解析工具类
 ####2.1.19 RetryPolicy.java
@@ -226,31 +236,45 @@ Http header的解析工具类
 ####2.1.20 DefaultRetryPolicy.java
 默认的重试策略实现类
 ####2.1.21 ResponseDelivery.java
-请求结果的传输接口
+请求结果的传输接口，用于传递请求结果或者请求错误。  
+有三个方法：  
+```java
+public void postResponse(Request<?> request, Response<?> response);
+```
+此方法用于传递请求结果。  
+```java
+public void postResponse(Request<?> request, Response<?> response, Runnable runnable);
+```
+此方法用于传递请求结果，Runnable将在传输完成后执行。
+```java
+public void postError(Request<?> request, VolleyError error);
+```
+此方法用于传输请求错误。
 ####2.1.22 ExecutorDelivery.java
-请求结果传输实现类
+请求结果传输接口具体实现类。  
+利用Handler将缓存调度线程或者网络调度线程中产生的请求结果和请求错误传输到主线程的回调函数中。
 ####2.1.23 StringRequest.java
-继承Request类,代表了一个返回值为String的请求。  
-将网络返回结果，解析为String。
+继承Request类,代表了一个返回值为String的请求。将网络返回的结果数据解析为String类型。
 ####2.1.24 JsonRequest.java
-抽象类，继承自Request，代表了JSON请求。
+抽象类，继承自Request，代表了JSON请求。提供了构建JSON请求参数的方法。
 ####2.1.25 JsonObjectRequest.java
-继承自JsonRequest，将网络返回值解析为JsonObject。
+继承自JsonRequest，将网络返回的结果数据解析为JSONObject类型。
 ####2.1.26 JsonArrayRequest.java
-继承自JsonRequest，将网络返回值解析为JsonArray。
+继承自JsonRequest，将网络返回的结果数据解析为JSONArray类型。
 ####2.1.27 ImageRequest.java
-继承Request类,代表了一个返回值为Image的请求。  
-将网络返回结果，Bitmap。
+继承Request类,代表了一个返回值为Image的请求。将网络返回的结果数据解析为Bitmap类型。
 ####2.1.28 ImageLoader.java
 封装了了ImageRequst的方便使用的工具类
 ####2.1.29 NetworkImageView.java
 可以加载网络图片的ImageView
 ####2.1.30 ClearCacheRequest.java
-用于人为清空Http缓存的请求，添加到RequestQueue后能很快执行，因为优先级很高，为`Priority.IMMEDIATE`
+用于人为清空Http缓存的请求  
+添加到RequestQueue后能很快执行，因为优先级很高，为`Priority.IMMEDIATE`  
+并且清空缓存的方法`mCache.clear()`写在了`isCanceled()`方法体中，能最早的得到执行。
 ####2.1.31 Authenticator.java
 Http认证交互接口，用于基本认证或者摘要认证
 ####2.1.32 AndroidAuthenticator.java
-默认的Android认证交互实现类
+继承Authenticator，基于Android AccountManager的认证交互实现类
 ####2.1.33 VolleyLog.java
 Volley的Log工具类
 ####2.1.34 VolleyError.java
