@@ -11,7 +11,7 @@
 [Volley](https://android.googlesource.com/platform/frameworks/volley) | [grumoon](https://github.com/grumoon) | [promeG](https://github.com/promeG) |Done |Done | 12/05| 12/08|12/12 | 12/15 |  
 [Otto](https://github.com/square/otto) | [promeG](https://github.com/promeG) | [grumoon](https://github.com/grumoon) | Done | 11/27 | 12/03 | 12/10 | 12/17 | 12/20 |  
 [ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [lightSky](https://github.com/lightSky) | [drakeet](https://github.com/drakeet)  | Done | Done | Done | Done |12/05 | 12/08 |  
-[HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary) | [aaronplay](https://github.com/AaronPlay) | | Done | Done | Done | 11/28 | 11/30 | 12/02 |  
+[HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary) | [aaronplay](https://github.com/AaronPlay) | | Done | Done | Done | 12/04 | 12/05 | 12/06 |  
 [picasso](https://github.com/square/picasso) | [爱早起](https://github.com/liang7) | | 11/26 | 12/06 | 12/10 | 12/17 | 12/23 | 12/24 |  
 [XUtils](https://github.com/wyouflf/xUtils) | [Caij](https://github.com/Caij) | [maogy](https://github.com/maogy) | Done| 11/27 | 12/07 | 12/11 | 12/16 | 12/17 |  
 [DataDroid](https://github.com/foxykeep/DataDroid) | [cheyiliu](https://github.com/cheyiliu) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
