@@ -55,7 +55,7 @@ return queue;
 **优秀框架的高可拓展性的魅力来源于此啊**
 
 ####2.1.2 Request.java
-代表一个网络请求的抽象类。我们通过构建Request类的具体实现（StringRequest,JsonRequest,ImageRequest等），并且将其加入到RequestQueue中来完成网络请求操作。  
+代表一个网络请求的抽象类。我们通过构建Request类的具体实现（StringRequest,JsonRequest,ImageRequest等），并将其加入到RequestQueue中来完成网络请求操作。  
 Volley支持8个http请求方法**GET,POST,PUT,DELETE,HEAD,OPTIONS,TRACE,PATCH**  
 Request类中包含了，请求url，请求方法，请求Header，请求Body，请求的优先级等信息。  
 
@@ -75,23 +75,23 @@ abstract protected void deliverResponse(T response);
 ```java
 protected Map<String, String> getParams()
 ```
-重写这个方法，可构建用于POST或者PUT的键值对参数。
+重写这个方法，可构建用于POST、PUT、PATCH的键值对Body内容。
 ```java
 public byte[] getBody()
 ```
-重写此方法，可以构建POST或者PUT的Body字节内容。
+重写此方法，可以构建用于POST、PUT、PATCH的Body字节内容。
 
 
 ####2.1.3 RequestQueue.java
 Volley框架的核心类，将请求Request加入到一个运行的RequestQueue中，来完成请求操作。
 ####(1)主要成员变量
-RequestQueue中维护了两个基于优先级的Request队列，缓存请求队列和网络请求队列。  
-放在缓存请求队列中的Request，将从缓存中获取数据；放在网络请求队列中的Request，将通过网络获取数据。  
+RequestQueue中维护了两个**基于优先级**的Request队列，缓存请求队列和网络请求队列。  
+放在缓存请求队列中的Request，将通过缓存中获取数据；放在网络请求队列中的Request，将通过网络获取数据。  
 ```java
 private final PriorityBlockingQueue<Request<?>> mCacheQueue = new PriorityBlockingQueue<Request<?>>();
 private final PriorityBlockingQueue<Request<?>> mNetworkQueue = new PriorityBlockingQueue<Request<?>>();
 ```
-维护了一个当前正在处理的请求的集合  
+维护了一个加入到RequestQueue中，并且还没有结束的请求集合。   
 ```java
 private final Set<Request<?>> mCurrentRequests = new HashSet<Request<?>>();
 ```
@@ -135,8 +135,8 @@ public <T> Request<T> add(Request<T> request);
 void finish(Request<?> request)
 ```
 完成参数所传入的请求  
-首先在当前请求集合`mCurrentRequests`中移除所传请求。  
-然后如果所传请求存在等待队列，则将等待队列移除，将等待队列所有的请求添加到缓存请求队列中。  
+1）首先在当前请求集合`mCurrentRequests`中移除所传请求。  
+2）然后如果所传请求存在等待队列，则将等待队列移除，将等待队列所有的请求添加到缓存请求队列中。  
 
 ####(5)请求取消
 ```java
@@ -145,9 +145,8 @@ public void cancelAll(final Object tag)
 ```
 取消当前请求集合中所有符合条件的请求  
 
-
 ####2.1.4 CacheDispatcher.java
-缓存调度线程类，不断的从缓存请求队列中取出Request去处理。
+缓存调度线程类，不断的从缓存请求队列中取出Request去处理。  
 ####(1)成员变量
 `BlockingQueue<Request<?>> mCacheQueue` 缓存请求队列  
 `BlockingQueue<Request<?>> mNetworkQueue` 网络请求队列  
@@ -181,9 +180,9 @@ public void cancelAll(final Object tag)
 `boolean isExpired()` 判断缓存是否过期，过期请求不能继续使用  
 `boolean refreshNeeded()` 判断缓存是否新鲜，不新鲜的请求需要发到服务端做新鲜度的检测  
 ####2.1.7 DiskBasedCache.java
-Volley中基于Disk的缓存实现类
+继承Cache类，基于Disk的缓存实现类
 ####2.1.8 NoCache.java
-不做任何操作的缓存实现类
+继承Cache类，不做任何操作的缓存实现类
 
 ####2.1.9 Network.java
 代表网络的接口  
@@ -230,11 +229,48 @@ Byte[] 的缓存池，用于Byte[]的回收再利用，减少了内存的分配�
 继承ByteArrayOutputStream，使用了ByteArrayPool来提高性能。
 
 ####2.1.18 HttpHeaderParser.java
-Http header的解析工具类
+Http header的解析工具类  
+有三个方法  
+```java
+public static long parseDateAsEpoch(String dateStr)
+```
+解析时间，将RFC1123的时间格式，解析成epoch时间
+
+```java
+public static long parseDateAsEpoch(String dateStr)
+```
+解析编码集，在Content-Type首部中获取编码集，如果没有找到，默认返回ISO-8859-1
+
+```java
+public static Cache.Entry parseCacheHeaders(NetworkResponse response)
+```
+比较重要的方法，通过网络响应中的缓存控制Header和Body内容，构建缓存实体。  
+1）根据Date首部，获取响应生成时间  
+2）根据ETag手部，获取响应实体标签  
+3）根据Cache－Control和Expires首部，计算出缓存的过期时间，和缓存的新鲜度时间
+
+>两点需要说明下：  
+>1.没有使用`Last-Modify`首部，而是采用`Date`首部的来构建新鲜度验证时的`If-Modified-Since`.
+>与Http 1.1的语义有些违背。  
+>2.计算过期时间，Cache－Control首部优先于Expires首部。
+
 ####2.1.19 RetryPolicy.java
-重试策略接口
+重试策略接口  
+有三个方法：  
+```java
+public int getCurrentTimeout();
+```
+获取当前请求用时（用于Log）
+```java
+public int getCurrentRetryCount();
+```
+获取已经重试的次数（用于Log）
+```java
+public void retry(VolleyError error) throws VolleyError;
+```
+为下一次请求做准备
 ####2.1.20 DefaultRetryPolicy.java
-默认的重试策略实现类
+继承RetryPolicy，Volley默认的重试策略实现类。
 ####2.1.21 ResponseDelivery.java
 请求结果的传输接口，用于传递请求结果或者请求错误。  
 有三个方法：  
@@ -262,7 +298,8 @@ public void postError(Request<?> request, VolleyError error);
 ####2.1.26 JsonArrayRequest.java
 继承自JsonRequest，将网络返回的结果数据解析为JSONArray类型。
 ####2.1.27 ImageRequest.java
-继承Request类,代表了一个返回值为Image的请求。将网络返回的结果数据解析为Bitmap类型。
+继承Request类,代表了一个返回值为Image的请求。将网络返回的结果数据解析为Bitmap类型。  
+可以设置请求图片的最大宽度和最大高度。  
 ####2.1.28 ImageLoader.java
 封装了了ImageRequst的方便使用的工具类
 ####2.1.29 NetworkImageView.java
