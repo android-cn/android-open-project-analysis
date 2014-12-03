@@ -165,7 +165,7 @@ public @interface Level {
 2. 一个Module中所有@Provides方法的参数都必须在这个Module种提供相应的@Provides方法，或者在@Module注解后添加“complete = false”注明这是一个不完整Module（即它会被其他Module所扩展）。
 3. 一个Module中所有的@Provides方法都要被它声明的注入对象所使用，或者在@Module注解后添加“library = ture”注明（即它是为了扩展其他Module而存在的）。
 
-_如果需要对Dagger有更多了解，可以参看[官方文档](http://square.github.io/dagger/)，或者关注我之后的详解文章。_
+如果需要对Dagger有更多了解，请看[Dagger原理分析](https://github.com/android-cn/android-open-project-analysis/tree/master/dagger/principle)
 
 _另外，我们公司[友邻小区](http://hiyoulin.com)招聘[Android开发](http://www.lagou.com/jobs/153948.html)一名，地址北京海淀紫竹桥。_
 
