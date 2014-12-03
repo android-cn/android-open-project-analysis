@@ -47,30 +47,29 @@ TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView。
 #####3.2.2.2  概念 
 参考文献：http://developer.android.com/guide/topics/ui/how-android-draws.html  
 
-当Activity接收到焦点的时候，它会被请求绘制布局。Android framework将会处理绘制的流程，但Activity必须提供View层级的根节点。绘制是从根节点开始的，需要measure和draw布局树。绘制会遍历和渲染每一个与无效区域相交的view。相反，每一个ViewGroup负责绘制它所有的childrenview，而View会负责绘制自身。树的遍历是有序的，parent view要先于child View被绘制，
+当Activity接收到焦点的时候，它会被请求绘制布局。Android framework将会处理绘制的流程，但Activity必须提供View层级的根节点。绘制是从根节点开始的，需要measure和draw布局树。绘制会遍历和渲染每一个与无效区域相交的view。相反，每一个ViewGroup负责绘制它所有的子视图，而最底层的View会负责绘制自身。树的遍历是有序的，父视图会先于子视图被绘制，
 
 **measure和layout**  
-measure过程的发起是在measure(int,int)方法中，而且从上到下的有序绘制view。在递归的过程中，每一个视图（View）将尺寸规格向下传递给View，在measure过程的最后，每个视图存储了它的尺寸。
-layout过程从layout(int, int, int, int)方法开始，也是自上而下遍历。在这个过程中，每个parent view根据measure过程计算出来
-的尺寸确定所有的child view具体位置。  
+measure过程的发起是在measure(int,int)方法中，而且是从上到下有序的绘制view。在递归的过程中，每一个父视图将尺寸规格向下传递给子视图，在measure过程的最后，每个视图存储了自己的尺寸。
+layout过程从layout(int, int, int, int)方法开始，也是自上而下进行遍历。在这个过程中，每个父视图会根据measure过程得到的尺寸确定所有的子视图的具体位置。  
 
 注意：Android框架不会绘制无效区域之外的部分,但会考虑绘制视图的背景。你可以使用invalidate()去强制对一个view进行重绘。  
 
-当一个View的measure()执行完的时候，它自己以及所有的孩子节点的getMeasuredWidth()和getMeasuredHeight()方法的值就必须被设置了。一个视图的测量宽度和测量高度值必须在父视图约束范围之内，这可以保证在measure的最后,所有的父母都接受所有孩子的测量。
-一个父视图，可以在其child view上多次的调用measure()方法。比如，父视图可以先根据未指明的dimension调用measure方法去测量每一个
-child view的大小，如果所有child的未约束尺寸太大或者太小的时候，则会使用一个确切的大小，然后在每一个childview上再次调用measure方法去测量每一个view的大小。（也就是说，如果children对于获取到的大小不满意的时候，父视图会介入并设置测量规则进行第二次measure）
+当一个View的measure过程进行完的时候，它自己及其所有子节点的getMeasuredWidth()和getMeasuredHeight()方法的值就必须被设置了。一个视图的测量宽度和测量高度值必须在父视图约束范围之内，这可以保证在measure的最后,所有的父母都接收所有孩子的测量。
+一个父视图，可以在其子视图上多次的调用measure()方法。比如，父视图可以先根据未给定的dimension调用measure方法去测量每一个
+子视图的尺寸，如果所有子视图的未约束尺寸太大或者太小的时候，则会使用一个确切的大小，然后在每一个子视图上再次调用measure方法去测量每一个view的大小。（也就是说，如果子视图对于Measure得到的大小不满意的时候，父视图会介入并设置测量规则进行第二次measure）
 
 **measure过程传递传递尺寸的两个类**  
 - ViewGroup.LayoutParams类（View自身的布局参数）  
 - MeasureSpecs类（父视图对子视图的测量要求）
 
 ViewGroup.LayoutParams  
-被子视图用于告诉他们的父视图他们应该怎样被测量和放置（就是子视图自身的布局参数）。一个基本的LayoutParams只用来描述视图的高度和宽度。对于，每一方面的尺寸，你可以指定下列方式之一：  
+用于子视图告诉其父视图它们应该怎样被测量和放置（就是子视图自身的布局参数）。一个基本的LayoutParams只用来描述视图的高度和宽度。对于每一方面的尺寸（height和width），你可以指定下列方式之一：  
 - 具体数值   
 - MATCH_PARENT 表示子视图希望和父视图一样大(不含padding)   
 - WRAP_CONTENT 表示视图为正好能包裹其内容大小(包含padding)    
 
-对于ViewGroup的子类，也有相应的ViewGroup.LayoutParams的子类，例如RelativeLayout有相应的ViewGroup.LayoutParams的子类,拥有设置子视图水平和垂直的能力。
+ViewGroup的子类，也有相应的ViewGroup.LayoutParams的子类，例如RelativeLayout有相应的ViewGroup.LayoutParams的子类,拥有设置子视图水平和垂直的能力。
 
 MeasureSpecs  
 用于从上到下传递父视图对子视图测量需求,其有三种模式:      
@@ -86,13 +85,13 @@ MeasureSpecs
  
 #####3.2.2.3 measure核心方法  
 - measure(int widthMeasureSpec, int heightMeasureSpec)  
-该方法定义在View.java类中，final修饰符修饰，因此不能被重载，但measure调用链会回调View/ViewGroup对象的onMeasure()方法，因此我们只需要复写onMeasure()方法去计算自己的控件尺寸即可。
+该方法定义在View.java类中，final修饰符修饰，因此不能被重载，但measure调用链会回调View/ViewGroup对象的onMeasure()方法，因此我们只需要复写onMeasure()方法去根据需求计算自己的控件尺寸即可。
 
 - onMeasure(int widthMeasureSpec, int heightMeasureSpec)  
-该方法的两个参数分别是父视图提供的测量规格MeasureSpec。当父视图调用子视图的measure函数对子视图进行测量时，会传入这两个参数。通过这两个参数以及子视图本身的LayoutParams来共同决定子视图的测量规格MeasureSpec。其实整个measure过程就是从上到下遍历，不断的根据父视图宽高MeasureSpec:widthMeasureSpec、heightMeasureSpec和子视图自身的LayotuParams获取子视图自己的宽高MeasureSpec：widthMeasureSpec、heightMeasureSpec，最终调用子视图的measure(int widthMeasureSpec, int heightMeasureSpec)方法确定mMeasuredWidth和mMeasuredHeight。ViewGroup的measureChildren和measureChildWithMargins方法体现了该过程。  
+该方法的两个参数是父视图提供的测量要求。当父视图调用子视图的measure函数对子视图进行测量时，会传入这两个参数。通过这两个参数以及子视图本身的LayoutParams来共同决定子视图的测量要求MeasureSpec。其实整个measure过程就是从上到下遍历，不断的根据父视图对子视图的宽高要求MeasureSpec和子视图自身的LayotuParams获取子视图自己的宽高测量要求MeasureSpec，最终调用子视图的measure(int widthMeasureSpec, int heightMeasureSpec)方法（内部调用setMeasuredDimension）确定自己的mMeasuredWidth和mMeasuredHeight。ViewGroup的measureChildren和measureChildWithMargins方法体现了该过程，下面对该过程做了分析。  
 
 - setMeasuredDimension()  
-View在测量阶段的最终尺寸是由setMeasuredDimension()方法决定的,该方法最终会对每个View的mMeasuredWidth和mMeasuredHeight进行赋值，一旦这两个变量被赋值，就意味着该View的测量过程结束，setMeasuredDimension()也是必须要调用的方法，否则会报异常。在setMeasuredDimension()方法内部，你可以根据需求，去计算View的尺寸。  
+View在测量阶段的最终尺寸是由setMeasuredDimension()方法决定的,该方法最终会对每个View的mMeasuredWidth和mMeasuredHeight进行赋值，一旦这两个变量被赋值，就意味着该View的整个测量过程结束了，setMeasuredDimension()也是必须要调用的方法，否则会报异常。通常我们在自定义的时候，是不需要管上述的Measure过程的，只需要在setMeasuredDimension()方法内部，根据需求，去计算自己View的尺寸即可，你可以在ViewPagerIndicator项目的自定义Viwe的尺寸计算看到。  
 
 - makeMeasureSpec(int size, int mode)
 ```java
@@ -156,11 +155,11 @@ measureChildWithMargins(View child,
             int parentWidthMeasureSpec, int widthUsed,
             int parentHeightMeasureSpec, int heightUsed)
 ```
-下面就通过measureChildren（int widthMeasureSpec, int heightMeasureSpec)方法来对整个流程遍历过程进行分析：
+下面通过measureChildren（int widthMeasureSpec, int heightMeasureSpec)方法来对整个流程遍历过程进行分析：
 ```java
     /**
      * 请求所有子View去measure自己，要考虑的部分有对子View的测绘要求MeasureSpec以及其自身的padding
-     * 这里跳过所有为GONE状态的子View，最繁重的工作在getChildMeasureSpec方法中完成
+     * 这里跳过所有为GONE状态的子View，最繁重的工作是在getChildMeasureSpec方法中处理的
      *
      * @param widthMeasureSpec  对该View的width测绘要求
      * @param heightMeasureSpec 对该View的height测绘要求
@@ -268,11 +267,13 @@ measureChildWithMargins(View child,
 #####3.2.2.4 layout相关概念及核心方法  
 子视图的具体位置都是相对与父视图的位置。与Measure过程类似，ViewGroup在onLayout函数中通过调用其children的layout函数来设置子视图相对与父视图中的位置，具体位置由函数layout的参数决定。
 
-View的onLayout方法为空实现。而ViewGroup的onLayout则为abstract的，因此，如果自定义的View要继承ViewGroup时，必须实现onLayout函数，然而onMeasure并不强制实现，因为相对与layout来说，measure过程并不是必须的。  
+View的onLayout方法为空实现。而ViewGroup的onLayout则为abstract的，因此，如果自定义的View要继承ViewGroup时，必须实现onLayout函数，而onMeasure并不强制实现，因为相对与layout来说，measure过程并不是必须的。  
+
+Note：和Measure过程代码上不太像的是，Measure过程最终调用onMeasure()方法来设置View的尺寸，而Layout过程，onLayout参数是空实现，其是调用了setFrame方法对View进行布局。
 
 实现onLayout通常做法就是进行一个for循环调用每一个子视图的layout(l, t, r, b)函数，传入不同的参数l, t, r, b来确定每个子视图在父视图中的显示位置。onLayout过程会通过调用getMeasuredWidth()和getMeasuredHeight()方法获取到measure过程得到的mMeasuredWidth和mMeasuredHeight,这两个参数为layout过程提供了一个很重要的参考值（不是必须值）。    
 
-之所以说measure过程不是必须的，是因为layout过程中的4个参数l, t, r,b完全可以由视图设计者任意指定，如果在自定义的onLayout中手动指定了layout的参数，而不用measure过程的值，也是可以的，当然一般没人会这么做，这样也违背了Android框架的绘制机制，通常的做法是根据需求在measure过程决定尺寸，layout步骤决定位置，除非你只是指定View的位置，而不考虑View的尺寸。  
+之所以说measure过程不是必须的，因为View的Layout步骤是在Measure之后，在Layout里可以拿到Measure过程得到的值进行Layout，当然你也可以对Measure过程的值进行修改，但这样肯定是不可取的，这样违背了Android框架的绘制机制，要不Measure过程这么做的工作还有啥用。通常的做法是根据需求在measure过程决定尺寸，layout步骤决定位置，除非你所定义的View只需要指定View的位置，而不考虑View的尺寸。  
 
 我们来看一下LinearLayout的onLayout的实现：
 ```java
@@ -285,6 +286,9 @@ View的onLayout方法为空实现。而ViewGroup的onLayout则为abstract的，�
         }
     }
     
+    /**
+     * 遍历所有的子View，为其设置相对其父视图上的坐标
+     */
     void layoutVertical(int left, int top, int right, int bottom) {
 	for (int i = 0; i < count; i++) {
 	            final View child = getVirtualChildAt(i);
@@ -306,6 +310,9 @@ View的onLayout方法为空实现。而ViewGroup的onLayout则为abstract的，�
         child.layout(left, top, left + width, top + height);
     }	
     
+    /**
+     * View的onLayout为空实现，这个和Measure过程不太像，这里调用的是setFrame方法来设置最终坐标
+     */
     public void layout(int l, int t, int r, int b) {
     	...
     	setFrame(l, t, r, b)
