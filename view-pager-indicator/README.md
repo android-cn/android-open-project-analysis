@@ -72,7 +72,7 @@ ViewGroup.LayoutParams
 ViewGroup的子类，也有相应的ViewGroup.LayoutParams的子类，例如RelativeLayout有相应的ViewGroup.LayoutParams的子类,拥有设置子视图水平和垂直的能力。
 
 MeasureSpecs  
-用于从上到下传递父视图对子视图测量需求,其有三种模式:      
+其包含的信息有测量要求和尺寸，有三种模式:      
 
 - UNSPECIFIED  
 父视图不对子视图有任何约束，它可以达到所期望的任意尺寸。
@@ -88,20 +88,22 @@ MeasureSpecs
 该方法定义在View.java类中，final修饰符修饰，因此不能被重载，但measure调用链会回调View/ViewGroup对象的onMeasure()方法，因此我们只需要复写onMeasure()方法去根据需求计算自己的控件尺寸即可。
 
 - onMeasure(int widthMeasureSpec, int heightMeasureSpec)  
-该方法的两个参数是父视图提供的测量要求。当父视图调用子视图的measure函数对子视图进行测量时，会传入这两个参数。通过这两个参数以及子视图本身的LayoutParams来共同决定子视图的测量要求MeasureSpec。其实整个measure过程就是从上到下遍历，不断的根据父视图对子视图的宽高要求MeasureSpec和子视图自身的LayotuParams获取子视图自己的宽高测量要求MeasureSpec，最终调用子视图的measure(int widthMeasureSpec, int heightMeasureSpec)方法（内部调用setMeasuredDimension）确定自己的mMeasuredWidth和mMeasuredHeight。ViewGroup的measureChildren和measureChildWithMargins方法体现了该过程，下面对该过程做了分析。  
+该方法的两个参数是父视图提供的测量要求。当父视图调用子视图的measure函数对子视图进行测量时，会传入这两个参数。通过这两个参数以及子视图本身的LayoutParams来共同决定子视图的测量要求MeasureSpec。其实整个measure过程就是从上到下遍历，不断的根据父视图的宽高要求MeasureSpec和子视图自身的LayotuParams获取子视图自己的宽高测量要求MeasureSpec，最终调用子视图的measure(int widthMeasureSpec, int heightMeasureSpec)方法（内部调用setMeasuredDimension）确定自己的mMeasuredWidth和mMeasuredHeight。ViewGroup的measureChildren和measureChildWithMargins方法体现了该过程，下面对该过程做了分析。  
 
 - setMeasuredDimension()  
 View在测量阶段的最终尺寸是由setMeasuredDimension()方法决定的,该方法最终会对每个View的mMeasuredWidth和mMeasuredHeight进行赋值，一旦这两个变量被赋值，就意味着该View的整个测量过程结束了，setMeasuredDimension()也是必须要调用的方法，否则会报异常。通常我们在自定义的时候，是不需要管上述的Measure过程的，只需要在setMeasuredDimension()方法内部，根据需求，去计算自己View的尺寸即可，你可以在ViewPagerIndicator项目的自定义Viwe的尺寸计算看到。  
 
+下面三个和MeasureSpec相关方法的返回的值都是在getChildMeasureSpec()中确定的，后面的源码有详细分析
+
 - makeMeasureSpec(int size, int mode)
 ```java
         /**
-         * 根据提供的size和mode创建一个measure specification
+         * 根据提供的size和mode创建一个measure specification，包含了View的尺寸和测量要求
          * 返回的mode必须为以下枚举值之一：
          * 
-         *  View.MeasureSpec#UNSPECIFIED}</li>
-         *  View.MeasureSpec#EXACTLY}</li>
-         *  View.MeasureSpec#AT_MOST}</li>
+         *  View.MeasureSpec#UNSPECIFIED}
+         *  View.MeasureSpec#EXACTLY}
+         *  View.MeasureSpec#AT_MOST}
          * 
          * 在API17以及之前，makeMeasureSpec的实现是：参数的顺序是不重要的，而且任何值的
          * 溢出都可能会影响到MeasureSpec的结果，RelativeLayout就受此bug影响。在API 17之后，
@@ -122,7 +124,7 @@ View在测量阶段的最终尺寸是由setMeasuredDimension()方法决定的,�
 - getMode(int measureSpec)
 ```java 
         /**
-         * 从提供的measure specification中抽取Mode
+         * 从提供的measure specification中抽取Mode，在确定View的尺寸时，需要根据该Mode来决定如何确定最终值
          */
         public static int getMode(int measureSpec) {
             return (measureSpec & MODE_MASK);
@@ -131,7 +133,8 @@ View在测量阶段的最终尺寸是由setMeasuredDimension()方法决定的,�
 - getSize(int measureSpec)
 ```java
         /**
-         * 从提供的measure specification中抽取尺寸
+         * 从提供的measure specification中抽取尺寸，在确定自定义View的尺寸时，使用该方法获取到系统Measure的值，
+         * 然后根据getMode方法得到的测绘要求，在Measure值和自己计算的值中确定最终值。
          *
          * @return 根据给定的measure specification得到的以pixels为单位的尺寸
          */
@@ -139,7 +142,8 @@ View在测量阶段的最终尺寸是由setMeasuredDimension()方法决定的,�
             return (measureSpec & ~MODE_MASK);
         }
 ```
-ViewGroup中，含有两个对子视图Measure的方法:  
+
+下面对整个Measure流程做一个分析，在ViewGroup中，含有两个对子视图Measure的方法:  
 ```java
     /**
      * 只包含子View的padding   
@@ -155,7 +159,8 @@ measureChildWithMargins(View child,
             int parentWidthMeasureSpec, int widthUsed,
             int parentHeightMeasureSpec, int heightUsed)
 ```
-下面通过measureChildren（int widthMeasureSpec, int heightMeasureSpec)方法来对整个流程遍历过程进行分析：
+我们取measureChildren（int widthMeasureSpec, int heightMeasureSpec)方法进行分析：
+
 ```java
     /**
      * 请求所有子View去measure自己，要考虑的部分有对子View的测绘要求MeasureSpec以及其自身的padding
@@ -186,28 +191,107 @@ measureChildWithMargins(View child,
 
         child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
     }
-
-
-  /** 
-     * 该方法是measureChildren中最繁重的部分，为每一个ChildView计算出正确的MeasureSpec，
+    
+   /**
+    *	getChildMeasureSpec()的分析有点多，只为了分析系统如何确定子视图的MeasureSpec和size的
+    */
+  
+   /** 
+     * 该方法是measureChildren中最繁重的部分，为每一个ChildView计算出自己的MeasureSpec。
      * 目标是将ChildView的MeasureSpec和LayoutParams结合起来去得到一个最合适的结果。
      * 比如，如果该View知道自己的尺寸（假设它的MeasureSpec Mode为EXACTLY），并且该Child已经在它的
-     * LayoutParams中表明了想获得一个和parent View相同的大小，那么parent应该请求该Child以一个给定
-     * 的尺寸放置
+     * LayoutParams中表明了想获得一个和父视图相同的大小（MatchParent），那么parent应该请求该Child
+     * 以一个给定的尺寸放置
      *
      * @param spec 对该view的测绘要求
      * @param padding 当前View在当前唯独上的paddingand，也有可能含有margins
      *
-     * @param childDimension 在当前维度上希望的大小
+     * @param childDimension 在当前维度上（height或width）的具体指
      * @return a MeasureSpec integer for the child
      */
     public static int getChildMeasureSpec(int spec, int padding, int childDimension) {
-    	...
+    
+	    int specMode = MeasureSpec.getMode(spec);  //获得父视图的测量要求  
+	    int specSize = MeasureSpec.getSize(spec);  //获得父视图的实际值  
+	  
+	    int size = Math.max(0, specSize - padding); //父视图的大小减去边距值
+	  
+	    int resultSize = 0;    //子视图的实际值
+	    int resultMode = 0;    //子视图的测量要求 
+	  
+	    switch (specMode) {  
+	    // Parent has imposed an exact size on us  
+	    //父视图的测量要求为EXACTLY：为子视图指定了一个明确值
+	    case MeasureSpec.EXACTLY:   
+	        //子视图的width或height是个精确值，则直接使用该精确值
+	        if (childDimension >= 0) {            
+	            resultSize = childDimension;         
+	            resultMode = MeasureSpec.EXACTLY;    //子视图的Mode设置为EXACTLY
+	        }   
+	        //子视图的width或height的属性为MATCH_PARENT，
+	        else if (childDimension == LayoutParams.MATCH_PARENT) {  
+	            // Child wants to be our size. So be it.  
+	            resultSize = size;                   //则为子View设置父视图的大小（减去padding后）
+	            resultMode = MeasureSpec.EXACTLY;    //子视图测量要求设置为EXACTLY
+	        }   
+	        //子视图的width或height的属性为WRAP_CONTENT：
+	        else if (childDimension == LayoutParams.WRAP_CONTENT) {  
+	            // 子视图希望自己确定大小，但不能比父视图大
+	            resultSize = size;                  //为子视图指定了一个最大值
+	            resultMode = MeasureSpec.AT_MOST;  //子视图测量要求设置为AT_MOST
+	        }  
+	        break;  
+   
+	    //父视图的测绘要求为AT_MOST
+	    case MeasureSpec.AT_MOST:  
+	        //子视图的width或height是个精确值
+	        if (childDimension >= 0) {  
+	            resultSize = childDimension;        //则直接使用该值
+	            resultMode = MeasureSpec.EXACTLY;   //子视图测量要求为 EXACTLY   
+	        }  
+	        //子视图的width或height的属性为 MATCH_PARENT
+	        else if (childDimension == LayoutParams.MATCH_PARENT) {  
+	            //子视图希望和父视图相同大小，但是父视图的大小没有指定，
+	            //只能约束子视图大小不能比父视图大
+	            resultSize = size;                  //子视图尺寸为父视图大小  
+	            resultMode = MeasureSpec.AT_MOST;   //子视图测量要求为AT_MOST  
+	        }  
+	        //子视图的width或height属性为 WRAP_CONTENT  
+	        else if (childDimension == LayoutParams.WRAP_CONTENT) {  
+	             //子视图希望和父视图相同大小，其大小不能比父视图大
+	            resultSize = size;                  //子视图尺寸为父视图大小  
+	            resultMode = MeasureSpec.AT_MOST;   //子视图测量要求为AT_MOST  
+	        }  
+	        break;  
+	  
+	    //父视图的测绘要求为UNSPECIFIED，大小没有约束
+	    case MeasureSpec.UNSPECIFIED:  
+	        //子视图的width或height的属性是精确值,则直接使用该值
+	        if (childDimension >= 0) {  
+	            resultSize = childDimension;      
+	            resultMode = MeasureSpec.EXACTLY;   //子视图测量要求为 EXACTLY  
+	        }  
+	        //子视图的width或height的属性为 MATCH_PARENT
+	        else if (childDimension == LayoutParams.MATCH_PARENT) {  
+	            //子视图希望和父视图一样大，由于父视图没指定，则这里也无法确定子视图大小
+	            //设置为0，后续处理
+	            resultSize = 0;                        
+	            resultMode = MeasureSpec.UNSPECIFIED;  //子视图测量要求为 UNSPECIFIED  
+	        }   
+	        //子视图的width或height的属性为 WRAP_CONTENT，子视图大小也无法确定
+	        else if (childDimension == LayoutParams.WRAP_CONTENT) {  
+	            resultSize = 0;                        
+	            resultMode = MeasureSpec.UNSPECIFIED;  //子视图测量要求为 UNSPECIFIED  
+	        }  
+	        break;  
+	    }  
+	    //根据获取到的子视图的测量要求和大小创建子视图的MeasureSpec
+	    return MeasureSpec.makeMeasureSpec(resultSize, resultMode);  
     }
     
    /**
      *
-     * 用于获取View最终的大小，父视图提供了宽高参数中的约束信息
+     * 用于获取View最终的大小，父视图提供了宽、高的约束信息
      * 一个View的真正的测量工作是在onMeasure(int,int)中，由该方法调用。
      * 因此，只有onMeasure(int,int)可以而且必须被子类复写
      *
@@ -241,11 +325,11 @@ measureChildWithMargins(View child,
         int specSize = MeasureSpec.getSize(measureSpec);
 
         switch (specMode) {
-        case MeasureSpec.UNSPECIFIED:
+        case MeasureSpec.UNSPECIFIED://父视图没有任何约束，则返回getSuggestedMinimumWidth()得到的最小值
             result = size;
             break;
-        case MeasureSpec.AT_MOST:
-        case MeasureSpec.EXACTLY:
+        case MeasureSpec.AT_MOST://父视图有约束，则返回MeasureSpec.getSize(measureSpec)的值，
+        case MeasureSpec.EXACTLY://该值则是getChildMeasureSpec方法内部处理确定的
             result = specSize;
             break;
         }
@@ -766,7 +850,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
     }
 
     /**
-     * 决定View的宽度
+     * 决定View的宽度，这一部分可以参考上面View.getDefaultSize()方法的源码处理
      *
      * Determines the width of this view
      *
@@ -778,19 +862,18 @@ public class CirclePageIndicator extends View implements PageIndicator {
      */
     private int measureLong(int measureSpec) {
         int result;
-        int specMode = MeasureSpec.getMode(measureSpec);//获取MeasureSpec模式
+        int specMode = MeasureSpec.getMode(measureSpec);//获取测量要求
         int specSize = MeasureSpec.getSize(measureSpec);//获取系统建议的值
 
-        if ((specMode == MeasureSpec.EXACTLY) || (mViewPager == null)) {//用户指定了具体的值
+        if ((specMode == MeasureSpec.EXACTLY) || (mViewPager == null)) {//父视图指定的Mode为具体值
             //We were told how big to be
             result = specSize;
         } else {
-            //UNSPECIFIED 或者 AT_MOST 模式，则根据ViewPager的page数量计算宽度
-            final int count = mViewPager.getAdapter().getCount();//
+            //如果测量要求为UNSPECIFIED或AT_MOST模式，则根据实际需求计算宽度
+            final int count = mViewPager.getAdapter().getCount();
             result = (int)(getPaddingLeft() + getPaddingRight()
                     + (count * 2 * mRadius) + (count - 1) * mRadius + 1);
-            //Respect AT_MOST value if that was what is called for by measureSpec
-            //AT_MOST 特殊处理，从系统建议值和自己计算值中取一个较小值
+            //如果父视图的测量要求为AT_MOST，即限定了一个最大值，则再从系统建议值和自己计算值中取一个较小值
             if (specMode == MeasureSpec.AT_MOST) {
                 result = Math.min(result, specSize);
             }
@@ -817,7 +900,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
             //Measure the height
             result = (int)(2 * mRadius + getPaddingTop() + getPaddingBottom() + 1);
             //Respect AT_MOST value if that was what is called for by measureSpec
-            if (specMode == MeasureSpec.AT_MOST) {//获取一个合适的值
+            if (specMode == MeasureSpec.AT_MOST) {
                 result = Math.min(result, specSize);
             }
         }
@@ -831,6 +914,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
 View的绘制：  
 http://blog.csdn.net/wangjinyu501/article/details/9008271  
 http://blog.csdn.net/qinjuning/article/details/7110211
+http://blog.csdn.net/qinjuning/article/details/8074262
   	
 Touch事件传递：  
 http://blog.csdn.net/xiaanming/article/details/21696315
