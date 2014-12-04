@@ -79,19 +79,19 @@ protected Map<String, String> getParams()
 ```java
 public byte[] getBody()
 ```
-重写此方法，可以构建用于POST、PUT、PATCH的Body字节内容。
+重写此方法，可以构建用于POST、PUT、PATCH的字节Body内容。
 
 
 ####2.1.3 RequestQueue.java
 Volley框架的核心类，将请求Request加入到一个运行的RequestQueue中，来完成请求操作。
 ####(1)主要成员变量
 RequestQueue中维护了两个**基于优先级**的Request队列，缓存请求队列和网络请求队列。  
-放在缓存请求队列中的Request，将通过缓存中获取数据；放在网络请求队列中的Request，将通过网络获取数据。  
+放在缓存请求队列中的Request，将通过缓存获取数据；放在网络请求队列中的Request，将通过网络获取数据。  
 ```java
 private final PriorityBlockingQueue<Request<?>> mCacheQueue = new PriorityBlockingQueue<Request<?>>();
 private final PriorityBlockingQueue<Request<?>> mNetworkQueue = new PriorityBlockingQueue<Request<?>>();
 ```
-维护了一个加入到RequestQueue中，并且还没有结束的请求集合。   
+维护了一个已经加入到RequestQueue中，并且还没有完成的请求集合。   
 ```java
 private final Set<Request<?>> mCurrentRequests = new HashSet<Request<?>>();
 ```
@@ -170,15 +170,15 @@ public void cancelAll(final Object tag)
 `public void remove(String key);` 移除指定的缓存实体  
 `public void clear();` 清空缓存  
 ####(2)代表缓存实体的内部类Entry
-成员变量和方法
+成员变量和方法  
 `byte[] data` 请求返回的数据（Body实体）  
-`String etag` Http返回值用于缓存控制的ETag  
-`long serverDate` Http返回的响应产生的服务器时间  
-`long ttl` 缓存过期时间  
+`String etag` Http响应首部中用于缓存新鲜度验证的ETag  
+`long serverDate` Http响应首部中的响应产生时间  
+`long ttl` 缓存的过期时间  
 `long softTtl` 缓存的新鲜时间  
-`Map<String, String> responseHeaders` 请求返回的Headers  
-`boolean isExpired()` 判断缓存是否过期，过期请求不能继续使用  
-`boolean refreshNeeded()` 判断缓存是否新鲜，不新鲜的请求需要发到服务端做新鲜度的检测  
+`Map<String, String> responseHeaders` 响应的Headers  
+`boolean isExpired()` 判断缓存是否过期，过期缓存不能继续使用  
+`boolean refreshNeeded()` 判断缓存是否新鲜，不新鲜的缓存需要发到服务端做新鲜度的检测  
 ####2.1.7 DiskBasedCache.java
 继承Cache类，基于Disk的缓存实现类
 ####2.1.8 NoCache.java
@@ -194,7 +194,7 @@ public NetworkResponse performRequest(Request<?> request) throws VolleyError;
 Network中方法performRequest的返回值。  
 封装了网络请求响应的StatusCode，Headers和Body等。  
 成员变量：  
-`int statusCode` Http状态码  
+`int statusCode` Http响应状态码  
 `byte[] data` Body数据  
 `Map<String, String> headers` 响应Headers  
 `boolean notModified` 表示是否为304响应  
@@ -208,25 +208,33 @@ Network中方法performRequest的返回值。
 
 
 ####2.1.12 HttpStack.java
-代表Http栈的接口
+代表Http栈的接口  
 唯一方法，执行请求  
 ```java
 public HttpResponse performRequest(Request<?> request, Map<String, String> additionalHeaders)
         throws IOException, AuthFailureError;
 ```
-执行request代表的请求，第二个参数表示添加额外的Headers
+执行request代表的请求，第二个参数表示发起请求之前，添加额外的请求Headers
 ####2.1.13 HttpClientStack.java
 继承HttpStack，基于HttpClient的http栈的实现类
 ####2.1.14 HurlStack.java
 继承HttpStack，基于urlconnection的http栈的实现类
 
 ####2.1.15 Response.java
-封装了经过解析后的数据，请求调度线程向主线程传输用途
+封装了经过解析后的数据，用于传输。
 ####2.1.16 ByteArrayPool.java
-Byte[] 的缓存池，用于Byte[]的回收再利用，减少了内存的分配和回收。  
+byte[] 的回收池，用于byte[]的回收再利用，减少了内存的分配和回收。  
+```java
+public synchronized void returnBuf(byte[] buf)
+```
+将用过的byte[]回收，根据byte[]长度按照从小到大的排序将byte[]放入到一个`ArrayList`中。  
+```java
+public synchronized byte[] getBuf(int len)
+```
+获取byte[]，遍历`ArrayList`池，找出第一个长度大于传入参数`len`的byte[]，如果最终没有合适的byte[]，new一个。  
 **Volley提高性能的优化之一**
 ####2.1.17 PoolingByteArrayOutputStream.java
-继承ByteArrayOutputStream，使用了ByteArrayPool来提高性能。
+继承ByteArrayOutputStream，使用了ByteArrayPool获取Byte[]来提高性能。
 
 ####2.1.18 HttpHeaderParser.java
 Http header的解析工具类  
@@ -301,9 +309,9 @@ public void postError(Request<?> request, VolleyError error);
 继承Request类,代表了一个返回值为Image的请求。将网络返回的结果数据解析为Bitmap类型。  
 可以设置请求图片的最大宽度和最大高度。  
 ####2.1.28 ImageLoader.java
-封装了了ImageRequst的方便使用的工具类
+封装了ImageRequst的方便使用的工具类
 ####2.1.29 NetworkImageView.java
-可以加载网络图片的ImageView
+利用ImageLoader，可以加载网络图片的ImageView
 ####2.1.30 ClearCacheRequest.java
 用于人为清空Http缓存的请求  
 添加到RequestQueue后能很快执行，因为优先级很高，为`Priority.IMMEDIATE`  
