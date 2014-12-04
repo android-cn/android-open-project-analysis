@@ -80,8 +80,9 @@ EventBus.builder().throwSubscriberException(true).installDefaultEventBus()
 13.`logNoSubscriberMessages`当没有订阅者订阅该事件时是否打印日志，默认为 true。  
 14.`sendSubscriberExceptionEvent`当调用事件处理函数异常时是否发送 SubscriberExceptionEvent 事件，若此开关打开，订阅者可通过 
 ```java
-public void onEvent(SubscriberExceptionEvent event) 订阅该事件进行处理，默认为 true。 
-``` 
+public void onEvent(SubscriberExceptionEvent event) 
+```  
+订阅该事件进行处理，默认为 true。 
 15.`sendNoSubscriberEvent`当没有事件处理函数对事件处理时是否发送 NoSubscriberEvent 事件，若此开关打开，订阅者可通过
 ```java
 public void onEvent(NoSubscriberEvent event)
@@ -93,7 +94,6 @@ public void onEvent(NoSubscriberEvent event)
 跟一般 Builder 类似，用于在需要设置参数过多时构造 EventBus。包含的属性也是 EventBus 的一些设置参数，意义见`4.2.1 EventBus.java`的介绍，build 函数用于新建 EventBus 对象，installDefaultEventBus 函数将当前设置应用于 Default EventBus。  
 ####4.2.3 SubscriberMethodFinder.java
 订阅者响应函数信息存储和查找类，由 HashMap 缓存，以 ${subscriberClassName} 为 key，SubscriberMethod 对象为元素的 ArrayList 为 value。findSubscriberMethods 函数用于查找订阅者响应函数，如果不在缓存中，则遍历自己的每个函数并递归父类查找，查找成功后保存到缓存中。遍历及查找规则为：  
-```xml
 a. 遍历 subscriberClass 每个方法；  
 b. 该方法不以`java.`、`javax.`、`android.`这些 SDK 函数开头，并以 ${eventMethodName} 开头，表示可能是事件响应函数继续，否则检查下一个方法；  
 c. 该方法是否是 public 的，并且不是 ABSTRACT、STATIC、BRIDGE、SYNTHETIC 修饰的，满足条件则继续。其中 BRIDGE、SYNTHETIC 为编译器生成的一些函数修饰符；  
@@ -107,7 +107,6 @@ f. 得到该方法唯一的参数即事件类型 eventType，将这个方法、t
 g. 回到 b 遍历 subscriberClass 的下一个方法，若方法遍历结束到 h；
 h. 回到 a 遍历自己的父类，若父类遍历结束回到 i；  
 i. 若 ArrayList 依然为空则抛出异常，否则会将 ArrayList 做为 value，${subscriberClassName} 做为 key 放到缓存 HashMap 中。 
-```
 对于事件函数的查找有两个小的性能优化点：  
 ```xml
 a. 第一次查找后保存到了缓存中，即上面介绍的 HashMap  
@@ -116,7 +115,7 @@ b. 遇到 java. javax. android. 开头的类会自动停止查找
 类中的 skipMethodVerificationForClasses 属性表示跳过哪些类中非法以 {eventMethodName} 开头的函数检查，若不跳过泽辉抛出异常。  
 PS：在此之前的版本 EventBus 允许自定义事件响应函数名称，缓存的 HashMap key 为 ${subscriberClassName}.${eventMethodName}，这版本中此功能已经被去除。  
 ####4.2.4 SubscriberMethod.java
-订阅者事件响应函数信息，包括响应方法、线程 Mode、事件类型以及一个用来比较 SubscriberMethod 是否相等的特征值 methodString 共四个变量，其中 methodString 为 ${methodClassNmae}#${methodName}(${eventTypeClassName}。  
+订阅者事件响应函数信息，包括响应方法、线程 Mode、事件类型以及一个用来比较 SubscriberMethod 是否相等的特征值 methodString 共四个变量，其中 methodString 为 ${methodClassName}#${methodName}(${eventTypeClassName}。  
 ####4.2.5 Subscription.java
 订阅者信息，包括 subscriber 对象、事件响应方法 SubscriberMethod、优先级 priority。  
 ####4.2.6 HandlerPoster.jva
