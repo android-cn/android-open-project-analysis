@@ -135,15 +135,15 @@ public <T> Request<T> add(Request<T> request);
 void finish(Request<?> request)
 ```
 完成参数所传入的请求  
-1）首先在当前请求集合`mCurrentRequests`中移除所传请求。  
-2）然后如果所传请求存在等待队列，则将等待队列移除，将等待队列所有的请求添加到缓存请求队列中。  
+> 1）首先在当前请求集合`mCurrentRequests`中移除所传请求。  
+> 2）然后如果所传请求存在等待队列，则将等待队列移除，将等待队列所有的请求添加到缓存请求队列中。  
 
 ####(5)请求取消
 ```java
 public void cancelAll(RequestFilter filter)
 public void cancelAll(final Object tag)
 ```
-取消当前请求集合中所有符合条件的请求  
+取消当前请求集合中所有符合条件的请求   
 
 ####2.1.4 CacheDispatcher.java
 缓存调度线程类，不断的从缓存请求队列中取出Request去处理。  
@@ -186,7 +186,7 @@ public void cancelAll(final Object tag)
 
 ####2.1.9 Network.java
 代表网络的接口  
-唯一的方法，用于执行特定请求
+唯一的方法，用于执行特定请求  
 ```java
 public NetworkResponse performRequest(Request<?> request) throws VolleyError;
 ```
@@ -231,7 +231,7 @@ public synchronized void returnBuf(byte[] buf)
 ```java
 public synchronized byte[] getBuf(int len)
 ```
-获取byte[]，遍历`ArrayList`池，找出第一个长度大于传入参数`len`的byte[]，如果最终没有合适的byte[]，new一个。  
+获取byte[]，遍历`ArrayList`池，找出第一个长度大于传入参数`len`的byte[]，并返回；如果最终没有合适的byte[]，new一个返回。  
 **Volley提高性能的优化之一**
 ####2.1.17 PoolingByteArrayOutputStream.java
 继承ByteArrayOutputStream，使用了ByteArrayPool获取Byte[]来提高性能。
@@ -252,14 +252,14 @@ public static long parseDateAsEpoch(String dateStr)
 ```java
 public static Cache.Entry parseCacheHeaders(NetworkResponse response)
 ```
-比较重要的方法，通过网络响应中的缓存控制Header和Body内容，构建缓存实体。  
+**比较重要的方法**，通过网络响应中的缓存控制Header和Body内容，构建缓存实体。  
 1）根据Date首部，获取响应生成时间  
-2）根据ETag手部，获取响应实体标签  
+2）根据ETag首部，获取响应实体标签  
 3）根据Cache－Control和Expires首部，计算出缓存的过期时间，和缓存的新鲜度时间
 
 >两点需要说明下：  
->1.没有使用`Last-Modify`首部，而是采用`Date`首部的来构建新鲜度验证时的`If-Modified-Since`.
->与Http 1.1的语义有些违背。  
+>1.没有处理`Last-Modify`首部，而是处理存储了`Date`首部，并在后续的新鲜度验证时，使用`Date`来构建`If-Modified-Since`。
+>这与Http 1.1的语义有些违背。  
 >2.计算过期时间，Cache－Control首部优先于Expires首部。
 
 ####2.1.19 RetryPolicy.java
@@ -309,9 +309,28 @@ public void postError(Request<?> request, VolleyError error);
 继承Request类,代表了一个返回值为Image的请求。将网络返回的结果数据解析为Bitmap类型。  
 可以设置请求图片的最大宽度和最大高度。  
 ####2.1.28 ImageLoader.java
-封装了ImageRequst的方便使用的工具类
+封装了ImageRequst的方便使用的图片加载工具类。 
+>1.可以设置自定义的`ImageCache`，可以是内存缓存，也可以是Disk缓存，将获取的图片缓存起来，重复利用，减少请求。    
+>2.可以定义图片请求过程中显示的图片和请求失败后显示的图片。  
+>3.相同请求（相同地址，相同大小）只发送一个，可以避免重复请求。  
+
 ####2.1.29 NetworkImageView.java
-利用ImageLoader，可以加载网络图片的ImageView
+利用ImageLoader，可以加载网络图片的ImageView  
+有三个公开的方法：  
+```java
+public void setDefaultImageResId(int defaultImage)
+```
+设置默认图片，加载图片过程中显示。  
+```java
+public void setErrorImageResId(int errorImage)
+```
+设置错误图片，加载图片失败后显示。  
+```java
+public void setImageUrl(String url, ImageLoader imageLoader)
+```
+设置网络图片的Url和ImageLoader，将利用这个ImageLoader去获取网络图片。  
+>如果有新的图片加载请求，会把这个ImageView上旧的加载请求取消。
+
 ####2.1.30 ClearCacheRequest.java
 用于人为清空Http缓存的请求  
 添加到RequestQueue后能很快执行，因为优先级很高，为`Priority.IMMEDIATE`  
