@@ -88,7 +88,7 @@ CircularFloatingActionMenu 实现原理解析
 
 ![流程图](https://github.com/android-cn/android-open-project-analysis/blob/master/circular-floating-action-menu/流程图.jpg "流程图")
 
-###3 详细设计
+###3详细设计
 
 ##SubActionButton
 首先是构造函数
