@@ -162,7 +162,8 @@ public void cancelAll(final Object tag)
 `Network mNetwork` 网络类，代表了一个可以执行请求的网络  
 `Cache mCache`  缓存类，代表了一个可以获取请求结果，存储请求结果的缓存  
 `ResponseDelivery mDelivery` 请求结果传递类，可以传递请求的结果或者错误到调用者  
-####(2)处理流程图
+####(2)处理流程图  
+![网络调度线程处理流程图](image/NetworkDispatcher-run-flow-chart.png)
 
 ####2.1.6 Cache.java
 缓存接口，代表了一个可以获取请求结果，存储请求结果的缓存。
