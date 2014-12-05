@@ -58,7 +58,7 @@ Handler异步通信，Http网络请求， IO流。
 
 ####3.2 DB模块
 ![Db流程图](image/DbSequence.png)
-`DbUtils`中`getInstance()`获取XUtils的实例，里面的操作就是检查数据库版本和升级，然后就是创建数据库（单例模式， 如果存在数据库不会重复创建）。
+- `DbUtils`中`getInstance()`获取XUtils的实例，里面的操作就是检查数据库版本和升级，然后就是创建数据库（单例模式， 如果存在数据库不会重复创建）。
  `createDatabase()`通过配置创建数据库。save，find，update，delete 都是然后通过`SqlInfoBuilder`或者Selector组合对象的sql语句， 然后通过系统自带数据库api进行数据库操作。
  `SqlInfoBuilder`的原理也是反射加注解。
  
