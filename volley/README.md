@@ -129,7 +129,8 @@ start方法，开启一个**缓存调度线程**和默认的4个**网络调度�
 ```java
 public <T> Request<T> add(Request<T> request);
 ```
-流程图
+流程图如下：  
+![加入请求流程图](image/RequestQueue-add-flow-chart.png)
 ####(4)请求完成
 ```java
 void finish(Request<?> request)
