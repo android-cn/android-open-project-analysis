@@ -154,6 +154,7 @@ public void cancelAll(final Object tag)
 `Cache mCache` 缓存类，代表了一个可以获取请求结果，存储请求结果的缓存  
 `ResponseDelivery mDelivery` 请求结果传递类  
 ####(2)处理流程图
+![缓存调度线程处理流程图](image/CacheDispatcher-run-flow-chart.png)
 ####2.1.5 NetworkDispatcher.java
 网络调度线程类，不断的从网络请求队列中取出Request去处理。
 ####(1)成员变量
