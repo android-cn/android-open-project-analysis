@@ -371,13 +371,9 @@ Volley中所有错误异常的父类，继承自Exception，可通过此类设�
 > **优秀框架的设计，令人叫绝，受益良多。**
 
 ###3. 流程图
-主要功能流程图  
-- 如 Retrofit、Volley 的请求处理流程，Android-Universal-Image-Loader 的图片处理流程图  
-- 可使用 StartUML、Visio 或 Google Drawing 等工具完成，其他工具推荐？？  
-- 非所有项目必须，不需要的请先在群里反馈  
-
-**完成时间**  
-- `两天内`完成  
+Volley请求流程图  
+![Volley请求流程图](image/Volley-run-flow-chart.png)  
+> **上图是Volley请求时的流程图，在Volley的发布演讲中给出，我在这里将其用中文重新画出。**   
 
 ###4. 总体设计
 整个库分为哪些模块及模块之间的调用关系。  
