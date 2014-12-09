@@ -38,7 +38,7 @@ Volley请求流程图
 > 红色圈外面的部分，在Volley源码中放在了toolbox包中，作为Volley为各个功能点提供的默认的具体实现。    
 > 通过类图我们看出，Volley有着非常好的拓展性。通过各个功能点的接口，我们可以给出自定义的，更符合我们需求的具体实现。
 > 
-> **多用组合，少用继承;面向接口编程，不针对具体实现编程。**  
+> **多用组合，少用继承;针对接口编程，不针对具体实现编程。**  
 >   
 > **优秀框架的设计，令人叫绝，受益良多。**
 
@@ -385,5 +385,43 @@ Volley中所有错误异常的父类，继承自Exception，可通过此类设�
 
 
 ###5. 杂谈
+#### 关于Http缓存
+Volley构建了一套相对完整的符合Http语义的缓存机制。
+    
+**优点和特点**   
+（1）根据`Cache-Control`和`Expires`首部来计算缓存的过期时间。如果两个首部都存在情况下，以`Cache-Control`为准。  
+（2）利用`If-None-Match`和`If-Modified-Since`对过期缓存或者不新鲜缓存，进行请求再验证，并处理304响应，更新缓存。  
+（3）默认的缓存实现，将缓存以文件的形式存储在Disk，程序退出后不会丢失。
+
+**我个人认为的不足之处**  
+缓存的再验证方面，在构建`If-Modified-Since`请求首部时，Volley使用了服务端响应的`Date`首部，没有使用`Last-Modified`首部。整个框架没有使用`Last-Modified`首部。这与Http语义不符。    
+```java   
+private void addCacheHeaders(Map<String, String> headers, Cache.Entry entry) {
+    // If there's no cache entry, we're done.
+    if (entry == null) {
+        return;
+    }
+
+    if (entry.etag != null) {
+        headers.put("If-None-Match", entry.etag);
+    }
+
+    if (entry.serverDate > 0) {
+        Date refTime = new Date(entry.serverDate);
+        headers.put("If-Modified-Since", DateUtils.formatDate(refTime));
+    }
+}
+```
+服务端根据请求时通过`If-Modified-Since`首部传过来的时间，判断资源文件是否在`If-Modified-Since`时间 **以后** 有改动，如果有改动，返回新的请求结果。如果没有改动，返回304 not modified。  
+`Last-Modified`代表了资源文件的最后修改时间。通常使用这个首部构建`If-Modified-Since`的时间。  
+`Date`代表了响应产生的时间，正常情况下`Date`时间在`Last-Modified`时间之后。也就是`Date`>=`Last-Modified`。  
+通过以上原理，既然`Date`>=`Last-Modified`。那么我利用`Date`构建，也是完全正确的。  
+  
+**可能的问题出在服务端的Http实现上，如果服务端完全遵守Http语义，采用时间比较的方式来验证`If-Modified-Since`，判断服务器资源文件修改时间是不是在`If-Modified-Since`之后。那么使用`Date`完全正确。  
+可是有的服务端实现不是比较时间，而是直接的判断服务器资源文件修改时间，是否和`If-Modified-Since`所传时间相等。这样使用`Date`就不能实现正确的再验证，因为`Date`的时间总不会和服务器资源文件修改时间相等。 **  
+
+尽管使用`Date`可能出现的不正确情况，归结于服务端没有正确的实现Http语义。  
+**但我还是希望Volley也能完全正确的实现Http语义，至少同时处理`Last-Modified`和`Date`,并且优先使用`Last-Modified`。**
+
  
  
