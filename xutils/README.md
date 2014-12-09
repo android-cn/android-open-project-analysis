@@ -28,7 +28,7 @@ xUtils一个Android公共库框架，主要包括四个部分：View，Db, Http,
 Handler异步通信，Http网络请求， IO流。
 - HttpUtils，支持异步同步访问网络数据， 断点下载文件和上传文件。
 - HttpHandler，获取网络数据逻辑的实现。
-- Handler实现线程的通信
+- InternalHandler 实现线程的通信
 
 #####2.1.4 Bitmap模块  
 - BitmapUtils，图片的异步加载，支持本地和网络图片， 图片的压缩处理， 图片的内存缓存已经本地缓存。
@@ -53,7 +53,7 @@ Handler异步通信，Http网络请求， IO流。
 主要功能流程图  
 ####3.1 View模块
 ![View时序图](image/ViewSequence.png)
-主要的顺序就是在ViewUtils的`inject(View)`将需要的绑定数据的对象传入，`injectObject(Object, ViewFinder)` 主要通过反射获取对象的成员变量和方法， 
+- 主要的顺序就是在ViewUtils的`inject(View)`将需要的绑定数据的对象传入，`injectObject(Object, ViewFinder)` 主要通过反射获取对象的成员变量和方法， 
 然后获取成员变量和方法的注解的值， 将成员变量赋值， 事件和方法绑定， 在EventListenerManager中是通过代理将事件和方法绑定。
 
 ####3.2 DB模块
