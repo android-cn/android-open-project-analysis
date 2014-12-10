@@ -249,7 +249,7 @@ Touch事件判断流程图：
     
 - PhotoViewAttacher
 
-    保存相关事件回调和matrix状态
+    处理相关事件回调和维护matrix状态。
 
 
 ###5. 杂谈
