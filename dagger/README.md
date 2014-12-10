@@ -217,14 +217,18 @@ Dagger不支持循环依赖，即依赖关系图中不能出现环。原因很�
 
 ###4. 详细设计
 
-###4.1 核心类功能介绍
+###4.1 类关系图
+  
+![uml_types](./images/uml_types.png)
 
-最关键的类有三个——`Binding`，`Linker`，`ObjectGraph`：
+###4.2 核心类功能介绍
 
-####节点：`Binding`
+上图是Dagger整体框架最简类关系图。大致原理可以描述为：`Linker`在`Loader`的帮助下，加载合适的`Binding`并把它们拼装成合理的依赖关系图，由`ObjectGraph`（及其子类`DaggerObjectGraph`）最终实现依赖注入的管理。下面是核心类的详细介绍：
+
+#####4.2.1 节点：`Binding`
 `Binding`相当于DAG中的节点，每一个`Binding`对应依赖关系图中的一个节点。具体地，`Binding`实现了javax的`Provider`接口和dagger中定义的`MembersInjecter`接口，这两个接口分别提供了get()方法和injectMembers()方法用来获取类的实例和向指定对象中注入依赖。Dagger中所有的Binding都是通过APT自动生成的，一共有两类：一类是在自动生成的各个`ModuleAdapter`类中的`ProvidesBinding`，这些`ProvidesBinding`和`@Module`类中的`@Provides`方法一一对应，他们只提供get功能，不提供inject功能；另一类是自动生成的各个`InjectAdapter`本身，这些`InjectAdapter`和所有含有`@Inject`成员变量或含有`@Inject`构造方法的类一一对应，他们提供get功能，并且如果这个对应的类出现在了某个`Module`的`injects`属性中，也会提供inject功能。
 
-####拼装者：`Linker`
+#####4.2.2 拼装者：`Linker`
 `Linker`负责将每一个`Binding`和这个`Binding`内部的各个`Binding`进行连接，也就是负责DAG的拼装。Dagger在运行时维护一个或多个`Linker`，每个`Linker`中有一些`Binding`（以Map形式存在）。这些`Binding`两两之间会存在或不存在依赖关系，而`Linker`就负责将存在依赖关系的`Binding`之间进行连接，从而拼装成可用的DAG。
 
 `Linker`有两个关键的成员变量：
@@ -241,7 +245,22 @@ Dagger不支持循环依赖，即依赖关系图中不能出现环。原因很�
 2. `public void linkRequested()`  
 这个方法会根据toLink中的 `DeferredBinding` 载入相应的 `InjectAdapter` 后添加到 `bindings` ，并把所有普通的 `Binding` 进行连接。另外，由于连接的实质是初始化一个 `Binding` ，即初始化一个 `Binding` 内部依赖的 `Binding`s，因此，这是一个循环的过程：由上至下不断地由 `DeferredBinding` 加载 `InjectAdapter` 和连接新的未连接的 `Binding` ，直到旧的 `Binding` 全都被连接，而且不再产生新的 `Binding` 。从DAG的角度来说，就是将某个节点不断向下延伸，直到所有的依赖和传递依赖都被获取到。
 
-####核心类：`ObjectGraph`
+#####4.2.3 加载器：`Loader`
+
+`Loader`是一个纯辅助类，它的作用是在需要的时候，把通过APT生成的`ModuleAdapter`类和`InjectAdapter`的类通过ClassLoader加载进内存，以及生成它们的实例。另外，实质上`Loader`是一个抽象类，而在运行时，Dagger使用的是Loader的子类`FailoverLoader`。
+
+`Loader`有四个关键的方法：
+
+1. `protected Class<?> loadClass(ClassLoader classLoader, String name)`  
+根据类名把类加载到内存。
+2. `protected <T> T instantiate(String name, ClassLoader classLoader)`  
+根据类名获取类的实例。  
+3. `public abstract <T> ModuleAdapter<T> getModuleAdapter(Class<T> moduleClass)`
+获取指定的Module类所对应的ModuleAdapter实例。
+4. `public abstract Binding<?> getAtInjectBinding(String key, String className, ClassLoader classLoader, boolean mustHaveInjections)`  
+根据key获取对应的InjectAdapter实例。
+
+#####4.2.4 管理者：`ObjectGraph`
 
 负责Dagger所有的业务逻辑，Dagger的最关键流程（依赖关系图拼装、实例获取、依赖注入）都是从这个类发起。是个抽象类。
 
@@ -250,9 +269,9 @@ Dagger不支持循环依赖，即依赖关系图中不能出现环。原因很�
 1. `Map<String, Class<?>> injectableTypes`  
 这个变量记录了所有可以被注入依赖的类型，并以其为key，以其所对应的Module为value，将这些类型以Map的形式进行记录。
 2. `Linker linker`  
-Linker的作用在上面一段中已经讲过。
+`Linker`的作用在上面已经讲过。
 3. `Loader plugin`  
-`Loader`类并没有`Binding`、`Linker`、`ObjectGraph`这几个类的核心作用强，所以它的类介绍并没有在上一节中单独列出来。`Loader`是一个纯辅助类，它的作用是在需要的时候，把通过APT生成的`ModuleAdapter`类和`InjectAdapter`的类通过ClassLoader加载进内存，以及生成它们的实例。实质上，在运行时，plugin对象载入的是Loader的子类`FailoverLoader`。
+`Loader`的作用在上面已经讲过。
 
 另外，`ObjectGraph`有三个关键的方法：
 
@@ -265,10 +284,12 @@ Linker的作用在上面一段中已经讲过。
 3. `public <T> T inject(T instance);`  
 这是向injectable type注入依赖的方法。在这个方法中，会首先获取到这个type的 `Binding` ，然后调用它的 `Binding.injectMembers(T instance)` 方法注入依赖，并返回传入的instance对象。获取 `Binding` 实例的方式和上面的 `public <T> T get(Class<T> type)` 方法完全相同，不再描述。
 
-###4.2 类关系图
-类关系图，类的继承、组合关系图，可是用 StartUML 工具。  
-=====TODO=====  
+###5. 聊聊Dagger本身
 
-###5. 杂谈
-该项目存在的问题、可优化点及类似功能项目对比等，非所有项目必须。  
-=====TODO=====  
+Dagger 由于其自身的复杂性，其实是一个上手难度颇高的库，难学会、难用好。但从功能上来讲，它又是一个实用价值非常高的库。而且即将发布的 Dagger 2.0 已经被 Square 转手交给了 Google 来开发和维护，从今以后它就是 Google 的官方库了，那么不论从官方支持方面还是从流行度上面， Dagger 都将会有一个很大的提升。关于Dagger的功能和用法，我会写一篇文章详细讲述。在本文的最后，列两个可能比较多人会问的问题和简单的回答：
+
+1. **Dagger适合什么样的项目？**  
+Dagger是一个依赖注入库，而依赖注入是一种优秀的编程思想，它可以通过解耦项目来提升项目的可阅读性、可扩展性和可维护性，并使得单元测试更为方便。因此，**Dagger适用于所有项目**。
+
+2. **Dagger适合什么样的个人和团队？**  
+Dagger适合**有学习能力并且愿意学习**的个人和团队。这里要注意，如果你是开发团队的负责人，在决定启用Dagger之前一定要确认你的所有队员（起码是大部分队员）都符合这样的条件，否则Dagger可能会起反作用，毕竟——它不是ButterKnife。

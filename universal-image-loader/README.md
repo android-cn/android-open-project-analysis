@@ -525,3 +525,6 @@ public void display(Bitmap bitmap, ImageAware imageAware, LoadedFrom loadedFrom)
 做的仅仅是把bitmap对象display到imageAware控件上
 ####2.2 类关系图
 ![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/relation-class.png)
+
+###3. 流程图
+![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/universal-image-loader-flow.png)

@@ -18,13 +18,13 @@ PhotoView 实现原理解析
 - PhotoView是ImageView的子类，自然的支持所有ImageView的源生行为。
 - 任意项目可以非常方便的从ImageView升级到PhotoView，不用做任何额外的修改。
 - 可以非常方便的与ImageLoader/Picasso之类的异步网络图片读取库集成使用。
-- 事件分发做了很好的处理，可以方便的与ViewPager,Gallery等同样支持滑动手势的控件集成。
+- 事件分发做了很好的处理，可以方便的与ViewPager等同样支持滑动手势的控件集成。
 
 ###2. 详细设计
 ###2.1 核心类功能介绍
 ##### 2.1.1 PhotoView
 PhotoView 类负责暴露所有供外部调用的API,其本身直接继承自ImageView,同时实现了IPhotoView接口.
-其提供了缩放相关的设置属性 和 供缩放变化时回调的接口设置.
+IPhotoView接口提供了缩放相关的设置属性 和 供缩放变化时回调的接口.
 
 主要方法说明:
 
@@ -58,7 +58,7 @@ Matrix和Rect展开讲很多,这里一两句话又讲不清楚.....考虑最后�
 
 - public ScaleType getScaleType()
 
-使用了源生的ImageView.ScaleType,在PhotoView中默认值为FIT_CENTER
+获取缩放模式。使用了源生的ImageView.ScaleType,在PhotoView中默认值为FIT_CENTER
 
 - public void setAllowParentInterceptOnEdge(boolean allow)
 
@@ -80,13 +80,14 @@ IPhotoView接口定义了缩放相关的一组set/get方法.
 
 ##### 2.1.3 Compat
 用于做View.postOnAnimation方法在低版本上的兼容.
+注：View.postOnAnimation (Runnable action) 一种新的动画实现方式，每次系统绘图时都会调用此回调，可以在此时改变视图状态以实现动画效果。该方法仅支持 api >= 16
 
 ##### 2.1.4 PhotoViewAttacher
 核心类
 `TODO`
 
 ##### 2.1.5 ScrollerProxy
-抽象类,主要也是为了做不用版本之间的兼容,具体说明见`GingerScroller` `IcsScroller` `PreGingerScroller这三个接口实现类的说明.
+抽象类,主要是为了做不用版本之间的兼容,具体说明见`GingerScroller` `IcsScroller` `PreGingerScroller` 这三个接口实现类的说明.
 
 ##### 2.1.6 GingerScroller
 `ScrollerProxy` 接口实现类
@@ -108,39 +109,41 @@ IPhotoView接口定义了缩放相关的一组set/get方法.
 ##### 2.1.9 GestureDetector
 接口,主要是为了做不同版本之间的兼容,具体说明见 `CupcakeGestureDetector`,`EclairGestureDetector`,`FroyoGestureDetector` 三个接口的实现类.
 ##### 2.1.10 OnGestureListener
+手势回调接口
 ##### 2.1.11 CupcakeGestureDetector
 ##### 2.1.12 EclairGestureDetector
 ##### 2.1.13 FroyoGestureDetector
 ##### 2.1.14 VersionedGestureDetector
-
+GestureDetector分发的顶级节点，由它决定Gesture分发给哪一个具体的GestureDetector处理，主要是为了兼容Android的不同版本。
 
 
 
 核心类、函数功能介绍及核心功能流程图，流程图可使用 StartUML、Visio 或 Google Drawing。  
 ###2.2 类关系图
-类关系图，类的继承、组合关系图，可是用 StartUML 工具。  
 
-**完成时间**  
-- 根据项目大小而定，目前简单根据项目 Java 文件数判断，完成时间大致为：`文件数 * 7 / 10`天，特殊项目具体对待
-- `两天内`完成
+![PhotoView](images/startuml.jpg)
 
 ###3. 流程图
-主要功能流程图  
-- 如 Retrofit、Volley 的请求处理流程，Android-Universal-Image-Loader 的图片处理流程图  
-- 可使用 StartUML、Visio 或 Google Drawing 等工具完成，其他工具推荐？？  
-- 非所有项目必须，不需要的请先在群里反馈  
+Touch事件分发流程图：
+`TODO`
 
-**完成时间**  
-- `两天内`完成  
 
 ###4. 总体设计
-整个库分为哪些模块及模块之间的调用关系。  
-- 如大多数图片缓存会分为 Loader 和 Processer 等模块。  
-- 可使用 StartUML、Visio 或 Google Drawing 等工具完成，其他工具推荐？？  
-- 非所有项目必须，不需要的请先在群里反馈。  
+分为3个模块：
+`TODO`
 
-**完成时间**  
-- `两天内`完成  
+- ScrollerProxy
+    
+    处理图像拖曳事件。
+
+- GestureDetector
+
+    处理缩放手势。
+    
+- PhotoViewAttacher
+
+    保存相关事件回调和matrix状态
+
 
 ###5. 杂谈
 该项目存在的问题、可优化点及类似功能项目对比等，非所有项目必须。  
