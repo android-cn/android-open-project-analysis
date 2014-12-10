@@ -37,7 +37,37 @@ IPhotoView接口提供了缩放相关的设置属性 和 供缩放变化时回�
 - public void setPhotoViewRotation(float rotationDegree)
 
 用于设置图片旋转角度.
+
+注意：
 例如使用Android相机拍摄的相片,会根据拍摄时手机方向的不同,在EXIF中存储不同的旋转角度信息,显示时往往需要查询EXIF信息并将照片旋转至正确的方向.
+通常我们处理这种问题有两种方案：
+
+- 通过Bitmap.createBitmap方式重建出正确方向的图片，再加载到ImageView中显示。(不建议使用，因为会占用双倍的内存，Bitmap的回收不是立即生效的。)
+- 在ImageView中使用自定义Matrix将图片旋转到正确的方向。
+
+由于PhotoView中对图片的 缩放 操作依赖对Matrix的操作，自定义Matrix会干扰 PhotoView 的缩放行为，所以PhotoView并不支持ScaleType.Matrix.
+可参见PhotoViewAttacher源码：
+
+        /**
+     * @return true if the ScaleType is supported.
+     */
+    private static boolean isSupportedScaleType(final ScaleType scaleType) {
+        if (null == scaleType) {
+            return false;
+        }
+
+        switch (scaleType) {
+            case MATRIX:
+                throw new IllegalArgumentException(scaleType.name()
+                        + " is not supported in PhotoView");
+
+            default:
+                return true;
+        }
+    }
+
+这里特意提供了一个额外的setPhotoViewRotation方法即是为了解决这个问题。
+
 
 - public boolean canZoom()
 - public void setZoomable(boolean zoomable) 
@@ -51,23 +81,58 @@ IPhotoView接口提供了缩放相关的设置属性 和 供缩放变化时回�
 
 获取及设置当前 `matrix` 状态.
 
-`TODO`
-
-Matrix和Rect展开讲很多,这里一两句话又讲不清楚.....考虑最后加一段matrix简单介绍?
-
 
 - public ScaleType getScaleType()
 
-获取缩放模式。使用了源生的ImageView.ScaleType,在PhotoView中默认值为FIT_CENTER
+获取缩放模式。使用的源生的ImageView.ScaleType.
+在PhotoView中默认值为FIT_CENTER.
 
 - public void setAllowParentInterceptOnEdge(boolean allow)
+
+设置标志位 是否允许父控件捕获发生在边缘的TouchEvent
+
+这个标志位实际上对应的是
+ViewParent.requestDisallowInterceptTouchEvent(boolean flag)
+
+经常做自定义View处理TouchEvent的对这个方法应当都不陌生。
+
+PhotoView中英文注释：
+
+         * Here we decide whether to let the ImageView's parent to start taking
+         * over the touch event.
+         *
+         * First we check whether this function is enabled. We never want the
+         * parent to take over if we're scaling. We then check the edge we're
+         * on, and the direction of the scroll (i.e. if we're pulling against
+         * the edge, aka 'overscrolling', let the parent take over).
+
+
+对应的代码：
+
+        ViewParent parent = imageView.getParent();
+        if (mAllowParentInterceptOnEdge && !mScaleDragDetector.isScaling()) {
+            if (mScrollEdge == EDGE_BOTH
+                    || (mScrollEdge == EDGE_LEFT && dx >= 1f)
+                    || (mScrollEdge == EDGE_RIGHT && dx <= -1f)) {
+                if (null != parent)
+                    parent.requestDisallowInterceptTouchEvent(false);
+            }
+        } else {
+            if (null != parent) {
+                parent.requestDisallowInterceptTouchEvent(true);
+            }
+        }
+
+通过调用setAllowParentInterceptOnEdge(false),可以完全屏蔽父控件的TouchEvent.
+
+
 
 
 - public void setImageDrawable(Drawable drawable)
 - public void setImageResource(int resId) 
 - public void setImageURI(Uri uri)
 
-重载了ImageView的3个设置图片的方法,用于通知PhotoViewAttacher更新视图
+重载了ImageView的3个设置图片的方法,用于通知PhotoViewAttacher更新视图和重置matrix状态
 
 - protected void onDetachedFromWindow()
 
@@ -80,11 +145,50 @@ IPhotoView接口定义了缩放相关的一组set/get方法.
 
 ##### 2.1.3 Compat
 用于做View.postOnAnimation方法在低版本上的兼容.
-注：View.postOnAnimation (Runnable action) 一种新的动画实现方式，每次系统绘图时都会调用此回调，可以在此时改变视图状态以实现动画效果。该方法仅支持 api >= 16
+注：View.postOnAnimation (Runnable action) 在PhotoView中用于做默认 双击 放大/缩小 动画，每次系统绘图时都会调用此回调，通过在此时改变视图状态以实现动画效果。该方法仅支持 api >= 16
+所以PhotoView中使用了Compat类来做低版本兼容。
+
+实际上也可以使用android.support.v4.view.ViewCompat替代。
+对比 android.support.v4.view.ViewCompat 和 uk.co.senab.photoview.Compat
+其实现原理完全一致，都是通过
+view.postDelayed(runnable, frameTime)来实现
 
 ##### 2.1.4 PhotoViewAttacher
 核心类
-`TODO`
+
+- private static boolean isSupportedScaleType(final ScaleType scaleType) 
+ 
+判断ScaleType是否支持。
+实际上只有 Matrix是不支持的。
+
+- public void cleanup()
+
+
+    Clean-up the resources attached to this object. This needs to be called when the ImageView is no longer used.
+
+用于释放相关资源。移除Observer, Listener.
+
+- public boolean setDisplayMatrix(Matrix finalMatrix)
+
+如果你熟悉Matrix的话，可以直接通过Matrix来修改ImageView的显示状态。
+
+- private void cancelFling()
+
+取消惯性滑动。
+
+- private boolean checkMatrixBounds() 
+
+检查当前显示范围是否处于边界上，并更新mScrollEdge标志位。
+
+处理TouchEvent时需要根据mScrollEdge标志位的状态来判断是否允许ViewParent的InterceptTouchEvent接收TouchEvent.
+
+- private void resetMatrix()
+
+重置Matrix状态，并恢复至FIT_CENTER状态
+
+- private void updateBaseMatrix(Drawable d)
+
+根据PhotoView的宽高和Drawable的宽高计算FIT_CENTER状态的Matrix.
 
 ##### 2.1.5 ScrollerProxy
 抽象类,主要是为了做不用版本之间的兼容,具体说明见`GingerScroller` `IcsScroller` `PreGingerScroller` 这三个接口实现类的说明.
@@ -94,8 +198,6 @@ IPhotoView接口定义了缩放相关的一组set/get方法.
 适用于 API 9 ~ 14 即 2.3 ~ 4.0 之间的所有Android版本.
 其实现主要基于 android.widget.OverScroller
 
-'TODO' 追加一些OverScroller的说明
-
 ##### 2.1.7 IcsScroller
 适用于 API 14 以上 即 4.0 以上的所有Android版本
 其实现基于源生 android.widget.OverScroller , 没有任何修改.
@@ -104,15 +206,18 @@ IPhotoView接口定义了缩放相关的一组set/get方法.
 适用于 API 9 以下 即 2.3 以下的所有Android版本
 其实现主要基于 android.widget.Scroller
 
-'TODO' 追加一些Scroller的说明
-
 ##### 2.1.9 GestureDetector
 接口,主要是为了做不同版本之间的兼容,具体说明见 `CupcakeGestureDetector`,`EclairGestureDetector`,`FroyoGestureDetector` 三个接口的实现类.
 ##### 2.1.10 OnGestureListener
 手势回调接口
+
 ##### 2.1.11 CupcakeGestureDetector
+适用于 api < 7
 ##### 2.1.12 EclairGestureDetector
+适用于 api >= 9
 ##### 2.1.13 FroyoGestureDetector
+适用于 api < 8
+
 ##### 2.1.14 VersionedGestureDetector
 GestureDetector分发的顶级节点，由它决定Gesture分发给哪一个具体的GestureDetector处理，主要是为了兼容Android的不同版本。
 
@@ -123,8 +228,10 @@ GestureDetector分发的顶级节点，由它决定Gesture分发给哪一个具�
 
 ![PhotoView](images/startuml.jpg)
 
+`TODO`  startuml画的图似乎有点问题。还是用umlet重画一下算了。
+
 ###3. 流程图
-Touch事件分发流程图：
+Touch事件判断流程图：
 `TODO`
 
 
