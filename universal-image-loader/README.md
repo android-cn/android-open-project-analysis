@@ -134,7 +134,7 @@ private final Object extraForDownloader;
 private final BitmapProcessor preProcessor;
 /** 缓存在内存之后的处理程序 */
 private final BitmapProcessor postProcessor;
-/** 图片的显示器 */
+/** 图片的显示方式 */
 private final BitmapDisplayer displayer;
 /** handler对象 */
 private final Handler handler;
@@ -523,8 +523,68 @@ public void display(Bitmap bitmap, ImageAware imageAware, LoadedFrom loadedFrom)
 }
 ```
 做的仅仅是把bitmap对象display到imageAware控件上
+#####2.1.20 BitmapProcessor.java  
+图片的预处理(Pre-process Bitmap)和后处理(Post-process Bitmap)都需要实现这个接口.  
+```java
+public interface BitmapProcessor {
+	Bitmap process(Bitmap bitmap);
+}
+```
+只是定义了一个方法，让开发者自己去实现它.  
+比如你想要为你的图片添加一个水印，那么可以在Pre-process这个阶段自己去实现BitmapProcessor接口，这样还可以把加了水印的图片缓存到内存中
+但是不要忘记要在DisplayImageOptions中配置一下   
+#####2.1.21 PauseOnScrollListener.java  
+最后分析一下这个类, 它实现了OnScrollListener接口， 如果在ListView或GridView中有加载图片的工作最好还是使用它.  
+简单的一行代码:  
+```java
+gridView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true));
+```
+看下主要的成员变量及方法
+```java
+/** 滑动过程是否暂停 */
+private final boolean pauseOnScroll;
+/** Fling过程是否暂停 */
+private final boolean pauseOnFling;
+public PauseOnScrollListener(ImageLoader imageLoader, boolean pauseOnScroll, boolean pauseOnFling) {
+	this(imageLoader, pauseOnScroll, pauseOnFling, null);
+}
+@Override
+public void onScrollStateChanged(AbsListView view, int scrollState) {
+	switch (scrollState) {
+		case OnScrollListener.SCROLL_STATE_IDLE:
+			imageLoader.resume();
+			break;
+		case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+			if (pauseOnScroll) {
+				imageLoader.pause();
+			}
+			break;
+		case OnScrollListener.SCROLL_STATE_FLING:
+			if (pauseOnFling) {
+				imageLoader.pause();
+			}
+			break;
+	}
+	if (externalListener != null) {
+		externalListener.onScrollStateChanged(view, scrollState);
+	}
+}
+```
+个人选择是pauseOnScroll＝false，pauseOnFling＝true.
+在用户滑动屏幕的时候还是不要暂停, 因为用户滑动屏幕说明他还是关注图片内容的, 如果在fling状态下, 用户可能迫不及待想看后面的内容，最好就不要处理图片来"打扰"用户了, 当然你可以根据自己的喜好设置他们. 
+
 ####2.2 类关系图
 ![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/relation-class.png)
 
 ###3. 流程图
 ![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/universal-image-loader-flow.png)
+
+###4. 总体设计
+整个库分为 **Downloader**, **Decoder**, **Cache**, **Processor**, **Displayer**这几个模块  
+其中 **Cache** 又分为 **DiskCache** 和 **MemoryCache** 两部分
+
+**Downloader**模块主要负责从图片的各个来源获取输入流, 具体来源参考2.1.9  
+**Cache**中的DiskCache主要负责将图片缓存在本地磁盘上, 具体参考2.1.11，  MemoryCache主要负责将图片缓存在内存里， 具体参考2.1.16  
+**Decoder**模块主要负责将图片decode成bitmap对象, 具体参考2.1.14  
+**Processor**模块提供了接口供开发者自己去实现，具体参考2.1.20  
+**Displayer**模块将bitmap对象显示在相应的控件上, 具体参考2.1.19  
