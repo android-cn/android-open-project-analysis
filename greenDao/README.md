@@ -106,6 +106,48 @@ greenDao是android上的一个对象/关系映射(ORM)工具，它提供面向�
 代码生成完成后，你可以在你android工程中使用greenDao.不要忘了包含greenDao的jar包(greenDao.jar).
 ![core-class img](image/core-class.png)
 
-**DaoMaster**:使用greenDao的入口点.DaoMaster保存了一个数据库对象（SQLiteDatabase）并管理实体对应的DAO类(不是对象).它提供静态方法来创建或删除表.它的内部类OpenHelper和DevOpenHelper继承了SQLiteOpenHelper，它们创建数据库表.
+**DaoMaster:**使用greenDao的入口点.DaoMaster保存了一个数据库对象（SQLiteDatabase）并管理实体对应的DAO类(不是对象).它提供静态方法来创建或删除表.它的内部类OpenHelper和DevOpenHelper继承了SQLiteOpenHelper，它们创建数据库表.
 
-**DaoSession**:管理所有的实体相关的DAO对象，你可以通过getter方法获取DAO对象.它也提供通用的接口insert、update、refresh和delete来操作entity.最后，DaoSession对象和标识范围（identity scope）保持联系
+**DaoSession:**管理所有的实体相关的DAO对象，你可以通过getter方法获取DAO对象.它也提供通用的接口insert、update、refresh和delete来操作entity.最后，DaoSession对象和标识范围（identity scope）保持联系
+
+**Daos:**保存和查询实体的数据访问对象，对每个实体，greenDao都会生成一个Dao，它比DaoSession有更多的保存方法，例如：count，loadAl和insertInTx.
+
+**Entities：**可保存的对象，通常实体类的代码是通过java工程生成的（你也可以选择手动生成），实体对象对应数据库的一行，且数据成员变量使用标准的java属性（如POJO或者JavaBean）
+
+####4.3.核心库的初始化
+下面示例代码说明了如何初始化数据库和greenDao的核心库
+```
+helper = new DaoMaster.DevOpenHelper(this, "notes-db", null);
+db = helper.getWritableDatabase();
+daoMaster = new DaoMaster(db);
+daoSession = daoMaster.newSession();
+noteDao = daoSession.getNoteDao();
+```
+这个例子假定我们有一个Note实体类和他的DAO（noteDao对象），这样我们就可以调用它的保存方法
+
+###5.构造实体类
+使用greenDao的第一步是创建实体模型来表示你应用中的数据.在这个模型的基础上，greenDao生成java代码
+
+这个模型本身是使用java代码来定义.很简单：创建一个依赖于"DaoExampleGenerator"项目的java工程.这个工程在第三点有说明.
+![create-entity img](image/create-entity.png)
+上面的插图描述了实体可能包含的所有元素.他们用来描述你问题域的特定模型.
+
+####5.1Schema类
+实体属于一个schema对象.它是你首先要定义的对象.传入schema版本号和默认java包名来构造一个schema对象：
+```
+Schema schema = new Schema(1, "de.greenrobot.daoexample");
+```
+默认java包名在greenDao生成实体类、Dao类和测试类时候需要使用.这些参数可以按你需求修改，这样你就完成了第一步.
+如果你想将DAO相关类和测试的类放到不同的包中，你可以重新定义schema类，如下：
+```
+schema.setDefaultJavaPackageTest("de.greenrobot.daoexample.test");
+schema.setDefaultJavaPackageDao("de.greenrobot.daoexample.dao");
+```
+schema类中，有两个标识和实体创建相关，他们可以被重写.分别标识实体是不是active，是不是"保留修改".这些特性目前还没文档化;在发布的test工程源码中有示例：
+```
+schema2.enableKeepSectionsByDefault();
+schema2.enableActiveEntitiesByDefault();
+```
+
+####5.2实体类
+你获取schema对象后，就可以往里面添加实体：
