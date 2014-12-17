@@ -69,7 +69,8 @@ ViewGroup.LayoutParams
 - MATCH_PARENT 表示子视图希望和父视图一样大(不含padding)   
 - WRAP_CONTENT 表示视图为正好能包裹其内容大小(包含padding)    
 
-ViewGroup的子类，也有相应的ViewGroup.LayoutParams的子类，例如RelativeLayout有相应的ViewGroup.LayoutParams的子类,拥有设置子视图水平和垂直的能力。
+ViewGroup的子类，也有相应的ViewGroup.LayoutParams的子类，例如RelativeLayout有相应的ViewGroup.LayoutParams的子类,拥有设置子视图水平和垂直的能力。其实子view.getLayoutParams()获取到的LayoutParams类型就是其所在父控件类型相应的Params，比如view的父控件为RelativeLayout，那么得到的LayoutParams类型就为RelativeLayoutParams。在强转的时候注意别出错。
+
 
 MeasureSpecs  
 其包含的信息有测量要求和尺寸，有三种模式:      
@@ -78,10 +79,10 @@ MeasureSpecs
 父视图不对子视图有任何约束，它可以达到所期望的任意尺寸。
 
 - EXACTLY  
-父视图为子视图指定一个确切的尺寸，而且无论子视图期望多大，它都必须在该指定大小的边界内。
+父视图为子视图指定一个确切的尺寸，而且无论子视图期望多大，它都必须在该指定大小的边界内，对应的属性为match_parent或具体指，比如100dp，父控件可以直接得到子控件的尺寸，该尺寸就是MeasureSpec.getSize(measureSpec)得到的值。
 
 - AT_MOST  
-父视图为子视图指定一个最大尺寸。子视图必须确保它自己的所有子视图可以适应在该尺寸范围内。
+父视图为子视图指定一个最大尺寸。子视图必须确保它自己的所有子视图可以适应在该尺寸范围内，对应的属性为wrap_content,父控件无法确定子view的尺寸，只能由子控件自己根据需求去计算自己的尺寸。
  
 #####3.2.2.3 measure核心方法  
 - measure(int widthMeasureSpec, int heightMeasureSpec)  
@@ -865,7 +866,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
         int specMode = MeasureSpec.getMode(measureSpec);//获取测量要求
         int specSize = MeasureSpec.getSize(measureSpec);//获取系统建议的值
 
-        if ((specMode == MeasureSpec.EXACTLY) || (mViewPager == null)) {//父视图指定的Mode为具体值
+        if ((specMode == MeasureSpec.EXACTLY) || (mViewPager == null)) 		{//父视图指定的Mode为具体值，能直接确定子View的大小,该大小就是MeasureSpec.getSize(measureSpec)的值。
             //We were told how big to be
             result = specSize;
         } else {
@@ -919,3 +920,6 @@ http://blog.csdn.net/qinjuning/article/details/8074262
 Touch事件传递：  
 http://blog.csdn.net/xiaanming/article/details/21696315
 http://blog.csdn.net/wangjinyu501/article/details/22584465
+
+慕课网自定义FlowLayout课程：
+http://www.imooc.com/learn/237
