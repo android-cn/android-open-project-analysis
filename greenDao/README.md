@@ -151,3 +151,32 @@ schema2.enableActiveEntitiesByDefault();
 
 ####5.2实体类
 你获取schema对象后，就可以往里面添加实体：
+```
+Entity user = schema.addEntity("User");
+```
+实体提供一些方法来改变它的默认设置，最重要的是它提供添加属性的方法
+```
+user.addIdProperty();
+user.addStringProperty("name");
+user.addStringProperty("password");
+user.addIntProperty("yearOfBirth");
+```
+除了属性外，你可以给实体添加一对一、一对多的关系
+
+####5.3属性和主键
+前面段落给你展现了怎么添加属性到实体.实体类的addXXXProperty函数返回一个PropertyBuilder对象，它可以用来配置属性.例如使用columnName方法来覆盖默认的列名，定义自己的列名.如果需要获取属性来创建索引和关系，调用PropertyBuilder的getProperty()方法获取属性.
+
+####5.4目前主键的限制条件
+目前，实体类必须有一个long或者Long类型的属性作为主键.这是android和SQLite推荐的做法.greenDao将来会处理主键是任意类型的情况，但现在这些还没做.如果碰到这种情况，你可以使用一个long类型主键和一个唯一的索引来作为替代方案.
+
+####5.5默认值
+greenDao尽量提供合理的默认值，这样开发者不必要配置每一个配置项.例如数据库的表名和列名是从实体和属性的名字继承过来的.和java里面的驼峰命名不一样，默认的数据库名是用下划线分隔开的大写字母组成.例如，属性名字“creationData”对应数据库的列名“CREATION_DATE”
+
+####5.6表间关系
+一对一和一对多的关系在下面的单独章节描述
+
+####5.7继承、接口和序列化
+数据库对应的实体可以从其他不是数据库实体的类继承而来.他的父类由函数setSuperclass(String)来指定.注意：目前不能以另一个实体做为父类（也没有多态的查询）.例如
+```
+myEntity.setSuperclass("MyCommonBehavior");
+```
