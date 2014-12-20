@@ -12,10 +12,10 @@ greenDao开源项目的所有资料在官网上都有描述，而且是最权威
 GreenDao帮助android开发者处理数据，将数据存储到sqlite.sqlite是一个极好的嵌入式关系数据库，但基于它开发需要做许多附加的工作.写sql语句和解析查询结果是体力活.greenDao将这些工作为你做完：将java对象映射成数据库表（我们常说的ORM).这样我们可以用简单、面向对象的api来存储、更新、删除和查询java对象.为我们节省时间，将重点放在解决问题上。
 
 ###1.2 greenDao设计目标
-性能最大化（可能是android上最快的orm库）
-易于使用的api
-对android高度优化
-最小的内存使用
+性能最大化（可能是android上最快的orm库）  
+易于使用的api  
+对android高度优化  
+最小的内存使用  
 库大小较小，提供必需的功能
 
 ###2.功能
@@ -23,17 +23,18 @@ GreenDao帮助android开发者处理数据，将数据存储到sqlite.sqlite是�
 greenDao的本质是提供一个面向对象的接口来存储数据到sqlite中.你只需定义数据模型，greenDao会创建java数据对象（entities）和DAOs（数据访问对象）.这样会让你少写许多仅仅是将数据块移来移去的厌烦代码.此外greenDao提供一些高级ORM特性，像session缓存、预先加载、活跃的实体
 
 ####2.2 性能
-greenDao在性能方面严格把关.数据库很适合存储大量数据，因此速度很关键.使用greenDao，大量的数据可以在每秒几千条的速度下插入、更新和加载.
-和ORMLite比较，同样数量的数据实体，greenDao插入和更新实体的速度是ORMLite的2倍，加载操作要快4.5倍.对典型的应用，加载速度是最重要的.下图是官方提供的，时间：10-23-2011
-![compare img](image/greenDAO-performance.png)
-
+greenDao在性能方面严格把关.数据库很适合存储大量数据，因此速度很关键.使用greenDao，大量的数据可以在每秒几千条的速度下插入、更新和加载.  
+和ORMLite比较，同样数量的数据实体，greenDao插入和更新实体的速度是ORMLite的2倍，加载操作要快4.5倍.对典型的应用，加载速度是最重要的.下图是官方提供的，时间：10-23-2011  
+![compare img](image/greenDAO-performance.png)  
 考虑到greenDao内核一些特性，如session缓存和智能预加载技术，也提升了库的性能
 
 ####2.3 较小的库
 greenDao的核心库小于100k，因此将greenDao加入到工程不会增加太大APK大小.
 
 ####2.4 活跃的数据实体
-你可以配置实体（entity）是活跃的，这样他
+你可以配置实体（entity）是活跃的，它透明的处理调用关系(你只需要调用getter方法)，通过更新、删除和刷新方法，它来提供便利的保存数据功能.（这段翻译可能不那么好原文:Active entities
+
+If you want, entities can be made “active”: active entities resolve relations transparently (you just call a getter), and have update, delete, and refresh methods for convenient access to persistence functionality.）
 
 ####2.5 支持协议缓存（protocol buffers），如google protocol buffer
 我理解是有格式的byte数组，greenDao支持类似GPB对象直接存入数据库.如果你和服务器通过GPB传递消息，你不需要另外的映射.所有的增删改查操作都支持GPB对象.这是greenDao的一个特有功能点.
@@ -45,66 +46,64 @@ greenDao会生成java数据对象（entity）和DAO对象，DAO对象和数据�
 源码放在github上，源码另外也包含JUnit的测试用例，这些用例使用了greenDao的所有功能，因此它是一个很好学习greenDao的方式
 
 ###3.使用greenDao
-这一小节带你熟悉一个简单的greenDao示例工程，它就是github上的那个.它由两个子工程组成:DaoExample和DaoExampleGenerator.
+这一小节带你熟悉一个简单的greenDao示例工程，它就是github上的那个.它由两个子工程组成:DaoExample和DaoExampleGenerator.  
 DaoExample工程check下来后，可以运行到android设备上，如你看到的，是记录笔记的简单应用.你可以编辑一些文本生成一条记录，通过点击一条记录，来删除它.
 ####3.1事先生成代码和创建表单
-来看一下DaoExample里面的代码，在目录src-gen中，你可以找到一些生成的代码
-1）Note.java是java类，他包含note所有的数据
+来看一下DaoExample里面的代码，在目录src-gen中，你可以找到一些生成的代码  
+1）Note.java是java类，他包含note所有的数据  
 2）NoteDao.java是DAO（数据访问对象）类，提供操作Note对象的接口
 
-你可以使用DaoExampleGenerator工程来生成Note和NoteDao.来看DaoExample，使用DaoMaster类，你可以方便的获取SQLiteOpenHelper：
+你可以使用DaoExampleGenerator工程来生成Note和NoteDao.来看DaoExample，使用DaoMaster类，你可以方便的获取SQLiteOpenHelper：  
 ```
 new DaoMaster.DevOpenHelper(this, "notes-db", null)
-```
+```  
 这样，你不需要编写"CREATE TABLE"的SQL语句.greenDao已经做了这些工作.
 
 ####3.2插入和删除notes
-从上面代码，我们已经获得一个notes的数据库表，我们可以插入一些notes到数据库.这在NoteActivity中有相关代码.在onCreate中我们创建一个DAO对象
+从上面代码，我们已经获得一个notes的数据库表，我们可以插入一些notes到数据库.这在NoteActivity中有相关代码.在onCreate中我们创建一个DAO对象  
 ```
-daoMaster = new DaoMaster(db);
-daoSession = daoMaster.newSession();
+daoMaster = new DaoMaster(db);  
+daoSession = daoMaster.newSession();  
 noteDao = daoSession.getNoteDao();
-```
-再来看下addNote方法，看如何插入一条note到数据库中
+```  
+再来看下addNote方法，看如何插入一条note到数据库中  
 ```
 Note note = new Note(null, noteText, comment, new Date());
 noteDao.insert(note);
 Log.d("DaoExample", "Inserted new note, ID: " + note.getId());
-```
-创建一个java对象，调用DAO的insert方法.当insert方法返回，刚插入记录的数据库id会赋值给note对象，如log的打印记录可以验证.
-删除一条note也很简单；看一下onListItemClick 方法:
+```  
+创建一个java对象，调用DAO的insert方法.当insert方法返回，刚插入记录的数据库id会赋值给note对象，如log的打印记录可以验证.  
+删除一条note也很简单；看一下onListItemClick 方法:  
 ```
 noteDao.deleteByKey(id);
-```
+```  
 你可以看其他的DAO类中的方法，像loadAll和update
 
 ####3.3数据模型和代码生成
-如果你想扩展note对象或者创建新的实体，你需要看DaoExampleGenerator工程，里面只有一个类，其中包含定义数据模型的代码:
+如果你想扩展note对象或者创建新的实体，你需要看DaoExampleGenerator工程，里面只有一个类，其中包含定义数据模型的代码:  
 ```
-Schema schema = new Schema(1, "de.greenrobot.daoexample");
-
-Entity note= schema.addEntity("Note");
-note.addIdProperty();
-note.addStringProperty("text").notNull();
-note.addStringProperty("comment");
-note.addDateProperty("date");
-
+Schema schema = new Schema(1, "de.greenrobot.daoexample");  
+Entity note= schema.addEntity("Note");  
+note.addIdProperty();  
+note.addStringProperty("text").notNull();  
+note.addStringProperty("comment");  
+note.addDateProperty("date");  
 new DaoGenerator().generateAll(schema, "../DaoExample/src-gen");
 ```
-可以看到，你创建了一个Schema对象，通过他来添加实体（entity），一个实体类对应数据库的一个表.实体包含属性，一个属性对应数据库表的一列.
-完成schema的定义后，你可以触发生成代码.这样可以生成类似Note.java和NoteDao.java的文件.
+可以看到，你创建了一个Schema对象，通过他来添加实体（entity），一个实体类对应数据库的一个表.实体包含属性，一个属性对应数据库表的一列.  
+完成schema的定义后，你可以触发生成代码.这样可以生成类似Note.java和NoteDao.java的文件.  
 
 ###4.介绍
-![introduce img](image/introduce.png)
+![introduce img](image/introduce.png)  
 greenDao是android上的一个对象/关系映射(ORM)工具，它提供面向对象的接口来使用关系型数据库sqlite.类似greenDao的ORM工具为你做完了许多重复的工作（原本是你来写这些重复代码），并为你的数据提供简单的接口.
 
 ####4.1DAO相关类的生成工程
-![code-generation-project img](image/generator.png)
+![code-generation-project img](image/generator.png)  
 为了在你的android工程里面使用greenDao，你需要创建第二个工程，“代码生成”工程，它的任务是生成你工程对应的数据库操作类.这个代码生成工程，是一个java工程（不是andorid工程）.确保greenDAO-generator.jar和Freemarker两个jar包已经导入到工程中.创建一个可运行的java类，定义你的实体类，运行生成代码.
 
 ####4.2生成的核心类
-代码生成完成后，你可以在你android工程中使用greenDao.不要忘了包含greenDao的jar包(greenDao.jar).
-![core-class img](image/core-class.png)
+代码生成完成后，你可以在你android工程中使用greenDao.不要忘了包含greenDao的jar包(greenDao.jar).  
+![core-class img](image/core-class.png)  
 
 **DaoMaster:**使用greenDao的入口点.DaoMaster保存了一个数据库对象（SQLiteDatabase）并管理实体对应的DAO类(不是对象).它提供静态方法来创建或删除表.它的内部类OpenHelper和DevOpenHelper继承了SQLiteOpenHelper，它们创建数据库表.
 
@@ -126,10 +125,10 @@ noteDao = daoSession.getNoteDao();
 这个例子假定我们有一个Note实体类和他的DAO（noteDao对象），这样我们就可以调用它的保存方法
 
 ###5.构造实体类
-使用greenDao的第一步是创建实体模型来表示你应用中的数据.在这个模型的基础上，greenDao生成java代码
+使用greenDao的第一步是创建实体模型来表示你应用中的数据.在这个模型的基础上，greenDao生成java代码  
 
-这个模型本身是使用java代码来定义.很简单：创建一个依赖于"DaoExampleGenerator"项目的java工程.这个工程在第三点有说明.
-![create-entity img](image/create-entity.png)
+这个模型本身是使用java代码来定义.很简单：创建一个依赖于"DaoExampleGenerator"项目的java工程.这个工程在第三点有说明.  
+![create-entity img](image/create-entity.png)  
 上面的插图描述了实体可能包含的所有元素.他们用来描述你问题域的特定模型.
 
 ####5.1Schema类
@@ -137,7 +136,7 @@ noteDao = daoSession.getNoteDao();
 ```
 Schema schema = new Schema(1, "de.greenrobot.daoexample");
 ```
-默认java包名在greenDao生成实体类、Dao类和测试类时候需要使用.这些参数可以按你需求修改，这样你就完成了第一步.
+默认java包名在greenDao生成实体类、Dao类和测试类时候需要使用.这些参数可以按你需求修改，这样你就完成了第一步.  
 如果你想将DAO相关类和测试的类放到不同的包中，你可以重新定义schema类，如下：
 ```
 schema.setDefaultJavaPackageTest("de.greenrobot.daoexample.test");
@@ -150,17 +149,17 @@ schema2.enableActiveEntitiesByDefault();
 ```
 
 ####5.2实体类
-你获取schema对象后，就可以往里面添加实体：
+你获取schema对象后，就可以往里面添加实体：  
 ```
 Entity user = schema.addEntity("User");
-```
+```  
 实体提供一些方法来改变它的默认设置，最重要的是它提供添加属性的方法
 ```
 user.addIdProperty();
 user.addStringProperty("name");
 user.addStringProperty("password");
 user.addIntProperty("yearOfBirth");
-```
+```  
 除了属性外，你可以给实体添加一对一、一对多的关系
 
 ####5.3属性和主键
@@ -176,7 +175,136 @@ greenDao尽量提供合理的默认值，这样开发者不必要配置每一个
 一对一和一对多的关系在下面的单独章节描述
 
 ####5.7继承、接口和序列化
-数据库对应的实体可以从其他不是数据库实体的类继承而来.他的父类由函数setSuperclass(String)来指定.注意：目前不能以另一个实体做为父类（也没有多态的查询）.例如
+数据库对应的实体可以从其他不是数据库实体的类继承而来.他的父类由函数setSuperclass(String)来指定.注意：目前不能以另一个实体做为父类（也没有多态的查询）.例如  
 ```
 myEntity.setSuperclass("MyCommonBehavior");
+```  
+我们最好使用接口作为实体属性和行为的公共基类.例如，如果实体A和B共有一系列属性，这些属性和getters、setters方法可以定义到接口C.如下面的代码，第三行是使B可序列化：  
 ```
+entityA.implementsInterface("C");
+entityB.implementsInterface("C");
+entityB.implementsSerializable();
+```
+
+####5.8触发生成实体类（EntityDAO.java和Entity.java）
+完成schema定义完实体类的代码后，你就可以触发生成代码了.在代码生成工程（这工程师java工程，有一个入口函数static main（）方法），你需要初始化DaoGenerator并调用其中一个generateAll方法：
+```
+DaoGenerator daoGenerator = new DaoGenerator();
+daoGenerator.generateAll(schema, "../MyProject/src-gen");
+```  
+如上面代码，你要做的是提供一个schema对象和目标目录，目标目录是一个典型的android工程源码文件夹.如果想把测试类放到其他目录，可以指定测试目录路径作为第三个参数.
+
+####5.9保存生成类的修改记录
+实体类会在每次代码生成后被覆盖掉.为了允许添加自定义的代码到实体类中，greenDao有"keep"段落.为了使keep段落生效，在schema添加实体时候对schema使用函数enableKeepSectionsByDefault()，或者对实体类调用setHasKeepSections(true).一旦启用，三个keep代码段会在实体类中生成:
+```
+// KEEP INCLUDES - put your custom includes here
+// KEEP INCLUDES END
+...
+// KEEP FIELDS - put your custom fields here
+// KEEP FIELDS END
+...
+// KEEP METHODS - put your custom methods here
+// KEEP METHODS END
+```
+现在你可以将你自定义的代码放到keep[...]和keep[...]END之间.注意不要修改keep注释.在keepBegin和keepEnd之间的代码会在下次生成时候保留下来.对生成代码做备份或提交到svn来避免意外出错的情况是一个不错的做法.
+
+###6.查询
+查询接口返回符合指定条件的实体对象集合.你可以使用SQL组织你的查询语句，或者采用更好的方法，使用greenDao的QueryBuilder API.greenDao的查询也支持延迟加载结果，当结果集很大的时候，它会节省内存和提高性能.
+
+####6.1QueryBuilder
+QueryBuilder类让你不需要写SQL来构建查询条件.写SQL大多数人都不喜欢，并且容易出错，因为它需要在运行时才能反馈错误.QueryBuilder容易使用并且不需要写SQL.使用它，相比只想代码不容易产生bug，它的语法在编译时候就会检查完.以greenDao为基础的代码生成的方法，使编译时的检查项能包括每一个属性的引用.  
+**例如：**查询以Joe为名，以姓排序的所有用户.
+```
+List joes = userDao.queryBuilder()
+.where(Properties.FirstName.eq("Joe"))
+.orderAsc(Properties.LastName)
+.list();
+``` 
+
+**嵌套条件的例子：**获取出生在1970年10月以后名为Joe的所有用户.
+我们将用户生日对应到实体的年、月、日属性.我们使用更正式的形式将查询条件表达为：名是Joe AND(生日的年份大于1970 OR(生日的年是1970 AND 生日的月等于或大于10))
+```
+QueryBuilder qb = userDao.queryBuilder();
+qb.where(Properties.FirstName.eq("Joe"),
+qb.or(Properties.YearOfBirth.gt(1970),
+qb.and(Properties.YearOfBirth.eq(1970), Properties.MonthOfBirth.ge(10))));
+List youngJoes = qb.list();
+```
+
+####6.2Query类和LazyList类
+Query类对象代表一个可以被多次执行的查询.当你使用QueryBuilder中的一个方法来获取结果(如一个list()方法)，QueryBuilder内部使用Query类.如果你要以相同的条件多次查询，你可以调用QueryBuilder的build()方法来产生一个Query，不需要执行它.  
+greenDao支持唯一结果(0或1个结果)、和多个结果的查询.如果你期望唯一的结果，调用Query或者QueryBuilder的unique()方法，它会给你唯一的结果或者null(如果没有找到匹配的实体).如果你的情况不允许null作为结果，调用uniqueOrThrow()，它会保证返回非空的实体(如果没有匹配的结果，它会抛出DaoException异常).  
+如果查询时你期望返回多个结果，你可以调用list...中的一个方法：
+
+:--:|:--:  
+list()|所有实体加载到内存.结果是一个典型的ArrayList.容易使用  
+listLazy()|实体根据需要加载到内存.一旦列表中一个元素被使用，这个元素会被加载和缓存起来，给后续重复使用.使用完后需要关闭
+listLazyUncached()|一个虚拟的实体列表:任何请求列表中的元素将会触发从数据库加载数据.使用后必须关闭
+listIterator()|让你使用迭代器来遍历结果集，它根据需要加载数据(延迟加载).数据没有缓存，使用后必须关闭
+
+
+listLazy、listLazyUncached和listIterator 使用了greenDao的LazyList类.为了使用时才加载数据，它保存了数据库游标的引用.这也是使用后必须调用关闭方法的原因(一般在try/finally代码块中关闭).一旦所有的元素被访问或遍历到,listLazy()返回有缓存、延迟加载列表和listIterator()返回的延迟加载迭代器会自动关闭数据库游标.如果数据的访问过早的结束了(没有遍历完全)，那么关闭数据库游标是你要做的的工作.
+
+####6.3使用Queries进行多次查询
+一旦你使用QueryBuilder构造了一个query，这个query对象后续可以重复使用，来执行查询.这比总是创建新的Query对象要更有效.如果查询条件没有变，你只需要再次调用其中一个list/unique方法.如果参数有改变，你必须对改变的参数调用setParameter方法.目前，各个参数以0开始的索引来区分.对应你传入参数到QueryBuilder的索引.  
+下面的例子使用Query对象来查询"名"为Joe，出生在1970年的用于：
+```
+Query query = userDao.queryBuilder().where(
+Properties.FirstName.eq("Joe"), Properties.YearOfBirth.eq(1970))
+.build();
+List joesOf1970 = query.list();
+```
+使用这个Query对象，我们查找名为Marias，出生在1977年的用户：
+```
+query.setParameter(0, "Maria");
+query.setParameter(1, 1977);
+List mariasOf1977 = query.list();
+```
+
+####6.4在多线程中执行查询
+如果你想在多线程中使用查询，你必须对query对象调用forCurrentThread()方法来获取一个当前线程的Query实例.从greenDao1.3以后，Query的实例对象绑定到构建query的线程中.这样，你可以安全的对Query对象设置参数而不受其他线程的干扰.如果其他线程试图对query对象设置参数或者执行绑定在其他线程的查询，greenDao会抛出异常.这样，你就不需要使用同步语句.事实上，我们应该避免使用锁，因为如果并发事务使用同一个Query对象，它会导致死锁.  
+为了完全避免潜在的死锁，greenDao1.3引入了forCurrentThread()函数.它会返回本线程的Query实例，它在当前线程可以安全的使用.每次调用forCurrentThread()，传入的参数和使用QueryBuilder构造Query的参数一致.
+
+####6.5原始查询
+获取数据，有两种方法来执行原始的SQL.比较好的方法是使用QueryBuilder和WhereCondition.StringCondition. 使用它，你可以向QueryBuilder传入任何的SQL WHERE子句片段.下面的代码是一个笨拙的方法，它让你使用一个select子句来起到join的效果
+```
+Query query = userDao.queryBuilder().where(
+new StringCondition("_ID IN " +
+"(SELECT USER_ID FROM USER_MESSAGE WHERE READ_FLAG = 0)").build();
+```
+碰到QueryBuilder没有提供你需要的特性时(例如上面的join关键字)，你可以回到原始的查询语句或者原始查询语句的构造方法.他们允许传入原始SQL字符串，追加到SELECT + 实体列名后面.通过这种方法，你可以拼好任意WHERE和ORDER BY子句，来查询数据库中的对象.实体表名用别名"T"来称呼：  
+下面的例子展示了如何使用join创建query对象，它查找组名为"admin"的用户群.
+```
+Query query = userDao.queryRawCreate(
+  ", GROUP G WHERE G.NAME=? AND T.GROUP_ID=G._ID", "admin");
+```  
+_注意:_你可以使用生成的常量来指向表和列名.这是推荐的做法，它可以避免错别字，因为编译器会检查名字.在实体对应的Dao类中,你会找到TABLENAME，它持有数据库表的名字.Dao类中还有一个Properties内部类
+，包含所有的属性常量(对应数据库列名).
+
+####6.6删除查询
+批量删除会删除符合条件的实体.想要行批量删除，需要创建一个QueryBuilder，调用它的buildDelete方法，执行返回的DeleteQuery.这部分的api将来可以会修改，例如，会添加便利的方法.记住，批量删除目前不会影响identity scope中的实体，例如实体已经有缓存并且是调用传入ID来获取的函数，你可以"复活"他们.如果这里给你的情况带来一些问题，你可以考虑清除identity scope.
+
+####6.7查找查询中的问题
+你的查询没有返回你期望的值？这里有2个静态的标识，一个是将sql语句打印出来，一个是将传入QueryBuilder的参数打印出来：
+```
+QueryBuilder.LOG_SQL = true;
+QueryBuilder.LOG_VALUES = true;
+```  
+这些日志会记录生成的sql命令和调用build()方法传入的参数.这样你可以对比他们是不是你预期的.这也帮助你们拷贝sql语句到其他数据库浏览工具，并执行他们获取结果。
+
+###7.Sessions（DaoSession类）
+生成的DaoSession类是greenDao提供的核心接口之一.作为开始，DaoSession提供开发者一些基础的实体操作方法，也提供DAOs来获取更完整的数据库操作接口.Session还管理一个和实体对应的identity scope.
+
+####7.1DaoMaster和DaoSession
+如第三点文档中提到的，你需要创建一个DaoMaster来获取DaoSession：  
+```
+daoMaster = new DaoMaster(db);
+daoSession = daoMaster.newSession();
+noteDao = daoSession.getNoteDao();
+```  
+注意，数据库连接属于DaoMaster，因此多个session指向相同的数据库连接.新的session可以快速的创建出来.然而，每一个session都需要占内存，一般里面有一个对应实体的session缓存.
+
+####7.2Identity scope和session缓存(session “cache”)
+如果你有两个查询，返回相同的数据库对象，那它创建了多少个java对象；1个还是2个？它由identity scope来决定.greenDao默认的(这个行为可以配置)是多个请求返回相同的java对象.例如，加载一个USER表中ID为42的用户对象对每一次请求会返回相同的Java对象.  
+这样做一个很好的作用是，如果一个实体任然在内存中(greenDao这里使用软引用)，实体将不会使用数据库的值来重新构建.例如，如果你通过ID加载一个实体，而且这个实体以前被加载过，greenDao不需要查询数据库.而是从session缓存中直接返回，这样速度会高出一两个数量级.这种思想类似Hibernate 的session. 
+
