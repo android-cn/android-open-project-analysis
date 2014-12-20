@@ -308,3 +308,119 @@ noteDao = daoSession.getNoteDao();
 如果你有两个查询，返回相同的数据库对象，那它创建了多少个java对象；1个还是2个？它由identity scope来决定.greenDao默认的(这个行为可以配置)是多个请求返回相同的java对象.例如，加载一个USER表中ID为42的用户对象对每一次请求会返回相同的Java对象.  
 这样做一个很好的作用是，如果一个实体任然在内存中(greenDao这里使用软引用)，实体将不会使用数据库的值来重新构建.例如，如果你通过ID加载一个实体，而且这个实体以前被加载过，greenDao不需要查询数据库.而是从session缓存中直接返回，这样速度会高出一两个数量级.这种思想类似Hibernate 的session. 
 
+###8.实体之间的关系
+数据库表有可能是1对1，1对多或多对多的关系.如果你对数据库关系不了解，在我们讨论ORM特性之前，最好先补充相关的知识.  
+greenDao中，实体关系用1对1或1对多来表示.例如，如果你要在greenDao上构建一个1对多的关系，你必须要先有两个实体类，他们彼此间还没有联系，你需要更新他们两个实体.  
+
+####8.1构造1对1关系
+在greenDao的代码生成工程中，你必须构造一个属性作为外键，使用这个属性，你可以使用Entity.addToOne()添加1对1关系.  
+例如：一个用户有一张图片.  
+```
+// The variables "user" and "picture" are just regular entities
+Property pictureIdProperty = user.addLongProperty("pictureId").getProperty();
+user.addToOne(picture, pictureIdProperty);
+```  
+这样，一个用户实体将有一个Picture属性(getPicture/setPicture)，你可以直接使用Picture对象.  
+1对1的getter方法第一次获取目标实体是以懒加载的方式.后续的获取请求会直接返回上次得到的对象.  
+注意，外键属性("pictureId")和实体对象属性("picture")是联系在一起了.如果你改变pictureId，下一次调用getPicture()函数会得到和新Id对应的Pciture实体.同时，如果你设置一个新的图片实体，图片id属性也会同时更新.  
+greenDao也支持预加载1对1关系.它会通过一次数据库查询，加载一个实体的所有1对1关系.如果许多地方需要使用1对1关系，这对性能是极大的提升.目前，你使用greenDao的loadDeep和queryDeep函数来使用这个特性(将来可能会改变).  
+####8.2关系名和多重关系
+每一个关系都有一个名字，它和生成实体中的一个属性对应.默认的名字是目标实体的类名.使用setName方法，这个名字可以被重写.记住，如果一个实体和同一个目标实体有多重关系，默认的名字不是唯一的.这种情况你必须显式指定关系的名字.  
+让我们展开前面的例子，假设用户还有一张缩略图.因为主图片和缩略图都指向相同的实体Picture，这回有名字冲突.因此我们将后者的关系命名为"thumbnail"：  
+```
+Property pictureIdProperty = user.addLongProperty("pictureId").getProperty();
+Property thumbnailIdProperty = user.addLongProperty("thumbnailId").getProperty();
+user.addToOne(picture, pictureIdProperty);
+user.addToOne(picture, thumbnailIdProperty, "thumbnail");
+```  
+####8.3构造1对多关系
+除了外键放置在目的表中，1对多关系的构造类似1对1关系.我们来看下顾客/订单的例子.一个顾客会产生多个订单，因此这里有一个1对多的关系.在数据库中，我们在订单表中添加一个顾客ID的列，来创建1对多的关系.这样，我们可以使用顾客的ID，查询顾客所有的订单.  
+greenDao中，构造1对多的关系和数据库构造1对多的方法非常类似.第一步，你需要在目标实体中添加一个属性来指向1对多的源头实体.接着，使用刚添加在目标实体的属性，对源头实体添加1对多的关系.  
+假设我们有一个顾客和订单实体，我们要把订单和顾客联系起来.下面的代码给顾客实体添加1对多的关系  
+```
+Property customerId = order.addLongProperty("customerId").notNull().getProperty();
+ToMany customerToOrders = customer.addToMany(order, customerId);
+customerToOrders.setName("orders"); // Optional
+customerToOrders.orderAsc(orderDate); // Optional
+```  
+像这样，我们可以简单的调用生成的顾客类中getOrders()方法来获取订单：  
+`List orders = customer.getOrders(); `  
+####8.4获取和更新1对多关系
+1对多的关系第一次请求的时候是懒加载.之后，相关的实体被缓存在源头实体里面一个List对象中.后续调用关系的get方法不再请求数据库.  
+注意，更新1对多关系需要一些二外工作.因为1对多关系会缓存起来，当相关的实体加入数据库时，他们没有被更新.下面的代码说明了这种情况:  
+```  
+List orders1 = customer.getOrders();
+int size1 = orders1.size();
+Order order = new Order();
+order.setCustomerId(customer.getId());
+daoSession.insert(order);
+Listorders2 = customer.getOrders();
+// size1 == orders2.size(); // NOT updated
+// orders1 == orders2; // SAME list object
+```  
+因为缓存，你要手动的添加新的关系到源头实体的List中，下面是1对多关系实体进行插入新关系(例如顾客新增一个订单):  
+1. 获取1对多的java List(这个必须在保存新实体前完成，因为我们并不知道我们得到的刷新结果是不是从缓存中获取的，这样做的话，我们知道它已经缓存了)  
+2. 创建一个新的实体对象(它是'多'的一方，如order)  
+3. 设置新实体对象的外键，它对应'1'的一方(如顾客)  
+4. 使用insert保存新的对象.  
+5. 添加新对象到1对多的java List中.  
+示例代码:  
+```
+List orders = customer.getOrders();
+newOrder.setCustomerId(customer.getId());
+daoSession.insert(newOrder);
+orders.add(newOrder);
+```
+注意，getOrders方法在insert之前来保证list被缓存了.如果getOrder函数放在insert之后，当订单之前没有被被缓存的话，newOrder会在list中出现两次.  
+同样的，你可以删除相关的实体:  
+```
+List orders = customer.getOrders();
+daoSession.delete(newOrder);
+orders.remove(newOrder);
+```  
+有时候，在相关的实体被加入或移除后，手动更新所有1对多关系很繁琐甚至不可能.幸好，greenDao有重置的方法来清理List缓存.如果1对多关系有改变的可能，你可以强制greenDao重新加载相关实体的列表：  
+```
+customer.resetOrders();
+List orders2 = customer.getOrders();
+```  
+ 
+####8.5双向的1对多关系(顾客实体获取订单，订单实体可以获取顾客)
+有时候你需要操作双向的1对多关系.在greenDao中，你需要添加1对1和1对多关系来达到目的.使用前面提到的例子，下面的代码展示了构造顾客和订单实体的完整过程.这次，我们使用顾客Id属性来创建两个对应关系.  
+```
+Entity customer = schema.addEntity("Customer");
+customer.addIdProperty();
+customer.addStringProperty("name").notNull();
+Entity order = schema.addEntity("Order");
+order.setTableName("ORDERS"); // "ORDER" is a reserved keyword
+order.addIdProperty();
+Property orderDate = order.addDateProperty("date").getProperty();
+Property customerId = order.addLongProperty("customerId").notNull().getProperty();
+order.addToOne(customer, customerId);
+ToMany customerToOrders = customer.addToMany(order, customerId);
+customerToOrders.setName("orders");
+customerToOrders.orderAsc(orderDate);
+```  
+假设我们有一个订单实体.使用交叉对应关系.我们可以获取顾客和所有顾客产生的订单:  
+`List allOrdersOfCustomer = order.getCustomer().getOrders();`  
+####8.6多对多关系
+在数据库中，多对多关系使用联合表来构建.联合表保存拥有指向关系表外键作为列的实体.然而greenDao目前不直接支持多对多关系，你可以构造联合表作为一个独立的实体.事实上，你经常构建带附加属性的"关系实体"，因此你可能都会这么做.在以后的发布版本中，greenDao可能引入对多对多关系的直接支持.  
+####8.7构建树形关系(例子)
+你可以构建一个实体，它拥有一对一和一对多的关系，并且都指向自身，来构造树形关系:  
+```
+Entity treeEntity = schema.addEntity("TreeEntity");
+treeEntity.addIdProperty();
+Property parentIdProperty = treeEntity.addLongProperty("parentId").getProperty();
+treeEntity.addToOne(treeEntity, parentIdProperty).setName("parent");
+treeEntity.addToMany(treeEntity, parentIdProperty).setName("children");
+```
+生成的实体让你操作他的父和子实体.  
+```
+TreeEntity parent = child.getParent();
+List grandChildren = child.getChildren();
+```  
+
+
+
+  
+
+
