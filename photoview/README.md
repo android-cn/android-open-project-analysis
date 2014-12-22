@@ -212,15 +212,15 @@ view.postDelayed(runnable, frameTime)来实现
 手势回调接口
 
 ##### 2.1.11 CupcakeGestureDetector
-适用于 api < 7
+适用于 api < 7 的设备,此时PhotoView不支持双指pinch放大/缩小操作
 ##### 2.1.12 EclairGestureDetector
-适用于 api >= 9
+适用于 api >= 8 , 用于修正多指操控时,使TouchEvent的getActiveX getActiveY指向正确的Pointer,并将事件传递给 `CupcakeGestureDetector` 处理,此时PhotoView不支持双指pinch放大/缩小操作
 ##### 2.1.13 FroyoGestureDetector
-适用于 api < 8
+适用于 api > 9 , 通过android.view.ScaleGestureDetector实现对Pinch手势的支持,并将事件传递给 `EclairGestureDetector` 处理
 
 ##### 2.1.14 VersionedGestureDetector
-GestureDetector分发的顶级节点，由它决定Gesture分发给哪一个具体的GestureDetector处理，主要是为了兼容Android的不同版本。
-
+提供GestureDetector的实例，由它根据系统版本决定实例化哪一个 GestureDetector ，主要是为了兼容Android的不同版本。
+具体调用栈请参考总体设计中调用流程图,注意一点,PhotoViewAttacher本身就实现了OnGestureListener接口,实际的缩放操作是由PhotoViewAttacher完成的,而不是这里声明的各个GestureDetector.
 
 
 核心类、函数功能介绍及核心功能流程图，流程图可使用 StartUML、Visio 或 Google Drawing。  
