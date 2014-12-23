@@ -6,7 +6,7 @@
 - 填写时间计划表  
 读完本文档后，根据自己的时间安排，填写 [时间计划表](https://github.com/android-cn/android-open-project-analysis/blob/master/schedule.md)，并在以后编写的每个阶段完成后更新时间计划表 
 - 寻找 Buddy  
-在协作群里找到一个后期帮忙做校验的 Buddy  
+分析完成后在协作群里找到一个后期帮忙做校验的 Buddy  
 - 项目中可能用到的工具 [Tool](https://github.com/android-cn/android-open-project-analysis/blob/master/common/tool/README.md)   
 
 ####二. 编写该开源库的使用示例
