@@ -132,7 +132,7 @@ PhotoView中英文注释：
 - public void setImageResource(int resId) 
 - public void setImageURI(Uri uri)
 
-重载了ImageView的3个设置图片的方法,用于通知PhotoViewAttacher更新视图和重置matrix状态
+重载了ImageView的3个设置图片的方法,以确保图片改变时PhotoViewAttacher及时更新视图和重置matrix状态
 
 - protected void onDetachedFromWindow()
 
@@ -170,7 +170,7 @@ view.postDelayed(runnable, frameTime)来实现
 
 - public boolean setDisplayMatrix(Matrix finalMatrix)
 
-如果你熟悉Matrix的话，可以直接通过Matrix来修改ImageView的显示状态。
+通过Matrix来直接修改ImageView的显示状态。
 
 - private void cancelFling()
 
@@ -222,8 +222,7 @@ view.postDelayed(runnable, frameTime)来实现
 提供GestureDetector的实例，由它根据系统版本决定实例化哪一个 GestureDetector ，主要是为了兼容Android的不同版本。
 具体调用栈请参考总体设计中调用流程图,注意一点,PhotoViewAttacher本身就实现了OnGestureListener接口,实际的缩放操作是由PhotoViewAttacher完成的,而不是这里声明的各个GestureDetector.
 
-
-核心类、函数功能介绍及核心功能流程图，流程图可使用 StartUML、Visio 或 Google Drawing。  
+ 
 ###2.2 类关系图
 
 ![PhotoView](images/startuml.jpg)
@@ -236,20 +235,11 @@ Touch事件判断流程图：
 
 
 ###4. 总体设计
-分为3个模块：
-`TODO`
+请先参照类关系图.
 
-- ScrollerProxy
-    
-    处理图像拖曳事件。
-
-- GestureDetector
-
-    处理缩放手势。
-    
-- PhotoViewAttacher
-
-    处理相关事件回调和维护matrix状态。
+PhotoView这个库实际上比较简单,关键点其实就是Touch事件处理和Matrix的应用.
+由于Matrix是Android系统源生API,很多开发者对此都比较熟悉,故不在此详细叙述,如果对其不是很了解,可以查看本目录下 Matrix-Overview补充说明文档.
+Touch事件处理部分请参考流程图
 
 
 ###5. 杂谈
