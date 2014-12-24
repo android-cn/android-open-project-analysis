@@ -20,9 +20,31 @@ PhotoView 实现原理解析
 - 可以非常方便的与ImageLoader/Picasso之类的异步网络图片读取库集成使用。
 - 事件分发做了很好的处理，可以方便的与ViewPager等同样支持滑动手势的控件集成。
 
-###2. 详细设计
-###2.1 核心类功能介绍
-##### 2.1.1 PhotoView
+
+
+###2. 总体设计
+
+PhotoView这个库实际上比较简单,关键点其实就是Touch事件处理和Matrix的应用.
+
+#####2.1 TouchEvent及手势事件处理
+对TouchEvent分发流程不了解的建议先阅读 [Android Touch事件传递机制](http://www.trinea.cn/android/touch-event-delivery-mechanism/)
+
+本库中对Touch事件的处理流程请参考第三部分的流程图，会有一个比较直观的认识。
+
+#####2.2 Matrix
+由于Matrix是Android系统源生API,很多开发者对此都比较熟悉,故不在此详细叙述,如果对其不是很了解,可以查看本目录下 Matrix-Overview补充说明文档.
+
+`TODO` 要不要把Matrix那篇文档直接粘过来，不过好多图，看起来有点累赘啊...
+
+###3. 流程图
+Touch及手势事件判定及传递流程：
+
+![流程图](images/flow.jpg)
+
+
+###4. 详细设计
+###4.1 核心类功能介绍
+##### 4.1.1 PhotoView
 PhotoView 类负责暴露所有供外部调用的API,其本身直接继承自ImageView,同时实现了IPhotoView接口.
 IPhotoView接口提供了缩放相关的设置属性 和操控matrix变化的回调接口.
 
@@ -148,11 +170,11 @@ PhotoView本身已做好了相关处理,在PhotoView滚到图片边缘时,Scroll
 重载了ImageView的方法,用于在视图被从Window中移除时,通知PhotoViewAttacher清空数据.
 
 
-###### 2.1.2 IPhotoView 
+###### 4.1.2 IPhotoView 
 IPhotoView接口定义了缩放相关的一组set/get方法.PhotoView是其实现类.
 相关方法已在PhotoView中介绍,这里略过.
 
-##### 2.1.3 Compat
+##### 4.1.3 Compat
 用于做View.postOnAnimation方法在低版本上的兼容.
 
 注：View.postOnAnimation (Runnable action) 在PhotoView中用于处理  双击 放大/缩小 时的动画效果.
@@ -164,7 +186,7 @@ IPhotoView接口定义了缩放相关的一组set/get方法.PhotoView是其实�
 对比 android.support.v4.view.ViewCompat 和 uk.co.senab.photoview.Compat
 其实现原理完全一致，都是通过view.postDelayed(runnable, frameTime)来实现.
 
-##### 2.1.4 PhotoViewAttacher
+##### 4.1.4 PhotoViewAttacher
 核心类
 
 - private static boolean isSupportedScaleType(final ScaleType scaleType) 
@@ -200,75 +222,49 @@ PhotoView不再使用时,可用于释放相关资源。移除Observer, Listener.
 
 根据PhotoView的宽高和Drawable的宽高计算FIT_CENTER状态的Matrix.
 
-##### 2.1.5 ScrollerProxy
+##### 4.1.5 ScrollerProxy
 抽象类,主要是为了做不用版本之间的兼容,具体说明见`GingerScroller` `IcsScroller` `PreGingerScroller` 这三个接口实现类的说明.
 
-##### 2.1.6 GingerScroller
+##### 4.1.6 GingerScroller
 `ScrollerProxy` 接口实现类
 适用于 API 9 ~ 14 即 2.3 ~ 4.0 之间的所有Android版本.
 其实现主要基于 android.widget.OverScroller
 
-##### 2.1.7 IcsScroller
+##### 4.1.7 IcsScroller
 适用于 API 14 以上 即 4.0 以上的所有Android版本
 其实现基于源生 android.widget.OverScroller , 没有任何修改.
 
-##### 2.1.8 PreGingerScroller
+##### 4.1.8 PreGingerScroller
 适用于 API 9 以下 即 2.3 以下的所有Android版本
 其实现主要基于 android.widget.Scroller
 
-##### 2.1.9 GestureDetector
+##### 4.1.9 GestureDetector
 接口,主要是为了做不同版本之间的兼容,具体说明见 `CupcakeGestureDetector`,`EclairGestureDetector`,`FroyoGestureDetector` 三个接口的实现类.
-##### 2.1.10 OnGestureListener
+##### 4.1.10 OnGestureListener
 手势回调接口
 
-##### 2.1.11 CupcakeGestureDetector
+##### 4.1.11 CupcakeGestureDetector
 适用于 api < 7 的设备,此时PhotoView不支持双指pinch放大/缩小操作
-##### 2.1.12 EclairGestureDetector
+##### 4.1.12 EclairGestureDetector
 适用于 api >= 8 , 用于修正多指操控的问题,使TouchEvent的getActiveX getActiveY指向正确的Pointer,并将事件传递给 `CupcakeGestureDetector` 处理,此时PhotoView不支持双指pinch放大/缩小操作
-##### 2.1.13 FroyoGestureDetector
+##### 4.1.13 FroyoGestureDetector
 适用于 api > 9 , 通过android.view.ScaleGestureDetector实现对Pinch手势的支持,并将事件传递给 `EclairGestureDetector` 处理
 
 注意:
 以上3个类并不实际执行 放大/缩小 行为, 判断行为之后会回调给PhtotViewAttacher执行缩放/移动操作
 
-##### 2.1.14 VersionedGestureDetector
+##### 4.1.14 VersionedGestureDetector
 提供GestureDetector的实例，由它根据系统版本决定实例化哪一个 GestureDetector ，主要是为了兼容Android的不同版本。
 具体调用栈请参考总体设计中调用流程图,注意一点,PhotoViewAttacher本身就实现了OnGestureListener接口,实际的缩放操作是由PhotoViewAttacher完成的,而不是这里声明的各个GestureDetector.
 
  
-###2.2 类关系图
+###4.2 类关系图
 
 ![PhotoView](images/startuml.jpg)
 
-###3. 流程图
-Touch事件判断流程图：
-`TODO`
-
-
-###4. 总体设计
-请先参照类关系图.
-
-PhotoView这个库实际上比较简单,关键点其实就是Touch事件处理和Matrix的应用.
-由于Matrix是Android系统源生API,很多开发者对此都比较熟悉,故不在此详细叙述,如果对其不是很了解,可以查看本目录下 Matrix-Overview补充说明文档.
-Touch事件处理部分请参考流程图.
-
 
 ###5. 杂谈
-唯一缺少的可能是 手势旋转 功能(可以参考QQ). 不过由于PhotoView中已将各级事件分开处理,从架构上来看可扩展性良好,自定义一个RotateGestureDetector来捕获旋转手势也可行.
+该库唯一缺少的可能是 手势旋转 功能(可以参考QQ). 不过由于PhotoView中已将各级事件分开处理,从架构上来看可扩展性良好,自定义一个RotateGestureDetector来捕获旋转手势也可行.
 但如何在不与ScaleGestureDetector冲突的情况下完成该功能会稍微有些麻烦.
+如果不需要手势旋转的话，该库提供了单独的接口可以用代码设置旋转角度。
 
-
-###6. 修改完善  
-在完成了上面 5 个部分后，移动模块顺序，将  
-`2. 详细设计` -> `2.1 核心类功能介绍` -> `2.2 类关系图` -> `3. 流程图` -> `4. 总体设计`  
-顺序变为  
-`2. 总体设计` -> `3. 流程图` -> `4. 详细设计` -> `4.1 类关系图` -> `4.2 核心类功能介绍`  
-并自行校验优化一遍，确认无误后，让`校对 Buddy`进行校对，`校对 Buddy`校队完成后将  
-`校对状态：未完成`  
-变为：  
-`校对状态：已完成`  
-
-**完成时间**  
-- `两天内`完成  
-
-**到此便大功告成，恭喜大家^_^**  
