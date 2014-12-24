@@ -24,7 +24,7 @@ PhotoView 实现原理解析
 ###2.1 核心类功能介绍
 ##### 2.1.1 PhotoView
 PhotoView 类负责暴露所有供外部调用的API,其本身直接继承自ImageView,同时实现了IPhotoView接口.
-IPhotoView接口提供了缩放相关的设置属性 和 供缩放变化时回调的接口.
+IPhotoView接口提供了缩放相关的设置属性 和操控matrix变化的回调接口.
 
 主要方法说明:
 
@@ -124,6 +124,15 @@ PhotoView中英文注释：
         }
 
 通过调用setAllowParentInterceptOnEdge(false),可以完全屏蔽父控件的TouchEvent.
+这个设置是为了防止父控件响应InterceptTouchEvent.
+
+例如
+
+PhotoView外层是ScrollView,通过requestDisallowInterceptTouchEvent方法可以阻止ScrollView响应滑动手势.
+
+PhotoView本身已做好了相关处理,在PhotoView滚到图片边缘时,Scroll事件由父控件处理,在PhotoView未滚动到边缘时,Scroll事件由PhotoView处理.
+
+除非开发者有特殊的需求,否则不需要自己去调用该方法改变TouchEvent事件的阻断逻辑.
 
 
 
@@ -140,18 +149,20 @@ PhotoView中英文注释：
 
 
 ###### 2.1.2 IPhotoView 
-IPhotoView接口定义了缩放相关的一组set/get方法.
+IPhotoView接口定义了缩放相关的一组set/get方法.PhotoView是其实现类.
 相关方法已在PhotoView中介绍,这里略过.
 
 ##### 2.1.3 Compat
 用于做View.postOnAnimation方法在低版本上的兼容.
-注：View.postOnAnimation (Runnable action) 在PhotoView中用于做默认 双击 放大/缩小 动画，每次系统绘图时都会调用此回调，通过在此时改变视图状态以实现动画效果。该方法仅支持 api >= 16
+
+注：View.postOnAnimation (Runnable action) 在PhotoView中用于处理  双击 放大/缩小 时的动画效果.
+
+每次系统绘图时都会调用此回调，通过在此时改变视图状态以实现动画效果。该方法仅支持 api >= 16
 所以PhotoView中使用了Compat类来做低版本兼容。
 
 实际上也可以使用android.support.v4.view.ViewCompat替代。
 对比 android.support.v4.view.ViewCompat 和 uk.co.senab.photoview.Compat
-其实现原理完全一致，都是通过
-view.postDelayed(runnable, frameTime)来实现
+其实现原理完全一致，都是通过view.postDelayed(runnable, frameTime)来实现.
 
 ##### 2.1.4 PhotoViewAttacher
 核心类
@@ -159,14 +170,13 @@ view.postDelayed(runnable, frameTime)来实现
 - private static boolean isSupportedScaleType(final ScaleType scaleType) 
  
 判断ScaleType是否支持。
-实际上只有 Matrix是不支持的。
+这个判断中实际只有ScaleType.Matrix会返回false.
+
+由于PhotoView中 缩放 滑动操作都依赖`Matrix`,所以并不支持用户再传入自定义Matrix.
 
 - public void cleanup()
 
-
-    Clean-up the resources attached to this object. This needs to be called when the ImageView is no longer used.
-
-用于释放相关资源。移除Observer, Listener.
+PhotoView不再使用时,可用于释放相关资源。移除Observer, Listener.
 
 - public boolean setDisplayMatrix(Matrix finalMatrix)
 
@@ -214,9 +224,12 @@ view.postDelayed(runnable, frameTime)来实现
 ##### 2.1.11 CupcakeGestureDetector
 适用于 api < 7 的设备,此时PhotoView不支持双指pinch放大/缩小操作
 ##### 2.1.12 EclairGestureDetector
-适用于 api >= 8 , 用于修正多指操控时,使TouchEvent的getActiveX getActiveY指向正确的Pointer,并将事件传递给 `CupcakeGestureDetector` 处理,此时PhotoView不支持双指pinch放大/缩小操作
+适用于 api >= 8 , 用于修正多指操控的问题,使TouchEvent的getActiveX getActiveY指向正确的Pointer,并将事件传递给 `CupcakeGestureDetector` 处理,此时PhotoView不支持双指pinch放大/缩小操作
 ##### 2.1.13 FroyoGestureDetector
 适用于 api > 9 , 通过android.view.ScaleGestureDetector实现对Pinch手势的支持,并将事件传递给 `EclairGestureDetector` 处理
+
+注意:
+以上3个类并不实际执行 放大/缩小 行为, 判断行为之后会回调给PhtotViewAttacher执行缩放/移动操作
 
 ##### 2.1.14 VersionedGestureDetector
 提供GestureDetector的实例，由它根据系统版本决定实例化哪一个 GestureDetector ，主要是为了兼容Android的不同版本。
@@ -226,8 +239,6 @@ view.postDelayed(runnable, frameTime)来实现
 ###2.2 类关系图
 
 ![PhotoView](images/startuml.jpg)
-
-`TODO`  startuml画的图似乎有点问题。还是用umlet重画一下算了。
 
 ###3. 流程图
 Touch事件判断流程图：
@@ -239,14 +250,13 @@ Touch事件判断流程图：
 
 PhotoView这个库实际上比较简单,关键点其实就是Touch事件处理和Matrix的应用.
 由于Matrix是Android系统源生API,很多开发者对此都比较熟悉,故不在此详细叙述,如果对其不是很了解,可以查看本目录下 Matrix-Overview补充说明文档.
-Touch事件处理部分请参考流程图
+Touch事件处理部分请参考流程图.
 
 
 ###5. 杂谈
-该项目存在的问题、可优化点及类似功能项目对比等，非所有项目必须。  
+唯一缺少的可能是 手势旋转 功能(可以参考QQ). 不过由于PhotoView中已将各级事件分开处理,从架构上来看可扩展性良好,自定义一个RotateGestureDetector来捕获旋转手势也可行.
+但如何在不与ScaleGestureDetector冲突的情况下完成该功能会稍微有些麻烦.
 
-**完成时间**  
-- `两天内`完成  
 
 ###6. 修改完善  
 在完成了上面 5 个部分后，移动模块顺序，将  

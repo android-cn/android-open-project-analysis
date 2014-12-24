@@ -21,11 +21,13 @@ TODO 补图
 - public void setScale(float sx, float sy, float px, float py)
 
     以(px,py)为中心,横向上缩放比例sx,纵向缩放比例sy
+	
     ![scale](images/scale.png)
 
 - public void setRotate(float degrees, float px, float py)
 
     以(px,py)为中心,旋转degrees度
+	
     ![rotate](images/rotate.png)
 
 - public void setSkew(float kx, float ky, float px, float py)
