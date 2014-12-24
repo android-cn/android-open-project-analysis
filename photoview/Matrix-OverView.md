@@ -16,21 +16,23 @@ TODO 补图
 
     对目标进行平移dx,dy
 
-    TODO  补图
+    ![tranlate](images/tranlate.png)
 
 - public void setScale(float sx, float sy, float px, float py)
 
     以(px,py)为中心,横向上缩放比例sx,纵向缩放比例sy
-    TODO  补图
+    ![scale](images/scale.png)
 
 - public void setRotate(float degrees, float px, float py)
 
     以(px,py)为中心,旋转degrees度
-    TODO  补图
+    ![rotate](images/rotate.jpg)
 
 - public void setSkew(float kx, float ky, float px, float py)
-
+	以(px,py)为中心,偏转图片的x轴和y轴.
+	
+	这个好难用文字解释,请参考下面的实际效果图片.
     Set the matrix to skew by sx and sy, with a pivot point at (px, py).
-    The pivot point is the coordinate that should remain unchanged by the specified transformation.
-    TODO  补图
+    
+	![skew](images/skew.jpg)
 
