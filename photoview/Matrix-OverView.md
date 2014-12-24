@@ -26,7 +26,7 @@ TODO 补图
 - public void setRotate(float degrees, float px, float py)
 
     以(px,py)为中心,旋转degrees度
-    ![rotate](images/rotate.jpg)
+    ![rotate](images/rotate.png)
 
 - public void setSkew(float kx, float ky, float px, float py)
 	以(px,py)为中心,偏转图片的x轴和y轴.
@@ -34,5 +34,5 @@ TODO 补图
 	这个好难用文字解释,请参考下面的实际效果图片.
     Set the matrix to skew by sx and sy, with a pivot point at (px, py).
     
-	![skew](images/skew.jpg)
+	![skew](images/skew.png)
 
