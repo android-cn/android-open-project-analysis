@@ -32,9 +32,7 @@ PhotoView这个库实际上比较简单,关键点其实就是Touch事件处理�
 本库中对Touch事件的处理流程请参考第三部分的流程图，会有一个比较直观的认识。
 
 #####2.2 Matrix
-由于Matrix是Android系统源生API,很多开发者对此都比较熟悉,故不在此详细叙述,如果对其不是很了解,可以查看本目录下 Matrix-Overview补充说明文档.
-
-`TODO` 要不要把Matrix那篇文档直接粘过来，不过好多图，看起来有点累赘啊...
+由于Matrix是Android系统源生API,很多开发者对此都比较熟悉,故不在此详细叙述,如果对其不是很了解,可以查看本目录下 [Matrix-Overview](https://github.com/android-cn/android-open-project-analysis/blob/master/photoview/Matrix-SimpleDescription.md)补充说明文档.
 
 ###3. 流程图
 Touch及手势事件判定及传递流程：
