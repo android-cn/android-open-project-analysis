@@ -7,20 +7,21 @@
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
 [EventBus](https://github.com/greenrobot/EventBus) | [Trinea](https://github.com/Trinea) | [扔物线](https://github.com/rengwuxian) | Done | Done | Done | Done | Done | Done |  
 [Dagger](https://github.com/square/dagger) | [扔物线](https://github.com/rengwuxian) | [Trinea](https://github.com/Trinea) | Done | Done | Done | Done | Done | Done |   
-[photup](https://github.com/chrisbanes/photup) | [aiqianxian](https://github.com/aiqianxian) | | Done | 12/03 | 12/07 | 12/08 | 12/12 | 12/15 |  
 [Volley](https://android.googlesource.com/platform/frameworks/volley) | [grumoon](https://github.com/grumoon) | [promeG](https://github.com/promeG) |Done |Done | Done | Done |Done | Done |  
-[Otto](https://github.com/square/otto) | [promeG](https://github.com/promeG) | [grumoon](https://github.com/grumoon) | Done | 11/27 | 12/03 | 12/10 | 12/17 | 12/20 |  
+[grumoon](https://github.com/grumoon) | Done | 11/27 | 12/03 | 12/10 | 12/17 | 12/20 |  
 [ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [lightSky](https://github.com/lightSky) | [aaronplay](https://github.com/AaronPlay)  | Done | Done | Done | Done | Done | Done |  Done
 [HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary) | [aaronplay](https://github.com/AaronPlay) | | Done | Done | Done | Done | Done | Done |  
 [picasso](https://github.com/square/picasso) | [爱早起](https://github.com/liang7) | | 11/26 | 12/06 | 12/10 | 12/17 | 12/23 | 12/24 |  
 [XUtils](https://github.com/wyouflf/xUtils) | [Caij](https://github.com/Caij) | [maogy](https://github.com/maogy) | Done| Done | Done | Done | Done | 12/17 |  
-[DataDroid](https://github.com/foxykeep/DataDroid) | [cheyiliu](https://github.com/cheyiliu) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
 [CircularFloat…](https://github.com/oguzbilgener/CircularFloatingActionMenu "CircularFloatingActionMenu") | [cpacm](https://github.com/cpacm) | | Done | Done | Done | Done | Done | 12/07 |  
-[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations) | [waylife](https://github.com/waylife) | | Done | Done | 11/23 | 11/30 | 12/7 | 12/14 |  
 [GreenDAO](https://github.com/greenrobot/greenDAO) | [maogy](https://github.com/maogy) |[Caij](https://github.com/Caij) | Done | 12/13 | 12/13 | 12/20 | 12/20 | 12/20 |  
-[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [longtaoge](https://github.com/longtaoge) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
 [UniversalImage…](https://github.com/nostra13/Android-Universal-Image-Loader "Android-Universal-Image-Loader") | [huxian99](https://github.com/huxian99) | | Done | Done | Done | Done | Done | Done |   
 [PhotoView](https://github.com/chrisbanes/PhotoView/) | [dkmeteor](https://github.com/dkmeteor) | | Done | Done | Done | Done | Done | 12/12 |   
+~~[Otto](https://github.com/square/otto)~~ | [promeG](https://github.com/promeG) |
+[photup](https://github.com/chrisbanes/photup) | [aiqianxian](https://github.com/aiqianxian) | | Done | 12/03 | 12/07 | 12/08 | 12/12 | 12/15 |  
+[DataDroid](https://github.com/foxykeep/DataDroid) | [cheyiliu](https://github.com/cheyiliu) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
+[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations) | [waylife](https://github.com/waylife) | | Done | Done | 11/23 | 11/30 | 12/7 | 12/14 |  
+[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [longtaoge](https://github.com/longtaoge) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
 
 ####2. 之前的计划安排
 根据自己的时间安排补充 Demo、功能介绍、详细设计、流程图、总体设计、完成 6个阶段的 DeadLine 时间点。  
