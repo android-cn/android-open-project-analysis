@@ -17,10 +17,10 @@
 [UniversalImage…](https://github.com/nostra13/Android-Universal-Image-Loader "Android-Universal-Image-Loader") | [huxian99](https://github.com/huxian99) | | Done | Done | Done | Done | Done | Done |   
 [PhotoView](https://github.com/chrisbanes/PhotoView/) | [dkmeteor](https://github.com/dkmeteor) | | Done | Done | Done | Done | Done | 12/12 |   
 ~~[Otto](https://github.com/square/otto)~~ | [promeG](https://github.com/promeG) |[grumoon](https://github.com/grumoon) | Done | 11/27 | 12/03 | 12/10 | 12/17 | 12/20 |  
-[photup](https://github.com/chrisbanes/photup) | [aiqianxian](https://github.com/aiqianxian) | | Done | 12/03 | 12/07 | 12/08 | 12/12 | 12/15 |  
-[DataDroid](https://github.com/foxykeep/DataDroid) | [cheyiliu](https://github.com/cheyiliu) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
-[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations) | [waylife](https://github.com/waylife) | | Done | Done | 11/23 | 11/30 | 12/7 | 12/14 |  
-[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [longtaoge](https://github.com/longtaoge) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
+~~[photup](https://github.com/chrisbanes/photup)~~ | [aiqianxian](https://github.com/aiqianxian) | | Done | 12/03 | 12/07 | 12/08 | 12/12 | 12/15 |  
+~~[DataDroid](https://github.com/foxykeep/DataDroid)~~ | [cheyiliu](https://github.com/cheyiliu) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
+~~[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)~~ | [waylife](https://github.com/waylife) | | Done | Done | 11/23 | 11/30 | 12/7 | 12/14 |  
+~~[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator)~~ | [longtaoge](https://github.com/longtaoge) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
 
 ####2. 之前的计划安排
 根据自己的时间安排补充 Demo、功能介绍、详细设计、流程图、总体设计、完成 6个阶段的 DeadLine 时间点。  
