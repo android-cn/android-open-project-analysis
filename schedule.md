@@ -9,7 +9,7 @@
 [Dagger](https://github.com/square/dagger) | [扔物线](https://github.com/rengwuxian) | [Trinea](https://github.com/Trinea) | Done | Done | Done | Done | Done | Done |   
 [Volley](https://android.googlesource.com/platform/frameworks/volley) | [grumoon](https://github.com/grumoon) | [promeG](https://github.com/promeG) |Done |Done | Done | Done |Done | Done |  
 [ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [lightSky](https://github.com/lightSky) | [aaronplay](https://github.com/AaronPlay)  | Done | Done | Done | Done | Done | Done |  Done
-[HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary) | [aaronplay](https://github.com/AaronPlay) | | Done | Done | Done | Done | Done | Done |  
+[HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary) | [aaronplay](https://github.com/AaronPlay) |[lightSky](https://github.com/lightSky)  | Done | Done | Done | Done | Done | Done |  
 [XUtils](https://github.com/wyouflf/xUtils) | [Caij](https://github.com/Caij) | [maogy](https://github.com/maogy) | Done| Done | Done | Done | Done | 12/17 |  
 [CircularFloat…](https://github.com/oguzbilgener/CircularFloatingActionMenu "CircularFloatingActionMenu") | [cpacm](https://github.com/cpacm) | [dkmeteor](https://github.com/dkmeteor) | Done | Done | Done | Done | Done | 12/07 |  
 [UniversalImage…](https://github.com/nostra13/Android-Universal-Image-Loader "Android-Universal-Image-Loader") | [huxian99](https://github.com/huxian99) | | Done | Done | Done | Done | Done | Done |   
