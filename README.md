@@ -26,31 +26,4 @@
 
 ###4. 开始
 了解编写步骤：[编写步骤](https://github.com/android-cn/android-open-project-analysis/blob/master/procedure.md)  
-填写自己的时间安排：[时间计划表](https://github.com/android-cn/android-open-project-analysis/blob/master/schedule.md)  
-
-## 二、已认领开源库列表  
-下面是目前已经被认领的开源库列表，同一个库可重复认领  
-
-开源库名 | 认领者
-:--|:--
-[EventBus](https://github.com/greenrobot/EventBus) | [Trinea](https://github.com/Trinea)
-[Dagger](https://github.com/square/dagger) | [扔物线](https://github.com/rengwuxian) 
-[Retrofit](https://github.com/square/retrofit) | [zonda](https://github.com/zondaOf2012) 
-[GreenDAO](https://github.com/greenrobot/greenDAO) | [洛子](https://github.com/lxp371180445)
-[xUtils](https://github.com/wyouflf/xUtils) | [夏殇](https://github.com/) 
-[CircleImageView](https://github.com/hdodenhof/CircleImageView) | [P. Seul](https://github.com/FFish)
-[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [lightSky](https://github.com/lightSky)
-[Butterknife](https://github.com/JakeWharton/butterknife) | [baoyz](https://github.com/baoyongzhang)
-[StickyListHeaders](https://github.com/emilsjolander/StickyListHeaders) | [lsjwzh](https://github.com/lsjwzh)
-[Volley](https://android.googlesource.com/platform/frameworks/volley) | [geolo123](https://github.com/geolo123)
-[Otto](https://github.com/square/otto) | [promeG](https://github.com/promeG)  
-[Async Http](https://github.com/loopj/android-async-http) | [81813780](https://github.com/81813780)
-[android-calendar-card](https://github.com/kenumir/android-calendar-card) | [and0202](https://github.com/and0202)
-[PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip) | [over140](https://github.com/over140)
-[Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader) | [venciallee](https://github.com/venciallee)
-[photup](https://github.com/chrisbanes/photup) | [aiqianxian](https://github.com/aiqianxian)
-[PinnedSectionListView](https://github.com/beworker/pinned-section-listview) | [Selfimpr](https://github.com/CaesarZhao)
-[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations) | [waylife](https://github.com/waylife)
-[HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary) | [xujinyang](https://github.com/xujinyang)
-[FancyCoverFlow](https://github.com/davidschreiber/FancyCoverFlow) | [zmywly8866](https://github.com/zmywly8866)
-[Emojicon](https://github.com/rockerhieu/emojicon) | [18620385582](https://github.com/18620385582)
+填写自己的时间安排：[时间计划表](https://github.com/android-cn/android-open-project-analysis/blob/master/schedule.md)

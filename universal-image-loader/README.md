@@ -3,7 +3,7 @@
 universal-image-loader-demo-huxian99 部分  
 项目地址：[Android-Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader)  
 分析的版本：1.9.3 Demo 地址：[Android-Universal-Image-Loader Demo](https://github.com/android-cn/android-open-project-demo/tree/master/universal-image-loader-demo-huxian99)  
-分析者：[huxian99](https://github.com/huxian99)，校对者：校对状态：未完成
+分析者：[huxian99](https://github.com/huxian99)，校对者：[爱早起](https://github.com/liang7)，校对状态：未完成
 
 ###1. 功能介绍
 #####简单的说就做了一件事, 将图片显示在相应的控件上.
@@ -41,9 +41,24 @@ public class YourApplication extends Application {
 ImageLoader.getInstance().displayImage();
 ImageLoader.getInstance().loadImage();
 
-###2. 详细设计
-####2.1 核心类功能介绍
-#####2.1.1 ImageLoaderConfiguration.java
+###2. 总体设计
+整个库分为 **Downloader**, **Decoder**, **Cache**, **Processor**, **Displayer**这几个模块  
+其中 **Cache** 又分为 **DiskCache** 和 **MemoryCache** 两部分
+
+**Downloader**模块主要负责从图片的各个来源获取输入流, 具体来源参考4.2.10  
+**Cache**中的DiskCache主要负责将图片缓存在本地磁盘上, 具体参考4.2.12，  MemoryCache主要负责将图片缓存在内存里， 具体参考4.2.17  
+**Decoder**模块主要负责将图片decode成bitmap对象, 具体参考4.2.15  
+**Processor**模块提供了接口供开发者自己去实现，具体参考4.2.21  
+**Displayer**模块将bitmap对象显示在相应的控件上, 具体参考4.2.19  
+
+###3. 流程图
+![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/universal-image-loader-flow.png)  
+
+###4. 详细设计
+####4.1 类关系图
+![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/relation-class.png)  
+####4.2 核心类功能介绍
+#####4.2.1 ImageLoaderConfiguration.java
 封装了ImageLoader的配置信息，可以根据自己项目的需要定义，需要在Application里面做初始化操作
 主要成员变量及含义：
 ```java
@@ -88,9 +103,66 @@ final ImageDownloader networkDeniedDownloader;
 /** 处理慢网络情况的下载器 */
 final ImageDownloader slowNetworkDownloader;
 ```
-#####2.1.2 ImageLoaderConfiguration.Builder.java静态内部类
+#####4.2.2 ImageLoaderConfiguration.Builder.java静态内部类
 用于构造ImageLoaderConfiguration，其属性也是ImageLoaderConfiguration的一些设置参数.
 ```java
+//设置内存缓存的选项
+memoryCacheExtraOptions(int maxImageWidthForMemoryCache, int maxImageHeightForMemoryCache)
+
+//设置磁盘缓存的选项
+diskCacheExtraOptions(int maxImageWidthForDiskCache, int maxImageHeightForDiskCache, BitmapProcessor processorForDiskCache)
+
+//设置自定义加载和显示任务的线程池
+taskExecutor(Executor executor)
+
+//设置自定义显示任务的线程池
+taskExecutorForCachedImages(Executor executorForCachedImages)
+
+//设置图片显示任务的线程池大小
+threadPoolSize(int threadPoolSize)
+
+//设置线程的优先级
+threadPriority(int threadPriority)
+
+//设置拒绝缓存一张图片的多个尺寸
+denyCacheImageMultipleSizesInMemory()
+
+//设置加载和显示图片任务队列的类型
+tasksProcessingOrder(QueueProcessingType tasksProcessingType)
+
+//设置最大内存缓存字节数
+memoryCacheSize(int memoryCacheSize)
+
+//设置最大内存缓存所占app可用内存的百分比
+memoryCacheSizePercentage(int availableMemoryPercent)
+
+//设置内存缓存算法
+memoryCache(MemoryCache memoryCache)
+
+//设置最大磁盘缓存字节数
+diskCacheSize(int maxCacheSize)
+
+//设置在磁盘缓存文件夹下最多文件数
+diskCacheFileCount(int maxFileCount)
+
+//设置磁盘缓存文件生成的命名规则
+diskCacheFileNameGenerator(FileNameGenerator fileNameGenerator)
+
+//设置磁盘缓存
+diskCache(DiskCache diskCache)
+
+//设置下载图片的工具
+imageDownloader(ImageDownloader imageDownloader)
+
+//设置decode出bitmap的工具
+imageDecoder(ImageDecoder imageDecoder)
+
+//设置默认的DisplayImageOptions
+defaultDisplayImageOptions(DisplayImageOptions defaultDisplayImageOptions)
+
+//log信息
+writeDebugLogs()
+
 public ImageLoaderConfiguration build() {
 	initEmptyFieldsWithDefaultValues();
 	return new ImageLoaderConfiguration(this);
@@ -98,7 +170,7 @@ public ImageLoaderConfiguration build() {
 ```
 build()方法用于创建ImageLoaderConfiguration，其中initEmptyFieldsWithDefaultValues()方法用于初始化配置，若用户没有配置相关项，UIL会通过DefaultConfigurationFactory定义一个默认当配置.  
 e.g.用户未指定磁盘缓存的命名规则，则在DefaultConfigurationFactory.createFileNameGenerator()方法中可以看到它默认帮我们选择了HashCode的命名规则
-#####2.1.3 DisplayImageOptions.java
+#####4.2.3 DisplayImageOptions.java
 图片显示的一些选项，比如是否在磁盘缓存，memory缓存，加载失败时显示的图片等  
 主要成员变量含义：
 ```java
@@ -141,7 +213,61 @@ private final Handler handler;
 /** 是否同步加载 */
 private final boolean isSyncLoading;
 ```
-#####2.1.4 ImageLoader.java
+#####4.2.4 DisplayImageOptions.Builder.java静态内部类  
+用于构造DisplayImageOptions，其属性也是DisplayImageOptions的一些设置参数.  
+```java
+//设置图片加载过程中显示的图片
+showImageOnLoading(int imageRes)
+
+//设置空URI显示的图片
+showImageForEmptyUri(int imageRes)
+
+//设置发生错误显示的图片
+showImageOnFail(int imageRes)
+
+//设置图片加载前是否重置
+resetViewBeforeLoading(boolean resetViewBeforeLoading)
+
+//设置是否将图片缓存在内存里
+cacheInMemory(boolean cacheInMemory)
+
+//设置是否将图片缓存在磁盘上
+cacheOnDisk(boolean cacheOnDisk)
+
+//设置图片缩放的类型
+imageScaleType(ImageScaleType imageScaleType)
+
+//设置Bitmap.Config
+bitmapConfig(Bitmap.Config bitmapConfig)
+
+//设置图片解码的选项
+decodingOptions(Options decodingOptions)
+
+//设置加载任务前的延迟
+delayBeforeLoading(int delayInMillis)
+
+//设置下载时额外的对象
+extraForDownloader(Object extra)
+
+//设置是否考虑EXIF信息
+considerExifParams(boolean considerExifParams)
+
+//设置内存缓存bitmap对象前的处理
+preProcessor(BitmapProcessor preProcessor)
+
+//设置内存缓存bitmap对象后的处理
+postProcessor(BitmapProcessor postProcessor)
+
+//设置图片的显示方式
+displayer(BitmapDisplayer displayer)
+
+//true是直接调用LoadAndDisplayImageTask对象的run方法，false是放到线程池里面执行，默认false
+syncLoading(boolean isSyncLoading)
+
+//设置显示图片和触发ImageLoadingListener事件的自定义Handler对象
+handler(Handler handler)
+```
+#####4.2.5 ImageLoader.java
 采取了单例模式，用于图片的加载和显示，在使用之前必须先进行初始化
 ```java
 public synchronized void init(ImageLoaderConfiguration configuration) {
@@ -173,7 +299,7 @@ if (bmp != null && !bmp.isRecycled()) {
 	// 缓存中未获取bitmap, 执行LoadAndDisplayImageTask
 }
 ```
-#####2.1.5 ProcessAndDisplayImageTask.java
+#####4.2.6 ProcessAndDisplayImageTask.java
 ```java
 BitmapProcessor processor = imageLoadingInfo.options.getPostProcessor();
 Bitmap processedBitmap = processor.process(bitmap);
@@ -181,7 +307,7 @@ DisplayBitmapTask displayBitmapTask = new DisplayBitmapTask(processedBitmap, ima
 				LoadedFrom.MEMORY_CACHE);	LoadAndDisplayImageTask.runTask(displayBitmapTask, imageLoadingInfo.options.isSyncLoading(), handler, engine);
 ```
 可以看到主要是做了一些postProcess，然后执行DisplayBitmapTask将bitmap对象显示到相应到控件上.
-#####2.1.6 LoadAndDisplayImageTask.java(重点)
+#####4.2.7 LoadAndDisplayImageTask.java(重点)
 这是一个实现了Runnable接口的线程类. Android-Universal-Image-Loader**主要的操作**都是在这个类完成的. 从网络获取输入流，做磁盘的缓存，decode出bitmap对象，内存缓存等，其中display是在run方法中执行了DisplayBitmapTask这个线程，直接看run方法
 ```java
 bmp = configuration.memoryCache.get(memoryCacheKey);
@@ -252,7 +378,7 @@ private boolean downloadImage() throws IOException {
 7. 将bitmap对象缓存到内存中  
 8. 根据DisplayImageOptions配置对图片进行后处理(Post-process Bitmap)  
 9. 执行DisplayBitmapTask将图片显示在相应的控件上  
-#####2.1.7 ImageLoaderEngine.java
+#####4.2.8 ImageLoaderEngine.java
 执行线程LoadAndDisplayImageTask的引擎，三个Executor涉及的线程调优策略(后面会讲).
 主要是submit()方法
 ```java
@@ -293,7 +419,7 @@ priority|5|3
 taskDistributor在每创建一个新的线程的时候都需要读取一下磁盘，属于IO操作.需要图片缓存的应用一般需要加载图片的时候，同时创建很多线程，这些线程一般来的猛去的也快，存活时间不必太长. taskDistributor和taskExecutorForCachedImages涉及网络和磁盘的读取和写入操作，比较耗时.  
 [参考资料](http://www.cnblogs.com/kissazi2/p/3966023.html) 
 
-#####2.1.8 DisplayBitmapTask.java
+#####4.2.9 DisplayBitmapTask.java
 这也是一个线程类, 主要就是执行display过程了
 ```java
 displayer.display(bitmap, imageAware, loadedFrom);
@@ -307,9 +433,9 @@ listener.onLoadingComplete(imageUri, imageAware.getWrappedView(), bitmap);
 其中第二句在ImageLoaderEngine中定义的cacheKeysForImageAwares属性，主要用来记录正在加载的任务，将imageAware的id和memoryCacheKey做了一个hash映射，放在一个线程安全的Hashmap中. 每当display一个bitmap对象时，就从正在加载的任务中remove掉一个.
 
 下面主要分析下一张图片从download到display的每个阶段具体实现类, 每个类的分析选择DefaultConfigurationFactory中默认的配置
-#####2.1.9 ImageDownloader.java
+#####4.2.10 ImageDownloader.java
 在ImageDownloader接口中，定义了枚举Scheme, 可以看出Android-Universal-Image-Loader支持图片的来源都有HTTP("http"), HTTPS("https"), FILE("file"), CONTENT("content"), ASSETS("assets"), DRAWABLE("drawable"), UNKNOWN("");具体获取图片来源的输入流见具体实现类
-#####2.1.10 BaseImageDownloader.java
+#####4.2.11 BaseImageDownloader.java
 ImageDownloader的具体实现类，主要通过调用getStream()方法根据不同来源获取输入流
 ```java
 @Override
@@ -333,14 +459,14 @@ public InputStream getStream(String imageUri, Object extra) throws IOException {
 }
 ```
 如果图片来自网络，你也可以修改设置默认的connectTimeout和readTimeout，默认的connectTimeout是5秒，默认的readTimeout是20秒  
-#####2.1.11 DiskCache.java
+#####4.2.12 DiskCache.java
 定义了磁盘缓存的接口, 主要方法
 File get(String imageUri)根据原始图片的uri去获取缓存图片的文件  
 boolean save() 保存图片到磁盘中
 boolean remove(String imageUri) 根据图片uri移出图片  
-#####2.1.12 UnlimitedDiskCache.java
+#####4.2.13 UnlimitedDiskCache.java
 三个构造器主要继承了BaseDiskCache.java  
-#####2.1.13 BaseDiskCache.java
+#####4.2.14 BaseDiskCache.java
 抽象类实现了DiskCache接口  
 主要看两个save()方法
 ```java
@@ -375,9 +501,9 @@ public boolean save(String imageUri, InputStream imageStream, IoUtils.CopyListen
 ```
 它先是生成一个后缀名.tmp的临时文件，通过downloader得到的输入流imageStream拷贝到OutputStream中, finally中将临时文件tmpFile重命名回imageFile，并将tmpFile删除掉, 如果这些实现都没出什么问题，就reutrn一个true, 告诉别人，我save成功了
 
-#####2.1.14 ImageDecoder.java
+#####4.2.15 ImageDecoder.java
 decode的接口，定义了Bitmap decode()方法
-#####2.1.15 BaseImageDecoder.java
+#####4.2.16 BaseImageDecoder.java
 decode过程的具体实现类, 主要看decode方法，传入一个主要的参数就是ImageDecodingInfo, 根据decode的信息去解析图片.
 ```java
 Options decodingOptions = prepareDecodingOptions(imageInfo.imageSize, decodingInfo);
@@ -446,9 +572,9 @@ public static ViewScaleType fromImageView(ImageView imageView) {
 那么FIT_INSIDE和CROP里面是什么呢，就是比对srcSize和targetSize大小，当srcSize比targetSize大，scale就扩大，具体可以自己看一下，然后将scale返回赋值给inSampleSize就可以了, 如果还不了解为什么这么做的朋友可以去看一下[官方training-有效加载大图](http://developer.android.com/training/displaying-bitmaps/load-bitmap.html)
 这样，图片的压缩处理就做好了，然后将bitmap返回.  
 
-#####2.1.16 MemoryCache.java
+#####4.2.17 MemoryCache.java
 这个主要是一个内存缓存的接口类，提供了put(),get(),remove(),clear(),keys()等基本方法，如果你没有手动配置缓存的大小及实现的算法，可以通过DefaultConfigurationFactory.createMemoryCache()方法看到memoryCacheSize是android系统分配给每个应用内存的1/8作为阈值, 还看到默认算法的选择是LruMemoryCache.  
-#####2.1.17 LruMemoryCache.java
+#####4.2.18 LruMemoryCache.java
 LRU: Least Recently Used近期最少使用算法.
 一般实现LRU算法都是使用LinkedHashMap，UIL也不例外，看到它定义了
 ```java
@@ -511,10 +637,10 @@ private void trimToSize(int maxSize) {
 }
 ```
 trimToSize主要目的是移出链表表头的Entry对象，因为LinkedHashMap是采用了链表结构，每当有一个Entry对象被加入进来或者被使用，这个Entry对象就会被放置在链尾，可以看到当size超过当前的maxSize时，就会进入到下面的代码段去获取链表表头的Entry toEvict, 并将toEvict从缓存中remove掉, 重新计算缓存的size  
-#####2.1.18 Displayer.java
+#####4.2.19 Displayer.java
 在控件(比如ImageView)中显示bitmap对象, 适用于一些bitmap对象的改变或者任何动画效果
 假如你使用了FadeInBitmapDisplayer，在显示过程中就会有一个淡入的动画效果，也可以自己实现一些动画，只要实现Displayer接口就可以了. 默认实现的是SimpleBitmapDisplayer  
-#####2.1.19 SimpleBitmapDisplayer.java
+#####4.2.20 SimpleBitmapDisplayer.java
 进去一下，发现它只定义了一个方法
 ```java
 @Override
@@ -523,8 +649,8 @@ public void display(Bitmap bitmap, ImageAware imageAware, LoadedFrom loadedFrom)
 }
 ```
 做的仅仅是把bitmap对象display到imageAware控件上
-#####2.1.20 BitmapProcessor.java  
-图片的预处理(Pre-process Bitmap)和后处理(Post-process Bitmap)都需要实现这个接口.  
+#####4.2.21 BitmapProcessor.java  
+到这里整个流程都走完了，那么细心的你一定会发现流程图中不是还有预处理(Pre-process Bitmap)和后处理(Post-process Bitmap)吗? 没错，那么现在分析它，看源代码
 ```java
 public interface BitmapProcessor {
 	Bitmap process(Bitmap bitmap);
@@ -533,9 +659,8 @@ public interface BitmapProcessor {
 只是定义了一个方法，让开发者自己去实现它.  
 比如你想要为你的图片添加一个水印，那么可以在Pre-process这个阶段自己去实现BitmapProcessor接口，这样还可以把加了水印的图片缓存到内存中
 但是不要忘记要在DisplayImageOptions中配置一下   
-#####2.1.21 PauseOnScrollListener.java  
-最后分析一下这个类, 它实现了OnScrollListener接口， 如果在ListView或GridView中有加载图片的工作最好还是使用它.  
-简单的一行代码:  
+#####4.2.22 PauseOnScrollListener.java  
+最后分析一下这个类, 它实现了OnScrollListener接口， 如果在ListView或GridView中有加载图片的工作最好还是使用它. 简单的一行代码:  
 ```java
 gridView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), false, true));
 ```
@@ -571,20 +696,8 @@ public void onScrollStateChanged(AbsListView view, int scrollState) {
 }
 ```
 个人选择是pauseOnScroll＝false，pauseOnFling＝true.
-在用户滑动屏幕的时候还是不要暂停, 因为用户滑动屏幕说明他还是关注图片内容的, 如果在fling状态下, 用户可能迫不及待想看后面的内容，最好就不要处理图片来"打扰"用户了, 当然你可以根据自己的喜好设置他们. 
+在用户滑动屏幕的时候还是不要暂停, 因为用户滑动屏幕说明他还是关注图片内容的, 如果在fling状态下, 用户可能迫不及待想看后面的内容，最好就不要处理图片来"打扰"用户了, 当然你可以根据自己的喜好设置他们.  
 
-####2.2 类关系图
-![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/relation-class.png)
+###5. 与Picasso对比
+等Picasso完成
 
-###3. 流程图
-![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/universal-image-loader-flow.png)
-
-###4. 总体设计
-整个库分为 **Downloader**, **Decoder**, **Cache**, **Processor**, **Displayer**这几个模块  
-其中 **Cache** 又分为 **DiskCache** 和 **MemoryCache** 两部分
-
-**Downloader**模块主要负责从图片的各个来源获取输入流, 具体来源参考2.1.9  
-**Cache**中的DiskCache主要负责将图片缓存在本地磁盘上, 具体参考2.1.11，  MemoryCache主要负责将图片缓存在内存里， 具体参考2.1.16  
-**Decoder**模块主要负责将图片decode成bitmap对象, 具体参考2.1.14  
-**Processor**模块提供了接口供开发者自己去实现，具体参考2.1.20  
-**Displayer**模块将bitmap对象显示在相应的控件上, 具体参考2.1.19  
