@@ -1,3 +1,23 @@
+1.功能介绍
+1.1greenDao是一个ORM库，将传统数据库操作建表、编写sql语句、使用事务批量处理，都封装到greenDao中，提供方便的面向对象接口，完成数据库操作.库里面还提供异步数据库操作，缓存查找出来的结果.整个代码设计很巧妙，包名和包的功能明确、类名、变量名都非常好理解.整个单元测试代码很完善.
+
+1.2概念
+ORM(object-relation mapping，对象关系映射)：是将数据类和一个数据库表对应起来，它其实是创建了一个可在编程语言里使用的“虚拟对象数据库
+
+Entity：实体，对应数据库中的一张表，通过java工程，我们设置属性通过代码来自动生成.
+
+一对多/多对多：entity之间的关系，如订单和消费者是两个entity，一个消费者生成多个订单，是一对多关系，
+
+2.总体设计
+![project design](image/project-design.png)
+
+3.流程图
+
+4. 详细设计
+4.1 类关系图
+![project design](image/class-relation.png)
+
+
 1.包de.greeenrobot.dao，主要的类
 一、DbUtils类
 vacuum函数:清除数据库的空闲空间，减少数据库大小
@@ -98,4 +118,7 @@ AbstractQuery的子类，提供查找符合条件的entity，以多种形式返�
 用来在查询中构造where子句，使用Dao类中的Property对象构造查询条件
 
 七、QueryBuilder类
+构造自定义的查询对象，而不使用sql语句，查询对象内部会生成sql语句，并且在编译时进行语法检查。可以通过AbstractDao.queryBuilder或者AbstractDaoSession.queryBuilder来获取
 
+八、WhereCondition类
+内部的接口来构造查询中的where条件，使用DAO类中的Property对象来构造新的查询条件.代码结构是一个接口，加2个实现，分别来构造属性条件和字符串条件
