@@ -12,8 +12,13 @@ ViewPagerIndicator用于各种基于AndroidSupportLibrary中ViewPager的界面�
 ### 2. 总体设计
 该项目总体设计非常简单，一个pageIndicator接口类，具体样式的导航类实现该接口，然后根据具体样式去实现相应的逻辑。
 IcsLinearLayout：LinearLayout的扩展，支持了4.0以上的divider特性。
-CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator、TitlePagerIndicator继承自View。    
-TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView。  
+CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator、TitlePagerIndicator继承自View。  
+TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView。
+
+CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator继承自View的原因是它们样式相对简单继承自View，定制一套测量和绘制逻辑更简单，而且免去了Measure部分繁琐的步骤，效率更高。  
+TitlePagerIndicator相对复杂，Android系统提供的控件中没有类似的，而且实现底部line精准的控制也复杂，所以只能继承自View，实现绘制逻辑，达到理想的效果。      
+
+TabPageIndicator、IconPageIndicator继承自HorizontalScrollView是由于它们的ChildView会复杂些，继承自LinearLayout，一个个add上去更简单，而且当tab比较多的时候，也不用自己处理水平滑动的功能。  
 ### 3. 详细设计    
 ####3.1类关系图
 ![viewpagerindicator img](image/class_relation.png)  
@@ -910,16 +915,27 @@ public class CirclePageIndicator extends View implements PageIndicator {
 }
 
 ```
+##4 杂谈##
+大多数的App中的导航都类似，ViewPagerIndicator能够满足你开发的基本需求，如果不能满足，你可以在源码的基础上进行一些简单的改造。其中有一点是很多朋友提出的就是LineIndicator没有实现TextView颜色状态的联动。这个有已经实现的开源库:[PagerSlidingTabStrip](https://github.com/jpardogo/PagerSlidingTabStrip)，你可以作为参考。  
+对于什么时候需要自定义控件以及如何更好的进行自定义控件的定制，你可以参考这篇文章[深入解析Android的自定义布局](http://greenrobot.me/devpost/android-custom-layout) 相信会有一些启发。  
+整片文章看下来，确实比较多，也是花了一部分时间写的，其实之前是自己整理了一些相关知识，这次一下全部跟大家分享了。整篇文章都在讲View的绘制机制，三个过程也都很详细的通过源码分析介绍了。如果你对View的绘制机制还不清楚，而且希望将来往更高级的方向发展，这一步一定会经历的，那么请你耐心看完，你可以分多次研读，过程中出现问题或者原文分析不到位的地方，欢迎PR。  
+当你掌握了这些基本的知识，你可以去研究GitHub上的一部分开源项目了（因为Touch事件这里介绍的不多，而很多项目和Touch事件相关）。
 
-####3.1.4 参考文献  
+参考文献  
+[how-android-draws](http://developer.android.com/guide/topics/ui/how-android-draws.html)  
+[Google Android官方培训课程中文版](https://github.com/kesenhoo/android-training-course-in-chinese)  
+
 View的绘制：  
 http://blog.csdn.net/wangjinyu501/article/details/9008271  
-http://blog.csdn.net/qinjuning/article/details/7110211
+http://blog.csdn.net/qinjuning/article/details/7110211  
 http://blog.csdn.net/qinjuning/article/details/8074262
   	
 Touch事件传递：  
-http://blog.csdn.net/xiaanming/article/details/21696315
-http://blog.csdn.net/wangjinyu501/article/details/22584465
+http://blog.csdn.net/xiaanming/article/details/21696315  
+http://blog.csdn.net/wangjinyu501/article/details/22584465    
 
-慕课网自定义FlowLayout课程：
-http://www.imooc.com/learn/237
+相关资源：
+[best-practices-for-android-user-interface](http://www.rapidvaluesolutions.com/tech_blog/best-practices-for-android-user-interface/)    
+[深入解析Android的自定义布局](http://greenrobot.me/devpost/android-custom-layout/)  
+[慕课网自定义FlowLayout课程](http://www.imooc.com/learn/237)
+
