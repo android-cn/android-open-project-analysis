@@ -54,7 +54,7 @@ Handler异步通信，Http网络请求， IO流。
 ####3.1 View模块
 ![View时序图](image/ViewSequence.png)
 - 主要的顺序就是在ViewUtils的`inject(View)`将需要的绑定数据的对象传入，`injectObject(Object, ViewFinder)` 主要通过反射获取对象的成员变量和方法， 
-然后获取成员变量和方法的注解的值， 将成员变量赋值， 事件和方法绑定， 在EventListenerManager中是通过代理将事件和方法绑定。
+然后获取成员变量和方法的注解的值， 将成员变量赋值， 事件和方法绑定， 在EventListenerManager中是通过代理将事件和方法绑定。(有兴趣代理的使用详情见最底下的杂谈)
 
 ####3.2 DB模块
 ![Db流程图](image/DbSequence.png)
@@ -98,19 +98,34 @@ onProgressUpdate()调用RequestCallback，完成回调流程。
 
 ####不同点：
 - 1. Volley的Http请求在 android 2.3 版本之前是通过HttpClient ，在之后的版本是通过URLHttpConnection。xUtils都是通过HttpClient请求网络（bitmap模块图片下载是通过URLHttpConnection）。 在2.3以后URLHttpConnection也很稳定， 扩展和维护性好， 速度也快， 而且支持GZIP压缩，推荐采用URLHttpConnection。
-- 2.Volley在Http请求数据下载完成后是先缓存进byte[]， 然后是分配给不同的请求自己转化为自己需要的格式。xUtils是直接转化为想要的格式。 觉得各有优劣， Volley这样做的扩展性比较好， 但是不能存在大数据请求，否则就OOM。xUtils不缓存入byte[] 就支持大数据的请求， 速度比Volley稍快，但扩展性就低。
+- 2.Volley在Http请求数据下载完成后是先缓存进byte[]， 然后是分配给不同的请求自己转化为自己需要的格式。xUtils是直接转化为想要的格式。 觉得各有优劣， Volley这样做的扩展性比较好， 但是不能存在大数据请求，否则就OOM。xUtils不缓存入byte[] 就支持大数据的请求， 速度比Volley稍快，但扩展性就低。个人推荐Volley， 因为在Request中就可以将数据转化为自己想要的bean， 而且是在子线程中。 而xUtils是返回string， 如果数据量大，在解析的过程自己还要去开启异步线程。
 - 3.Volley最终是将网络请求的数据缓存进sd卡文件， xUtils是缓存在运行内存中。 如果频繁访问相同的网络地址， xUtils比Volley更快。
-- 4.Volley访问网络数据时直接开启固定个数线程访问网络， 在run方法中执行死循环， 阻塞等待请求队列。 xUtils是开启线程池来管理线程。Volley请求数据更快，消耗资源更大，xUtils反之。
+- 4.Volley访问网络数据时直接开启固定个数线程访问网络， 在run方法中执行死循环， 阻塞等待请求队列。 xUtils是开启线程池来管理线程。
+
+
+代理：
+- 1. 代理就是通过代理对象代理被代理对象的方法。（应该不太绕吧）
+- 2. 在java中改变对象的方法其实有继承，装饰，代理。
+		为什么使用代理：继承和装饰需要对象的实例， 在设置监听中使用的都是反射，如是使用对象的实例太麻烦 （比如实现监听的接口， 那每种监听都需要实现对应接口）。使用代理减少大量的代码冗余。
+		代理使用的条件：必须实现接口，代理的方法必须是实现接口中的方法。（代理类其实也实现了接口， 所以在设置监听的方法中可以把这个实例传入）
+		
+		 ` listener = Proxy.newProxyInstance(
+                            listenerType.getClassLoader(),
+                            new Class<?>[]{listenerType},
+                            dynamicHandler);  
+		
+		 Method setEventListenerMethod = view.getClass().getMethod(listenerSetter, listenerType);
+         setEventListenerMethod.invoke(view, listener); `
+		
+		
+- 3. 代理的使用 ：` newProxyInstance(ClassLoader loader,
+                                      Class<?>[] interfaces,
+                                      InvocationHandler h) `
+									  
+			loader - 定义代理类的类加载器
+			interfaces - 代理类要实现的接口列表
+			h - 指派方法调用的调用处理程序 ， 这个是一个接口 在子类的方法中代理被代理接口中的所有方法。在这个方法中代理你需要代理的方法。
+
   
 
-###6. 修改完善  
-在完成了上面 5 个部分后，移动模块顺序，将  
-`2. 详细设计` -> `2.1 核心类功能介绍` -> `2.2 类关系图` -> `3. 流程图` -> `4. 总体设计`  
-顺序变为  
-`2. 总体设计` -> `3. 流程图` -> `4. 详细设计` -> `4.1 类关系图` -> `4.2 核心类功能介绍`  
-并自行校验优化一遍，确认无误后，让`校对 Buddy`进行校对，`校对 Buddy`校队完成后将  
-`校对状态：未完成`  
-变为：  
-`校对状态：已完成`  
 
-不足： 作为新手， 感觉还是没有站在更高的角度去分析， 组织能力也不是太好， 如果觉得有不对的可以联系我， 大家一起交流交流 ， QQ：`271945881` 。 也可以联系`Trinea`。 谢谢！
