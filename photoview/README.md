@@ -32,8 +32,9 @@ PhotoView这个库实际上比较简单,关键点其实就是Touch事件处理�
 本库中对Touch事件的处理流程请参考第三部分的流程图，会有一个比较直观的认识。
 
 #####2.2 Matrix
-由于Matrix是Android系统源生API,很多开发者对此都比较熟悉,故不在此详细叙述,如果对其不是很了解,可以查看本目录下 [Matrix-Overview](https://github.com/android-cn/android-open-project-analysis/blob/master/photoview/Matrix-SimpleDescription.md)补充说明文档.
+由于Matrix是Android系统源生API,很多开发者对此都比较熟悉,为了不影响阅读效果，故不在此详细叙述,如果对其不是很了解,可以查看本文档末尾的Matrix补充说明
 
+    
 ###3. 流程图
 Touch及手势事件判定及传递流程：
 
@@ -265,4 +266,45 @@ PhotoView不再使用时,可用于释放相关资源。移除Observer, Listener.
 该库唯一缺少的可能是 手势旋转 功能(可以参考QQ). 不过由于PhotoView中已将各级事件分开处理,从架构上来看可扩展性良好,自定义一个RotateGestureDetector来捕获旋转手势也可行.
 但如何在不与ScaleGestureDetector冲突的情况下完成该功能会稍微有些麻烦.
 如果不需要手势旋转的话，该库提供了单独的接口可以用代码设置旋转角度。
+
+###6. Matrix补充说明
+Matrix是一个 3x3 矩阵,使用matrix可以对 bitmap/canvas 进行4类基本变换.
+
+矩阵如下：
+
+
+![tranlate](images/matrix.jpg)
+
+效果用文字比较难表述，直接看图好了.
+你也可以自己运行[Demo Project](https://github.com/android-cn/android-open-project-demo/tree/master/photoview-demo/MatrixDemo)
+
+虚影为原始位置，实图为变换后位置.
+
+####API 
+
+- public void setTranslate(float dx, float dy)
+
+    对目标进行平移dx,dy
+
+    ![tranlate](images/tranlate.png)
+
+- public void setScale(float sx, float sy, float px, float py)
+
+    以(px,py)为中心,横向上缩放比例sx,纵向缩放比例sy
+	
+    ![scale](images/scale.png)
+
+- public void setRotate(float degrees, float px, float py)
+
+    以(px,py)为中心,旋转degrees度
+	
+    ![rotate](images/rotate.png)
+
+- public void setSkew(float kx, float ky, float px, float py)
+	以(px,py)为中心,偏转图片的x轴和y轴.
+	
+	这个好难用文字解释,请参考下面的实际效果图片.
+    Set the matrix to skew by sx and sy, with a pivot point at (px, py).
+    
+	![skew](images/skew.png)
 
