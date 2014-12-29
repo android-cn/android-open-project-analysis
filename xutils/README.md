@@ -108,23 +108,14 @@ onProgressUpdate()调用RequestCallback，完成回调流程。
 - 2. 在java中改变对象的方法其实有继承，装饰，代理。
 		为什么使用代理：继承和装饰需要对象的实例， 在设置监听中使用的都是反射，如是使用对象的实例太麻烦 （比如实现监听的接口， 那每种监听都需要实现对应接口）。使用代理减少大量的代码冗余。
 		代理使用的条件：必须实现接口，代理的方法必须是实现接口中的方法。（代理类其实也实现了接口， 所以在设置监听的方法中可以把这个实例传入）
+		 `listener = Proxy.newProxyInstance(listenerType.getClassLoader(),new Class<?>[]{listenerType},dynamicHandler);`  
 		
-		 ` listener = Proxy.newProxyInstance(
-                            listenerType.getClassLoader(),
-                            new Class<?>[]{listenerType},
-                            dynamicHandler);  
-		
-		 Method setEventListenerMethod = view.getClass().getMethod(listenerSetter, listenerType);
-         setEventListenerMethod.invoke(view, listener); `
-		
-		
-- 3. 代理的使用 ：` newProxyInstance(ClassLoader loader,
-                                      Class<?>[] interfaces,
-                                      InvocationHandler h) `
-									  
-			loader - 定义代理类的类加载器
-			interfaces - 代理类要实现的接口列表
-			h - 指派方法调用的调用处理程序 ， 这个是一个接口 在子类的方法中代理被代理接口中的所有方法。在这个方法中代理你需要代理的方法。
+		 `Method setEventListenerMethod = view.getClass().getMethod(listenerSetter, listenerType);`
+         `setEventListenerMethod.invoke(view, listener);`
+- 3. 代理的使用 ：`newProxyInstance(ClassLoader loader,Class<?>[] interfaces,InvocationHandler h)`
+		loader - 定义代理类的类加载器
+		interfaces - 代理类要实现的接口列表
+		h - 指派方法调用的调用处理程序 ， 这个是一个接口 在子类的方法中代理被代理接口中的所有方法。在这个方法中代理你需要代理的方法。
 
   
 
