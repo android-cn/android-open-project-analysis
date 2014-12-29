@@ -12,8 +12,7 @@ ViewPagerIndicator用于各种基于AndroidSupportLibrary中ViewPager的界面�
 ### 2. 总体设计
 该项目总体设计非常简单，一个pageIndicator接口类，具体样式的导航类实现该接口，然后根据具体样式去实现相应的逻辑。
 IcsLinearLayout：LinearLayout的扩展，支持了4.0以上的divider特性。
-CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator、TitlePagerIndicator继承自View。  
-TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView。
+CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator、TitlePagerIndicator继承自View。TabPageIndicator、IconPageIndicator 继承自HorizontalScrollView。
 
 CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator继承自View的原因是它们样式相对简单继承自View，定制一套测量和绘制逻辑更简单，而且免去了Measure部分繁琐的步骤，效率更高。  
 TitlePagerIndicator相对复杂，Android系统提供的控件中没有类似的，而且实现底部line精准的控制也复杂，所以只能继承自View，实现绘制逻辑，达到理想的效果。      
@@ -55,6 +54,11 @@ TabPageIndicator、IconPageIndicator继承自HorizontalScrollView是由于它们
 当Activity接收到焦点的时候，它会被请求绘制布局。Android framework将会处理绘制的流程，但Activity必须提供View层级的根节点。绘制是从根节点开始的，需要measure和draw布局树。绘制会遍历和渲染每一个与无效区域相交的view。相反，每一个ViewGroup负责绘制它所有的子视图，而最底层的View会负责绘制自身。树的遍历是有序的，父视图会先于子视图被绘制，
 
 **measure和layout**  
+
+从整体上来看Measure和Layout两个步骤的执行：
+![MeasureLayout img](image/measure_layout.png)  
+
+**具体分析**  
 measure过程的发起是在measure(int,int)方法中，而且是从上到下有序的绘制view。在递归的过程中，每一个父视图将尺寸规格向下传递给子视图，在measure过程的最后，每个视图存储了自己的尺寸。
 layout过程从layout(int, int, int, int)方法开始，也是自上而下进行遍历。在这个过程中，每个父视图会根据measure过程得到的尺寸确定所有的子视图的具体位置。  
 
@@ -934,7 +938,7 @@ Touch事件传递：
 http://blog.csdn.net/xiaanming/article/details/21696315  
 http://blog.csdn.net/wangjinyu501/article/details/22584465    
 
-相关资源：
+相关资源：  
 [best-practices-for-android-user-interface](http://www.rapidvaluesolutions.com/tech_blog/best-practices-for-android-user-interface/)    
 [深入解析Android的自定义布局](http://greenrobot.me/devpost/android-custom-layout/)  
 [慕课网自定义FlowLayout课程](http://www.imooc.com/learn/237)
