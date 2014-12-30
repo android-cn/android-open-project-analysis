@@ -31,7 +31,7 @@
 具体编写的模块及各模块预计耗时请参考：[Common README](https://github.com/android-cn/android-open-project-analysis/blob/master/common/README.md)。  
 
 ####3.3 公共技术点及工具  
-我们整理了一份公共技术点，如果你分析的库涉及到请直接链过去，勿重复介绍，地址：[开源分析公共技术点](https://github.com/android-cn/android-open-project-analysis/tree/master/tech)  
+我们整理了一份公共技术点，如果你分析的库涉及到请直接链过去，以节省精力，地址：[开源分析公共技术点](https://github.com/android-cn/android-open-project-analysis/tree/master/tech)  
 我们整理了一份你可能需要用到的工具库，地址：[Tool](https://github.com/android-cn/android-open-project-analysis/blob/master/common/tool/README.md)   
 
 ###四、Buddy Check
