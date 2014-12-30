@@ -21,7 +21,7 @@ CircularFloatingActionMenu 实现原理解析
 首先是view的部分，主要是三个部件组成:
 (1)SubActionButton 选项按钮，即按菜单键弹出来的选项按钮。  
 
-这个类继承自FrameLayout控件，实现一个自定义图标的功能
+这个类继承自FrameLayout控件，实现一个自定义图标的功能  
 可以根据构造函数传进来的参数来选择不同风格的图案底纹
 然后将其传给menu菜单以便控制.  
 
