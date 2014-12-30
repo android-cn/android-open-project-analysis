@@ -43,9 +43,9 @@ PieGraph.java:继承View类, 负责绘制饼状图。
 ![](image/piegraphflow.png)
 
 ####4.1.3柱状图：
-BarStackSegment.java: 小片段，构成柱体的最基本元素。
+Bar.java:用于表现一个柱体，构成柱状图的基本元素。封装了颜色，名字，BarStackSegment（下文将会涉及）数组等属性。若需要对Bar的每一个片段进行控制，通过改变BarStackSegment的数组即可。
 
-Bar.java:构成柱状图的基本元素。封装了颜色，名字，BarStackSegment的数组等属性。若需要对Bar的每一个片段进行控制，通过改变BarStackSegment的数组即可。
+BarStackSegment.java:  一般来说，一个柱体用于展示一个类型的数据，而BarStackSegment是作为柱体的扩展部分，用在同一个柱体上有展现多个不同区间的数据。
 
 BarGraph.java:继承View类，负责柱状图的绘制。
 
