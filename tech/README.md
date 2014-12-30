@@ -12,6 +12,6 @@
 :-- |:--
 [依赖注入](https://github.com/android-cn/blog/tree/master/java/dependency-injection) | [扔物线](https://github.com/rengwuxian)
 [注解](annotation.md) | [Trinea](https://github.com/Trinea)
-动态代理 | 
+[动态代理](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/proxy.md)| [Caij](https://github.com/Caij)
 事件传递 | 
 [View 绘制流程](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/viewdrawflow.md)  | [lightSky](https://github.com/lightSky)
