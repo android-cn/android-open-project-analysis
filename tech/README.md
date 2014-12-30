@@ -8,6 +8,7 @@
 ####技术点列表
 技术点 | 作者  
 :-- |:--
+[依赖注入](https://github.com/android-cn/blog/tree/master/java/dependency-injection) | [扔物线](https://github.com/rengwuxian)
 [注解](annotation.md) | [Trinea](https://github.com/Trinea)
 动态代理 | 
 事件传递 | 
