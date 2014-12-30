@@ -17,6 +17,7 @@ CircularFloatingActionMenu 实现原理解析
 ###2. 总体设计
 ###2.1 核心类功能介绍
 主要分成两部分，一部分是构成菜单的view部分，另一部分是动画的操作类
+
 首先是view的部分，主要是三个部件组成:
 (1)SubActionButton 选项按钮，即按菜单键弹出来的选项按钮。  
 
@@ -42,8 +43,7 @@ CircularFloatingActionMenu 实现原理解析
 	
 （2）DefaultAnimationHandler
 这一个默认的动画类，当我们不对动画做修改时就会默认使用这个类里面的动画效果。我们也可以参考这个类来进行设计新的动画效果
-动画效果主要是通过
-    bjectAnimator.ofPropertyValuesHolder(menu.getSubActionItems().get(i).view, pvhX, pvhY, pvhR, pvhsX, pvhsY, pvhA);
+动画效果主要是通过ObjectAnimator.ofPropertyValuesHolder(menu.getSubActionItems().get(i).view, pvhX, pvhY, pvhR, pvhsX, pvhsY, pvhA);
 来实现
 
 ###2.2 如何使用
@@ -175,6 +175,7 @@ public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, 
     }
 ```
 传入activity，视图特性配置，主题的id,背景图，imageview（子视图），mageview（子视图）的特性配置。用这些来配置选项按钮。
+  
 ##FloatingActionButton
 菜单按钮其实跟选项按钮的代码模式差不多，也是由设定子视图和一个建造器组成。
 不过它多了几个方法：  
@@ -375,6 +376,7 @@ FloatingActionMenu类主要是管理菜单按钮和选项按钮的位置和状�
     }
 ```
 其中item的x,y是记录视图的终点位置，然后经过动画把view移到x,y的位置上。  
+
 stateChangeListener为状态变化的监听器，开关都会响应相应的方法。主要在AnimationHandler中添加具体方法。
 ```java
 /**
@@ -422,7 +424,7 @@ stateChangeListener为状态变化的监听器，开关都会响应相应的方�
 ```
 
 ##DefaultAnimationHandler
-动画实现的主要类，继承自MenuAnimationHandler
+动画实现的主要类，继承自MenuAnimationHandler  
 主要通过Animator来实现属性动画。  
 里面有一个restoreSubActionViewAfterAnimation的方法，它主要是恢复选项按钮到未打开的状态。
 ```java
