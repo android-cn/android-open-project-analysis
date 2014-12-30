@@ -2,10 +2,12 @@
 
 #####一、什么是动态代理？
 - 1. 首先理解几个概念: 委托类和代理类 （委托类指的是被代理类）  
-- 2. 动态代理指的是通过代理类代理委托类的一些方法。
+- 2. 动态代理指的是通过代理类代理委托类的一些方法， 代理对象是jdk动态产生。
 - 3. 动态代理可以提供对另一个对象的访问，同时隐藏实际对象的具体事实； 另一点就是委托类中的某些方法不是我们需要的， 可以通过代理来实现自己想要的效果。
 
 #####二、动态代理的实现？
+![proxy](image/proxy/proxy_flow.png)  
+
 ```java
 	import java.lang.reflect.InvocationHandler;
 	import java.lang.reflect.Method;
@@ -54,7 +56,7 @@
 				System.out.println("very good"); //需要代理的方法修改
 				return null; //  返回值为空 直接返回null
 			}
-			return object == null ? null : method.invoke(object, args); //不需要修改的方法调用CurrentClass的方法
+			return object == null ? null : method.invoke(object, args); //不需要修改的方法调用CurrentClass的方法 
 		}
 		
 	}
@@ -79,8 +81,11 @@
 ```
 #####三、动态代理的实现原理？
 - 1. 提供委托类实现的接口
-- 2. 通过实现的接口生成实现类， 然后在构造方法中传入InvocationHandler ，在每个实现方法中调用InvocationHandler的invoke()。
-- 3. 然后重写invoke() 方法， 把自己需要的逻辑加入。
+- 2. 通过实现的接口动态生成代理类， 然后在构造方法中传入InvocationHandler ，在每个实现方法中调用InvocationHandler的invoke()。
+- 3. 然后重写invoke() 方法， 把自己需要的逻辑加入。  
+注意1、拦截器中invoke方法体的内容就是代理对象方法体的内容
+    2、当客户端执行代理对象方法时，进入到了拦截器的invoke方法体
+    3、拦截器中invoke方法的method参数是在调用的时候赋值的
 
 ```java
     /** 
@@ -229,7 +234,7 @@
         }  
 ```
 
-#####四、动态代理，装饰， 继承的比较。
+#####四、动态代理和装饰， 继承（静态代理）的比较。
 代码： 这里的CurrentClass 和 ProxyInterface 是一中代理实现中的对象。
 ```java
 	/**
@@ -283,9 +288,52 @@
 - 1.相同点：  
 	* 都可以改变对象中的方法。
 - 2.不同点
-	* 继承和装饰更加注重的是对功能的加强， 代理是对功能的削弱。
-	* 使用场景不同， 在没有具体的类的时候装饰是实现不了的。 继承会造成大量的代码冗余， 比如需要实现的是一个接口， 那个接口有20个方法， 就必须重写20个方法。在这种环境就使用动态代理。
-
+	* 使用场景不同， 在没有具体的类的时候装饰是实现不了的。 继承会造成大量的代码冗余， 比如需要实现的是一个接口， 那个接口有20个方法， 就必须重写20个方法。在这种环境就使用动态代理， 只关注自己代理的方法。
+	* 静态代理通常只代理一个类，动态代理是代理一个接口下的多个实现类。静态代理事先知道要代理的是什么，而动态代理不知道要代理什么东西，只有在运行时才知道。
+	
 #####五、各大使用场景
 - 1. android中监听事件的代理。  
 	* 理由： 监听接口是没有实例的， 使用继承或者装饰的话需要实现接口， 而在事件代理的时候都是通过反射技术， 如果要创建实现监听接口的对象造成代码冗余， 扩展性差。
+```java
+	public class MainActivity extends Activity {
+
+		@Override
+		protected void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+			setContentView(R.layout.activity_main);
+			Button btn = (Button) findViewById(R.id.btn);
+	//		btn.setOnClickListener(new Listener());
+			
+			Class<?>[] interfaces = new Class[] {OnClickListener.class};
+			//代理类其实实现interfaces中所以接口
+			OnClickListener proxy = (OnClickListener) Proxy.newProxyInstance(OnClickListener.class.getClass().getClassLoader(), 
+				interfaces , new InvocationHandler() {
+				
+				@Override
+				public Object invoke(Object proxy, Method method, Object[] args)
+						throws Throwable {
+					if (method.getName().equals("onClick")) {
+						onClick(); //需要代理的方法修改
+						return null; //  返回值为空 直接返回null
+					}
+					return null; 
+				}
+			});
+			btn.setOnClickListener(proxy);
+		}
+		
+		
+		public void onClick() {
+			Toast.makeText(MainActivity.this, "我被点击了", Toast.LENGTH_LONG).show(); 
+		}
+		
+		private class Listener implements OnClickListener {
+
+			@Override
+			public void onClick(View v) {
+				onClick();
+			}
+		}
+
+	}
+```	
