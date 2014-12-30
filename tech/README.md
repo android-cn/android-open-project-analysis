@@ -14,4 +14,4 @@
 [注解](annotation.md) | [Trinea](https://github.com/Trinea)
 动态代理 | 
 事件传递 | 
-View 绘制流程 | 
+[View 绘制流程](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/viewdrawflow.md)  | [lightSky](https://github.com/lightSky)
