@@ -22,7 +22,7 @@ CircularFloatingActionMenu 实现原理解析
 (1)SubActionButton 选项按钮，即按菜单键弹出来的选项按钮。  
 
 这个类继承自FrameLayout控件，实现一个自定义图标的功能  
-可以根据构造函数传进来的参数来选择不同风格的图案底纹
+可以根据构造函数传进来的参数来选择不同风格的图案底纹，
 然后将其传给menu菜单以便控制.  
 
 (2)FloatingActionButton 菜单按钮，点击即可唤出SubActionButton按钮  
@@ -136,8 +136,8 @@ public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, 
     public static final int THEME_DARKER = 3;
 ```
 
-之后是设定ImageView到这个按钮上，并且设定与父view的距离。（通过setMargins()）
-这个我们在创建subActionButton时就要调用。核心函数是addView(contentView, params)。这个方法能够在视图上再添加一个view，作为子视图。
+之后是设定ImageView到这个按钮上，并且设定与父view的距离。（通过setMargins()）  
+这个我们在创建subActionButton时就要调用。核心函数是addView(contentView,params)。这个方法能够在视图上再添加一个view，作为子视图。
 ```java
 /**
      * Sets a content view with custom LayoutParams that will be displayed inside this SubActionButton.
@@ -177,8 +177,8 @@ public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, 
 传入activity，视图特性配置，主题的id,背景图，imageview（子视图），mageview（子视图）的特性配置。用这些来配置选项按钮。
   
 ##FloatingActionButton
-菜单按钮其实跟选项按钮的代码模式差不多，也是由设定子视图和一个建造器组成。
-不过它多了几个方法：  
+菜单按钮其实跟选项按钮的代码模式差不多，也是由设定子视图和一个建造器组成。  
+不过它多了几个方法：    
 设定位置，如左下，右下等方位
 ```java
 /**
@@ -252,7 +252,7 @@ FloatingActionButton的建造器
 比SubActionButton多了一个位置的属性。
 
 ##FloatingActionMenu
-这个类也是由一个建造器生成，那么我们从建造器开始说起
+这个类也是由一个建造器生成，那么我们从建造器开始说起  
 我们先看看生成Menu的代码：
 ```java
 FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(this)
@@ -424,9 +424,9 @@ stateChangeListener为状态变化的监听器，开关都会响应相应的方�
 ```
 
 ##DefaultAnimationHandler
-动画实现的主要类，继承自MenuAnimationHandler  
-主要通过Animator来实现属性动画。  
-里面有一个restoreSubActionViewAfterAnimation的方法，它主要是恢复选项按钮到未打开的状态。
+动画实现的主要类，继承自MenuAnimationHandler    
+主要通过Animator来实现属性动画。    
+里面有一个restoreSubActionViewAfterAnimation的方法，它主要是恢复选项按钮到未打开的状态。 
 ```java
     /**
      * Restores the specified sub action view to its final state, accoding to the current actionType
