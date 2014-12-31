@@ -91,6 +91,8 @@
     2、当客户端执行代理对象方法时，进入到了拦截器的invoke方法体
     3、拦截器中invoke方法的method参数是在调用的时候赋值的
 
+![proxy原理](image/proxy/proxy_detail.png)  
+
 ```java
     /** 
      * loader:类加载器 
