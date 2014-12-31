@@ -401,7 +401,7 @@ public class 代理类 implements MyInterface{
 	// 使用动态代理, 组合每个切面的方法， 而每个切面只需要关注自己的逻辑就行， 就达到减少代码， 松耦合的效果
 	invoke(Object proxy, Method method, Object[] args)
 						throws Throwable {
-					判断是否有保存的权限；
+					判断是否有权限；
 					开启事务；
 					Object ob = method.invoke(dao, args)；
 					提交事务；
