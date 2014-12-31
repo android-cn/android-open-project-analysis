@@ -1,5 +1,6 @@
 动态代理
 ----------------
+> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 公共技术点的 动态代理 部分  
 > 分析者：[Caij](https://github.com/Caij)
 
 #####一、什么是动态代理？
