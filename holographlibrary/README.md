@@ -175,9 +175,9 @@ LineGraph.java: 继承View类，负责折线图的绘制。
 ###5. 杂谈
 对于控件类的开源库，可以把重点放在与用户交互关联的触发器上。而这个开源库，也有开发者fork之后扩展得更加有趣。[->链接](https://bitbucket.org/danielnadeau/holographlibrary)
 
-延伸：
+**延伸：**
 
-关于View绘制的原理请查看：[链接](../tech/viewdrawflow.md)
+关于View绘制的原理请浏览：[View 绘制流程](../tech/viewdrawflow.md)
 
 
 ###6. 修改完善  
