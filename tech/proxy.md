@@ -213,7 +213,7 @@
         try {  
             // 中间省略了一些代码 .......  
               
-            // 这里就是动态生成代理对象的最关键的地方  
+            // 这里就是动态生成代理对象的最关键的地方 ， 产生代理对象的字节码， 底层是通过jni实现的。 
             byte[] proxyClassFile = ProxyGenerator.generateProxyClass(  
                 proxyName, interfaces);  
             try {  
@@ -232,6 +232,46 @@
           
         return proxyClass;  
         }  
+```
+
+**这里的代理对象可以理解为这样**
+```java
+/**
+ * @author Caij
+ * 理解方式：这样写便于理解， 底层的实现是有java虚拟机实现的
+ * 代理类实现了参数中所有的接口
+ * 然后在每个方法中调用InvocationHandler invoke方法， 然后将参数传入
+ */
+public class 代理类 implements MyInterface{
+	
+	private InvocationHandler handler;
+	
+	public MyInterfaceAdapter(InvocationHandler handler) {
+		this.handler = handler;
+	}
+
+	@Override
+	public void sayHello() {
+		try {
+			handler.invoke(this, this.getClass().getMethod("sayHello"), null);
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void sayGood() {
+		try {
+			handler.invoke(this, this.getClass().getMethod("sayGood"), null);
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
+}
 ```
 
 #####四、动态代理和装饰， 继承（静态代理）的比较。
@@ -291,7 +331,7 @@
 	* 使用场景不同， 在没有具体的类的时候装饰是实现不了的。 继承会造成大量的代码冗余， 比如需要实现的是一个接口， 那个接口有20个方法， 就必须重写20个方法。在这种环境就使用动态代理， 只关注自己代理的方法。
 	* 静态代理通常只代理一个类，动态代理是代理一个接口下的多个实现类。静态代理事先知道要代理的是什么，而动态代理不知道要代理什么东西，只有在运行时才知道。
 	
-#####五、各大使用场景
+#####五、使用场景
 - 1. android中监听事件的代理。  
 	* 理由： 监听接口是没有实例的， 使用继承或者装饰的话需要实现接口， 而在事件代理的时候都是通过反射技术， 如果要创建实现监听接口的对象造成代码冗余， 扩展性差。
 ```java
@@ -337,3 +377,37 @@
 
 	}
 ```	
+
+- 2. web开发中spring aop编程
+	* 理由：目标方法之间完全是松耦合。  比如在Dao中， 每次数据库操作都需要开启事务， 而且在操作的时候需要关注权限。  如果这些逻辑都放在dao中就会造成代码冗余， 耦合度高。
+```java
+	//伪代码
+	Dao {
+		save() {
+			判断是否有保存的权限；
+			开启事务；
+			保存；
+			提交事务；
+		}
+		
+		delete() {
+			判断是否有删除的权限；
+			开启事务；
+			删除；
+			提交事务；
+		}
+	}
+	
+	// 使用动态代理, 组合每个切面的方法， 而每个切面只需要关注自己的逻辑就行， 就达到减少代码， 松耦合的效果
+	invoke(Object proxy, Method method, Object[] args)
+						throws Throwable {
+					判断是否有保存的权限；
+					开启事务；
+					Object ob = method.invoke(dao, args)；
+					提交事务；
+					return ob; 
+				}
+				
+				
+```	
+	
