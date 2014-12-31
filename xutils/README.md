@@ -54,7 +54,7 @@ Handler异步通信，Http网络请求， IO流。
 ####3.1 View模块
 ![View时序图](image/ViewSequence.png)
 - 主要的顺序就是在ViewUtils的`inject(View)`将需要的绑定数据的对象传入，`injectObject(Object, ViewFinder)` 主要通过反射获取对象的成员变量和方法， 
-然后获取成员变量和方法的注解的值， 将成员变量赋值， 事件和方法绑定， 在EventListenerManager中是通过代理将事件和方法绑定。[动态代理传送门](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/proxy.md)
+然后获取成员变量和方法的注解的值， 将成员变量赋值， 事件和方法绑定， 在EventListenerManager中是通过代理将事件和方法绑定。[注解传送门](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/annotation.md)  [动态代理传送门](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/proxy.md)
 
 ####3.2 DB模块
 ![Db流程图](image/DbSequence.png)
