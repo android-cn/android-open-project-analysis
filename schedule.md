@@ -14,7 +14,8 @@
 [CircularFloat…](https://github.com/oguzbilgener/CircularFloatingActionMenu "CircularFloatingActionMenu") | [cpacm](https://github.com/cpacm) | [dkmeteor](https://github.com/dkmeteor) | Done | Done | Done | Done | Done | 12/07 |  
 [UniversalImage…](https://github.com/nostra13/Android-Universal-Image-Loader "Android-Universal-Image-Loader") | [huxian99](https://github.com/huxian99) | [grumoon](https://github.com/grumoon) | Done | Done | Done | Done | Done | Done |   
 [PhotoView](https://github.com/chrisbanes/PhotoView/) | [dkmeteor](https://github.com/dkmeteor) | [cpacm](https://github.com/cpacm) | Done | Done | Done | Done | Done | 12/12 |   
-[picasso](https://github.com/square/picasso) | [爱早起](https://github.com/liang7) | | 11/26 | 12/06 | 12/10 | 12/17 | 12/23 | 12/24 |  
+[picasso](https://github.com/square/picasso) | [爱早起](https://github.com/liang7) | | Done | Done | Done | delay | delay | delay |  
+[android-lockpattern](https://code.google.com/p/android-lockpattern/) | [爱早起](https://github.com/liang7) | | Done | Done | Done | Done | Done | Done |  
 [GreenDAO](https://github.com/greenrobot/greenDAO) | [maogy](https://github.com/maogy) |[Caij](https://github.com/Caij) | Done | Done | Done | Done | 12/20 | 12/20 |  
 ~~[Otto](https://github.com/square/otto)~~ | [promeG](https://github.com/promeG) |[grumoon](https://github.com/grumoon) | Done | 11/27 | 12/03 | 12/10 | 12/17 | 12/20 |  
 ~~[photup](https://github.com/chrisbanes/photup)~~ | [aiqianxian](https://github.com/aiqianxian) | | Done | 12/03 | 12/07 | 12/08 | 12/12 | 12/15 |  

@@ -54,7 +54,7 @@ Handler异步通信，Http网络请求， IO流。
 ####3.1 View模块
 ![View时序图](image/ViewSequence.png)
 - 主要的顺序就是在ViewUtils的`inject(View)`将需要的绑定数据的对象传入，`injectObject(Object, ViewFinder)` 主要通过反射获取对象的成员变量和方法， 
-然后获取成员变量和方法的注解的值， 将成员变量赋值， 事件和方法绑定， 在EventListenerManager中是通过代理将事件和方法绑定。(有兴趣代理的使用详情见最底下的杂谈)
+然后获取成员变量和方法的注解的值， 将成员变量赋值， 事件和方法绑定， 在EventListenerManager中是通过代理将事件和方法绑定。[注解传送门](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/annotation.md)  [动态代理传送门](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/proxy.md)
 
 ####3.2 DB模块
 ![Db流程图](image/DbSequence.png)
@@ -106,19 +106,6 @@ onProgressUpdate()调用RequestCallback，完成回调流程。（缓存策略�
 - 5. 缓存失效策略， volley的所有网络数据支持从http响应头中控制是否缓存和读取缓存失效时间，也可以自定义缓存失效时间。 Xutils网络数据请求是自定义缓存失效时间， bitmap模块没有失效策略， 只要本地有就会从本地读取。
 
 
-代理：
-- 1.代理就是通过代理对象代理被代理对象的方法。（应该不太绕吧）
-- 2.在java中改变对象的方法其实有继承，装饰，代理。
-		为什么使用代理：继承和装饰需要对象的实例， 在设置监听中使用的都是反射，如是使用对象的实例太麻烦 （比如实现监听的接口， 那每种监听都需要实现对应接口）。使用代理减少大量的代码冗余。
-		代理使用的条件：必须实现接口，代理的方法必须是实现接口中的方法。（代理类其实也实现了接口， 所以在设置监听的方法中可以把这个实例传入）  
-		 `listener = Proxy.newProxyInstance(listenerType.getClassLoader(),new Class<?>[]{listenerType},dynamicHandler);`  
-		
-		 `Method setEventListenerMethod = view.getClass().getMethod(listenerSetter, listenerType);`
-         `setEventListenerMethod.invoke(view, listener);`
-- 3.代理的使用 ：`newProxyInstance(ClassLoader loader,Class<?>[] interfaces,InvocationHandler h)`  
-		loader - 定义代理类的类加载器  
-		interfaces - 代理类要实现的接口列表  
-		h - 指派方法调用的调用处理程序 ， 这个是一个接口 在子类的方法中代理被代理接口中的所有方法。在这个方法中代理你需要代理的方法。
 
   
 

@@ -234,7 +234,7 @@ Network中方法performRequest的返回值。
 
 
 ####4.2.12 HttpStack.java
-代表Http栈的接口  
+代表基于http的网络的接口  
 唯一方法，执行请求  
 ```java
 public HttpResponse performRequest(Request<?> request, Map<String, String> additionalHeaders)
@@ -242,9 +242,9 @@ public HttpResponse performRequest(Request<?> request, Map<String, String> addit
 ```
 执行request代表的请求，第二个参数表示发起请求之前，添加额外的请求Headers
 ####4.2.13 HttpClientStack.java
-继承HttpStack，基于HttpClient的http栈的实现类
+继承HttpStack，基于HttpClient的实现类
 ####4.2.14 HurlStack.java
-继承HttpStack，基于urlconnection的http栈的实现类
+继承HttpStack，基于urlconnection的实现类
 
 ####4.2.15 Response.java
 封装了经过解析后的数据，用于传输。

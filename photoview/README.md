@@ -2,7 +2,7 @@ PhotoView 实现原理解析
 ====================================
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 PhotoView 部分  
 > 项目地址：[PhotoView](https://github.com/chrisbanes/PhotoView)，分析的版本：[48427bf](https://github.com/chrisbanes/PhotoView/commit/48427bff9bb1a408cfebf6697aa019c0788ded76)，Demo 地址：[PhotoView-demo](https://github.com/android-cn/android-open-project-demo/tree/master/photoview-demo)    
-> 分析者：[dkmeteor](https://github.com/dkmeteor)，校对者：[${校对者}](${校对者 Github 地址})，校对状态：未完成   
+> 分析者：[dkmeteor](https://github.com/dkmeteor)，校对者：[cpacm](https://github.com/cpacm)，校对状态：未完成   
 
 
 ###1. 功能介绍
@@ -21,10 +21,9 @@ PhotoView 实现原理解析
 - 事件分发做了很好的处理，可以方便的与ViewPager等同样支持滑动手势的控件集成。
 
 
-
 ###2. 总体设计
 
-PhotoView这个库实际上比较简单,关键点其实就是Touch事件处理和Matrix的应用.
+PhotoView这个库实际上比较简单,关键点其实就是Touch事件处理和Matrix图形变换的应用.
 
 #####2.1 TouchEvent及手势事件处理
 对TouchEvent分发流程不了解的建议先阅读 [Android Touch事件传递机制](http://www.trinea.cn/android/touch-event-delivery-mechanism/)
@@ -32,13 +31,15 @@ PhotoView这个库实际上比较简单,关键点其实就是Touch事件处理�
 本库中对Touch事件的处理流程请参考第三部分的流程图，会有一个比较直观的认识。
 
 #####2.2 Matrix
-由于Matrix是Android系统源生API,很多开发者对此都比较熟悉,故不在此详细叙述,如果对其不是很了解,可以查看本目录下 [Matrix-Overview](https://github.com/android-cn/android-open-project-analysis/blob/master/photoview/Matrix-SimpleDescription.md)补充说明文档.
+由于Matrix是Android系统源生API,很多开发者对此都比较熟悉,为了不影响阅读效果，故不在此详细叙述,如果对其不是很了解,可以查看本文档末尾的Matrix补充说明
 
+    
 ###3. 流程图
 Touch及手势事件判定及传递流程：
 
 ![流程图](images/flow.jpg)
 
+如图，从架构上看，干净利落的将事件层层分离，交由不同的Detector处理，最后再将处理结果回调给PhtotViewAttacher中的Matrix去实现图形变换效果。
 
 ###4. 详细设计
 ###4.1 核心类功能介绍
@@ -266,3 +267,52 @@ PhotoView不再使用时,可用于释放相关资源。移除Observer, Listener.
 但如何在不与ScaleGestureDetector冲突的情况下完成该功能会稍微有些麻烦.
 如果不需要手势旋转的话，该库提供了单独的接口可以用代码设置旋转角度。
 
+###6. Matrix补充说明
+Matrix是一个 3x3 矩阵,使用Matrix可以对 Bitmap/Canvas 进行4类基本图形变换,使用起来非常简便，如果你对Matrix的抽象变换不熟悉，还可以使用android.graphics.Camera类进行辅助计算。
+Camera类可以将矩阵变换抽象成 视点（摄像机） 在三维空间内的移动，更易于直观的理解其效果。
+
+
+矩阵如下：
+
+
+![tranlate](images/matrix.jpg)
+
+相关API使用起来非常简单。
+效果用文字比较难表述，直接看图好了.
+你也可以自己运行[Demo Project](https://github.com/android-cn/android-open-project-demo/tree/master/photoview-demo/MatrixDemo)
+
+虚影为原始位置，实图为变换后位置.
+
+####API 
+
+- public void setTranslate(float dx, float dy)
+
+    对目标进行平移dx,dy
+
+    ![tranlate](images/tranlate.png)
+
+- public void setScale(float sx, float sy, float px, float py)
+
+    以(px,py)为中心,横向上缩放比例sx,纵向缩放比例sy
+	
+    ![scale](images/scale.png)
+
+- public void setRotate(float degrees, float px, float py)
+
+    以(px,py)为中心,旋转degrees度
+	
+    ![rotate](images/rotate.png)
+
+- public void setSkew(float kx, float ky, float px, float py)
+
+	图像的错切实际上是平面景物在投影平面上的非垂直投影。错切使图像中的图形产生扭变。
+    这里是以(px,py)为中心,扭曲图片的x轴和y轴.
+	
+	这个用文字难以解释,请参考下面的实际效果图片.
+    
+	![skew](images/skew.png)
+
+
+####原理
+
+如果你对矩阵变换背后的数学原理感兴趣且`线性代数`的内容没忘光的话，推荐这篇 [文章](http://www.cnblogs.com/qiengo/archive/2012/06/30/2570874.html).
