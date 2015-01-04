@@ -667,21 +667,21 @@ public void onScrollStateChanged(AbsListView view, int scrollState) {
 
 ###5. 杂谈
 ####聊聊LRU
-Universal-Image-Loader在内存缓存时默认使用了LRU算法.
-LRU: Least Recently Used近期最少使用算法, 选用了基于链表结构的LinkedHashMap.
-假设情景：内存缓存设置的阈值只够存储两个bitmap对象，当put第三个bitmap对象时，将近期最少使用的bitmap对象移除.
+Universal-Image-Loader在内存缓存时默认使用了LRU算法.  
+LRU: Least Recently Used近期最少使用算法, 选用了基于链表结构的LinkedHashMap.  
+假设情景：内存缓存设置的阈值只够存储两个bitmap对象，当put第三个bitmap对象时，将近期最少使用的bitmap对象移除.  
 ```java
 this.map = new LinkedHashMap<String, Bitmap>(0, 0.75f, true);
 ```
-构造器中第三个参数accessOrder设置为true表示this.map按使用顺序来排序，也就是说用put()或者get()方法都会将bitmap对象排在链表尾部header.prv  
-![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_header.png)
+构造器中第三个参数accessOrder设置为true表示this.map按*使用顺序*来排序，也就是说用put()或者get()方法都会将bitmap对象排在链表尾部header.prv  
+![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_header.png)  
 put(bitmap1)  
 put(bitmap2)  
-![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_put.png)
+![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_put.png)  
 此时，两个bitmap对象已占用了被分配内存缓存的全部，接下来  
 put(bitmap3)  
 ![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_put_exceed_maxsize2.png) 
-bitmap3的进入导致超过了最大尺寸maxSize, 接着走到下面这段代码
+bitmap3的进入导致超过了最大尺寸maxSize, 接着走到下面这段代码  
 ```java
 ...
 Map.Entry<String, Bitmap> toEvict = map.entrySet().iterator().next();
@@ -694,6 +694,6 @@ map.remove(key);
 size -= sizeOf(key, value);
 ...
 ```
-![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_put_trim.png)
+![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_put_trim.png)  
 这时就没有引用指向bitmap1对象，它就变成了可回收的垃圾等待GC将其回收掉, 最终的结果如下:  
 ![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_trim_result.png)  
