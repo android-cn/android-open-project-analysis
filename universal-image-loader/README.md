@@ -603,40 +603,7 @@ public final boolean put(String key, Bitmap value) {
 	return true;
 }
 ```
-相关的方法如下:
-```java
-private int sizeOf(String key, Bitmap value) {
-	return value.getRowBytes() * value.getHeight();
-}
-```
-sizeOf主要目的就是得到bitmap对象的bytes大小
-```java
-private void trimToSize(int maxSize) {
-	while (true) {
-		String key;
-		Bitmap value;
-		synchronized (this) {
-			if (size < 0 || (map.isEmpty() && size != 0)) {
-				throw new IllegalStateException(getClass().getName() + ".sizeOf() is reporting inconsistent results!");
-			}
-
-			if (size <= maxSize || map.isEmpty()) {
-				break;
-			}
-
-			Map.Entry<String, Bitmap> toEvict = map.entrySet().iterator().next();
-			if (toEvict == null) {
-				break;
-			}
-			key = toEvict.getKey();
-			value = toEvict.getValue();
-			map.remove(key);
-			size -= sizeOf(key, value);
-		}
-	}
-}
-```
-trimToSize主要目的是移出链表表头的Entry对象，因为LinkedHashMap是采用了链表结构，每当有一个Entry对象被加入进来或者被使用，这个Entry对象就会被放置在链尾，可以看到当size超过当前的maxSize时，就会进入到下面的代码段去获取链表表头的Entry toEvict, 并将toEvict从缓存中remove掉, 重新计算缓存的size  
+其中trimToSize主要目的是移出链表表头的Entry对象，因为LinkedHashMap是采用了链表结构，每当有一个Entry对象被加入进来或者被使用，这个Entry对象就会被放置在链尾，当size超过当前的maxSize时，就会将链表表头的Entry对象从缓存中remove掉, 重新计算缓存的size  
 #####4.2.19 Displayer.java
 在控件(比如ImageView)中显示bitmap对象, 适用于一些bitmap对象的改变或者任何动画效果
 假如你使用了FadeInBitmapDisplayer，在显示过程中就会有一个淡入的动画效果，也可以自己实现一些动画，只要实现Displayer接口就可以了. 默认实现的是SimpleBitmapDisplayer  
@@ -699,5 +666,34 @@ public void onScrollStateChanged(AbsListView view, int scrollState) {
 在用户滑动屏幕的时候还是不要暂停, 因为用户滑动屏幕说明他还是关注图片内容的, 如果在fling状态下, 用户可能迫不及待想看后面的内容，最好就不要处理图片来"打扰"用户了, 当然你可以根据自己的喜好设置他们.  
 
 ###5. 杂谈
-等Picasso完成
-
+####聊聊LRU
+Universal-Image-Loader在内存缓存时默认使用了LRU算法.
+LRU: Least Recently Used近期最少使用算法, 选用了基于链表结构的LinkedHashMap.
+假设情景：内存缓存设置的阈值只够存储两个bitmap对象，当put第三个bitmap对象时，将近期最少使用的bitmap对象移除.
+```java
+this.map = new LinkedHashMap<String, Bitmap>(0, 0.75f, true);
+```
+构造器中第三个参数accessOrder设置为true表示this.map按使用顺序来排序，也就是说用put()或者get()方法都会将bitmap对象排在链表尾部header.prv  
+![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_header.png)
+put(bitmap1)  
+put(bitmap2)  
+![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_put.png)
+此时，两个bitmap对象已占用了被分配内存缓存的全部，接下来  
+put(bitmap3)  
+![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_put_exceed_maxsize2.png) 
+bitmap3的进入导致超过了最大尺寸maxSize, 接着走到下面这段代码
+```java
+...
+Map.Entry<String, Bitmap> toEvict = map.entrySet().iterator().next();
+if (toEvict == null) {
+	break;
+}
+key = toEvict.getKey();
+value = toEvict.getValue();
+map.remove(key);
+size -= sizeOf(key, value);
+...
+```
+![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_put_trim.png)
+这时就没有引用指向bitmap1对象，它就变成了可回收的垃圾等待GC将其回收掉, 最终的结果如下:  
+![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_trim_result.png)  
