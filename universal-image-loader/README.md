@@ -3,7 +3,7 @@
 universal-image-loader-demo-huxian99 部分  
 项目地址：[Android-Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader)  
 分析的版本：1.9.3 Demo 地址：[Android-Universal-Image-Loader Demo](https://github.com/android-cn/android-open-project-demo/tree/master/universal-image-loader-demo-huxian99)  
-分析者：[huxian99](https://github.com/huxian99)，校对者：[爱早起](https://github.com/liang7)，校对状态：未完成
+分析者：[huxian99](https://github.com/huxian99)，校对者：[grumoon](https://github.com/grumoon)，校对状态：未完成
 
 ###1. 功能介绍
 #####简单的说就做了一件事, 将图片显示在相应的控件上.
@@ -283,7 +283,7 @@ public synchronized void init(ImageLoaderConfiguration configuration) {
 	}
 }
 ```
-从中可以看出主要初始化了ImageLoaderEngine(详细参见2.1.7)
+从中可以看出主要初始化了ImageLoaderEngine(详细参见4.2.8)
 我们在使用时调用的displayImage和loadImage方法最终都会走到下面这个方法中
 ```java
 public void displayImage(String uri, ImageAware imageAware, DisplayImageOptions options, ImageLoadingListener listener, ImageLoadingProgressListener progressListener)
@@ -698,6 +698,6 @@ public void onScrollStateChanged(AbsListView view, int scrollState) {
 个人选择是pauseOnScroll＝false，pauseOnFling＝true.
 在用户滑动屏幕的时候还是不要暂停, 因为用户滑动屏幕说明他还是关注图片内容的, 如果在fling状态下, 用户可能迫不及待想看后面的内容，最好就不要处理图片来"打扰"用户了, 当然你可以根据自己的喜好设置他们.  
 
-###5. 与Picasso对比
+###5. 杂谈
 等Picasso完成
 
