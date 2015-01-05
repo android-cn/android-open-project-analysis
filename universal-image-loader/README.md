@@ -1,8 +1,7 @@
 ##Android-Universal-Image-Loader源码分析
 > 本文为 Android [开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis)中
 universal-image-loader-demo-huxian99 部分  
-项目地址：[Android-Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader)  
-分析的版本：1.9.3 Demo 地址：[Android-Universal-Image-Loader Demo](https://github.com/android-cn/android-open-project-demo/tree/master/universal-image-loader-demo-huxian99)  
+项目地址：[Android-Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader),分析的版本：[eb794c3](https://github.com/nostra13/Android-Universal-Image-Loader/commit/eb794c306c1707a6cce80764b01f52109d5b9056),Demo 地址：[Android-Universal-Image-Loader Demo](https://github.com/android-cn/android-open-project-demo/tree/master/universal-image-loader-demo-huxian99)  
 分析者：[huxian99](https://github.com/huxian99)，校对者：[grumoon](https://github.com/grumoon)，校对状态：未完成
 
 ###1. 功能介绍
