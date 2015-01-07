@@ -46,12 +46,12 @@ PS：在此之前的版本 EventBus 还允许自定义事件响应函数名称�
 register 函数流程图如下：
 ![eventbus img](image/register-flow-chart.png)  
 register 函数中会先根据订阅者类名去`subscriberMethodFinder`中查找当前订阅者所有事件响应函数，然后循环每一个事件响应函数，依次执行下面的 subscribe 函数：  
-**(2) subscribe**   
+**(2) subscribe**  
 subscribe 函数分三步  
 第一步：通过`subscriptionsByEventType`得到该事件类型所有订阅者信息队列，根据优先级将当前订阅者信息插入到订阅者队列`subscriptionsByEventType`中；  
 第二步：在`typesBySubscriber`中得到当前订阅者订阅的所有事件队列，将此事件保存到队列`typesBySubscriber`中，用于后续取消订阅；  
 第三步：检查这个事件是否是 Sticky 事件，如果是则从`stickyEvents`事件保存队列中取出该事件类型最后一个事件发送给当前订阅者。  
-**(3) post、cancel 、removeStickEvent**
+**(3) post、cancel 、removeStickEvent**  
 post 函数用于发布事件，cancel 函数用于取消某订阅者订阅的所有事件类型、removeStickEvent 函数用于删除 sticky 事件。  
 post 函数流程图如下：
 ![eventbus img](image/post-flow-chart.png)  
