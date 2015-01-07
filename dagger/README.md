@@ -10,7 +10,7 @@ Dagger是一款Java平台的依赖注入库，关于依赖注入，详细见 [�
 
 Java的依赖注入库中，最有名的应该属Google的Guice，Spring 也很有名，不过是专注于 J2EE 开发。Guice的功能非常强大，但它是通过在运行时读取注解来实现依赖注入的，依赖的生成和注入需要依靠Java的反射机制，这对于对性能非常敏感的Android来说是一个硬伤。基于此，Dagger应运而生。  
 
-Dagger同样使用注解来实现依赖注入，但它利用APT(Annotation Process Tool)在编译时生成了继承特定父类或实现特定接口的辅助类，在运行时加载这些辅助类，调用相应接口完成依赖生成和注入。Dagger对于程序的性能影响非常小，因此更加适用于Android应用的开发。
+Dagger同样使用注解来实现依赖注入，但它利用APT(Annotation Process Tool)在编译时生成辅助类，这些类继承特定父类或实现特定接口，在运行时加载这些辅助类，调用相应接口完成依赖生成和注入。Dagger对于程序的性能影响非常小，因此更加适用于Android应用的开发。
 
 ####1.2 依赖注入相关概念
 **依赖(Dependency)：**如果在 Class A 中，有个属性是 Class B 的实例，则称 Class B 是 Class A 的依赖，本文中我们将 Class A 称为宿主(Host)，并且全文用 Host 表示；Class B 称为依赖(Dependency)，并且全文用 Dependency 表示。一个 Host 可能是另外一个类的 Dependency。  
@@ -22,11 +22,11 @@ Dagger同样使用注解来实现依赖注入，但它利用APT(Annotation Proce
 更详细介绍可见 [依赖注入简介](https://github.com/android-cn/blog/tree/master/java/dependency-injection)。  
 
 ####1.3 Dagger 基本使用
-本文将以一个简单的“老板和程序员”App为例，Boss（老板）是程序员（Coder）的一个依赖。  
+本文将以一个简单的“老板和程序员”App为例。  
 
-Activity 中有一个 Boss 类属性，现在你想把一个Boss对象注入到这个Activity中，那么存在两个问题：Boss 对象应该怎样被生成 以及 Boss 对象怎样被设置到 Activity 中。  
+Activity 中有一个 Boss 类属性，现在你想把一个Boss对象注入到这个Activity中，那么有两个问题需要解决：Boss 对象应该怎样被生成 以及 Boss 对象怎样被设置到 Activity 中。  
 ####(1) Boss 对象怎样生成
-在Boss类的构造函数前添加一个@Inject注解，Dagger就会在需要获取Boss对象的时候，调用这个被标记的构造函数，从而生成一个Boss对象。
+在Boss类的构造函数前添加一个@Inject注解，Dagger就会在需要获取Boss对象时，调用这个被标记的构造函数，从而生成一个Boss对象。
 
 ```java
 public class Boss {
@@ -41,9 +41,9 @@ public class Boss {
 }
 ```
 
-_需要注意的是，如果构造函数含有参数，Dagger会在调用构造对象的时候先去获取这些参数（不然谁来传参？），所以你要保证它的参数也提供生成方式被Dagger调用到。Dagger 可调用的生成对象方式有两种：一种是用 @Inject 修饰的构造函数，上面就是这种方式。另外一种是用 @Provides 修饰的函数，下面会讲到。_  
+_需要注意的是，如果构造函数含有参数，Dagger会在调用构造对象的时候先去获取这些参数（不然谁来传参？），所以你要保证它的参数也提供可被Dagger调用到的生成函数。Dagger 可调用的对象生成方式有两种：一种是用 @Inject 修饰的构造函数，上面就是这种方式。另外一种是用 @Provides 修饰的函数，下面会讲到。_  
 ####(2) Boss 对象怎样被设置到 Activity 中
-通过@Inject注解了构造函数之后，在Activity中的Boss对象声明之前也添加@Inject注解。像这种在属性前的@Inject注解的目的是告诉Dagger哪些属性需要被注入。
+通过 @Inject 注解了构造函数之后，在 Activity 中的 Boss 属性声明之前也添加 @Inject 注解。像这种在属性前添加的 @Inject 注解的目的是告诉 Dagger 哪些属性需要被注入。
 
 ```java
 public class MainActivity extends Activity {
@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
 }
 ```
 
-最后，我们在合适的位置（例如onCreate()函数中）调用ObjectGraph.inject()函数，Dagger就会自动调用上面的 (1) 中的生成方法生成依赖的实例，并注入到当前对象（MainActivity）。
+最后，我们在合适的位置（例如onCreate()函数中）调用 ObjectGraph.inject() 函数，Dagger 就会自动调用上面 (1) 中的生成方法生成依赖的实例，并注入到当前对象（MainActivity）。
 
 ```java
 public class MainActivity extends Activity {
@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
 }
 ```
 
-具体怎么注入即设置的过程后面会详细介绍，这里简单透露下，APT 会在 MainActivity 下生成一个辅助类 MainActivity$$InjectAdapter，这个类有个 injectMembers() 函数，代码类似：  
+具体怎么注入即设置的过程后面会详细介绍，这里简单透露下，APT 会在 MainActivity 所在包下生成一个辅助类 MainActivity$$InjectAdapter，这个类有个 injectMembers() 函数，代码类似：  
 
 ```java
 public void injectMembers(MainActivity paramMainActivity) {
@@ -75,10 +75,11 @@ public void injectMembers(MainActivity paramMainActivity) {
 }
 ```
 
-上面我们已经通过 ObjectGraph.inject() 函数传入了 paramMainActivity，并且 boss 属性是 package 权限，所以 Dagger 只需要调用这个辅助类的 injectMembers() 函数即可完成依赖注入。  
-到此为止，使用Dagger的 @Inject 方式将一个Boss对象注入到MainActivity的流程就完成了。  
+上面我们已经通过 ObjectGraph.inject() 函数传入了 paramMainActivity，并且 boss 属性是 package 权限，所以 Dagger 只需要调用这个辅助类的 injectMembers() 函数即可完成依赖注入，这里的 boss.get() 会调用 Boss 的生成函数。  
+到此为止，使用 Dagger 的 @Inject 方式将一个 Boss 对象注入到 MainActivity 的流程就完成了。  
+
 ####(3) ObjectGraph.create(AppModule.class) 函数简介
-上面 onCreate() 函数中出现了两个类：ObjectGraph和AppModule。其中ObjectGraph是由Dagger提供的类，可以简单理解为一个依赖管理类，它的create函数中参数是一个数组，为所有需要用到的Module（例如本例中的AppModule）。AppModule是一个自定义类，在Dagger中称为`Module`，通过@Module注解进行标记，代码如下：
+上面 onCreate() 函数中出现了两个类：ObjectGraph 和 AppModule。其中 ObjectGraph 是由 Dagger 提供的类，可以简单理解为一个依赖管理类，它的 create() 函数的参数是一个数组，为所有需要用到的 Module（例如本例中的 AppModule）。AppModule 是一个自定义类，在Dagger中称为`Module`，通过 @Module 注解进行标记，代码如下：
 
 ```java
 @Module(injects = MainActivity.class)
@@ -86,19 +87,19 @@ public class AppModule {
 }
 ```
 
-可以看到，AppModule是一个空类，除了一行注解外没有任何代码。  
-@Module注解表示这个类是一个Module，Module的作用是提供信息，让ObjectGraph知道哪些类对象需要被依赖注入，以及该怎么生成某些依赖(这在下面会具体介绍)。例如，上面这段代码中声明了需要依赖注入的类为 MainActivity。  
-需要在 Module 类中显式声明这些信息看起来很麻烦，多此一举的方式和Dagger的原理有关，下面会讲到。  
+可以看到，AppModule 是一个空类，除了一行注解外没有任何代码。  
+@Module 注解表示这个类是一个`Module`，Module 的作用是提供信息，让 ObjectGraph 知道哪些类对象需要被依赖注入，以及该怎么生成某些依赖(这在下面会具体介绍)。例如，上面这段代码中声明了需要依赖注入的类为 MainActivity。  
+需要在 Module 类中显式声明这些信息看起来很麻烦，多此一举的方式和 Dagger 的原理有关，下面会讲到。  
 
 ####1.4 自定义依赖生成方式
 ####(1) @Provides 修饰的生成函数
 对构造函数进行注解是很好用的依赖对象生成方式，然而它并不适用于所有情况。例如：  
 
-* 接口（Interface）是没有构造函数的，当然就更不能对构造函数进行注解
-* 第三方库提供的类，我们无法修改源码，因此就不能注解它们的构造函数
-* 有些类需要提供统一的生成函数(一般会私有化构造函数)或需要动态选择初始化的配置，而不是使用一个单一的构造函数  
+* 接口（Interface）是没有构造函数的，当然就不能对构造函数进行注解
+* 第三方库提供的类，我们无法修改源码，因此也不能注解它们的构造函数
+* 有些类需要提供统一的生成函数(一般会同时私有化构造函数)或需要动态选择初始化的配置，而不是使用一个单一的构造函数  
 
-对于以上三种情况，可以使用@Provides注解来标记自定义的生成函数，从而被 Dagger 调用。形式如下：
+对于以上三种情况，可以使用 @Provides 注解来标记自定义的生成函数，从而被 Dagger 调用。形式如下：
 
 ```java
 @Provides
@@ -107,8 +108,8 @@ Coder provideCoder(Boss boss) {
 }
 ```
 
-_和构造函数一样，@Provides注解修饰的函数如果含有参数，它的所有参数也要保证能够被Dagger获取到。_  
-需要注意的是，所有@Provides注解的生成函数都需要在Module中定义实现，这就是上面提到的 Module 作用之让ObjectGraph该怎么生成某些依赖。  
+_和构造函数一样，@Provides 注解修饰的函数如果含有参数，它的所有参数也需要提供可被 Dagger 调用到的生成函数。_  
+需要注意的是，所有 @Provides 注解的生成函数都需要在`Module`中定义实现，这就是上面提到的 Module 的作用之一——让 ObjectGraph 知道怎么生成某些依赖。  
 
 ```java
 @Module
@@ -122,14 +123,14 @@ public class AppModule {
 
 ####(2) @Inject 和 @Provide 两种依赖生成方式区别
 a. @Inject 用于注入可实例化的类，@Provides 可用于注入所有类  
-b. @Inject 可用于修饰属性和构造函数，可用于任何非 Module 类，@Provides 只可用于用于修饰非构造函数，并且该函数必须在某个 @Module 类内部  
+b. @Inject 可用于修饰属性和构造函数，可用于任何非 Module 类，@Provides 只可用于用于修饰非构造函数，并且该函数必须在某个`Module`内部  
 c. @Inject 修饰的函数只能是构造函数，@Provides 修饰的函数必须以 provide 开头  
 
 ####1.5 单例
-Dagger支持单例（事实上单例也是依赖注入最常用的场景），使用方式也很简单：
+Dagger 支持单例（事实上单例也是依赖注入最常用的场景），使用方式也很简单：
 
 ```java
-// @Inject注解构造函数的单例模式
+// @Inject 注解构造函数的单例模式
 @Singleton
 public class Boss {
     ...
@@ -144,7 +145,7 @@ public class Boss {
 ```
 
 ```java
-// @Provides注解函数的单例模式
+// @Provides 注解函数的单例模式
 @Provides
 @Singleton
 Coder provideCoder(Boss boss) {
@@ -152,12 +153,12 @@ Coder provideCoder(Boss boss) {
 }
 ```
 
-在相应函数添加@Singleton注解，依赖的对象就只会被初始化一次，之后的每次都会被直接注入相同的对象。
+在相应函数添加 @Singleton 注解，依赖的对象就只会被初始化一次，之后的每次都会被直接注入相同的对象。
 
 ####1.6 Qualifier（限定符）
-如果有两类程序员，他们的能力值power分别是5和1000，应该怎样让Dagger对他们做出区分呢？使用@Qualifier注解。
+如果有两类程序员，他们的能力值 power 分别是 5 和 1000，应该怎样让 Dagger 对他们做出区分呢？使用 @Qualifier 注解即可。
 
-(1). 创建一个@Qualifier注解，用于区分两类程序员：
+(1). 创建一个 @Qualifier 注解，用于区分两类程序员：
 
 ```java
 @Qualifier
@@ -168,7 +169,7 @@ public @interface Level {
 }
 ```
 
-(2). 为这两类程序员分别设置@Provides函数，并使用@Qualifier注解对他们做出不同的标记：
+(2). 为这两类程序员分别设置 @Provides 函数，并使用 @Qualifier 注解对他们做出不同的标记：
 
 ```java
 @Provides @Level("low") Coder provideLowLevelCoder() {
@@ -186,7 +187,7 @@ public @interface Level {
 }
 ```
 
-(3). 在声明@Inject对象的时候，加上对应的@Qualifier注解。
+(3). 在声明 @Inject 对象的时候，加上对应的 @Qualifier 注解。
 
 ```java
 @Inject @Level("low") Coder lowLevelCoder;
@@ -194,10 +195,10 @@ public @interface Level {
 ```
 
 ####1.7 编译时检查
-实质上，Dagger会在编译时对代码进行检查，并在检查不通过的时候报编译错误，具体原因请看下面的详细原理介绍。检查内容主要有三点：  
-(1). 所有需要依赖注入的类，需要被显式声明在相应的Module中。  
-(2). 一个Module中所有@Provides函数的参数都必须在这个Module种提供相应的@Provides函数，或者在@Module注解后添加“complete = false”注明这是一个不完整Module，表示它依赖不在这个 Module 内的其他 Denpendency。  
-(3). 一个Module中所有的@Provides函数都要被它声明的注入对象所使用，或者在@Module注解后添加“library = ture”注明，表示它是个对外的 library，可能被其他 Module 依赖。  
+实质上，Dagger 会在编译时对代码进行检查，并在检查不通过的时候报编译错误，具体原因请看下面的详细原理介绍。检查内容主要有三点：  
+(1). 所有需要依赖注入的类，需要被显式声明在相应的`Module`中。  
+(2). 一个`Module`中所有 @Provides 函数的参数都必须在这个 Module 中提供相应的被 @Provides 修饰的函数，或者在 @Module 注解后添加 "complete = false" 注明这是一个不完整 Module，表示它依赖不术语这个 Module 的其他 Denpendency。  
+(3). 一个`Module`中所有的 @Provides 函数都要被它声明的注入对象所使用，或者在 @Module 注解后添加 "library = ture" 注明它含有对外的 Denpendency，可能被其他`Module`依赖。  
 
 ####1.8 Dagger 相关概念
 **Module：**也叫 ModuleClass，指被 @Module 注解修饰的类，为 Dagger 提供需要依赖注入的 Host 信息及一些 Dependency 的生成方式。  
