@@ -360,25 +360,25 @@ Linker 是 Dagger 最核心的大脑部分，它负责调用 Loader 加载 Bindi
 Dagger 在运行时维护一个或多个`Linker`，Linker 与 ObjectGraph 一一对应。  
 
 **Linker.java 的主要属性：**  
-#####(1).  Map<String, Binding<?>> bindings 
+#####(1).  bindings 
 本文称为 ObjectGraph 的 Binding 库，表示 ObjectGraph 已安装的所有 Binding，包括尚未连接的 Binding，对于 DAG 图来说就是所有在图中的节点，包括尚未跟其他任何节点连接起来的节点。  
 bindings 数据结构为 HashMap，value 就是具体的 Binding，key 是用来唯一确定 Binding 的字符串，为 Binding.java 中的 provideKey 和 membersKey，具体形式是类名加上一个用于区分同类型的前缀。这些 Binding 不仅包含已连接的，也包含未连接的。  
 
-#####(2). Queue<Binding<?>> toLink 
+#####(2). toLink 
 表示待连接的 Binding 队列，包含了所有待连接的 Binding。对于 DAG 图来说就是所有在图中但未和任何节点连接的节点。  
 
 连接(Link)：从 DAG 的角度说，就是把某个节点与其所依赖的各个节点连接起来。而对于 Binding 来说，就是把当前 Binding 和它内部依赖的 Binding 进行连接，即初始化这个 Binding 内部的所有 Binding，使它们可用。  
 
-#####(3). boolean attachSuccess
+#####(3). attachSuccess
 一个标志，对于某个 Binding，在获取它依赖的 DependencyBinding 时，如果他所有的 DependencyBinding 都已经添加到 Binding 库中，attachSuccess 则为 true，否则为 false。如果为 false ，表示该 Binding 尚未连接，添加到待连接队列中，否则标记为已连接。  
 
-#####(4). List<String> linkedBindings
+#####(4). linkedBindings
 默认为 null，只有在 linkAll() 函数被调用后才有效，用于存储所有已经连接的 Binding，同时也是一个标记，表示这个 ObjectGraph 已经不能再被改变。  
 
-#####(5). Loader plugin
+#####(5). plugin
 Loader 负责加载类，主要是加载 APT 生成的辅助类。  
 
-#####(6). List<String> errors
+#####(6). errors
 Linker.linkRequested() 运行过程中积累的 errors。  
 
 **Linker.java 的主要函数：**  
