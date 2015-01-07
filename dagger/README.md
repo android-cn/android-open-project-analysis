@@ -2,19 +2,31 @@ Dagger 实现原理解析
 ====================================
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 Dagger 部分  
 > 项目地址：[Dagger](https://github.com/square/dagger)，分析的版本：[2f9579c](https://github.com/square/dagger/commit/2f9579c48e887ffa316f329c12c2fa2abbec27b1 "Commit id is 2f9579c48e887ffa316f329c12c2fa2abbec27b1")，Demo 地址：[Dagger Demo](https://github.com/android-cn/android-open-project-demo/tree/master/dagger-demo)    
-> 分析者：[扔物线](https://github.com/rengwuxian)，校对者：[Trinea](https://github.com/trinea)，校对状态：未完成   
+> 分析者：[扔物线](https://github.com/rengwuxian)，校对者：[Trinea](https://github.com/trinea)，校对状态：进行中   
 
-###1. 功能介绍  
+###1. 功能介绍
 ####1.1 Dagger
-Dagger是一款Java平台的依赖注入库（如果你还不了解依赖注入，务必先看下 [依赖注入简介](https://github.com/android-cn/blog/tree/master/java/dependency-injection)）。Java的依赖注入库中，最有名的应该属Google的Guice，Spring 也很有名，不过是专注于 J2EE 开发。Guice的功能非常强大，但它是通过在运行时读取注解来实现依赖注入的，依赖的创建和注入需要依靠Java的反射机制，这对于对性能非常敏感的Android来说是一个硬伤。基于此，Dagger应运而生。Dagger同样使用注解来实现依赖注入，但它利用APT（Annotation Process Tool）在编译时生成了辅助代码，在运行时加载辅助代码，调用相应接口完成依赖创建和注入。Dagger对于程序的性能影响非常小，因此更加适用于Android应用的开发。
+Dagger是一款Java平台的依赖注入库，关于依赖注入，详细见 [依赖注入简介](https://github.com/android-cn/blog/tree/master/java/dependency-injection)。  
 
-再次提醒，如果你还不了解依赖注入，务必先看下 [依赖注入简介](https://github.com/android-cn/blog/tree/master/java/dependency-injection)。
+Java的依赖注入库中，最有名的应该属Google的Guice，Spring 也很有名，不过是专注于 J2EE 开发。Guice的功能非常强大，但它是通过在运行时读取注解来实现依赖注入的，依赖的生成和注入需要依靠Java的反射机制，这对于对性能非常敏感的Android来说是一个硬伤。基于此，Dagger应运而生。  
 
-####1.2 基本使用
+Dagger同样使用注解来实现依赖注入，但它利用APT(Annotation Process Tool)在编译时生成了继承特定父类或实现特定接口的辅助类，在运行时加载这些辅助类，调用相应接口完成依赖生成和注入。Dagger对于程序的性能影响非常小，因此更加适用于Android应用的开发。
 
-本文将以一个简单的“老板和程序员”App为例。
+####1.2 依赖注入相关概念
+**依赖(Dependency)：**如果在 Class A 中，有个属性是 Class B 的实例，则称 Class B 是 Class A 的依赖，本文中我们将 Class A 称为宿主(Host)，并且全文用 Host 表示；Class B 称为依赖(Dependency)，并且全文用 Dependency 表示。一个 Host 可能是另外一个类的 Dependency。  
 
-你想把一个Boss对象注入到一个Activity中，那么首先你要告诉程序一个Boss对象应该怎样被生成。在Boss类的构造方法前添加一个@Inject注解，Dagger就会在需要的时候获取Boss对象，调用这个被标记的构造方法，从而生成一个Boss对象。
+**宿主(Host)：**如果 Class B 是 Class A 的 Dependency，则称 Class A 是 Class B 的宿主(Host)。  
+
+**依赖注入：**如果 Class B 是 Class A 的 Dependency，B 的赋值不是写死在了类或构造函数中，而是通过构造函数或其他函数的参数传入，这种赋值方式我们称之为依赖注入。  
+
+更详细介绍可见 [依赖注入简介](https://github.com/android-cn/blog/tree/master/java/dependency-injection)。  
+
+####1.3 Dagger 基本使用
+本文将以一个简单的“老板和程序员”App为例，Boss（老板）是程序员（Coder）的一个依赖。  
+
+Activity 中有一个 Boss 类属性，现在你想把一个Boss对象注入到这个Activity中，那么存在两个问题：Boss 对象应该怎样被生成 以及 Boss 对象怎样被设置到 Activity 中。  
+####(1) Boss 对象怎样生成
+在Boss类的构造函数前添加一个@Inject注解，Dagger就会在需要获取Boss对象的时候，调用这个被标记的构造函数，从而生成一个Boss对象。
 
 ```java
 public class Boss {
@@ -29,9 +41,9 @@ public class Boss {
 }
 ```
 
-_需要注意的是，如果构造函数含有参数，Dagger会在调用构造对象的时候先去获取这些参数（不然谁来传参？），所以你要保证它的参数也能被Dagger获取到。Dagger生成对象的方式有两种：除了使用被 @Inject 修饰的构造方法，也可以通过被 @Provides 修饰的方法来返回对象，下面会讲到_
-
-通过@Inject注解了构造方法之后，在Activity中的Boss对象声明之前也添加@Inject注解。像这种在成员变量前的@Inject注解的目的是告诉Dagger哪些成员变量需要被注入。
+_需要注意的是，如果构造函数含有参数，Dagger会在调用构造对象的时候先去获取这些参数（不然谁来传参？），所以你要保证它的参数也提供生成方式被Dagger调用到。Dagger 可调用的生成对象方式有两种：一种是用 @Inject 修饰的构造函数，上面就是这种方式。另外一种是用 @Provides 修饰的函数，下面会讲到。_  
+####(2) Boss 对象怎样被设置到 Activity 中
+通过@Inject注解了构造函数之后，在Activity中的Boss对象声明之前也添加@Inject注解。像这种在属性前的@Inject注解的目的是告诉Dagger哪些属性需要被注入。
 
 ```java
 public class MainActivity extends Activity {
@@ -40,7 +52,7 @@ public class MainActivity extends Activity {
 }
 ```
 
-最后，我们在合适的位置（例如onCreate()方法中）调用ObjectGraph.inject()方法，Dagger就会自动获取依赖并注入到当前对象（MainActivity）。
+最后，我们在合适的位置（例如onCreate()函数中）调用ObjectGraph.inject()函数，Dagger就会自动调用上面的 (1) 中的生成方法生成依赖的实例，并注入到当前对象（MainActivity）。
 
 ```java
 public class MainActivity extends Activity {
@@ -54,7 +66,19 @@ public class MainActivity extends Activity {
 }
 ```
 
-到此为止，使用Dagger的 @Inject 方式将一个Boss对象注入到MainActivity的流程就完成了。上面这段代码中出现了两个类：ObjectGraph和AppModule。其中ObjectGraph是由Dagger提供的类，可以简单理解为一个依赖管理类，它的create函数中参数是一个数组，为所有需要用到的Module（例如本例中的AppModule）。AppModule是一个自定义类，在Dagger中称为`Module`，通过@Module注解进行标记，代码如下：
+具体怎么注入即设置的过程后面会详细介绍，这里简单透露下，APT 会在 MainActivity 下生成一个辅助类 MainActivity$$InjectAdapter，这个类有个 injectMembers() 函数，代码类似：  
+
+```java
+public void injectMembers(MainActivity paramMainActivity) {
+    paramMainActivity.boss = ((Boss)boss.get());
+    ……
+}
+```
+
+上面我们已经通过 ObjectGraph.inject() 函数传入了 paramMainActivity，并且 boss 属性是 package 权限，所以 Dagger 只需要调用这个辅助类的 injectMembers() 函数即可完成依赖注入。  
+到此为止，使用Dagger的 @Inject 方式将一个Boss对象注入到MainActivity的流程就完成了。  
+####(3) ObjectGraph.create(AppModule.class) 函数简介
+上面 onCreate() 函数中出现了两个类：ObjectGraph和AppModule。其中ObjectGraph是由Dagger提供的类，可以简单理解为一个依赖管理类，它的create函数中参数是一个数组，为所有需要用到的Module（例如本例中的AppModule）。AppModule是一个自定义类，在Dagger中称为`Module`，通过@Module注解进行标记，代码如下：
 
 ```java
 @Module(injects = MainActivity.class)
@@ -62,16 +86,19 @@ public class AppModule {
 }
 ```
 
-可以看到，AppModule是一个空类，除了一行注解外没有任何代码。@Module注解表示这个类是一个Module，Module的作用是提供信息，让ObjectGraph知道哪些类对象需要被依赖注入，以及该怎么生成某些依赖(这在下面会具体介绍)。例如，上面这段代码中声明了需要依赖注入的类对象为 MainActivity.class，需要在 Module 类中显式声明这样的看起来很麻烦、多此一举的方式和Dagger的原理有关，下面会讲到。  
-####1.3 自定义依赖
+可以看到，AppModule是一个空类，除了一行注解外没有任何代码。  
+@Module注解表示这个类是一个Module，Module的作用是提供信息，让ObjectGraph知道哪些类对象需要被依赖注入，以及该怎么生成某些依赖(这在下面会具体介绍)。例如，上面这段代码中声明了需要依赖注入的类为 MainActivity。  
+需要在 Module 类中显式声明这些信息看起来很麻烦，多此一举的方式和Dagger的原理有关，下面会讲到。  
 
-对构造方法进行注解是很好用的提供依赖对象的途径，然而它并不适用于所有情况。例如：
+####1.4 自定义依赖生成方式
+####(1) @Provides 修饰的生成函数
+对构造函数进行注解是很好用的依赖对象生成方式，然而它并不适用于所有情况。例如：  
 
-* 接口（Interface）是没有构造方法的，当然就更不能对构造方法进行注解
-* 第三方库提供的类，我们无法修改源码，因此就不能注解它们的构造方法
-* 有些类需要动态选择初始化的配置，而不是使用一个单一的构造方法
+* 接口（Interface）是没有构造函数的，当然就更不能对构造函数进行注解
+* 第三方库提供的类，我们无法修改源码，因此就不能注解它们的构造函数
+* 有些类需要提供统一的生成函数(一般会私有化构造函数)或需要动态选择初始化的配置，而不是使用一个单一的构造函数  
 
-对于以上三种情况，可以使用@Provides注解来提供自定义的初始化方法，实现自定义依赖。形式如下：
+对于以上三种情况，可以使用@Provides注解来标记自定义的生成函数，从而被 Dagger 调用。形式如下：
 
 ```java
 @Provides
@@ -80,9 +107,8 @@ Coder provideCoder(Boss boss) {
 }
 ```
 
-_和构造方法一样，@Provides注解修饰的方法如果含有参数，它的所有参数也要保证能够被Dagger获取到。_
-
-需要注意的是，所有@Provides注解的方法都需要被封装到Module中，这就是上面提到的 Module 作用之一——告诉ObjectGraph某些依赖怎样生成：
+_和构造函数一样，@Provides注解修饰的函数如果含有参数，它的所有参数也要保证能够被Dagger获取到。_  
+需要注意的是，所有@Provides注解的生成函数都需要在Module中定义实现，这就是上面提到的 Module 作用之让ObjectGraph该怎么生成某些依赖。  
 
 ```java
 @Module
@@ -94,15 +120,16 @@ public class AppModule {
 }
 ```
 
-**@Inject 和 @Provide 区别：**  
+####(2) @Inject 和 @Provide 两种依赖生成方式区别
 a. @Inject 用于注入可实例化的类，@Provides 可用于注入所有类  
-b. @Inject 可用在属性和构造函数中，可用于任何非 Module 类，@Provides 只可用于非构造函数上，并且该方法必须在某个 @Module 类内部  
-c. @Inject 修饰的函数只能是构造函数，@Provides 修饰的函数必须以 provide 开头
-####1.4 单例
+b. @Inject 可用于修饰属性和构造函数，可用于任何非 Module 类，@Provides 只可用于用于修饰非构造函数，并且该函数必须在某个 @Module 类内部  
+c. @Inject 修饰的函数只能是构造函数，@Provides 修饰的函数必须以 provide 开头  
+
+####1.5 单例
 Dagger支持单例（事实上单例也是依赖注入最常用的场景），使用方式也很简单：
 
 ```java
-// @Inject注解构造方法的单例模式
+// @Inject注解构造函数的单例模式
 @Singleton
 public class Boss {
     ...
@@ -117,7 +144,7 @@ public class Boss {
 ```
 
 ```java
-// @Provides注解方法的单例模式
+// @Provides注解函数的单例模式
 @Provides
 @Singleton
 Coder provideCoder(Boss boss) {
@@ -125,13 +152,12 @@ Coder provideCoder(Boss boss) {
 }
 ```
 
-在相应函数添加@Singleton注解，对象就只会被初始化一次，之后的每次都会被直接注入相同的对象。
+在相应函数添加@Singleton注解，依赖的对象就只会被初始化一次，之后的每次都会被直接注入相同的对象。
 
-####1.4 Qualifier（限定符）
-
+####1.6 Qualifier（限定符）
 如果有两类程序员，他们的能力值power分别是5和1000，应该怎样让Dagger对他们做出区分呢？使用@Qualifier注解。
 
-1. 创建一个@Qualifier注解，用于区分两类程序员：
+(1). 创建一个@Qualifier注解，用于区分两类程序员：
 
 ```java
 @Qualifier
@@ -142,7 +168,7 @@ public @interface Level {
 }
 ```
 
-2. 为这两类程序员分别设置@Provides方法，并使用@Qualifier注解对他们做出不同的标记：
+(2). 为这两类程序员分别设置@Provides函数，并使用@Qualifier注解对他们做出不同的标记：
 
 ```java
 @Provides @Level("low") Coder provideLowLevelCoder() {
@@ -160,32 +186,31 @@ public @interface Level {
 }
 ```
 
-3. 在声明@Inject对象的时候，加上对应的@Qualifier注解。
+(3). 在声明@Inject对象的时候，加上对应的@Qualifier注解。
 
 ```java
 @Inject @Level("low") Coder lowLevelCoder;
 @Inject @Level("high") Coder highLevelCoder;
 ```
 
-####1.5 编译时检查
-实质上，Dagger会在编译时对代码进行检查，并在检查不通过的时候报编译错误，具体原因请看下面的详细原理介绍。检查内容主要有三点：
+####1.7 编译时检查
+实质上，Dagger会在编译时对代码进行检查，并在检查不通过的时候报编译错误，具体原因请看下面的详细原理介绍。检查内容主要有三点：  
+(1). 所有需要依赖注入的类，需要被显式声明在相应的Module中。  
+(2). 一个Module中所有@Provides函数的参数都必须在这个Module种提供相应的@Provides函数，或者在@Module注解后添加“complete = false”注明这是一个不完整Module，表示它依赖不在这个 Module 内的其他 Denpendency。  
+(3). 一个Module中所有的@Provides函数都要被它声明的注入对象所使用，或者在@Module注解后添加“library = ture”注明，表示它是个对外的 library，可能被其他 Module 依赖。  
 
-1. 所有需要依赖注入的类，需要被显式声明在相应的Module中。
-2. 一个Module中所有@Provides方法的参数都必须在这个Module种提供相应的@Provides方法，或者在@Module注解后添加“complete = false”注明这是一个不完整Module（即它依赖不在这个 Module 内的 Denpendency）。
-3. 一个Module中所有的@Provides方法都要被它声明的注入对象所使用，或者在@Module注解后添加“library = ture”注明（即它是个对外的 library，可能被其他 Module 依赖）。
+####1.8 Dagger 相关概念
+**Module：**也叫 ModuleClass，指被 @Module 注解修饰的类，为 Dagger 提供需要依赖注入的 Host 信息及一些 Dependency 的生成方式。  
 
-####1.6 概念及本文术语
-**依赖(Dependency)：**如果在 Class A 中，有个属性是 Class B 的实例，则称 Class B 是 Class A 的依赖，本文中我们将 Class A 称为宿主(Host)，并且全文用 Host 表示；Class B 称为依赖(Dependency)，并且全文用 Dependency 表示。一个 Host 可能是另外一个类的 Dependency。  
-**宿主(Host)：**如果 Class B 是 Class A 的 Dependency，则称 Class A 是 Class B 的宿主(Host)。  
-**依赖注入：**如果 Class B 是 Class A 的 Dependency，B 的赋值不是写死在了类或构造函数中，而不是通过构造函数或其他函数的参数传入，这种赋值方式我们称之为依赖注入，更详细介绍可见 [依赖注入简介](https://github.com/android-cn/blog/tree/master/java/dependency-injection)。  
-**Module：**指被 @Module 注解修饰的类，为 Dagger 提供需要依赖注入的 Host 相关信息及一些 Dependency 的生成方式。  
-**ModuleClass：**指被 @Module 修饰的类。  
-**ModuleAdapter：**指由 APT 根据 @Module 注解自动生成，继承自 Dagger 的 ModuleAdapter.java 的类，与 ModuleClass 对应，以 ModuleClass 的 ClassName 加上 \$$ModuleAdapter 命名，在 ModuleClass 的同一个 package 下。  
-**Binding：**指由 APT 根据 @Inject 注解和 @Provides 自动生成，最终继承自 Binding.java 的类，为下面介绍的 DAG 图中的一个节点，每个 Host 及依赖的每个生成方式都是一个 Binding。  
-每个被 @Inject 修饰的类或构造函数被修饰的类都会生成一个 继承自 Binding.java 的子类，生成类以修饰类的 ClassName 加上 $$InjectAdapter 命名，在该类的同一个 package 下
-每个被 @Provides 修饰的函数都会生成一个继承自 ProvidesBinding.java 的子类，ProvidesBinding.java 继承自 Binding.java，生成类以 Provide 函数名首字母大写 加上 ProvidesAdapter 命名，是 Provide 方法所在 Module 对应生成的`ModuleAdapter`的静态内部类。
+**ModuleAdapter：**指由 APT 根据 @Module 注解自动生成的类，父类是 Dagger 的 ModuleAdapter.java，与 ModuleClass 对应，以 ModuleClass 的 ClassName 加上 $$ModuleAdapter 命名，在 ModuleClass 的同一个 package 下。  
+
+**Binding：**指由 APT 根据 @Inject 注解和 @Provides 注解自动生成，最终继承自 Binding.java 的类。为下面介绍的 DAG 图中的一个节点，每个 Host 及依赖都是一个 Binding。  
+每个属性或构造函数被 @Inject 修饰的类都会生成一个 继承自 Binding.java 的子类，生成类以修饰类的 ClassName 加上 $$InjectAdapter 命名，在该类的同一个 package 下
+每个被 @Provides 修饰的生成函数都会生成一个继承自 ProvidesBinding.java 的子类，ProvidesBinding.java 继承自 Binding.java，生成类以 Provide 函数名首字母大写加上 ProvidesAdapter 命名，是 Provide 函数所在 Module 对应生成的`ModuleAdapter`中的静态内部类。
 Binding 更具体在下面会介绍。
-**连接：**指将 Dependency 注入到 Host。对 Dagger Linker.java 代码来说是将 Dependency 和 Host 对应的 Binding 都加入到了缓存中，对于下面的 DAG 图来说就是将两个节点连接起来。  
+
+**连接：**指将 Dependency 注入到 Host。对 Dagger Linker.java 代码来说是将 Dependency 和 Host 对应的 Binding 都加入到了 toLink 属性中，对于下面的 DAG 图来说就是将两个节点连接起来。  
+
 ###2. 总体设计
 
 ####2.1 概述
@@ -217,7 +242,7 @@ Dagger不支持循环依赖，即依赖关系图中不能出现环。原因很�
 
 1. 编译时，通过APT查看所有java文件，并根据注解生成一些新的java文件（InjectAdapters和ModuleAdapters），这些文件用于运行时辅助DAG的创建和完善。然后，将这些新生成的java文件和项目原有的java文件一并编译成class文件。
 2. 运行时，在Application或某个具体模块的初始化处，使用`ObjectGraph`类来加载部分依赖（实质上是利用编译时生成的`ModuleAdapters`加载了所有的`ProvidesBinding`，后面会讲到），形成一个不完整的依赖关系图。
-3. 这个不完整的依赖关系图生成之后，就可以调用`ObjectGraph`的相应方法来获取实例和注入依赖了。实现依赖注入的方法有两个：`ObjectGraph.get(Class<T> type)`方法，用于直接获取对象；`ObjectGraph.inject(T instance)`方法，用于对指定对象进行成员变量的注入。在这些获取实例和注入依赖的过程中，如果用到了还未加载的依赖，程序会自动对它们进行加载（实质上是加载的编译时生成的`InjectAdapters`）。在此过程中，内存中的DAG也被补充地越来越完整。
+3. 这个不完整的依赖关系图生成之后，就可以调用`ObjectGraph`的相应函数来获取实例和注入依赖了。实现依赖注入的函数有两个：`ObjectGraph.get(Class<T> type)`函数，用于直接获取对象；`ObjectGraph.inject(T instance)`函数，用于对指定对象进行属性的注入。在这些获取实例和注入依赖的过程中，如果用到了还未加载的依赖，程序会自动对它们进行加载（实质上是加载的编译时生成的`InjectAdapters`）。在此过程中，内存中的DAG也被补充地越来越完整。
 
 ###3. 流程图
 
@@ -240,9 +265,9 @@ ObjectGraph 是个抽象类，是 Dagger 除了注解外对外暴露的唯一 AP
 ####4.2.1 Binding.java —— 节点
 Binding 是一个泛型抽象类，相当于依赖关系 DAG 图中的节点，依赖关系 DAG 图中得每一个节点都由一个由 APT 生成的继承自 Binding 的类与之对应，而依赖关系 DAG 图中的每一个节点与 Host 和 Dependency 一一对应，所以每个 Host 或 Dependency 必然有一个由 APT 生成的继承自 Binding 的字类与之对应，我们先简单的将这些子类分为 HostBinding 和 DependencyBinding。  
 ####(1) Binding 实现的接口
-Binding 实现了两个接口，第一个是 javax 的`Provider`接口，此接口提供了 get() 方法用于返回一个 Dependency 实例，当然也可以是 Host 实例。  
+Binding 实现了两个接口，第一个是 javax 的`Provider`接口，此接口提供了 get() 函数用于返回一个 Dependency 实例，当然也可以是 Host 实例。  
 第二个接口是 Dagger 中的`MembersInjecter`接口，此接口提供了 injectMembers() 用来向 Host 对象中注入(即设置) Dependency。  
-单纯的 DependencyBinding 只要实现`Provider`接口，在 get() 函数中返回自己的实例即可，单纯的 HostBinding 只要实现`MembersInjecter`，在 injectMembers() 方法中调用之前的 DependencyBinding 的 get() 函数对自己的依赖进行设置即可。如果一个类既是 Host 又是 Dependency，则由它生成的 Binding 子类这两个接口都需要实现。 
+单纯的 DependencyBinding 只要实现`Provider`接口，在 get() 函数中返回自己的实例即可，单纯的 HostBinding 只要实现`MembersInjecter`，在 injectMembers() 函数中调用之前的 DependencyBinding 的 get() 函数对自己的依赖进行设置即可。如果一个类既是 Host 又是 Dependency，则由它生成的 Binding 子类这两个接口都需要实现。 
 ####(2) 生成的 Binding 代码示例
 如下的程序
 
@@ -292,36 +317,36 @@ public final class Host$$InjectAdapter extends Binding<Host> implements MembersI
 对于 Provide 方式的注入，因为 Provide 方式必须写在某个 Module 内部，所以在 Module 生成的 Module$$ModuleAdapter 内部会有一个此 Provide 方式对应的 Binding 子类，继承自 Binding 的子类 ProvidesBinding，以 ProvideMethod 开头加上ProvidesAdapter。
 所以实际自动生成的 Binding 子类我们可以分为三种：  
 第一种是 Host 对应的 Binding，本文中我们统一称为 HostBinding。这些 HostBinding 和  Module 中 @Injects 值中每个元素一一对应，他们提供 get() 功能和  inject() 功能。    
-第二种是 Inject Dependecy 对应的 Binding 子类，本文中我们统一称为 InjectBinding。这些InjectBinding 和所有含有 @Inject 修饰的构造方法的类一一对应，他们提供 get 功能，不提供 inject() 功能。并且如果这个对应的类出现在了某个Module的injects属性中，也会提供inject功能。  
-第三种是 Provide Dependecy 对应的 Binding 子类，本文中我们统一称为 ProvidesBinding。ProvidesBinding 和 @Module 类中的 @Provides 方法一一对应，他们只提供 get() 功能，不提供 inject() 功能。  
+第二种是 Inject Dependecy 对应的 Binding 子类，本文中我们统一称为 InjectBinding。这些InjectBinding 和所有含有 @Inject 修饰的构造函数的类一一对应，他们提供 get 功能，不提供 inject() 功能。并且如果这个对应的类出现在了某个Module的injects属性中，也会提供inject功能。  
+第三种是 Provide Dependecy 对应的 Binding 子类，本文中我们统一称为 ProvidesBinding。ProvidesBinding 和 @Module 类中的 @Provides 函数一一对应，他们只提供 get() 功能，不提供 inject() 功能。  
 上面三种 Binding 中，第一、二种会在 ObjectGraph.create 时加载进来，第三种在用的时候才会被动态加载。
 ####(4) get() 
 表示得到此 Binding 对应 Dependency。  
 ####(5) injectMembers() 
 表示向此 Binding 对应 Host 对象中注入依赖
 ####(6) attach() 
-attach 方法表示提供此 Binding 依赖的 Binding 的获取方式，对于 DAG 图来说相当于把图中两个节点连接起来。
+attach 函数表示提供此 Binding 依赖的 Binding 的获取方式，对于 DAG 图来说相当于把图中两个节点连接起来。
 ####(7) 属性含义 
 `requiredBy` 表示这个 Binding 属于哪个对象，如属于 dependency 或者 host
 
 ####4.2.2 Linker.java —— 拼装者
 `Linker`负责将每一个`Binding`和这个`Binding`内部的各个`Binding`进行连接，也就是负责DAG的拼装。Dagger在运行时维护一个或多个`Linker`，每个`Linker`中有一些`Binding`（以Map形式存在）。这些`Binding`两两之间会存在或不存在依赖关系，而`Linker`就负责将存在依赖关系的`Binding`之间进行连接，从而拼装成可用的DAG。
 
-`Linker`有两个关键的成员变量：
+`Linker`有两个关键的属性：
 
 1. `private final Queue<Binding<?>> toLink = new ArrayQueue<Binding<?>>()`  
 这个Queue包含了所有待连接的Binding。连接（link），从DAG的角度说，就是把某个节点与其所依赖的各个节点连接起来。而对于Binding来说，就是把当前Binding和它内部依赖的Binding进行连接，即初始化这个Binding内部的所有Binding，使它们可用。  
 2. `private final Map<String, Binding<?>> bindings = new HashMap<String, Binding<?>>()`  
 将Binding以Map的形式存储，key是用来唯一确定Binding的字符串，具体形式是类名加上一个用于区分同类型的前缀。这些Binding不仅包含已连接的，也包含未连接的。
 
-`Linker`有两个关键的方法：
+`Linker`有两个关键的函数：
 
 1. `public Binding<?> requestBinding(String key, Object requiredBy, ClassLoader classLoader, boolean mustHaveInjections, boolean library)`  
-这个方法会根据传入的key返回一个Binding。首先，会尝试从bindings变量中查找这个key，如果找到了，就将找到的Binding返回（如果找到后发现这个Binding还未连接，还需要它放进toLink中）；如果找不到，说明需要的Binding是一个`InjectAdapter`（因为另一种Binding，ProvidesBinding，在初始化时就已经加载完毕了），就创建一个包含了这个key的`DeferredBinding`，并把它添加到toLink（等待稍后载入）后返回null。  
+这个函数会根据传入的key返回一个Binding。首先，会尝试从bindings变量中查找这个key，如果找到了，就将找到的Binding返回（如果找到后发现这个Binding还未连接，还需要它放进toLink中）；如果找不到，说明需要的Binding是一个`InjectAdapter`（因为另一种Binding，ProvidesBinding，在初始化时就已经加载完毕了），就生成一个包含了这个key的`DeferredBinding`，并把它添加到toLink（等待稍后载入）后返回null。  
 requestBinding -> toLink.add(deferredBinding) -> linkRequested() -> toLink.add(resolvedBinding); -> binding.attach(this);
 
 2. `public void linkRequested()`  
-这个方法会根据toLink中的 `DeferredBinding` 载入相应的 `InjectAdapter` 后添加到 `bindings` ，并把所有普通的 `Binding` 进行连接。另外，由于连接的实质是初始化一个 `Binding` ，即初始化一个 `Binding` 内部依赖的 `Binding`s，因此，这是一个循环的过程：由上至下不断地由 `DeferredBinding` 加载 `InjectAdapter` 和连接新的未连接的 `Binding` ，直到旧的 `Binding` 全都被连接，而且不再产生新的 `Binding` 。从DAG的角度来说，就是将某个节点不断向下延伸，直到所有的依赖和传递依赖都被获取到。  
+这个函数会根据toLink中的 `DeferredBinding` 载入相应的 `InjectAdapter` 后添加到 `bindings` ，并把所有普通的 `Binding` 进行连接。另外，由于连接的实质是初始化一个 `Binding` ，即初始化一个 `Binding` 内部依赖的 `Binding`s，因此，这是一个循环的过程：由上至下不断地由 `DeferredBinding` 加载 `InjectAdapter` 和连接新的未连接的 `Binding` ，直到旧的 `Binding` 全都被连接，而且不再产生新的 `Binding` 。从DAG的角度来说，就是将某个节点不断向下延伸，直到所有的依赖和传递依赖都被获取到。  
 不断从 toLink 中取出待 link 的 Binding，如果是`DeferredBinding`，则根据 APT 生成规则查找到相应的 Binding，即 APT 生成的以 $$InjectAdapter 结尾的 Binding 子类
 
 
@@ -330,7 +355,7 @@ requestBinding -> toLink.add(deferredBinding) -> linkRequested() -> toLink.add(r
 
 `Loader`是一个纯辅助类，它通过 ClassLoader 加载 APT 生成的`ModuleAdapter`类和`InjectAdapter`的类，并初始化一个该类对象返回。另外，实质上`Loader`是一个抽象类，而在运行时，Dagger使用的是Loader的子类`FailoverLoader`。
 
-`Loader`有四个关键的方法：
+`Loader`有四个关键的函数：
 
 1. `protected Class<?> loadClass(ClassLoader classLoader, String name)`  
 根据类名把类加载到内存。
@@ -378,7 +403,7 @@ Loader 负责加载类，主要是加载 APT 生成的辅助类。
 这个变量名叫 plugin，实际也说明了 Dagger 的一大优势，就是它是支持多个 ClassLoader，这样通过 Dagger 实现依赖注入的 Android 应用，插件化时 Dagger 不会对其产生影响，而截止这个分析文档完成时，轻量级的 ButterKnife 都不支持多个 ClassLoader。  
 DaggerObjectGraph 主要函数有：
 ####(1) makeGraph 函数
-makeGraph 函数首先会通过 Modules.loadModules 方法得到所有的 ModuleAdapter；    
+makeGraph 函数首先会通过 Modules.loadModules 函数得到所有的 ModuleAdapter；    
 第二步遍历所有 ModuleAdapter，将其中的需要依赖注入 Host 类型（injectableTypes）和需要静态静态注入 Host 类型（staticInjections）都保存下来，最后做为新的 DaggerObjectGraph 对象构造入参。将 ModuleAdapter 中所有的 Binding（这里是ProvidesBinding）都保存下来，最后做为新的 DaggerObjectGraph 对象构造入参。另一种 Binding —— InjectBinding 会在需要用到的时候进行动态载入；  
 第三步新建 Linker 保存 Binding；  
 最后用这些变量一起构建新的 DaggerObjectGraph 对象。  
@@ -396,9 +421,9 @@ makeGraph 函数首先会通过 Modules.loadModules 方法得到所有的 Module
 ####(7) getInjectableTypeBinding(ClassLoader classLoader, String injectableKey, String key)
 表示根据 key 得到某个 Binding。首先会从 ObjectGraph.injectableTypes 中得到其对应的 Module，然后通过 linker.requestBinding 查找其对应的 Binding，若未查找到的 Binding 或是尚未连接，则调用 linker.linkRequested() 得到 InjectBindng 并将其添加到 ObjectGraph 中，此时再次通过 linker.requestBinding 即可查找到其对应的 Binding，返回即可。  
 ####(8) linkInjectableTypes()
-将 injectableTypes 这个变量中记录的所有需要被依赖注入的 Host 类型都查找一遍 InjectBinding（实际目前还只是标记，真正查找是在 linkEverything 函数完成），这个方法我觉得叫 requestInjectableTypesBinding 更合适。  
+将 injectableTypes 这个变量中记录的所有需要被依赖注入的 Host 类型都查找一遍 InjectBinding（实际目前还只是标记，真正查找是在 linkEverything 函数完成），这个函数我觉得叫 requestInjectableTypesBinding 更合适。  
 ####(9) linkStaticInjections()
-将 staticInjections 这个变量中记录的所有需要被静态依赖注入的 Host 类型都查找一遍 InjectBinding，这个方法我觉得叫 requestStaticInjections 更合适
+将 staticInjections 这个变量中记录的所有需要被静态依赖注入的 Host 类型都查找一遍 InjectBinding，这个函数我觉得叫 requestStaticInjections 更合适
 ####(10) linkEverything()
 会调用上面的 linkInjectableTypes() 和 linkStaticInjections 得到 InjectBinding，然后调用 linker.linkAll() 连接起来。  
 
@@ -415,7 +440,7 @@ DeferredBinding 是 Binding 的一个子类，实际就是一个标记，在 lin
 ####4.2.8 Keys.java
 这是个 Key 相关的工具类。
 `getMembersKey(Class<?> key)` 用于返回以 "members/" + keyClassName 的字符串
-boxIfPrimitive(Type type) 方法用于将原始类型转换为复杂类型
+boxIfPrimitive(Type type) 函数用于将原始类型转换为复杂类型
 // TODO 其他函数作用
 
 ####4.2.9 FailoverLoader.java
@@ -424,7 +449,7 @@ loadedAdapters 变量是用来缓存初始化过的 ModuleAdapter 对象。在 F
 对于 FailoverLoader，如果 getAtInjectBinding(……) 函数在生成类中查找失败，则会调用 ReflectiveAtInjectBinding.create(type, mustHaveInjections) 通过反射直接初始化对象， getStaticInjection(……) 函数在生成类中查找失败，则会调用 ReflectiveStaticInjection.create(injectedClass) 通过反射直接初始化对象。
 
 ####4.2.10 Memoizer.java
-一个小的缓存抽象类，内部主要是一个用于存储数据的 HashMap 属性和两个读写重入锁。对外的主要函数 get(K key) 表示根据 key 从缓存中得到 value，value 如果已经存在则直接返回，否则调用 create(K key) 方法新建 value，存入缓存并返回。对它子类来说只需要实现 
+一个小的缓存抽象类，内部主要是一个用于存储数据的 HashMap 属性和两个读写重入锁。对外的主要函数 get(K key) 表示根据 key 从缓存中得到 value，value 如果已经存在则直接返回，否则调用 create(K key) 函数新建 value，存入缓存并返回。对它子类来说只需要实现 
 protected abstract V create(K key);
 函数表示新建一个 Value 即可。  
 Memoizer 主要用在 Loader 中， Loder 中包含一个嵌套的 Memoizer 变量，内外分别作为类和 ClassLoader 的缓存。
@@ -434,31 +459,31 @@ Memoizer 主要用在 Loader 中， Loder 中包含一个嵌套的 Memoizer 变�
 moduleClass 属性表示 ModuleAdapter 对应的 ModuleClass。
 injectableTypes 以需要注入依赖的类名为元素的数组。为 Module 注解的 injects 属性值。
 staticInjections  以有静态属性依赖需要注入的类名为元素的数组，为 Module 注解的 injects 属性值。
-overrides 表示某个 Module 的 @Provides 方法可以覆盖其他 Module，建议只在测试以及开发模式使用。
+overrides 表示某个 Module 的 @Provides 函数可以覆盖其他 Module，建议只在测试以及开发模式使用。
 includes 表示 Module 有哪些其他类组成。
 complete 表示这个 Module 需要的所有 Binding 是否可以互相提供依赖，即是否能组成一个完整的 DAG。True 表示可以，False 表示不可以。如果一个 Module 有外部依赖的 Bindings 则为 False。
 library 表示这个 Module 需要的所有 Binding 是否都是需要的，False 表示都是需要的，True 表示存在多余的 Binding。
 
 ####4.2.12 Modules.java
-Modules.java 对外只有一个静态的 loadModules 方法，该方法入参为 Loader 和一个 ModuleClass 对象数组 seedModulesOrClasses，函数返回一个 HashMap，key 为 ModuleAdapter 对象，Value 为类似入参的 ModuleClass 对象。HashMap 不仅包含入参 ModuleClass 及其对应的ModuleAdapter，也包含入参 ModuleClass 嵌套的 ModuleClass 及其对应的ModuleAdapter。
+Modules.java 对外只有一个静态的 loadModules 函数，该函数入参为 Loader 和一个 ModuleClass 对象数组 seedModulesOrClasses，函数返回一个 HashMap，key 为 ModuleAdapter 对象，Value 为类似入参的 ModuleClass 对象。HashMap 不仅包含入参 ModuleClass 及其对应的ModuleAdapter，也包含入参 ModuleClass 嵌套的 ModuleClass 及其对应的ModuleAdapter。
 loadModules 的逻辑比较简单，先通过 Loader 依次查找入参 seedModulesOrClasses 对应的 ModuleAdapter，查找 ModuleAdapter 规则请参见 Loader.java 介绍，然后查找得到的 ModuleAdapter 嵌套的 ModuleClass 对应的 ModuleAdapter，ModuleAdapter 嵌套的 ModuleClass 都存放在 ModuleAdapter 的 includes 对象中，由 APT 在编译时解析生成。 
 
 ####4.2.13 ProblemDetector.java
 一组 Binding 问题检测。对外有两个 API：    
 `public void detectCircularDependencies(Collection<Binding<?>> bindings)` 检测一组 Binding 是否存在循环依赖
 `public void detectUnusedBinding(Collection<Binding<?>> bindings)` 检测一组 Binding 中是否存在无用的 Binding，即既不依赖其他 Binding 也不被其他 Binding 依赖  
-`public void detectProblems(Collection<Binding<?>> values)` 检测一组 Binding 是否存在问题，直接调用上面两个方法检测。会被 DaggerObjectGraph.validate() 调用进行检测  
+`public void detectProblems(Collection<Binding<?>> values)` 检测一组 Binding 是否存在问题，直接调用上面两个函数检测。会被 DaggerObjectGraph.validate() 调用进行检测  
 
 ####4.2.14 BuiltInBinding.java
 ProvidesBinding 是 Binding 的子类，它的作用是在 attach 时就已经得到了最终的 Binding，get() 调用时直接返回即可。
 
 ####4.2.15 LazyBinding.java
 LazyBinding 是 Binding 的子类，它的作用是延迟实例化 Binding，实现方式是通过代理 Binding，在 attach(linker) 时候返回一个代理的 Binding，在 get() 时候返回一个 Lazy 的对象，只有真正调用这个对象的 get 时候才通过调用代理 Binding 的 get() 返回真正的 Binding。  
-这样做的一个好处就是如果，真正的 Binding 的创建很耗费性能，则可以在最开始时只创建轻量级的代理 Binding，真正要使用时才初始化真正的 Binding。  
+这样做的一个好处就是如果，真正的 Binding 的生成很耗费性能，则可以在最开始时只生成轻量级的代理 Binding，真正要使用时才初始化真正的 Binding。  
 
 ####4.2.16 ProvidesBinding.java
 ProvidesBinding 是 Binding 的子类，对于 Provide 方式的注入，APT 会生成以 ProvideMethod 开头加上ProvidesAdapter 类，这个类就继承自 ProvidesBinding。
-ProvidesBinding 有两个属性，moduleClass 和 methodName。moduleClass 表示被 @Provides 修饰的方法所在的 Module 类名，methodName 表示被 @Provides 修饰的方法方法名。  
+ProvidesBinding 有两个属性，moduleClass 和 methodName。moduleClass 表示被 @Provides 修饰的函数所在的 Module 类名，methodName 表示被 @Provides 修饰的函数函数名。  
 
 ####4.2.17 SetBinding.java
 SetBinding 是 Binding 的子类，它的不同处在于保存了父 Binding，这样就形成了一个链表，// TODO 目前没发现父 Binding 的作用。  
@@ -470,13 +495,13 @@ SetBinding 是 Binding 的子类，它的不同处在于保存了父 Binding，�
 Lazy 是一个接口，用来标记表示可以通过 get() 函数得到真正的对象。
 
 ####4.2.20 MembersInjector.java
-MembersInjector 是一个接口，用 Host 实现，用来标记可以通过 injectMembers(instance) 向 instance 中注入成员变量。  
+MembersInjector 是一个接口，用 Host 实现，用来标记可以通过 injectMembers(instance) 向 instance 中注入属性。  
 
 ####4.2.21 Module.java
 Module 是一个运行时注解，可以用来修饰类、接口、Enum。用来标记提供类依赖注入信息的类。其中的属性都在`ModuleAdapter.java`中介绍过，唯一没有介绍过得addsTo 表示 Module 可以作为哪些类的依赖。
 
 ####4.2.22 Provides.java
-Provides 是一个运行时注解，只可以用来修饰方法
+Provides 是一个运行时注解，只可以用来修饰函数
 
 ####4.2.23 BuiltInBinding.java
 
@@ -487,13 +512,10 @@ Provides 是一个运行时注解，只可以用来修饰方法
 上面 ErrorHandler Interface 的实现类，将 errors 汇总后以 IllegalStateException 抛出，为 Linker.linkRequested() 运行过程中积累的 errors 的默认处理方式。  
 
 ###5. 聊聊Dagger本身
-不好的地方，Provide 方式与 Java 的 Provide 接口混淆  
-HostBinding 和 DependenceBinding 应该区分开。
-
 Dagger 由于其自身的复杂性，其实是一个上手难度颇高的库，难学会、难用好。但从功能上来讲，它又是一个实用价值非常高的库。而且即将发布的 Dagger 2.0 已经被 Square 转手交给了 Google 来开发和维护，从今以后它就是 Google 的官方库了，那么不论从官方支持方面还是从流行度上面， Dagger 都将会有一个很大的提升。关于Dagger的功能和用法，我会写一篇文章详细讲述。在本文的最后，列两个可能比较多人会问的问题和简单的回答：
 
-1. **Dagger适合什么样的项目？**  
+####(1) Dagger适合什么样的项目
 Dagger是一个依赖注入库，而依赖注入是一种优秀的编程思想，它可以通过解耦项目来提升项目的可阅读性、可扩展性和可维护性，并使得单元测试更为方便。因此，**Dagger适用于所有项目**。
 
-2. **Dagger适合什么样的个人和团队？**  
+####(2) Dagger适合什么样的个人和团队
 Dagger适合**有学习能力并且愿意学习**的个人和团队。这里要注意，如果你是开发团队的负责人，在决定启用Dagger之前一定要确认你的所有队员（起码是大部分队员）都符合这样的条件，否则Dagger可能会起反作用，毕竟——它不是ButterKnife。
