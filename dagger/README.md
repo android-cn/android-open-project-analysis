@@ -265,12 +265,12 @@ ObjectGraph 是个抽象类，是 Dagger 除了注解外对外暴露的唯一 AP
 ####4.2 类功能详细介绍
 #####4.2.1 Binding.java —— 节点
 Binding 是一个泛型抽象类，相当于依赖关系 DAG 图中的节点，依赖关系 DAG 图中得每一个节点都有一个由 APT 生成的继承自 Binding 的类与之对应，而依赖关系 DAG 图中的每一个节点与 Host 和 Dependency 一一对应，所以每个 Host 或 Dependency 必然有一个由 APT 生成的继承自 Binding 的子类与之对应，我们先简单的将这些子类分为 HostBinding 和 DependencyBinding。  
-**(1) Binding.java 实现的接口**  
+#####(1) Binding.java 实现的接口
 Binding.java 实现了两个接口，第一个是 javax 的`Provider`接口，此接口提供了 get() 函数用于返回一个 Dependency 实例，当然也可以是 Host 实例。  
 第二个接口是 Dagger 中的`MembersInjecter`接口，此接口提供了 injectMembers() 用来向 Host 对象中注入(即设置) Dependency。  
 单纯的 DependencyBinding 只要实现`Provider`接口，在 get() 函数中返回自己的实例即可，单纯的 HostBinding 只要实现`MembersInjecter`，在 injectMembers() 函数中调用之前的 DependencyBinding 的 get() 函数对自己的依赖进行设置即可。如果一个类既是 Host 又是 Dependency，则与它对应的 Binding 子类这两个接口都需要实现。 
 
-**(2) 生成的 Binding 代码示例**  
+#####(2) 生成的 Binding 代码示例
 如下的程序
 
 ```java
@@ -314,7 +314,7 @@ public final class Dependency$$InjectAdapter extends Binding<Dependency> impleme
 }
 ```
 
-**(3) Binding 分类**  
+#####(3) Binding 分类
 上面我们将生成的 Binding 子类简单分为了 HostBinding 和 DependencyBinding，实际根据前面的注入方式我们知道依赖的生成方式有 @Inject 和 @Provides 两种，Dagger 对这两种方式生成的 Binding 子类规则略有不同。  
 
 对于 Inject 方式的注入，APT 会在 Dependency 同一个 package 下以 Dependency 的 ClassName 加上 $$InjectAdapter 为类名生成一个 Binding 子类。
@@ -329,31 +329,31 @@ public final class Dependency$$InjectAdapter extends Binding<Dependency> impleme
 上面三种 Binding 中，第一、二种会在 ObjectGraph.create 时加载进来，第三种在用的时候才会被动态加载。(2) 生成的 Binding 分别就是 HostBinding 和 InjectBinding。 
 
 下面介绍几个函数：  
-**(4) get()**  
+#####(4) get()
 表示得到此 Binding 对应 Dependency。InjectBinding 会在 get() 中调用被 @Inject 修饰的构造函数，ProvidesBinding 会在 get() 函数中调用被 @Provides 修饰的生成函数。  
-**(5) injectMembers()**  
+#####(5) injectMembers()
 表示向此 Binding 对应 Host 对象中注入依赖，这个函数的实现一般就是被 @Inject 修饰的属性赋值为其对应 Binding 的 get() 函数返回值。  
-**(6) attach()**  
+#####(6) attach()
 attach 函数表示提供此 Binding(一般是 HostBinding) 依赖的 Binding(一般是 DependencyBinding) 的获取方式，对于 DAG 图来说相当于把图中两个节点连接起来。  
-**(7) 属性含义**  
+#####(7) 属性含义
 `requiredBy` 表示这个 Binding 属于哪个对象，如属于 Dependency 或者 Host。  
 // TODO 需要补充
 
 #####4.2.2 Linker.java —— 拼装者
 `Linker`负责将每一个`HostBinding`和它依赖的`DependencyBindingBinding`进行连接，也就是负责 DAG 的拼装。Dagger 在运行时维护一个或多个`Linker`，每个`Linker`中有一些`Binding`（以Map形式存在）。这些`Binding`两两之间会存在或不存在依赖关系，而`Linker`就负责将存在依赖关系的`Binding`之间进行连接，从而拼装成可用的 DAG。
 
-**`Linker`有两个关键的属性：**  
-**(1) `private final Queue<Binding<?>> toLink = new ArrayQueue<Binding<?>>()`**  
+**`Linker`有两个关键的属性：
+#####(1) `private final Queue<Binding<?>> toLink = new ArrayQueue<Binding<?>>()`
 这个 Queue 包含了所有待连接的 Binding。连接（link），从 DAG 的角度说，就是把某个节点与其所依赖的各个节点连接起来。而对于 Binding 来说，就是把当前 Binding 和它内部依赖的 Binding 进行连接，即初始化这个 Binding 内部的所有 Binding，使它们可用。  
-**(2) `private final Map<String, Binding<?>> bindings = new HashMap<String, Binding<?>>()`**  
+#####(2) `private final Map<String, Binding<?>> bindings = new HashMap<String, Binding<?>>()`
 将 Binding 以 Map 的形式存储，key 是用来唯一确定 Binding 的字符串，具体形式是类名加上一个用于区分同类型的前缀。这些 Binding 不仅包含已连接的，也包含未连接的。
 
 **`Linker`有两个关键的函数：**  
-**(1) `public Binding<?> requestBinding(String key, Object requiredBy, ClassLoader classLoader, boolean mustHaveInjections, boolean library)`**  
+#####(1) `public Binding<?> requestBinding(String key, Object requiredBy, ClassLoader classLoader, boolean mustHaveInjections, boolean library)`
 这个函数会根据传入的 key 返回一个 Binding。首先，会尝试从 bindings 变量中查找这个 key，如果找到了，就将找到的 Binding 返回（如果找到后发现这个 Binding 还未连接，还需要它放进 toLink 中）；如果找不到，说明需要的 Binding 是一个`InjectAdapter`（因为另一种 Binding，ProvidesBinding 在初始化时就已经加载完毕了），就生成一个包含了这个 key 的`DeferredBinding`，并把它添加到 toLink（等待稍后载入）后返回 null。  
 requestBinding -> toLink.add(deferredBinding) -> linkRequested() -> toLink.add(resolvedBinding); -> binding.attach(this);
 
-**(2) `public void linkRequested()`**  
+#####(2) `public void linkRequested()`
 这个函数会根据 toLink 中的`DeferredBinding`载入相应的`InjectAdapter`后添加到`bindings`，并把所有普通的`Binding`进行连接。另外，由于连接的实质是初始化一个`Binding`，即初始化一个`Binding`内部依赖的`Bindings`，因此，这是一个循环的过程：由上至下不断地由`DeferredBinding`加载`InjectAdapter`和连接新的未连接的`Binding`，直到旧的`Binding`全都被连接，而且不再产生新的`Binding`。从 DAG 的角度来说，就是将某个节点不断向下延伸，直到所有的依赖和传递依赖都被获取到。  
 不断从 toLink 中取出待 link 的 Binding，如果是`DeferredBinding`，则根据 APT 生成规则查找到相应的 Binding，即 APT 生成的以 $$InjectAdapter 结尾的 Binding 子类。  
 
@@ -362,74 +362,74 @@ requestBinding -> toLink.add(deferredBinding) -> linkRequested() -> toLink.add(r
 `Loader`是一个纯辅助类，它通过 ClassLoader 加载 APT 生成的`ModuleAdapter`类和`InjectAdapter`的类，并初始化一个该类对象返回。另外，实质上`Loader`是一个抽象类，而在运行时，Dagger 使用的是 Loader 的子类`FailoverLoader`。
 
 **`Loader`有四个关键的函数：**  
-**(1) `protected Class<?> loadClass(ClassLoader classLoader, String name)`**  
+#####(1) `protected Class<?> loadClass(ClassLoader classLoader, String name)`
 根据类名把类加载到内存。  
-**(2) `protected <T> T instantiate(String name, ClassLoader classLoader)`**  
+#####(2) `protected <T> T instantiate(String name, ClassLoader classLoader)`
 根据类名获取类的实例。  
-**(3) `public abstract <T> ModuleAdapter<T> getModuleAdapter(Class<T> moduleClass)`**  
+#####(3) `public abstract <T> ModuleAdapter<T> getModuleAdapter(Class<T> moduleClass)`
 获取指定的 Module 类所对应的 ModuleAdapter 实例。  
-**(4) `public abstract Binding<?> getAtInjectBinding(String key, String className, ClassLoader classLoader, boolean mustHaveInjections)`**    
+#####(4) `public abstract Binding<?> getAtInjectBinding(String key, String className, ClassLoader classLoader, boolean mustHaveInjections)`  
 根据 key 获取对应的 InjectAdapter 实例。  
-**(5) `public abstract StaticInjection getStaticInjection(Class<?> injectedClass)`**  
+#####(5) `public abstract StaticInjection getStaticInjection(Class<?> injectedClass)`
 根据被注入的 Class 获取对应的 StaticInjection 实例。  
 Loader 有一个 caches 变量，用来缓存被初始化过的对象，是一个嵌套的 Memoizer 结构，具体可看下面介绍，简单理解就是嵌套的 HashMap，第一层 Key 是 ClassLoader，第二层 Key 是 ClassName，Value 是 Class 对象。
 
 #####4.2.4 ObjectGraph —— 管理者
 ObjectGraph 是个抽象类，负责 Dagger 所有的业务逻辑，Dagger 最关键流程都是从这个类发起的，包括依赖关系图创建、实例(依赖或宿主)获取、依赖注入。  
 ObjectGraph 主要函数有：  
-**(1) create(Object... modules)**  
+#####(1) create(Object... modules)
 这是个静态的构造函数，用于返回一个 ObjectGraph 的实例，是使用 Dagger 调用的第一个函数。参数为 ModuleClass 对象，函数作用是根据 ModuleClass 构建一个依赖关系图。此函数实现会直接调用  
 ```java
 DaggerObjectGraph.makeGraph(null, new FailoverLoader(), modules)
 ```
 返回一个`DaggerObjectGraph`对象，我们会在下面 DaggerObjectGraph 介绍中具体介绍实现过程。  
-**(2) inject(T instance)**  
+#####(2) inject(T instance)
 抽象函数，表示向某个 Host 对象中注入依赖。  
-**(3) injectStatics()**  
+#####(3) injectStatics()
 抽象函数，表示向 ObjectGraph 中相关的 Host 注入静态属性。  
-**(4) get(Class<T> type)**  
+#####(4) get(Class<T> type)
 抽象函数，表示得到某个对象的实例，多用于得到依赖的实例。  
-**(5) plus(Object... modules)**  
+#####(5) plus(Object... modules)
 抽象函数，表示返回一个新的包含当前 ObjectGraph 中所有对象的 ObjectGraph。  
-**(6) validate()**  
+#####(6) validate()
 抽象函数，表示对当前 ObjectGraph 做检查。  
 
 #####4.2.5 DaggerObjectGraph 
 DaggerObjectGraph 是 ObjectGraph 的静态内部类，也是 ObjectGraph 目前唯一的子类。因为 ObjectGraph 的 create() 函数直接返回了 DaggerObjectGraph 对象，所以对 Dagger 的调用实际都是对 DaggerObjectGraph 的调用。  
 DaggerObjectGraph 主要属性有：
-**(1) Map<String, Class<?>> injectableTypes**  
+#####(1) Map<String, Class<?>> injectableTypes
 这个变量记录了所有需要被依赖注入的 Host 类型，以 Host 的 ClassName 加上一定规则前缀(// TODO)做为 key，以其所对应的 Module 为 value。
-**(2) Map<Class<?>, StaticInjection> staticInjections**  
+#####(2) Map<Class<?>, StaticInjection> staticInjections
 这个变量记录了所有需要被静态依赖注入的 Host 类型，以 Host 的 ClassName 加上一定规则前缀(// TODO)做为 key，以其所对应的 Module 为 value。
-**(3) Linker linker**  
+#####(3) Linker linker
 Linker 对 Binding 进行管理，存储了当前 ObjectGraph 所有的 Binding，负责将 Binding 关联起来，查找 Binding，并当 Binding 不存在时查找 Binding。具体见下面 `Linker.java` 介绍。  
-**(4) Loader plugin**  
+#####(4) Loader plugin
 Loader 负责加载类，主要是加载 APT 生成的辅助类。  
 这个变量名叫 plugin，实际也说明了 Dagger 的一大优势，就是它是支持多个 ClassLoader，这样通过 Dagger 实现依赖注入的 Android 应用，插件化时 Dagger 不会对其产生影响，而截止这个分析文档完成时，轻量级的 ButterKnife 都不支持多个 ClassLoader。  
-DaggerObjectGraph 主要函数有：**  
-**(1) makeGraph 函数**  
+DaggerObjectGraph 主要函数有：  
+#####(1) makeGraph 函数
 makeGraph 函数首先会通过 Modules.loadModules 函数得到所有的 ModuleAdapter；    
 第二步遍历所有 ModuleAdapter，将其中的需要依赖注入 Host 类型（injectableTypes）和需要静态静态注入 Host 类型（staticInjections）都保存下来，最后做为新的 DaggerObjectGraph 对象构造入参。将 ModuleAdapter 中所有的 Binding（这里是ProvidesBinding）都保存下来，最后做为新的 DaggerObjectGraph 对象构造入参。另一种 Binding —— InjectBinding 会在需要用到的时候进行动态载入；  
 第三步新建 Linker 保存 Binding；  
 最后用这些变量一起构建新的 DaggerObjectGraph 对象。  
 
-**(2) inject(T instance)**  
+#####(2) inject(T instance)
 表示向某个 Host 对象中注入依赖。首先根据下面的 getInjectableTypeBinding() 函数查找到 Host 对应的 InjectBinding，然后调用 injectMembers() 函数注入依赖，将依赖注入结束的 Host 返回。  
-**(3) injectStatics()**  
+#####(3) injectStatics()
 表示向 ObjectGraph 中相关的 Host 注入静态属性。  
-**(4) get(Class<T> type)**  
+#####(4) get(Class<T> type)
 表示得到某个对象的实例，多用于得到 Denpendency 的实例。首先根据下面的 getInjectableTypeBinding() 函数查找到 Denpendency 对应的 Binding，然后调用 get() 返回该 Denpendency 实例。  
-**(5) plus(Object... modules)**  
+#####(5) plus(Object... modules)
 抽象函数，表示返回一个新的包含当前 ObjectGraph 中所有对象的 ObjectGraph。  
-**(6) validate()**  
+#####(6) validate()
 表示对当前 ObjectGraph 做检查，首先会利用 Linker 查找到所有节点并连接起来，然后调用 ProblemDetector 进行检查。ProblemDetector 会在后面解释作用。  
-**(7) getInjectableTypeBinding(ClassLoader classLoader, String injectableKey, String key)
+#####(7) getInjectableTypeBinding(ClassLoader classLoader, String injectableKey, String key)
 表示根据 key 得到某个 Binding。首先会从 ObjectGraph.injectableTypes 中得到其对应的 Module，然后通过 linker.requestBinding 查找其对应的 Binding，若未查找到的 Binding 或是尚未连接，则调用 linker.linkRequested() 得到 InjectBindng 并将其添加到 ObjectGraph 中，此时再次通过 linker.requestBinding 即可查找到其对应的 Binding，返回即可。  
-**(8) linkInjectableTypes()**  
+#####(8) linkInjectableTypes()
 将 injectableTypes 这个变量中记录的所有需要被依赖注入的 Host 类型都查找一遍 InjectBinding（实际目前还只是标记，真正查找是在 linkEverything 函数完成），这个函数我觉得叫 requestInjectableTypesBinding 更合适。  
-**(9) linkStaticInjections()**  
+#####(9) linkStaticInjections()
 将 staticInjections 这个变量中记录的所有需要被静态依赖注入的 Host 类型都查找一遍 InjectBinding，这个函数我觉得叫 requestStaticInjections 更合适。  
-**(10) linkEverything()**  
+#####(10) linkEverything()
 会调用上面的 linkInjectableTypes() 和 linkStaticInjections 得到 InjectBinding，然后调用 linker.linkAll() 连接起来。  
 
 添加一个 DeferredBinding 到 Linker 的 toLink 队列中，然后调用 linker.linkRequested() 从 toLink 队列中取出 DeferredBinding。  
