@@ -14,25 +14,30 @@ EventBus 是一个 Android 事件发布/订阅框架，通过解耦发布者和�
 事件分为一般事件和 Sticky 事件，相对于一般事件，Sticky 事件不同之处在于，当事件发布后，再有订阅者开始订阅该类型事件，依然能收到该类型事件最近一个 Sticky 事件。  
 **订阅者(Subscriber)：**订阅某种事件类型的对象。当有发布者发布这类事件后，EventBus 会执行订阅者的 onEvent 函数，这个函数叫`事件响应函数`。订阅者通过 register 接口订阅某个事件类型，unregister 接口退订。订阅者存在优先级，优先级高的订阅者可以取消事件继续向优先级低的订阅者分发，默认所有订阅者优先级都为 0。    
 **发布者(Publisher)：**发布某事件的对象，通过 post 接口发布事件。  
+
 ###2. 总体设计
 本项目较为简单，总体设计请参考`3.1 订阅者、发布者、EventBus 关系图`及`4.1 类关系图`。  
+
 ###3. 流程图
 ####3.1 订阅者、发布者、EventBus 关系图
 ![eventbus img](image/relation-flow-chart.png)  
-EventBus 负责存储订阅者、事件相关信息，订阅者和发布者都只和 EventBus 关联。    
+EventBus 负责存储订阅者、事件相关信息，订阅者和发布者都只和 EventBus 关联。  
+
 ####3.2 事件响应流程
 ![eventbus img](image/event-response-flow-chart.png)  
-订阅者首先调用 EventBus 的 register 接口订阅某种类型的事件，当发布者通过 post 接口发布该类型的事件时，EventBus 执行调用者的事件响应函数。  
+订阅者首先调用 EventBus 的 register 接口订阅某种类型的事件，当发布者通过 post 接口发布该类型的事件时，EventBus 执行调用者的事件响应函数。 
+
 ###4. 详细设计
-###4.1 类关系图
+####4.1 类关系图
 ![eventbus img](image/class-relation.png)  
 以上是 EventBus 主要类的关系图，从中我们也可以看出大部分类都与 EventBus 直接关联。上部分主要是订阅者相关信息，中间是 EventBus 类，下面是 发布者发布事件后的调用，具体类的功能请看下面的详细介绍。  
-###4.2 核心类功能介绍
-####4.2.1 EventBus.java 
+
+####4.2 类详细介绍
+#####4.2.1 EventBus.java 
 EventBus 类负责所有对外暴露的 API，其中的 register、post、unregister 函数配合上自定义的 EventType 及事件响应函数即可完成核心功能，见 3.2 图。  
 EventBus 默认可通过静态函数 getDefault 获取单例，当然有需要也可以通过 EventBusBuilder 或 构造函数新建一个 EventBus，每个新建的 EventBus 发布和订阅事件都是相互隔离的，即一个 EventBus 对象中的发布者发布事件，另一个 EventBus 对象中的订阅者不会收到该订阅。  
 EventBus 中对外 API，主要包括两类：  
-####(1) register 和 unregister  
+**(1) register 和 unregister**  
 分别表示订阅事件和取消订阅。register 最底层函数有三个参数，分别为订阅者对象、是否是 Sticky 事件、优先级。  
 ```java
 private synchronized void register(Object subscriber, boolean sticky, int priority)
@@ -41,12 +46,12 @@ PS：在此之前的版本 EventBus 还允许自定义事件响应函数名称�
 register 函数流程图如下：
 ![eventbus img](image/register-flow-chart.png)  
 register 函数中会先根据订阅者类名去`subscriberMethodFinder`中查找当前订阅者所有事件响应函数，然后循环每一个事件响应函数，依次执行下面的 subscribe 函数：  
-####(2) subscribe   
+**(2) subscribe**  
 subscribe 函数分三步  
 第一步：通过`subscriptionsByEventType`得到该事件类型所有订阅者信息队列，根据优先级将当前订阅者信息插入到订阅者队列`subscriptionsByEventType`中；  
 第二步：在`typesBySubscriber`中得到当前订阅者订阅的所有事件队列，将此事件保存到队列`typesBySubscriber`中，用于后续取消订阅；  
 第三步：检查这个事件是否是 Sticky 事件，如果是则从`stickyEvents`事件保存队列中取出该事件类型最后一个事件发送给当前订阅者。  
-####(3) post、cancel 、removeStickEvent
+**(3) post、cancel 、removeStickEvent**  
 post 函数用于发布事件，cancel 函数用于取消某订阅者订阅的所有事件类型、removeStickEvent 函数用于删除 sticky 事件。  
 post 函数流程图如下：
 ![eventbus img](image/post-flow-chart.png)  
@@ -60,7 +65,7 @@ b. 如果是`MainThread`并且发布线程就是主线程，则直接调用订�
 c. 如果是`BackgroundThread`并且发布线程是主线程，则启动异步线程去处理，否则直接直接调用订阅者的事件响应函数；  
 d. 如果是`Async`，则启动异步线程去处理——调用订阅者的事件响应函数。  
 ```
-####(4) 主要成员变量含义   
+**(4) 主要成员变量含义**   
 1.`defaultInstance`默认的 EventBus 实例，根据`EventBus.getDefault()`函数得到。  
 2.`DEFAULT_BUILDER`默认的 EventBus Builder。  
 3.`eventTypesCache`事件对应类型及其父类和实现的接口的缓存，以 eventType 为 key，元素为 Object 的 ArrayList 为 Value，Object 对象为 eventType 的父类或接口。 
@@ -90,9 +95,10 @@ public void onEvent(NoSubscriberEvent event)
 订阅该事件进行处理，默认为 true。  
 16.`eventInheritance`是否支持事件继承，默认为 true。  
 
-####4.2.2 EventBusBuilder.java
+#####4.2.2 EventBusBuilder.java
 跟一般 Builder 类似，用于在需要设置参数过多时构造 EventBus。包含的属性也是 EventBus 的一些设置参数，意义见`4.2.1 EventBus.java`的介绍，build 函数用于新建 EventBus 对象，installDefaultEventBus 函数将当前设置应用于 Default EventBus。  
-####4.2.3 SubscriberMethodFinder.java
+
+#####4.2.3 SubscriberMethodFinder.java
 订阅者响应函数信息存储和查找类，由 HashMap 缓存，以 ${subscriberClassName} 为 key，SubscriberMethod 对象为元素的 ArrayList 为 value。findSubscriberMethods 函数用于查找订阅者响应函数，如果不在缓存中，则遍历自己的每个函数并递归父类查找，查找成功后保存到缓存中。遍历及查找规则为：  
 a. 遍历 subscriberClass 每个方法；  
 b. 该方法不以`java.`、`javax.`、`android.`这些 SDK 函数开头，并以 ${eventMethodName} 开头，表示可能是事件响应函数继续，否则检查下一个方法；  
@@ -114,27 +120,29 @@ b. 遇到 java. javax. android. 开头的类会自动停止查找
 ```
 类中的 skipMethodVerificationForClasses 属性表示跳过哪些类中非法以 {eventMethodName} 开头的函数检查，若不跳过泽辉抛出异常。  
 PS：在此之前的版本 EventBus 允许自定义事件响应函数名称，缓存的 HashMap key 为 ${subscriberClassName}.${eventMethodName}，这版本中此功能已经被去除。  
-####4.2.4 SubscriberMethod.java
+
+#####4.2.4 SubscriberMethod.java
 订阅者事件响应函数信息，包括响应方法、线程 Mode、事件类型以及一个用来比较 SubscriberMethod 是否相等的特征值 methodString 共四个变量，其中 methodString 为 ${methodClassName}#${methodName}(${eventTypeClassName}。  
-####4.2.5 Subscription.java
+#####4.2.5 Subscription.java
 订阅者信息，包括 subscriber 对象、事件响应方法 SubscriberMethod、优先级 priority。  
-####4.2.6 HandlerPoster.jva
+#####4.2.6 HandlerPoster.jva
 事件主线程处理，对应`ThreadMode.MainThread`。继承自 Handler，enqueue 函数将事件放到队列中，并利用 handler 发送 message，handleMessage 函数从队列中取事件，invoke 事件响应函数处理。  
-####4.2.7 AsyncPoster.java
+#####4.2.7 AsyncPoster.java
 事件异步线程处理，对应`ThreadMode.Async`，继承自 Runnable。enqueue 函数将事件放到队列中，并调用线程池执行当前任务，在 run  函数从队列中取事件，invoke 事件响应函数处理。  
-####4.2.8 BackgroundPoster.java
+#####4.2.8 BackgroundPoster.java
 事件 Background 处理，对应`ThreadMode.BackgroundThread`，继承自 Runnable。enqueue 函数将事件放到队列中，并调用线程池执行当前任务，在 run  函数从队列中取事件，invoke 事件响应函数处理，与 AsyncPoster.java 不同的是这里会循环等待 run，尚未想清楚原因。  
-####4.2.9 PendingPost.java
+#####4.2.9 PendingPost.java
 订阅者和事件信息实体类，并含有同一队列中指向下一个对象的指针。通过缓存存储不用的对象，减少下次创建的性能消耗。  
-####4.2.10 PendingPostQueue.java
+#####4.2.10 PendingPostQueue.java
 通过 head 和 tail 指针维护一个`PendingPost`队列。HandlerPoster、AsyncPoster、BackgroundPoster 都包含一个此队列实例，表示各自的订阅者及事件信息队列，在事件到来时进入队列，处理时从队列中取出一个元素进行处理。  
-####4.2.11 SubscriberExceptionEvent.java
+#####4.2.11 SubscriberExceptionEvent.java
 当调用事件处理函数异常时发送的 EventBus 内部自定义事件，通过 post 发送，订阅者可自行订阅这类事件进行处理。  
-####4.2.12 NoSubscriberEvent.java
+#####4.2.12 NoSubscriberEvent.java
 当没有事件处理函数对事件处理时发送的 EventBus 内部自定义事件，通过 post 发送，订阅者可自行订阅这类事件进行处理。  
-####4.2.13 EventBusException.java
+#####4.2.13 EventBusException.java
 封装于 RuntimeException 之上的 Exception，只是覆盖构造函数，相当于一个标记，标记是属于 EventBus 的 Exception。  
-####4.2.14 ThreadMode.java
+#####4.2.14 ThreadMode.java
 线程 Mode 枚举类，表示事件响应函数执行线程信息，包括`ThreadMode.PostThread`、`ThreadMode.MainThread`、`ThreadMode.BackgroundThread`、`ThreadMode.Async`四种。  
+
 ###5. 与 Otto 对比
 等 Otto 分析完成  

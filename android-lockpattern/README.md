@@ -8,7 +8,7 @@ android-lockpattern 实现原理解析
 
 ####1.1 关于
 
-Android的图案密码解锁
+Android的图案密码解锁，基于[Android Source Code](https://android.googlesource.com/platform/frameworks/base/+/master/core/java/com/android/internal/widget/LockPatternView.java)
 
 ![ScreenShot](image/ScreenShot.png)
 
