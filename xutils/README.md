@@ -54,7 +54,7 @@ Handler异步通信，Http网络请求， IO流。
 ####3.1 View模块
 ![View时序图](image/ViewSequence.png)
 - 主要的顺序就是在ViewUtils的`inject(View)`将需要的绑定数据的对象传入，`injectObject(Object, ViewFinder)` 主要通过反射获取对象的成员变量和方法， 
-然后获取成员变量和方法的注解的值， 将成员变量赋值， 事件和方法绑定， 在EventListenerManager中是通过代理将事件和方法绑定。
+然后获取成员变量和方法的注解的值， 将成员变量赋值， 事件和方法绑定， 在EventListenerManager中是通过代理将事件和方法绑定。[注解传送门](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/annotation.md)  [动态代理传送门](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/proxy.md)
 
 ####3.2 DB模块
 ![Db流程图](image/DbSequence.png)
@@ -67,10 +67,12 @@ Handler异步通信，Http网络请求， IO流。
 - 1.HttpUtils通过send或者down获取网络请求。
 - 2.HttpHandler异步任务读取数据，doInBackground()中访问网络， 开始的时候调用publishProgress()，
 sendRequest()，handleResponse()将网络数据包装入ResponseInfo，
-updateProgress()是在DownloadHandler数据读写时候的回调， 次方法又调用publishProgress()，
+updateProgress()是在DownloadHandler数据读写时候的回调， 此方法又调用publishProgress()，
 publishProgress()通过Handler回调onProgressUpdate() ,
-onProgressUpdate()调用RequestCallback，完成回调流程。
+onProgressUpdate()调用RequestCallback，完成回调流程。（缓存策略是读取的时候优先从缓存中读取， 读取的时候判断缓存是否过期， 如果没有缓存或者缓存已过期就会从服务器读取， 这里的缓存时间可以配置）
 - 3.DownloadHandler， handleEntity()将网络数据转化为需要的数据格式。 在读写数据的时候会回调HttpHandler的updateProgress(), 如果当用户选择停止的时候直接停止数据读写。
+- 4. 断点下载的原理就是通过读取本地文件的大小， 然后将大小的值传给服务器， 服务器会从当前点开始返回数据。
+
 
 ####3.4 Bitmap模块
 ![Bitmap流程图](image/BitmapSequence.png)
@@ -98,19 +100,13 @@ onProgressUpdate()调用RequestCallback，完成回调流程。
 
 ####不同点：
 - 1. Volley的Http请求在 android 2.3 版本之前是通过HttpClient ，在之后的版本是通过URLHttpConnection。xUtils都是通过HttpClient请求网络（bitmap模块图片下载是通过URLHttpConnection）。 在2.3以后URLHttpConnection也很稳定， 扩展和维护性好， 速度也快， 而且支持GZIP压缩，推荐采用URLHttpConnection。
-- 2.Volley在Http请求数据下载完成后是先缓存进byte[]， 然后是分配给不同的请求自己转化为自己需要的格式。xUtils是直接转化为想要的格式。 觉得各有优劣， Volley这样做的扩展性比较好， 但是不能存在大数据请求，否则就OOM。xUtils不缓存入byte[] 就支持大数据的请求， 速度比Volley稍快，但扩展性就低。
+- 2.Volley在Http请求数据下载完成后是先缓存进byte[]， 然后是分配给不同的请求自己转化为自己需要的格式。xUtils是直接转化为想要的格式。 觉得各有优劣， Volley这样做的扩展性比较好， 但是不能存在大数据请求，否则就OOM。xUtils不缓存入byte[] 就支持大数据的请求， 速度比Volley稍快，但扩展性就低。个人推荐Volley， 因为在Request中就可以将数据转化为自己想要的bean， 而且是在子线程中。 而xUtils是返回string， 如果数据量大，在解析的过程自己还要去开启异步线程。
 - 3.Volley最终是将网络请求的数据缓存进sd卡文件， xUtils是缓存在运行内存中。 如果频繁访问相同的网络地址， xUtils比Volley更快。
-- 4.Volley访问网络数据时直接开启固定个数线程访问网络， 在run方法中执行死循环， 阻塞等待请求队列。 xUtils是开启线程池来管理线程。Volley请求数据更快，消耗资源更大，xUtils反之。
+- 4.Volley访问网络数据时直接开启固定个数线程访问网络， 在run方法中执行死循环， 阻塞等待请求队列。 xUtils是开启线程池来管理线程。
+- 5. 缓存失效策略， volley的所有网络数据支持从http响应头中控制是否缓存和读取缓存失效时间，也可以自定义缓存失效时间。 Xutils网络数据请求是自定义缓存失效时间， bitmap模块没有失效策略， 只要本地有就会从本地读取。
+
+
+
   
 
-###6. 修改完善  
-在完成了上面 5 个部分后，移动模块顺序，将  
-`2. 详细设计` -> `2.1 核心类功能介绍` -> `2.2 类关系图` -> `3. 流程图` -> `4. 总体设计`  
-顺序变为  
-`2. 总体设计` -> `3. 流程图` -> `4. 详细设计` -> `4.1 类关系图` -> `4.2 核心类功能介绍`  
-并自行校验优化一遍，确认无误后，让`校对 Buddy`进行校对，`校对 Buddy`校队完成后将  
-`校对状态：未完成`  
-变为：  
-`校对状态：已完成`  
 
-不足： 作为新手， 感觉还是没有站在更高的角度去分析， 组织能力也不是太好， 如果觉得有不对的可以联系我， 大家一起交流交流 ， QQ：`271945881` 。 也可以联系`Trinea`。 谢谢！

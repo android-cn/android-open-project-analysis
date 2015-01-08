@@ -2,7 +2,7 @@ Volley 实现原理解析
 ====================================
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 Volley 部分  
 > 项目地址：[Volley](https://android.googlesource.com/platform/frameworks/volley/)，分析的版本：[35ce778](https://android.googlesource.com/platform/frameworks/volley/+/35ce77836d8e1e951b8e4b2ec43e07fb7336dab6)，Demo 地址：[Volley Demo](https://github.com/android-cn/android-open-project-demo/tree/master/volley-demo)    
-> 分析者：[grumoon](https://github.com/grumoon)，校对者：[promeG](https://github.com/promeG)，校对状态：未完成   
+> 分析者：[grumoon](https://github.com/grumoon)，校对者：[huxian99](https://github.com/huxian99)，校对状态：未完成   
 
 
 ###1. 功能介绍  
@@ -234,7 +234,7 @@ Network中方法performRequest的返回值。
 
 
 ####4.2.12 HttpStack.java
-代表Http栈的接口  
+代表基于http的网络的接口  
 唯一方法，执行请求  
 ```java
 public HttpResponse performRequest(Request<?> request, Map<String, String> additionalHeaders)
@@ -242,9 +242,9 @@ public HttpResponse performRequest(Request<?> request, Map<String, String> addit
 ```
 执行request代表的请求，第二个参数表示发起请求之前，添加额外的请求Headers
 ####4.2.13 HttpClientStack.java
-继承HttpStack，基于HttpClient的http栈的实现类
+继承HttpStack，基于HttpClient的实现类
 ####4.2.14 HurlStack.java
-继承HttpStack，基于urlconnection的http栈的实现类
+继承HttpStack，基于urlconnection的实现类
 
 ####4.2.15 Response.java
 封装了经过解析后的数据，用于传输。
@@ -271,7 +271,7 @@ public static long parseDateAsEpoch(String dateStr)
 解析时间，将RFC1123的时间格式，解析成epoch时间
 
 ```java
-public static long parseDateAsEpoch(String dateStr)
+public static String parseCharset(Map<String, String> headers)
 ```
 解析编码集，在Content-Type首部中获取编码集，如果没有找到，默认返回ISO-8859-1
 
