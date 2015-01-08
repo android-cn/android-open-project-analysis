@@ -89,6 +89,7 @@ CircularFloatingActionMenu 实现原理解析
 ![流程图](https://github.com/android-cn/android-open-project-analysis/blob/master/circular-floating-action-menu/流程图.jpg "流程图")
 ###3. 流程图
 ![设计流程图](https://github.com/android-cn/android-open-project-analysis/blob/master/circular-floating-action-menu/circlemenu.jpg "流程图")
+  
 总体的设计流程图如上图所示，中间最复杂的可能是计算view位置的地方。
 ###4. 详细设计
 
@@ -176,7 +177,7 @@ public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, 
         }
     }
 ```
-传入activity，视图特性配置，主题的id,背景图，imageview（子视图），mageview（子视图）的特性配置。用这些来配置选项按钮。
+传入activity，视图特性配置，主题的id,背景图，imageview（子视图），imageview（子视图）的特性配置。用这些来配置选项按钮。
   
 ##FloatingActionButton
 菜单按钮其实跟选项按钮的代码模式差不多，也是由设定子视图和一个建造器组成。  
