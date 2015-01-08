@@ -177,7 +177,7 @@ public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, 
         }
     }
 ```
-传入activity，视图特性配置，主题的id,背景图，imageview（子视图），mageview（子视图）的特性配置。用这些来配置选项按钮。
+传入activity，视图特性配置，主题的id,背景图，imageview（子视图），imageview（子视图）的特性配置。用这些来配置选项按钮。
   
 ##FloatingActionButton
 菜单按钮其实跟选项按钮的代码模式差不多，也是由设定子视图和一个建造器组成。  
