@@ -8,7 +8,8 @@ View 绘制流程
 整个View树的绘图流程是由ViewRoot.java类的performTraversals()函数发起的，整个流程如下
 
 ![viewdrawflow img](image/viewdrawflow/view_mechanism_flow.png)  
-
+![view_draw_method_chain img](image/viewdrawflow/view_draw_method_chain.jpg)  
+图片来自[鲍永章](http://weibo.com/u/3224930551)
 #####2. 概念 
 参考文献：http://developer.android.com/guide/topics/ui/how-android-draws.html  
 
@@ -393,7 +394,7 @@ draw过程在measure()和layout()之后进行，最终会调用到mView的draw()
 ViewRootImpl.draw()方法会调用该函数，DecorView.draw()继承自Framelayout，由于DecorView、FrameLayout以及FrameLayout的父类ViewGroup都未复写draw(),而ViewGroup的父类是View，因此DecorView.draw()调用的就是View.draw()。
 
 - View.onDraw()：  
-绘制View本身，自定义View往往会重载该函数来绘制View本身的内容。
+绘制View本身，默认为空实现，自定义View往往需要重载该函数来绘制View自身的内容。
 
 - View.dispatchDraw()：   
 View中的dispatchDraw是空实现，ViewGroup复写了该函数，内部循环调用View.drawChild()来发起对子视图的绘制，你不应该重载View的dispatchDraw()方法，因为该函数的默认实现代表了View的绘制流程，你不可能也没必要把系统的绘制流程写一遍吧。
