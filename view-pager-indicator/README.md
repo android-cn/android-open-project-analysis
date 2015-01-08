@@ -28,10 +28,10 @@ TabPageIndicator、IconPageIndicator继承自HorizontalScrollView是由于它们
 ####3.2.1 自定义控件步骤  
 以下直接引用了其中的一些篇章前言，具体内容大家直接点击链接进入正文
 
-1. [自定义控件创建步骤](http://hukai.me/android-training-course-in-chinese/ui/custom-view/index.html) ：  
-	* 继承一个View。
-	* 定义自定义的属性（外观与行为）。
-	* 应用自定义的属性。
+1. 自定义控件创建步骤  
+	* 继承View或View的子类，同时为了允许layouteditor创建并编辑你的view的实例，你需要提供至少一个构造函数，它应该包含一个Contenx与一个AttributeSet对象作为参数。
+	* 定义自定义的属性（外观与行为），在values/下建立styleable的xml文件，具体可参考ViewPagerIndicator库中的vpi_attrs.xml文件 。
+	* 应用自定义的属性，在构造函数中，做一些初始化，具体可看考。
 	* 添加属性和事件。
 
 2. [自定义View的绘制](http://hukai.me/android-training-course-in-chinese/ui/custom-view/custom-draw.html)  
