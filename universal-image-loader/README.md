@@ -267,22 +267,7 @@ syncLoading(boolean isSyncLoading)
 handler(Handler handler)
 ```
 #####4.2.5 ImageLoader.java
-采取了单例模式，用于图片的加载和显示，在使用之前必须先进行初始化
-```java
-public synchronized void init(ImageLoaderConfiguration configuration) {
-	if (configuration == null) {
-		throw new IllegalArgumentException(ERROR_INIT_CONFIG_WITH_NULL);
-	}
-	if (this.configuration == null) {
-		L.d(LOG_INIT_CONFIG);
-		engine = new ImageLoaderEngine(configuration);
-		this.configuration = configuration;
-	} else {
-		L.w(WARNING_RE_INIT_CONFIG);
-	}
-}
-```
-从中可以看出主要初始化了ImageLoaderEngine(详细参见4.2.8)
+采取了单例模式，用于图片的加载和显示，在使用之前必须先进行初始化.  
 我们在使用时调用的displayImage和loadImage方法最终都会走到下面这个方法中
 ```java
 public void displayImage(String uri, ImageAware imageAware, DisplayImageOptions options, ImageLoadingListener listener, ImageLoadingProgressListener progressListener)
@@ -378,33 +363,16 @@ private boolean downloadImage() throws IOException {
 8. 根据DisplayImageOptions配置对图片进行后处理(Post-process Bitmap)  
 9. 执行DisplayBitmapTask将图片显示在相应的控件上  
 #####4.2.8 ImageLoaderEngine.java
-执行线程LoadAndDisplayImageTask的引擎，三个Executor涉及的线程调优策略(后面会讲).
-主要是submit()方法
+执行线程LoadAndDisplayImageTask的引擎，三个线程池涉及的线程调优策略.  
 ```java
 private Executor taskExecutor;
 private Executor taskExecutorForCachedImages;
 private Executor taskDistributor;
-/** 用来记录正在加载的任务 */
-private final Map<Integer, String> cacheKeysForImageAwares = Collections
-			.synchronizedMap(new HashMap<Integer, String>());
-void submit(final LoadAndDisplayImageTask task) {
-	taskDistributor.execute(new Runnable() {
-		@Override
-		public void run() {
-			File image = configuration.diskCache.get(task.getLoadingUri());
-			boolean isImageCachedOnDisk = image != null && image.exists();
-			initExecutorsIfNeed();
-			if (isImageCachedOnDisk) {
-				taskExecutorForCachedImages.execute(task);
-			} else {
-				taskExecutor.execute(task);
-			}
-		}
-	});
-}
 ```
-taskDistributor用于从磁盘获取图片操作，根据在磁盘缓存中是否找到，使用不同的Executor执行任务. 在缓存中则使用taskExecutorForCachedImages去执行，若不在则使用taskExecutor去执行.
-为什么定义三个线程池而不是一个? 这个和线程池的调优有关, 如果只使用了一个线程池, 那么就不能根据任务的不同采取不同的任务优先级和运行策略. 从ImageLoaderConfiguration中看到如果没有自定义配置, taskExecutorForCacheImages和taskExecutor则默认都是调用了DefaultConfigurationFactory.createExecutor()，且传入的参数一致; taskDistributor则是调用了Executors.newCachedThreadPool(), 具体内容如下:   
+默认情况下:  
+taskDistributor使用Executors.newCachedThreadPool()工厂方法创建.  
+taskExecutor和taskExecutorForCachedImages线程池配置一致.  
+具体内容如下:   
 
 parameters|taskDistributor|taskExecutorForCachedImages/taskExecutor
 ---|---|---
@@ -415,25 +383,26 @@ unit|SECONDS|MILLISECONDS
 workQueue|SynchronousQueue|LIFOLinkedBlockingDeque/LinkedBlockingQueue
 priority|5|3
   
-taskDistributor在每创建一个新的线程的时候都需要读取一下磁盘，属于IO操作.需要图片缓存的应用一般需要加载图片的时候，同时创建很多线程，这些线程一般来的猛去的也快，存活时间不必太长. taskDistributor和taskExecutorForCachedImages涉及网络和磁盘的读取和写入操作，比较耗时.  
-[参考资料](http://www.cnblogs.com/kissazi2/p/3966023.html) 
+taskDistributor用于从磁盘获取图片操作，根据在磁盘缓存中是否找到，使用不同的Executor执行任务. 在缓存中则使用taskExecutorForCachedImages去执行，若不在则使用taskExecutor去执行.  
+[合理的配置线程池请参考这里](http://www.infoq.com/cn/articles/java-threadPool) 
 
 #####4.2.9 DisplayBitmapTask.java
-这也是一个线程类, 主要就是执行display过程了
+实现Runnable接口的线程类  
 ```java
 displayer.display(bitmap, imageAware, loadedFrom);
 engine.cancelDisplayTaskFor(imageAware);
 listener.onLoadingComplete(imageUri, imageAware.getWrappedView(), bitmap);
-```
-看到run方法里主要是就是这三句代码, 
+``` 
 第一句主要用于将bitmap对象显示在imageAware上.
-第二句可以看到调用了ImageLoaderEngine中的cancelDisplayTaskFor方法，移除正在加载的任务.
+第二句调用了ImageLoaderEngine中的cancelDisplayTaskFor方法，移除正在加载的任务.
 第三句执行onLoadingComplete()方法，将bitmap对象回调给用户.
-其中第二句在ImageLoaderEngine中定义的cacheKeysForImageAwares属性，主要用来记录正在加载的任务，将imageAware的id和memoryCacheKey做了一个hash映射，放在一个线程安全的Hashmap中. 每当display一个bitmap对象时，就从正在加载的任务中remove掉一个.
 
 下面主要分析下一张图片从download到display的每个阶段具体实现类, 每个类的分析选择DefaultConfigurationFactory中默认的配置
 #####4.2.10 ImageDownloader.java
-在ImageDownloader接口中，定义了枚举Scheme, 可以看出Android-Universal-Image-Loader支持图片的来源都有HTTP("http"), HTTPS("https"), FILE("file"), CONTENT("content"), ASSETS("assets"), DRAWABLE("drawable"), UNKNOWN("");具体获取图片来源的输入流见具体实现类
+定义了图片下载的接口，通过定义的枚举Scheme, 可以看出Android-Universal-Image-Loader支持图片的来源
+```java
+HTTP("http"), HTTPS("https"), FILE("file"), CONTENT("content"), ASSETS("assets"), DRAWABLE("drawable"), UNKNOWN("");
+```
 #####4.2.11 BaseImageDownloader.java
 ImageDownloader的具体实现类，主要通过调用getStream()方法根据不同来源获取输入流
 ```java
@@ -456,8 +425,7 @@ public InputStream getStream(String imageUri, Object extra) throws IOException {
 			return getStreamFromOtherSource(imageUri, extra);
 	}
 }
-```
-如果图片来自网络，你也可以修改设置默认的connectTimeout和readTimeout，默认的connectTimeout是5秒，默认的readTimeout是20秒  
+```  
 #####4.2.12 DiskCache.java
 定义了磁盘缓存的接口, 主要方法
 File get(String imageUri)根据原始图片的uri去获取缓存图片的文件  
@@ -501,7 +469,7 @@ public boolean save(String imageUri, InputStream imageStream, IoUtils.CopyListen
 它先是生成一个后缀名.tmp的临时文件，通过downloader得到的输入流imageStream拷贝到OutputStream中, finally中将临时文件tmpFile重命名回imageFile，并将tmpFile删除掉, 如果这些实现都没出什么问题，就reutrn一个true, 告诉别人，我save成功了
 
 #####4.2.15 ImageDecoder.java
-decode的接口，定义了Bitmap decode()方法
+定义了decode的接口，定义了Bitmap decode()方法
 #####4.2.16 BaseImageDecoder.java
 decode过程的具体实现类, 主要看decode方法，传入一个主要的参数就是ImageDecodingInfo, 根据decode的信息去解析图片.
 ```java
@@ -572,7 +540,7 @@ public static ViewScaleType fromImageView(ImageView imageView) {
 这样，图片的压缩处理就做好了，然后将bitmap返回.  
 
 #####4.2.17 MemoryCache.java
-这个主要是一个内存缓存的接口类，提供了put(),get(),remove(),clear(),keys()等基本方法，如果你没有手动配置缓存的大小及实现的算法，可以通过DefaultConfigurationFactory.createMemoryCache()方法看到memoryCacheSize是android系统分配给每个应用内存的1/8作为阈值, 还看到默认算法的选择是LruMemoryCache.  
+定义了内存缓存的接口类，默认算法的选择是LruMemoryCache，并且将android系统分配给每个应用内存的1/8作为阈值  
 #####4.2.18 LruMemoryCache.java
 LRU: Least Recently Used近期最少使用算法.
 一般实现LRU算法都是使用LinkedHashMap，UIL也不例外，看到它定义了
@@ -636,30 +604,6 @@ gridView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance()
 private final boolean pauseOnScroll;
 /** Fling过程是否暂停 */
 private final boolean pauseOnFling;
-public PauseOnScrollListener(ImageLoader imageLoader, boolean pauseOnScroll, boolean pauseOnFling) {
-	this(imageLoader, pauseOnScroll, pauseOnFling, null);
-}
-@Override
-public void onScrollStateChanged(AbsListView view, int scrollState) {
-	switch (scrollState) {
-		case OnScrollListener.SCROLL_STATE_IDLE:
-			imageLoader.resume();
-			break;
-		case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-			if (pauseOnScroll) {
-				imageLoader.pause();
-			}
-			break;
-		case OnScrollListener.SCROLL_STATE_FLING:
-			if (pauseOnFling) {
-				imageLoader.pause();
-			}
-			break;
-	}
-	if (externalListener != null) {
-		externalListener.onScrollStateChanged(view, scrollState);
-	}
-}
 ```
 个人选择是pauseOnScroll＝false，pauseOnFling＝true.
 在用户滑动屏幕的时候还是不要暂停, 因为用户滑动屏幕说明他还是关注图片内容的, 如果在fling状态下, 用户可能迫不及待想看后面的内容，最好就不要处理图片来"打扰"用户了, 当然你可以根据自己的喜好设置他们.  
@@ -669,30 +613,17 @@ public void onScrollStateChanged(AbsListView view, int scrollState) {
 Universal-Image-Loader在内存缓存时默认使用了LRU算法.  
 LRU: Least Recently Used近期最少使用算法, 选用了基于链表结构的LinkedHashMap.  
 假设情景：内存缓存设置的阈值只够存储两个bitmap对象，当put第三个bitmap对象时，将近期最少使用的bitmap对象移除.  
-```java
-this.map = new LinkedHashMap<String, Bitmap>(0, 0.75f, true);
-```
-构造器中第三个参数accessOrder设置为true表示this.map按*使用顺序*来排序，也就是说用put()或者get()方法都会将bitmap对象排在链表尾部header.prv  
+图1: 初始化LinkedHashMap, 并按使用顺序来排序, accessOrder = true;  
+图2: 向缓存池中放入bitmap1和bitmap2两个对象.  
+图3: 继续放入第三个bitmap3，根据假设情景，将会超过设定缓存池阈值.  
+图4: 释放对bitmap1对象的引用.  
+图5: bitmap1对象被GC回收.  
 ![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_header.png)  
-put(bitmap1)  
-put(bitmap2)  
+  
 ![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_put.png)  
-此时，两个bitmap对象已占用了被分配内存缓存的全部，接下来  
-put(bitmap3)  
+  
 ![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_put_exceed_maxsize2.png) 
-bitmap3的进入导致超过了最大尺寸maxSize, 接着走到下面这段代码  
-```java
-...
-Map.Entry<String, Bitmap> toEvict = map.entrySet().iterator().next();
-if (toEvict == null) {
-	break;
-}
-key = toEvict.getKey();
-value = toEvict.getValue();
-map.remove(key);
-size -= sizeOf(key, value);
-...
-```
+  
 ![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_put_trim.png)  
-这时就没有引用指向bitmap1对象，它就变成了可回收的垃圾等待GC将其回收掉, 最终的结果如下:  
+  
 ![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_trim_result.png)  
