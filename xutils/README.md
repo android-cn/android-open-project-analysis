@@ -1,6 +1,7 @@
 ﻿XUtils 实现原理解析
 ====================================
-> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 XUtils 部分，  [Demo地址](https://github.com/android-cn/android-open-project-demo)  
+> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 XUtils 部分，  [Demo地址](https://github.com/android-cn/android-open-project-demo) 
+> 项目地址：[XUtils](https://github.com/wyouflf/xUtils)，分析的版本：[a7f371b373](https://github.com/android-cn/android-open-project-analysis/commit/a7f371b373377902c37d7a05d7fd4c723ef43867)，Demo 地址：[xUtils Demo](https://github.com/android-cn/android-open-project-demo) 
 > 分析者：[Caij](https://github.com/Caij)，校对者：[maogy](https://github.com/maogy)，校对状态：未完成   
 
 
@@ -56,7 +57,7 @@ Handler异步通信，Http网络请求， IO流。
 ###3. 流程图
 主要功能流程图  
 ####3.1 View模块
-######请先了解[注解](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/annotation.md)  [动态代理传](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/proxy.md)  可以帮助到您， 如果已经了解请忽略。
+######请先了解[注解](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/annotation.md)  [动态代理](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/proxy.md)  可以帮助到您， 如果已经了解请忽略。
 ![View时序图](image/ViewSequence.png)
 - 主要的顺序就是在ViewUtils的`inject(View)`将需要的绑定数据的对象传入，`injectObject(Object, ViewFinder)` 主要通过反射获取对象的成员变量和方法， 
 然后获取成员变量和方法的注解的值， 将成员变量赋值， 事件和方法绑定， 在EventListenerManager中是通过代理将事件和方法绑定。
@@ -85,6 +86,7 @@ onProgressUpdate()调用RequestCallback，完成回调流程。（缓存策略�
 
 ####3.4 Bitmap模块
 ![Bitmap流程图](image/BitmapSequence.png)
+######图片看不清可以下载到电脑中查看
 - 1.BitmapUtils，display。
 - 2.BitmapGlobalConfig 获取缓存。 如果图片在运行内存缓存中存在， 就直接回调DefaultBitmapLoadCallBack。
 - 3.如果图片在运行内存缓存中不存在， 则开启异步任务BitmapLoadTask， 在doInBackground中优先从闪存缓存中读取， 再从网络读取。
@@ -98,7 +100,6 @@ onProgressUpdate()调用RequestCallback，完成回调流程。（缓存策略�
 
 ![整体构建思路](image/design.png)
 
- 其实一些优秀的开源框架原理差不多。
 
 ###5. 杂谈
 主要和Volley框架相比
