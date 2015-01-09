@@ -40,7 +40,7 @@ BarGraph.java:继承View类，负责柱状图的绘制。
 ![](image/bargraphflow.png)
 
 - onDraw源码分析
-    
+```java
         public void onDraw(Canvas ca) {
         
                 //判断是否需要绘制或者刷新
@@ -149,6 +149,7 @@ BarGraph.java:继承View类，负责柱状图的绘制。
                 ca.drawBitmap(fullImage, 0, 0, null);
         
             }    
+```
 
 ####4.2.2饼状图
 PieSlice.java: 扇形，构成饼状图的基本元素。封装了颜色，值，标题，路径以及区域等属性。
