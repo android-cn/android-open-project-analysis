@@ -16,19 +16,23 @@ xUtils一个Android公共库框架，主要包括四个部分：View，Db, Http,
 #####2.1.1 View模块
 注解和反射知识是这个模块的主要内容
 - ViewUtils，其实主要功能就是通过反射和注解将Ui和资源、事件和资源绑定。
+- ResLoader, 资源文件的绑定。
 - EventListenerManager view和事件方法的绑定， 其中的设计是通过动态代理。
 
 #####2.1.2 Db模块
 注解、反射和数据库操作知识这个模块的主要内容
 - DbUtils，主要功能数据库的创建，数据库的增删改查。
-- SqlInfoBuilder， sql语句的组合。
-- Selector，WhereBuilder， sql条件语句的组合。
+- SqlInfoBuilder， sql建表、增删改语句的组合。
+- Selector，sql查询语句的组合。
+- WhereBuilder， sql条件语句的组合。
 
 #####2.1.3 Http模块
 Handler异步通信，Http网络请求， IO流。
 - HttpUtils，支持异步同步访问网络数据， 断点下载文件和上传文件。
 - HttpHandler，获取网络数据逻辑的实现。
 - InternalHandler 实现线程的通信
+- StringDownLoadHandler 将io流转化为String。
+- FileDownLoadHandler 将io流转化为File。
 
 #####2.1.4 Bitmap模块  
 - BitmapUtils，图片的异步加载，支持本地和网络图片， 图片的压缩处理， 图片的内存缓存已经本地缓存。
@@ -41,7 +45,7 @@ Handler异步通信，Http网络请求， IO流。
  ![View类图](image/ViewClass.png)
  
 #####2.2.2 Db模块
-类模快和关系层次较少， 所以不绘制类图
+ ![Db类图](image/DbSequence.png)
 
 #####2.2.3Http模块
  ![Http类图](image/HttpClass.png)
@@ -52,12 +56,13 @@ Handler异步通信，Http网络请求， IO流。
 ###3. 流程图
 主要功能流程图  
 ####3.1 View模块
+######请先了解[注解](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/annotation.md)  [动态代理传](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/proxy.md)  可以帮助到您， 如果已经了解请忽略。
 ![View时序图](image/ViewSequence.png)
 - 主要的顺序就是在ViewUtils的`inject(View)`将需要的绑定数据的对象传入，`injectObject(Object, ViewFinder)` 主要通过反射获取对象的成员变量和方法， 
-然后获取成员变量和方法的注解的值， 将成员变量赋值， 事件和方法绑定， 在EventListenerManager中是通过代理将事件和方法绑定。[注解传送门](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/annotation.md)  [动态代理传送门](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/proxy.md)
+然后获取成员变量和方法的注解的值， 将成员变量赋值， 事件和方法绑定， 在EventListenerManager中是通过代理将事件和方法绑定。
 
 ####3.2 DB模块
-![Db流程图](image/DbSequence.png)
+![Db流程图](image/db_sq.png)
 - `DbUtils`中`getInstance()`获取XUtils的实例，里面的操作就是检查数据库版本和升级，然后就是创建数据库（单例模式， 如果存在数据库不会重复创建）。
  `createDatabase()`通过配置创建数据库。save，find，update，delete 都是然后通过`SqlInfoBuilder`或者Selector组合对象的sql语句， 然后通过系统自带数据库api进行数据库操作。
  `SqlInfoBuilder`的原理也是反射加注解。
@@ -65,12 +70,16 @@ Handler异步通信，Http网络请求， IO流。
 ####3.3 Http模块
 ![Http流程图](image/HttpSequence.png)
 - 1.HttpUtils通过send或者down获取网络请求。
-- 2.HttpHandler异步任务读取数据，doInBackground()中访问网络， 开始的时候调用publishProgress()，
-sendRequest()，handleResponse()将网络数据包装入ResponseInfo，
+- 2.HttpHandler异步任务读取数据，任务开始的时候会调用`onPreExecute` , 然后在`doInBackground()`中访问网络;  
+sendRequest()向服务器发送请求;  
+handleResponse()将网络数据包装入ResponseInfo;   
+FileDownloadHandler 将网络数据转化为File;  
+StringDownloadHandler 将网络数据返回为字符串;  
 updateProgress()是在DownloadHandler数据读写时候的回调， 此方法又调用publishProgress()，
 publishProgress()通过Handler回调onProgressUpdate() ,
 onProgressUpdate()调用RequestCallback，完成回调流程。（缓存策略是读取的时候优先从缓存中读取， 读取的时候判断缓存是否过期， 如果没有缓存或者缓存已过期就会从服务器读取， 这里的缓存时间可以配置）
-- 3.DownloadHandler， handleEntity()将网络数据转化为需要的数据格式。 在读写数据的时候会回调HttpHandler的updateProgress(), 如果当用户选择停止的时候直接停止数据读写。
+- 3.回调 在HttpHandler中 updateProgress()是在DownloadHandler数据读写时候的回调， 此方法又调用publishProgress()，publishProgress()通过Handler回调onProgressUpdate() ,onProgressUpdate()调用RequestCallback，完成回调流程。  
+中断下载也是通过回调完成， 在将网络数据转化为本地数据的时候， 回调HttpHandler中 updateProgress()， updateProgress()返回当前的是否中断的状态，如果当用户选择停止的时候直接停止数据读写。
 - 4. 断点下载的原理就是通过读取本地文件的大小， 然后将大小的值传给服务器， 服务器会从当前点开始返回数据。
 
 
@@ -78,7 +87,7 @@ onProgressUpdate()调用RequestCallback，完成回调流程。（缓存策略�
 ![Bitmap流程图](image/BitmapSequence.png)
 - 1.BitmapUtils，display。
 - 2.BitmapGlobalConfig 获取缓存。 如果图片在运行内存缓存中存在， 就直接回调DefaultBitmapLoadCallBack。
-- 3.如果图片在运行内存缓存中不存在， 则开启异步任务BitmapLoadTask， 在doInBackground中优先从sd缓存中读取， 再从网络读取。
+- 3.如果图片在运行内存缓存中不存在， 则开启异步任务BitmapLoadTask， 在doInBackground中优先从闪存缓存中读取， 再从网络读取。
 - 4.下载的过程在BitmapCache中，  下载完优先存入sd缓存， 再加入运行内存缓存。
 - 5. 其中机制和http模块类似，有些细节可以看demo里面的源码， 很多都写了注释。
 
