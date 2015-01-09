@@ -43,6 +43,9 @@ Touch及手势事件判定及传递流程：
 
 ###4. 详细设计
 ###4.1 核心类功能介绍
+
+### Core核心类
+---
 ##### 4.1.1 PhotoView
 PhotoView 类负责暴露所有供外部调用的API,其本身直接继承自ImageView,同时实现了IPhotoView接口.
 IPhotoView接口提供了缩放相关的设置属性 和操控matrix变化的回调接口.
@@ -173,19 +176,7 @@ PhotoView本身已做好了相关处理,在PhotoView滚到图片边缘时,Scroll
 IPhotoView接口定义了缩放相关的一组set/get方法.PhotoView是其实现类.
 相关方法已在PhotoView中介绍,这里略过.
 
-##### 4.1.3 Compat
-用于做View.postOnAnimation方法在低版本上的兼容.
-
-注：View.postOnAnimation (Runnable action) 在PhotoView中用于处理  双击 放大/缩小 时的动画效果.
-
-每次系统绘图时都会调用此回调，通过在此时改变视图状态以实现动画效果。该方法仅支持 api >= 16
-所以PhotoView中使用了Compat类来做低版本兼容。
-
-实际上也可以使用android.support.v4.view.ViewCompat替代。
-对比 android.support.v4.view.ViewCompat 和 uk.co.senab.photoview.Compat
-其实现原理完全一致，都是通过view.postDelayed(runnable, frameTime)来实现.
-
-##### 4.1.4 PhotoViewAttacher
+##### 4.1.3 PhotoViewAttacher
 核心类
 
 - private static boolean isSupportedScaleType(final ScaleType scaleType) 
@@ -220,6 +211,22 @@ PhotoView不再使用时,可用于释放相关资源。移除Observer, Listener.
 - private void updateBaseMatrix(Drawable d)
 
 根据PhotoView的宽高和Drawable的宽高计算FIT_CENTER状态的Matrix.
+
+### 接口及工具类
+---
+##### 4.1.4 Compat
+用于做View.postOnAnimation方法在低版本上的兼容.
+
+注：View.postOnAnimation (Runnable action) 在PhotoView中用于处理  双击 放大/缩小 时的动画效果.
+
+每次系统绘图时都会调用此回调，通过在此时改变视图状态以实现动画效果。该方法仅支持 api >= 16
+所以PhotoView中使用了Compat类来做低版本兼容。
+
+实际上也可以使用android.support.v4.view.ViewCompat替代。
+对比 android.support.v4.view.ViewCompat 和 uk.co.senab.photoview.Compat
+其实现原理完全一致，都是通过view.postDelayed(runnable, frameTime)来实现.
+
+
 
 ##### 4.1.5 ScrollerProxy
 抽象类,主要是为了做不用版本之间的兼容,具体说明见`GingerScroller` `IcsScroller` `PreGingerScroller` 这三个接口实现类的说明.
@@ -294,7 +301,7 @@ Camera类可以将矩阵变换抽象成 视点（摄像机） 在三维空间内
 - public void setScale(float sx, float sy, float px, float py)
 
     以(px,py)为中心,横向上缩放比例sx,纵向缩放比例sy
-	
+    
     ![scale](images/scale.png)
 
 - public void setRotate(float degrees, float px, float py)
