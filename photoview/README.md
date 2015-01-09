@@ -72,7 +72,7 @@ IPhotoView接口提供了缩放相关的设置属性 和操控matrix变化的回
 由于PhotoView中对图片的 缩放 操作依赖对Matrix的操作，自定义Matrix会干扰 PhotoView 的缩放行为，所以PhotoView并不支持ScaleType.Matrix.
 可参见PhotoViewAttacher源码：
 
-        /**
+     /**
      * @return true if the ScaleType is supported.
      */
     private static boolean isSupportedScaleType(final ScaleType scaleType) {
@@ -172,7 +172,7 @@ PhotoView本身已做好了相关处理,在PhotoView滚到图片边缘时,Scroll
 重载了ImageView的方法,用于在视图被从Window中移除时,通知PhotoViewAttacher清空数据.
 
 
-###### 4.1.2 IPhotoView 
+##### 4.1.2 IPhotoView 
 IPhotoView接口定义了缩放相关的一组set/get方法.PhotoView是其实现类.
 相关方法已在PhotoView中介绍,这里略过.
 
