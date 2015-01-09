@@ -89,7 +89,7 @@ circle有2种绘制模式:
 Touchslop通常用来预防用户在做一些其他操作时意外地滑动，例如触摸屏幕上的元素时产生的滑动。
 
 **(2) 核心方法**    
-1.**onDraw(Canvas canvas) **   
+1.**onDraw(Canvas canvas)**   
 `threeRadius`两相邻circle的间距  
 `shortOffset`当前方向的垂直方向的圆心坐标位置  
 `longOffset` 当前方向的圆心位置
