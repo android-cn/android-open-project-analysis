@@ -97,7 +97,6 @@ vpi_attrs.xml
 ```xml
 <!--首先指定命名空间，属性才可以使用-->
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
 <!--应用属性值-->
@@ -116,13 +115,11 @@ vpi_attrs.xml
         //加载默认值
         final Resources res = getResources();
         final int defaultPageColor = res.getColor(R.color.default_circle_indicator_page_color);
-        //获取属性值
+        //获取并应用属性值
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CirclePageIndicator, defStyle, 0);
-        ...
-      
         //应用属性值
         mPaintPageFill.setColor(a.getColor(R.styleable.CirclePageIndicator_pageColor, defaultPageColor));
-      
+        ...
         a.recycle();//记得及时释放资源
     }
 ```
