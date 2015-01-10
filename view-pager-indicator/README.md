@@ -9,7 +9,7 @@ ViewPagerindicator 源码解析
 ### 1. 功能介绍
 
 ### 1.1 ViewPagerIndicator  
-ViewPagerIndicator用于各种基于AndroidSupportLibrary中ViewPager的界面导航。主要特点：使用简单、效果好、样式全。
+ViewPagerIndicator用于各种基于AndroidSupportLibrary中ViewPager的界面导航。主要特点：使用简单、样式全、易扩展。
 
 ### 2. 总体设计
 该项目总体设计非常简单，一个pageIndicator接口类，具体样式的导航类实现该接口，然后根据具体样式去实现相应的逻辑。
@@ -26,29 +26,21 @@ TabPageIndicator、IconPageIndicator继承自HorizontalScrollView是由于它们
 ####3.2 自定义控件相关知识  
 由于ViewPagerIndicator项目全部都是自定义View，因此对于其原理的分析，就是对自定义View的分析，自定义View涉及到的核心部分有：View的绘制机制和Touch事件传递机制。对于View的绘制机制，这里做了详细的阐述，而对于Touch事件，由于该项目只是Indicator，因此没有涉及到复杂的Touch传递机制，该项目中与Touch机制相关只有onTouch(Event)方法，因此只对该方法涉及到的相关知识进行介绍。
 ####3.2.1 自定义控件步骤  
-以下直接引用了其中的一些篇章前言，具体内容大家直接点击链接进入正文
 
-1. 自定义控件创建步骤  
-	* 继承View或View的子类，同时为了允许layouteditor创建并编辑你的view的实例，你需要提供至少一个构造函数，它应该包含一个Contenx与一个AttributeSet对象作为参数。
-	* 定义自定义的属性（外观与行为），在values/下建立styleable的xml文件，具体可参考ViewPagerIndicator库中的vpi_attrs.xml文件 。
-	* 应用自定义的属性，在构造函数中，做一些初始化，具体可看考。
-	* 添加属性和事件。
+1. 创建自定义的View  
+	* 继承View或View的子类，添加必要的构造函数
+	* 定义自定义属性（外观与行为）
+	* 应用自定义属性：在布局中指定属性值，在初始化时获取并应用到View上
+	* 添加控制属性的方法
 
-2. [自定义View的绘制](http://hukai.me/android-training-course-in-chinese/ui/custom-view/custom-draw.html)  
-自定义view的最重要的一个部分是自定义它的外观。根据你的程序的需求，自定义绘制动作可能简单也可能很复杂。
-重绘一个自定义的view的最重要的步骤是重写onDraw()方法。onDraw()的参数是一个Canvas对象。Canvas类定义了绘制文本，线条，图像与许多其他图形的方法。你可以在onDraw方法里面使用那些方法来创建你的UI。
+2. 自定义View的绘制  
+重写onDraw()方法,按需求绘制自定义的view。onDraw方法是每一帧都会执行的方法，所以不要在该方法里做一些内存分配的事情，比如创建Paint对象,Paint应该在初始化的时候就创建。
 
-3. [使View可交互](http://hukai.me/android-training-course-in-chinese/ui/custom-view/make-interactive.html)  
-绘制UI仅仅是创建自定义View的一部分。你还需要使得你的View能够以模拟现实世界的方式来进行反馈。Objects应该总是与现实情景能够保持一致。用户应该可以感受到UI上的微小变化，并对这些变化反馈到现实世界中。例如，当用户做fling(迅速滑动)的动作，应该在滑动开始与结束的时候给用户一定的反馈。像许多其他UI框架一样，Android提供一个输入事件模型。在Android中最常用的输入事件是touch，它会触发onTouchEvent(android.view.MotionEvent))的回调。重写这个方法来处理touch事件：
+3. 使View具有交互性  
+一个好的自定义View还应该具有交互性，使用户可以感受到UI上的微小变化，并且这些变化应该尽可能的和现实世界的物理规律保持一致，更自然。像许多其他UI框架一样，Android提供一个输入事件模型，帮助你处理用户的输入事件,你可以借助GestureDetector、Scroller、属性动画等使得过渡更加自然和流畅。 
 
-4. [Android的用户输入](http://hukai.me/android-training-course-in-chinese/best-user-input.html)  
-这里着重要看一下拖拽与缩放这一部分。因为在ViewPagerIndicator的几种实现：Circle，Title，UnderLine的onTouchEvent里的处理逻辑是一样的，而且和官方文档中的代码逻辑也是一样的，看了讲解之后，相信大家就会有所了解了：http://hukai.me/android-training-course-in-chinese/input/gestures/scale.html
-    
-####3.2.2 View绘制机制  
-请直接参考[公共技术点viewdrawflow](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/viewdrawflow.md)部分  
-####3.2.3 Android的用户输入  	
-要注意的有以下几点（更详细的介绍可以参考[拖拽与缩放](http://hukai.me/android-training-course-in-chinese/input/gestures/scale.html)部分）
-
+####3.2.2 Android的用户输入  	
+你应该注意以下几点
 
 ##### 3.2.3.1 保持对最初点的追踪  
 拖拽操作时，即使有额外的手指放置到屏幕上了，app也必须保持对最初的点（手指）的追踪。比如，想象在拖拽图片时，用户放置了第二根手指在屏幕上，并且抬起了第一根手指。如果你的app只是单独地追踪每个点，它会把第二个点当做默认的点，并且把图片移到该点的位置。
@@ -60,15 +52,84 @@ TabPageIndicator、IconPageIndicator继承自HorizontalScrollView是由于它们
 
 当ACTION_POINTER_UP事件发生时，示例程序会移除对该点的索引值的引用，确保操作中的点的ID(the active pointer ID)不会引用已经不在触摸屏上的触摸点。这种情况下，app会选择另一个触摸点来作为操作中(active)的点，并保存它当前的x、y值。由于在ACTION_MOVE事件时，这个保存的位置会被用来计算屏幕上的对象将要移动的距离，所以app会始终根据正确的触摸点来计算移动的距离。
 
-mTouchSlop  
+**mTouchSlop**  
 指在用户触摸事件可被识别为移动手势前,移动过的那一段像素距离。Touchslop通常用来预防用户在做一些其他操作时意外地滑动，例如触摸屏幕上的元素时。
 
-[onTouchEvent](http://hukai.me/android-training-course-in-chinese/input/gestures/scale.html)		
-对于pointer的处理是模板方法，在拖拽与缩放中有详细的讲解。ViewPagerIndicator中的onTouchEvent中的代码也就是官方文档的模板代码，就是为了确保以上几点，获取到可用、确信的点，然后处理ViewPager相应的偏移和滑动。
+在本项目中，对于onTouche的处理是模板方法，因为没有复杂的交互，仅仅是追踪有效的手势以及确定Page的切换时机。官方文档中在拖拽与缩放中有详细的讲解[Dragging and Scaling](http://developer.android.com/training/gestures/scale.html) 本项目中的onTouchEvent中的代码就是官方文档的模板代码，就是为了确保获取到可用、可信的点，然后对ViewPager相应处理。
+    
+####3.2.3 View绘制机制  
+请直接参考[公共技术点viewdrawflow](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/viewdrawflow.md)部分  
   
 ####3.2.4 CirclePageIndicator 源码分析  
+####3.2.4.1 创建自定义的View #####
+1.继承自View，实现构造函数  
+```java
+CirclePageIndicator extends View implements PageIndicator {
+    
+    public CirclePageIndicator(Context context) {
+        this(context, null);
+    }
 
-CirclePageIndicator.java  
+    public CirclePageIndicator(Context context, AttributeSet attrs) {
+        this(context, attrs, R.attr.vpiCirclePageIndicatorStyle);
+    }
+
+    public CirclePageIndicator(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        ...
+    }
+}
+```
+
+2.定义属性
+vpi_attrs.xml  
+```xml
+ <declare-styleable name="CirclePageIndicator">
+        <!-- Color of the filled circle that represents the current page. -->
+        <attr name="fillColor" format="color" />
+        <!-- Color of the filled circles that represents pages. -->
+        <attr name="pageColor" format="color" />
+        ...
+ </declare-styleable>
+```  
+3.应用属性  
+在布局中应用
+```xml
+<!--首先指定命名空间，属性才可以使用-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+<!--应用属性值-->
+    <com.viewpagerindicator.CirclePageIndicator
+        ...
+        app:fillColor="#FF888888"
+        app:pageColor="#88FF0000"
+        />
+</LinearLayout>        
+```
+在代码中加载布局中的属性值并应用：
+```java
+ public CirclePageIndicator(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+
+        //加载默认值
+        final Resources res = getResources();
+        final int defaultPageColor = res.getColor(R.color.default_circle_indicator_page_color);
+        //获取属性值
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CirclePageIndicator, defStyle, 0);
+        ...
+      
+        //应用属性值
+        mPaintPageFill.setColor(a.getColor(R.styleable.CirclePageIndicator_pageColor, defaultPageColor));
+      
+        a.recycle();//记得及时释放资源
+    }
+```
+4.自定义View的绘制，请参考下面的onDraw函数  
+5.使View可交互，请参考下面的onTouch函数  
+        
+**CirclePageIndicator.java**  
 继承自 View 实现了 PageIndicator,整个绘制过程中用到的方法调用规则为：  
 ![circle_indicator_method_flow img](image/circle_indicator_method_flow.png)  
 **(1) 主要成员变量含义**  
@@ -150,8 +211,9 @@ View在测量阶段的最终大小的设定是由setMeasuredDimension()方法决
 整片文章看下来，确实比较多，也是花了一部分时间写的，其实之前是自己整理了一些相关知识，这次一下全部跟大家分享了。整篇文章都在讲View的绘制机制，三个过程也都很详细的通过源码分析介绍了。如果你对View的绘制机制还不清楚，而且希望将来往更高级的方向发展，这一步一定会经历的，那么请你耐心看完，你可以分多次研读，过程中出现问题或者原文分析不到位的地方，欢迎PR。  
 当你掌握了这些基本的知识，你可以去研究GitHub上的一部分开源项目了（因为Touch事件这里介绍的不多，而很多项目和Touch事件相关）。
 
-参考文献  
-[how-android-draws](http://developer.android.com/guide/topics/ui/how-android-draws.html)  
+**参考文献**  
+http://developer.android.com/training/gestures/index.html  
+http://developer.android.com/training/custom-views/create-view.html  
 [Google Android官方培训课程中文版](https://github.com/kesenhoo/android-training-course-in-chinese)  
 
 View的绘制：  
@@ -159,11 +221,11 @@ http://blog.csdn.net/wangjinyu501/article/details/9008271
 http://blog.csdn.net/qinjuning/article/details/7110211  
 http://blog.csdn.net/qinjuning/article/details/8074262
   	
-Touch事件传递：  
+**相关资源**  
+Touch事件传递  
 http://blog.csdn.net/xiaanming/article/details/21696315  
 http://blog.csdn.net/wangjinyu501/article/details/22584465    
 
-相关资源：  
 [best-practices-for-android-user-interface](http://www.rapidvaluesolutions.com/tech_blog/best-practices-for-android-user-interface/)    
 [深入解析Android的自定义布局](http://greenrobot.me/devpost/android-custom-layout/)  
 [慕课网自定义FlowLayout课程](http://www.imooc.com/learn/237)
