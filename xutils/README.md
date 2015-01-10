@@ -1,7 +1,7 @@
 ﻿XUtils 实现原理解析
 ====================================
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 XUtils 部分。  
-> 项目地址：[XUtils](https://github.com/wyouflf/xUtils)，分析的版本：[d0641afd83](https://github.com/android-cn/android-open-project-analysis/commit/d0641afd839951b72e098eba984f9414c3588831)，Demo 地址：[xUtils Demo](https://github.com/android-cn/android-open-project-demo/tree/master/xutils-demo)  
+> 项目地址：[XUtils](https://github.com/wyouflf/xUtils)，分析的版本：[192c2a886c](https://github.com/wyouflf/xUtils/commit/192c2a886c2d467e50718c6e469de63696f5cded)，Demo 地址：[xUtils Demo](https://github.com/android-cn/android-open-project-demo/tree/master/xutils-demo)  
 > 分析者：[Caij](https://github.com/Caij)，校对者：[maogy](https://github.com/maogy)，校对状态：未完成   
 
 
@@ -102,18 +102,17 @@ onProgressUpdate()调用RequestCallback，完成回调流程。（缓存策略�
 
 
 ###5. 杂谈
-主要和Volley框架相比
+和Volley框架相比
 ####相同点：
-- 1.都采用了缓存机制。  
-- 2.都是通过handler进行线程通信
-- 3.Bitmap 模块都采用运行内存缓存， 本地缓存， 图片的压缩处理。 
+- 1.采用了网络数据缓存机制。  
+- 2.通过handler进行线程通信
+- 3.Bitmap 模块采用运行内存缓存， 本地缓存， 图片的压缩处理。 
 
 ####不同点：
-- 1. Volley的Http请求在 android 2.3 版本之前是通过HttpClient ，在之后的版本是通过URLHttpConnection。xUtils都是通过HttpClient请求网络（bitmap模块图片下载是通过URLHttpConnection）。 在2.3以后URLHttpConnection也很稳定， 扩展和维护性好， 速度也快， 而且支持GZIP压缩，推荐采用URLHttpConnection。
-- 2.Volley在Http请求数据下载完成后是先缓存进byte[]， 然后是分配给不同的请求自己转化为自己需要的格式。xUtils是直接转化为想要的格式。 觉得各有优劣， Volley这样做的扩展性比较好， 但是不能存在大数据请求，否则就OOM。xUtils不缓存入byte[] 就支持大数据的请求， 速度比Volley稍快，但扩展性就低。个人推荐Volley， 因为在Request中就可以将数据转化为自己想要的bean， 而且是在子线程中。 而xUtils是返回string， 如果数据量大，在解析的过程自己还要去开启异步线程。
-- 3.Volley最终是将网络请求的数据缓存进sd卡文件， xUtils是缓存在运行内存中。 如果频繁访问相同的网络地址， xUtils比Volley更快。
+- 1. Volley的Http请求在 android 2.3 版本之前是通过HttpClient ，在之后的版本是通过URLHttpConnection。xUtils都是通过HttpClient请求网络（bitmap模块图片下载是通过URLHttpConnection）。 URLHttpConnection默认支持GZIP压缩。
+- 2.Volley将Http请求数据先缓存进byte[]， 然后是分配给不同的请求转化为需要的格式。xUtils是直接转化为想要的格式。 Volley：扩展性好， 但是不能存在大数据请求，否则就OOM。xUtils：不缓存入byte[] 支持大数据的请求， 速度比Volley稍快，但扩展性就低。
 - 4.Volley访问网络数据时直接开启固定个数线程访问网络， 在run方法中执行死循环， 阻塞等待请求队列。 xUtils是开启线程池来管理线程。
-- 5. 缓存失效策略， volley的所有网络数据支持从http响应头中控制是否缓存和读取缓存失效时间，也可以自定义缓存失效时间。 Xutils网络数据请求是自定义缓存失效时间， bitmap模块没有失效策略， 只要本地有就会从本地读取。
+- 5. 缓存失效策略， volley的所有网络数据支持从http响应头中控制是否缓存和读取缓存失效时间，每个请求可以控制是否缓存和缓存失效时间。 Xutils网络数据请求是统一自定义缓存失效时间。
 
 
 
