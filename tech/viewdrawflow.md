@@ -7,6 +7,8 @@ View 绘制流程
 #####1. View树的绘图流程
 整个View树的绘图流程是在ViewRoot.java类的performTraversals()函数展开的，该函数做的执行过程可简单概况为根据之前设置的状态，判断是否需要重新计算视图大小(measure)、是否重新需要安置视图的位置(layout)、以及是否需要重绘(draw)，这里就不做延展了，我们只介绍在自定义View中直接涉及到的一些部分,整个流程如下  
 ![viewdrawflow img](image/viewdrawflow/view_mechanism_flow.png)  
+
+**View绘制流程调用链**  
 ![view_draw_method_chain img](image/viewdrawflow/view_draw_method_chain.png)  
 图片来自 https://plus.google.com/+ArpitMathur/posts/cT1EuBbxEgN
 #####2. 概念 
