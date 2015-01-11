@@ -219,11 +219,14 @@ http://blog.csdn.net/qinjuning/article/details/7110211
 http://blog.csdn.net/qinjuning/article/details/8074262
   	
 **相关资源**  
+[Google I/O 2013 - Writing Custom Views for Android](https://www.youtube.com/watch?v=NYtB6mlu7vA#t=228)  
+
+[best-practices-for-android-user-interface](http://www.rapidvaluesolutions.com/tech_blog/best-practices-for-android-user-interface/)    
+[深入解析Android的自定义布局](http://greenrobot.me/devpost/android-custom-layout/)  
+[慕课网自定义FlowLayout课程](http://www.imooc.com/learn/237)  
+
 Touch事件传递  
 http://blog.csdn.net/xiaanming/article/details/21696315  
 http://blog.csdn.net/wangjinyu501/article/details/22584465    
 
-[best-practices-for-android-user-interface](http://www.rapidvaluesolutions.com/tech_blog/best-practices-for-android-user-interface/)    
-[深入解析Android的自定义布局](http://greenrobot.me/devpost/android-custom-layout/)  
-[慕课网自定义FlowLayout课程](http://www.imooc.com/learn/237)
 
