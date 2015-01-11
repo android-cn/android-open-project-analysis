@@ -7,8 +7,8 @@ View 绘制流程
 #####1. View树的绘图流程
 整个View树的绘图流程是在ViewRoot.java类的performTraversals()函数展开的，该函数做的执行过程可简单概况为根据之前设置的状态，判断是否需要重新计算视图大小(measure)、是否重新需要安置视图的位置(layout)、以及是否需要重绘(draw)，这里就不做延展了，我们只介绍在自定义View中直接涉及到的一些部分,整个流程如下  
 ![viewdrawflow img](image/viewdrawflow/view_mechanism_flow.png)  
-![view_draw_method_chain img](image/viewdrawflow/view_draw_method_chain.jpg)  
-图片来自[鲍永章](http://weibo.com/u/3224930551)
+![view_draw_method_chain img](image/viewdrawflow/view_draw_method_chain.png)  
+图片来自 https://plus.google.com/+ArpitMathur/posts/cT1EuBbxEgN
 #####2. 概念 
 参考文献：http://developer.android.com/guide/topics/ui/how-android-draws.html  
 
@@ -46,13 +46,13 @@ MeasureSpecs
 其包含的信息有测量要求和尺寸，有三种模式:      
 
 - UNSPECIFIED  
-父视图不对子视图有任何约束，它可以达到所期望的任意尺寸。
+父视图不对子视图有任何约束，它可以达到所期望的任意尺寸。一般用不到，ListView、ScrollView
 
 - EXACTLY  
 父视图为子视图指定一个确切的尺寸，而且无论子视图期望多大，它都必须在该指定大小的边界内，对应的属性为match_parent或具体指，比如100dp，父控件可以直接得到子控件的尺寸，该尺寸就是MeasureSpec.getSize(measureSpec)得到的值。
 
 - AT_MOST  
-父视图为子视图指定一个最大尺寸。子视图必须确保它自己的所有子视图可以适应在该尺寸范围内，对应的属性为wrap_content,父控件无法确定子view的尺寸，只能由子控件自己根据需求去计算自己的尺寸。
+父视图为子视图指定一个最大尺寸。子视图必须确保它自己的所有子视图可以适应在该尺寸范围内，对应的属性为wrap_content,父控件无法确定子view的尺寸，只能由子控件自己根据需求去计算自己的尺寸，对于自定义的空间来说，就需要你自己去实现该测量逻辑。
  
 #####3. measure核心方法  
 - measure(int widthMeasureSpec, int heightMeasureSpec)  
@@ -384,6 +384,9 @@ ViewRootImpl.draw()方法会调用该函数，DecorView.draw()继承自Framelayo
 - ViewGroup.drawChild()：  
 该函数只在ViewGroup中实现，因为只有ViewGroup才需要绘制child，drawChild内部还是调用View.draw()来完成子视图的绘制（也有可能直接调用dispatchDraw）。
 
+绘制流程图  
+![MeasureLayout img](image/viewdrawflow/draw_method_flow.png)    
+
 **- View.draw(Canvas)源码分析**  
 ```java
  /**
@@ -530,10 +533,10 @@ protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
 直接调用了View的child.draw(canvas, this,drawingTime)方法,文档中也说明了，除了被ViewGroup.drawChild()方法外，你不应该在其它任何地方去复写或调用该方法,它属于ViewGroup。而View.draw(Canvas) 方法是我们自定义控件中可以复写的方法，具体可以参考上述对view.draw(Canvas)的说明。child.draw(canvas, this,drawingTime)肯定是处理了和父视图相关的逻辑，但对于View的绘制，最终调用的还是View.draw(Canvas)方法。
 
 - invalidate()  
-请求重绘View树，即draw()过程，假如视图发生大小没有变化就不会调用layout()过程，并且只绘制那些调用了invalidate()方法的View。
+请求重绘View树，即draw过程，假如视图发生大小没有变化就不会调用layout()过程，并且只绘制那些调用了invalidate()方法的View。
 
 - requestLayout()  
-当布局变化的时候，比如方向变化。你可以手动调用该方法，会触发measure()和layout()过程（不会进行draw）。  
+当布局变化的时候，比如方向变化，尺寸的变化。你可以手动调用该方法，会触发measure()和layout()过程（不会进行draw）。  
 
 参考文献  
 [how-android-draws](http://developer.android.com/guide/topics/ui/how-android-draws.html)  
