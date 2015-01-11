@@ -2,7 +2,7 @@ EventBus 源码解析
 ----------------
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 EventBus 部分  
 > 项目地址：[EventBus](https://github.com/greenrobot/EventBus)，分析的版本：[ccc2771](https://github.com/greenrobot/EventBus/commit/ccc2771199f958a34bd4ea6c90d0a8c671c2e70a "Commit id is ccc2771199f958a34bd4ea6c90d0a8c671c2e70a")，Demo 地址：[EventBus Demo](https://github.com/android-cn/android-open-project-demo/tree/master/event-bus-demo)    
-> 分析者：[Trinea](https://github.com/trinea)，校对者：[扔物线](https://github.com/rengwuxian)，校对状态：未完成   
+> 分析者：[Trinea](https://github.com/trinea)，校对者：[扔物线](https://github.com/rengwuxian)，校对状态：完成待确认   
 
 ###1. 功能介绍
 ####1.1 EventBus  
@@ -51,19 +51,19 @@ subscribe 函数分三步
 第一步：通过`subscriptionsByEventType`得到该事件类型所有订阅者信息队列，根据优先级将当前订阅者信息插入到订阅者队列`subscriptionsByEventType`中；  
 第二步：在`typesBySubscriber`中得到当前订阅者订阅的所有事件队列，将此事件保存到队列`typesBySubscriber`中，用于后续取消订阅；  
 第三步：检查这个事件是否是 Sticky 事件，如果是则从`stickyEvents`事件保存队列中取出该事件类型最后一个事件发送给当前订阅者。  
-**(3) post、cancel 、removeStickEvent**  
-post 函数用于发布事件，cancel 函数用于取消某订阅者订阅的所有事件类型、removeStickEvent 函数用于删除 sticky 事件。  
+**(3) post、cancel 、removeStickyEvent**  
+post 函数用于发布事件，cancel 函数用于取消某订阅者订阅的所有事件类型、removeStickyEvent 函数用于删除 sticky 事件。  
 post 函数流程图如下：
 ![eventbus img](image/post-flow-chart.png)  
 post 函数会首先得到当前线程的 post 信息`PostingThreadState`，其中包含事件队列，将当前事件添加到其事件队列中，然后循环调用 postSingleEvent 函数发布队列中的每个事件。  
 postSingleEvent 函数会先去`eventTypesCache`得到该事件对应类型的的父类及接口类型，没有缓存则查找并插入缓存。循环得到的每个类型和接口，调用 postSingleEventForEventType 函数发布每个事件到每个订阅者。  
 postSingleEventForEventType 函数在`subscriptionsByEventType`查找该事件订阅者订阅者队列，调用 postToSubscription 函数向每个订阅者发布事件。  
-postToSubscription 函数中会判断订阅者的 ThreadMode，从而决定在什么 Mode 下执行事件响应函数，具体如下：  
+postToSubscription 函数中会判断订阅者的 ThreadMode，从而决定在什么 Mode 下执行事件响应函数。ThreadMode共有四类：  
 ```xml
-a. 如果是`PostThread`，则直接调用订阅者的事件响应函数；  
-b. 如果是`MainThread`并且发布线程就是主线程，则直接调用订阅者的事件响应函数，否则通过主线程的 Handler 发送消息在主线程中处理——调用订阅者的事件响应函数；  
-c. 如果是`BackgroundThread`并且发布线程是主线程，则启动异步线程去处理，否则直接直接调用订阅者的事件响应函数；  
-d. 如果是`Async`，则启动异步线程去处理——调用订阅者的事件响应函数。  
+a. `PostThread`：默认的ThreadMode。直接调用订阅者的事件响应方法，不论当前线程是否为主线程（UI线程）。由于发布线程可能为主线程，因此`PostThread`类的方法中不能有耗时操作，否则有卡主线程的风险。适用场景最普遍：*不要求在主线程执行，但无耗时操作*；  
+b. `MainThread`：在主线程中执行响应方法。如果发布线程就是主线程，则直接调用订阅者的事件响应方法，否则通过主线程的 Handler 发送消息在主线程中处理——调用订阅者的事件响应函数。显然，`MainThread`类的方法也不能有耗时操作，以避免卡主线程。适用场景：*必须在主线程执行的操作*；  
+c. `BackgroundThread`：在后台线程中执行响应方法。并且发布线程是主线程，则启动*唯一的*后台线程去处理，否则直接直接调用订阅者的事件响应函数。由于后台线程是唯一的，当事件超过一个的时候，它们会被放在队列中依次执行，因此该类响应方法虽然没有`PostThread`类和`MainThread`类方法对性能敏感，但依然不能有重度耗时的操作或太频繁的轻度耗时操作，以避免卡后台线程。适用场景：*操作轻微耗时且不会过于频繁*，即一般的耗时操作都可以放在这里；  
+d. `Async`：不论发布线程是否为主线程，都使用一个空闲线程来处理。和`BackgroundThread`不同的是，`Async`类的所有线程是相互独立的，因此不会出现卡线程的问题。适用场景：*长耗时操作，例如网络访问*。  
 ```
 **(4) 主要成员变量含义**   
 1.`defaultInstance`默认的 EventBus 实例，根据`EventBus.getDefault()`函数得到。  
@@ -101,13 +101,13 @@ public void onEvent(NoSubscriberEvent event)
 #####4.2.3 SubscriberMethodFinder.java
 订阅者响应函数信息存储和查找类，由 HashMap 缓存，以 ${subscriberClassName} 为 key，SubscriberMethod 对象为元素的 ArrayList 为 value。findSubscriberMethods 函数用于查找订阅者响应函数，如果不在缓存中，则遍历自己的每个函数并递归父类查找，查找成功后保存到缓存中。遍历及查找规则为：  
 a. 遍历 subscriberClass 每个方法；  
-b. 该方法不以`java.`、`javax.`、`android.`这些 SDK 函数开头，并以 ${eventMethodName} 开头，表示可能是事件响应函数继续，否则检查下一个方法；  
+b. 该方法不以`java.`、`javax.`、`android.`这些 SDK 函数开头，并以 `onEvent` 开头，表示可能是事件响应函数继续，否则检查下一个方法；  
 c. 该方法是否是 public 的，并且不是 ABSTRACT、STATIC、BRIDGE、SYNTHETIC 修饰的，满足条件则继续。其中 BRIDGE、SYNTHETIC 为编译器生成的一些函数修饰符；  
 d. 该方法是否只有 1 个参数，满足条件则继续；  
-e. 该方法名为 ${eventMethodName} 则 threadMode 为`ThreadMode.PostThread`；  
-该方法名为 ${eventMethodName}MainThread 则 threadMode 为`ThreadMode.MainThread`；  
-该方法名为 ${eventMethodName}BackgroundThread 则 threadMode 为`ThreadMode.BackgroundThread`；  
-该方法名为 ${eventMethodName}Async 则 threadMode 为`ThreadMode.Async`；  
+e. 该方法名为 `onEvent` 则 threadMode 为`ThreadMode.PostThread`；  
+该方法名为 `onEventMainThread` 则 threadMode 为`ThreadMode.MainThread`；  
+该方法名为 `onEventBackgroundThread` 则 threadMode 为`ThreadMode.BackgroundThread`；  
+该方法名为 `onEventAsync` 则 threadMode 为`ThreadMode.Async`；  
 其他情况且不在忽略名单 (skipMethodVerificationForClasses) 中则抛出异常。  
 f. 得到该方法唯一的参数即事件类型 eventType，将这个方法、threadMode、eventType 一起构造 SubscriberMethod 对象放到 ArrayList 中。  
 g. 回到 b 遍历 subscriberClass 的下一个方法，若方法遍历结束到 h；
@@ -118,7 +118,7 @@ i. 若 ArrayList 依然为空则抛出异常，否则会将 ArrayList 做为 val
 a. 第一次查找后保存到了缓存中，即上面介绍的 HashMap  
 b. 遇到 java. javax. android. 开头的类会自动停止查找  
 ```
-类中的 skipMethodVerificationForClasses 属性表示跳过哪些类中非法以 {eventMethodName} 开头的函数检查，若不跳过泽辉抛出异常。  
+类中的 skipMethodVerificationForClasses 属性表示跳过哪些类中非法以 `onEvent` 开头的函数检查，若不跳过则会抛出异常。  
 PS：在此之前的版本 EventBus 允许自定义事件响应函数名称，缓存的 HashMap key 为 ${subscriberClassName}.${eventMethodName}，这版本中此功能已经被去除。  
 
 #####4.2.4 SubscriberMethod.java
@@ -130,7 +130,7 @@ PS：在此之前的版本 EventBus 允许自定义事件响应函数名称，�
 #####4.2.7 AsyncPoster.java
 事件异步线程处理，对应`ThreadMode.Async`，继承自 Runnable。enqueue 函数将事件放到队列中，并调用线程池执行当前任务，在 run  函数从队列中取事件，invoke 事件响应函数处理。  
 #####4.2.8 BackgroundPoster.java
-事件 Background 处理，对应`ThreadMode.BackgroundThread`，继承自 Runnable。enqueue 函数将事件放到队列中，并调用线程池执行当前任务，在 run  函数从队列中取事件，invoke 事件响应函数处理，与 AsyncPoster.java 不同的是这里会循环等待 run，尚未想清楚原因。  
+事件 Background 处理，对应`ThreadMode.BackgroundThread`，继承自 Runnable。enqueue 函数将事件放到队列中，并调用线程池执行当前任务，在 run  函数从队列中取事件，invoke 事件响应函数处理。与 AsyncPoster.java 不同的是，BackgroundPoster中的任务只在同一个线程中依次执行，而不是并发执行。  
 #####4.2.9 PendingPost.java
 订阅者和事件信息实体类，并含有同一队列中指向下一个对象的指针。通过缓存存储不用的对象，减少下次创建的性能消耗。  
 #####4.2.10 PendingPostQueue.java
