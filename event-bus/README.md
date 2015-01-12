@@ -57,11 +57,13 @@ post 函数流程图如下：
 ![eventbus img](image/post-flow-chart.png)  
 post 函数会首先得到当前线程的 post 信息`PostingThreadState`，其中包含事件队列，将当前事件添加到其事件队列中，然后循环调用 postSingleEvent 函数发布队列中的每个事件。  
 postSingleEvent 函数会先去`eventTypesCache`得到该事件对应类型的的父类及接口类型，没有缓存则查找并插入缓存。循环得到的每个类型和接口，调用 postSingleEventForEventType 函数发布每个事件到每个订阅者。  
+
 postSingleEventForEventType 函数在`subscriptionsByEventType`查找该事件订阅者订阅者队列，调用 postToSubscription 函数向每个订阅者发布事件。  
+
 postToSubscription 函数中会判断订阅者的 ThreadMode，从而决定在什么 Mode 下执行事件响应函数。ThreadMode共有四类：  
-1. `PostThread`：默认的ThreadMode。直接调用订阅者的事件响应方法，不论当前线程是否为主线程（UI线程）。由于发布线程可能为主线程，因此`PostThread`类的方法中不能有耗时操作，否则有卡主线程的风险。适用场景：**对于是否在主线程执行无要求但不耗时的操作**；  
+1. `PostThread`：默认的 ThreadMode，表示在执行 Post 操作的线程直接调用订阅者的事件响应方法，不论该线程是否为主线程（UI线程）。当该线程为主线程时，响应方法中不能有耗时操作，否则有卡主线程的风险。适用场景：**对于是否在主线程执行无要求，但若 Post 线程为主线程，不能耗时的操作**；  
 2. `MainThread`：在主线程中执行响应方法。如果发布线程就是主线程，则直接调用订阅者的事件响应方法，否则通过主线程的 Handler 发送消息在主线程中处理——调用订阅者的事件响应函数。显然，`MainThread`类的方法也不能有耗时操作，以避免卡主线程。适用场景：**必须在主线程执行的操作**；  
-3. `BackgroundThread`：在后台线程中执行响应方法。如果发布线程**不是**主线程，则直接调用订阅者的事件响应函数，否则启动**唯一的**后台线程去处理。由于后台线程是唯一的，当事件超过一个的时候，它们会被放在队列中依次执行，因此该类响应方法虽然没有`PostThread`类和`MainThread`类方法对性能敏感，但依然不能有重度耗时的操作或太频繁的轻度耗时操作，以避免卡后台线程。适用场景：*操作轻微耗时且不会过于频繁*，即一般的耗时操作都可以放在这里；  
+3. `BackgroundThread`：在后台线程中执行响应方法。如果发布线程**不是**主线程，则直接调用订阅者的事件响应函数，否则启动**唯一的**后台线程去处理。由于后台线程是唯一的，当事件超过一个的时候，它们会被放在队列中依次执行，因此该类响应方法虽然没有`PostThread`类和`MainThread`类方法对性能敏感，但最好不要有重度耗时的操作或太频繁的轻度耗时操作，以造成其他操作等待。适用场景：*操作轻微耗时且不会过于频繁*，即一般的耗时操作都可以放在这里；  
 4. `Async`：不论发布线程是否为主线程，都使用一个空闲线程来处理。和`BackgroundThread`不同的是，`Async`类的所有线程是相互独立的，因此不会出现卡线程的问题。适用场景：*长耗时操作，例如网络访问*。  
 
 **(4) 主要成员变量含义**   
@@ -100,7 +102,7 @@ public void onEvent(NoSubscriberEvent event)
 #####4.2.3 SubscriberMethodFinder.java
 订阅者响应函数信息存储和查找类，由 HashMap 缓存，以 ${subscriberClassName} 为 key，SubscriberMethod 对象为元素的 ArrayList 为 value。findSubscriberMethods 函数用于查找订阅者响应函数，如果不在缓存中，则遍历自己的每个函数并递归父类查找，查找成功后保存到缓存中。遍历及查找规则为：  
 a. 遍历 subscriberClass 每个方法；  
-b. 该方法不以`java.`、`javax.`、`android.`这些 SDK 函数开头，并以 `onEvent` 开头，表示可能是事件响应函数继续，否则检查下一个方法；  
+b. 该方法不以`java.`、`javax.`、`android.`这些 SDK 函数开头，并以`onEvent`开头，表示可能是事件响应函数继续，否则检查下一个方法；  
 c. 该方法是否是 public 的，并且不是 ABSTRACT、STATIC、BRIDGE、SYNTHETIC 修饰的，满足条件则继续。其中 BRIDGE、SYNTHETIC 为编译器生成的一些函数修饰符；  
 d. 该方法是否只有 1 个参数，满足条件则继续；  
 e. 该方法名为 `onEvent` 则 threadMode 为`ThreadMode.PostThread`；  
