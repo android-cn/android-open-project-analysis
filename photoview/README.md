@@ -212,14 +212,58 @@ PhotoView不再使用时,可用于释放相关资源。移除Observer, Listener.
 
 根据PhotoView的宽高和Drawable的宽高计算FIT_CENTER状态的Matrix.
 
+- public void onDrag(float dx, float dy)
+
+OnGestureListener接口回调的实现方法.
+
+实际完成拖拽/移动效果.
+核心代码:
+
+    mSuppMatrix.postTranslate(dx, dy);
+
+通过改代码修改Matrix中View的起始位置,制造出图片被拖拽移动的效果.
+
+- public void onFling(float startX, float startY, float velocityX, float velocityY)
+
+OnGestureListener接口回调的实现方法.
+实际完成惯性滑动效果.
+
+惯性滑动效果分两部分完成.
+
+1) 调用 
+
+    mScroller.fling(startX, startY, velocityX, velocityY, minX,
+                        maxX, minY, maxY, 0, 0);
+
+进行惯性滑动辅助计算.
+
+对Scroller不了解的可以参考官方说明 [Scroller](http://developer.android.com/reference/android/widget/Scroller.html)
+
+简单来讲,Scroller是一个辅助计算器,它可以帮你计算出某一时刻View的滚动状态及位置,但是它本身不会对View进行任何更改
+
+2) 使用了Compat.postOnAnimation(imageView, this)在每一帧绘制前更新Matrix状态
+关于Compat.postOnAnimation类的作用机制可以参考下面 4.1.4的说明.
+
+- public void onScale(float scaleFactor, float focusX, float focusY)
+
+OnGestureListener接口回调的实现方法.
+
+实际完成缩放效果.
+
+核心代码:
+
+    mSuppMatrix.postScale(scaleFactor, scaleFactor, focusX, focusY);
+
+请参考Matrix部分说明部分.
+
 ### 接口及工具类
 ---
 ##### 4.1.4 Compat
 用于做View.postOnAnimation方法在低版本上的兼容.
 
-注：View.postOnAnimation (Runnable action) 在PhotoView中用于处理  双击 放大/缩小 时的动画效果.
+注：View.postOnAnimation (Runnable action) 在PhotoView中用于处理  双击 放大/缩小 惯性滑动时的动画效果.
 
-每次系统绘图时都会调用此回调，通过在此时改变视图状态以实现动画效果。该方法仅支持 api >= 16
+每次系统绘图前都会先执行这个Runnable回调，通过在此时改变视图状态以实现动画效果。该方法仅支持 api >= 16
 所以PhotoView中使用了Compat类来做低版本兼容。
 
 实际上也可以使用android.support.v4.view.ViewCompat替代。
@@ -307,7 +351,7 @@ Camera类可以将矩阵变换抽象成 视点（摄像机） 在三维空间内
 - public void setRotate(float degrees, float px, float py)
 
     以(px,py)为中心,旋转degrees度
-	
+    
     ![rotate](images/rotate.png)
 
 - public void setSkew(float kx, float ky, float px, float py)
