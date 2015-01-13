@@ -1,7 +1,7 @@
 CircularFloatingActionMenu 实现原理解析
 ====================================
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 circular-foating-action-menu 部分  
-> 项目地址：[CircularFloatingActionMenu](https://github.com/oguzbilgener/CircularFloatingActionMenu)，分析的版本：[e9ccdad](https://github.com/android-cn/android-open-project-demo/commit/1306e632d5a7734cd8451f4e10dff763f9ab4097)，Demo 地址：[circular-foating-action-menu](https://github.com/android-cn/android-open-project-demo/tree/master/CircularFloatingActionMenu-demo)    
+> 项目地址：[CircularFloatingActionMenu](https://github.com/oguzbilgener/CircularFloatingActionMenu)，分析的版本：[8efb1aa](https://github.com/oguzbilgener/CircularFloatingActionMenu/commit/8efb1aab2b361ed9019fa4af6e5d43e77777bcb6)，Demo 地址：[circular-floating-action-menu](https://github.com/android-cn/android-open-project-demo/tree/master/circular-floating-actionmenu-demo)    
 > 分析者：[cpacm](https://github.com/cpacm)，校对者：[dkmeteor](https://github.com/dkmeteor)，校对状态：未完成   
 
 ###1. 功能介绍  
@@ -18,7 +18,7 @@ CircularFloatingActionMenu 实现原理解析
 ###2.1 核心类功能介绍
 主要分成两部分，一部分是构成菜单的view部分，另一部分是动画的操作类
 
-首先是view的部分，主要是三个部件组成:
+首先是view的部分，主要是三个部件组成:  
 (1)SubActionButton 选项按钮，即按菜单键弹出来的选项按钮。  
 
 这个类继承自FrameLayout控件，实现一个自定义图标的功能  
@@ -29,11 +29,11 @@ CircularFloatingActionMenu 实现原理解析
 
 这个类跟SubActionButton基本相似，同样可以通过内部自定义的build构造器来定制自己的按钮。  
 
-（3）FloatingActionMenu 那么最重要的类来了，它存放着所有的按钮以及动画操作。
+(3)FloatingActionMenu 那么最重要的类来了，它存放着所有的按钮以及动画操作。
 基本结构图如下
 ![Alt text](https://github.com/android-cn/android-open-project-analysis/blob/master/circular-floating-action-menu/menu.jpg "menu")  
 
-接下来是动画部分
+接下来是动画部分  
 (1)MenuAnimationHandler
 这是是所有动画类的父类，它主要定义了菜单打开，关闭，以及运行结束后状态的保存的方法  
  
@@ -47,7 +47,7 @@ CircularFloatingActionMenu 实现原理解析
 来实现
 
 ###2.2 如何使用
-    // Set up the white button on the lower right corner
+        // Set up the white button on the lower right corner
         // more or less with default parameter
         ImageView fabIconNew = new ImageView(this);
         fabIconNew.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new_light));
@@ -142,7 +142,7 @@ public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, 
 之后是设定ImageView到这个按钮上，并且设定与父view的距离。（通过setMargins()）  
 这个我们在创建subActionButton时就要调用。核心函数是addView(contentView,params)。这个方法能够在视图上再添加一个view，作为子视图。
 ```java
-/**
+    /**
      * Sets a content view with custom LayoutParams that will be displayed inside this SubActionButton.
      * @param contentView
      * @param params
@@ -161,7 +161,7 @@ public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, 
 
 最后就是一个建造器了，专门生成用于生成该类的建造器，静态全局
 ```java
- /**
+    /**
      * A builder for {@link com.cpacm.library.SubActionButton} in conventional Java Builder format
      * 菜单选项的建造器
      */
@@ -184,7 +184,7 @@ public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, 
 不过它多了几个方法：    
 设定位置，如左下，右下等方位
 ```java
-/**
+    /**
      * Sets the position of the button by calculating its Gravity from the position parameter
      * @param position one of 8 specified positions.
      * @param layoutParams
@@ -204,7 +204,7 @@ public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, 
 
 FloatingActionButton的建造器
 ```java
-/**
+    /**
      * A builder for {@link com.cpacm.library.FloatingActionButton} in conventional Java Builder format
      */
     public static class Builder {
@@ -258,7 +258,7 @@ FloatingActionMenu类主要是管理菜单按钮和选项按钮的位置和状�
 
 stateChangeListener为状态变化的监听器，开关都会响应相应的方法。主要在AnimationHandler中添加具体方法。
 ```java
-/**
+    /**
      * A listener to listen open/closed state changes of the Menu
      */
     public static interface MenuStateChangeListener {
