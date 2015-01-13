@@ -241,8 +241,8 @@ OnGestureListener接口回调的实现方法.
 
 简单来讲,Scroller是一个辅助计算器,它可以帮你计算出某一时刻View的滚动状态及位置,但是它本身不会对View进行任何更改
 
-2) 使用了Compat.postOnAnimation(imageView, this)在每一帧绘制前更新Matrix状态
-关于Compat.postOnAnimation类的作用机制可以参考下面 4.1.4的说明.
+2) 使用了FlingRunnable和Compat.postOnAnimation(imageView,mFlingRunnable)在每一帧绘制前更新Matrix状态
+关于FlingRunnable和Compat.postOnAnimation类的作用机制可以参考下面 4.1.4的说明.
 
 - public void onScale(float scaleFactor, float focusX, float focusY)
 
@@ -254,7 +254,41 @@ OnGestureListener接口回调的实现方法.
 
     mSuppMatrix.postScale(scaleFactor, scaleFactor, focusX, focusY);
 
-请参考Matrix部分说明部分.
+对Matrix作用机制不了解的话,可以拉到文档最后,有一个针对Matrix的简略介绍.
+
+
+###### 内部类 FlingRunnable
+
+实现惯性滑动的动画效果.
+
+这个Runnable必须配合 View.postOnAnimation(view,runnable) 使用.
+
+在下一帧绘制前,系统会执行该Runnable,这样我们就可以在runnable中更新UI状态.
+
+原理上类似一个递归调用,每次UI绘制前更新UI状态,并指定下次UI更新前再执行自己.
+
+这种写法 与 使用循环或Handler每隔16ms刷新一次UI基本等价,但是更为方便快捷.
+
+更新UI的核心逻辑非常简单,根据mScroller计算出的偏移量更新Matrix状态:
+    
+        mSuppMatrix.postTranslate(dx, dy);
+
+
+###### 内部类 AnimatedZoomRunnable
+实现双击时的 缩放动画.
+
+作用机制基本同上.
+
+区别是AnimatedZoomRunnable的执行进度由AccelerateDecelerateInterpolator控制.
+
+对Interpolator没有概念的可以参阅官方Demo
+[Interpolator](http://developer.android.com/samples/Interpolator/src/com.example.android.interpolator/InterpolatorFragment.html)
+
+你也可以简单认为这就是一个动画进度控制器.
+
+核心逻辑依然很简单,根据动画进度缩小/放大图片
+
+    mSuppMatrix.postScale(deltaScale, deltaScale, mFocalX, mFocalY);
 
 ### 接口及工具类
 ---
