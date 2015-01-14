@@ -34,6 +34,7 @@ Handler异步通信，Http网络请求， IO流。
 - InternalHandler 实现线程的通信
 - StringDownLoadHandler 将io流转化为String。
 - FileDownLoadHandler 将io流转化为File。
+- HttpException统一异常的处理
 
 #####2.1.4 Bitmap模块  
 - BitmapUtils，图片的异步加载，支持本地和网络图片， 图片的压缩处理， 图片的内存缓存已经本地缓存。
@@ -82,6 +83,7 @@ onProgressUpdate()调用RequestCallback，完成回调流程。（缓存策略�
 - 3.回调 在HttpHandler中 updateProgress()是在DownloadHandler数据读写时候的回调， 此方法又调用publishProgress()，publishProgress()通过Handler回调onProgressUpdate() ,onProgressUpdate()调用RequestCallback，完成回调流程。  
 中断下载也是通过回调完成， 在将网络数据转化为本地数据的时候， 回调HttpHandler中 updateProgress()， updateProgress()返回当前的是否中断的状态，如果当用户选择停止的时候直接停止数据读写。
 - 4. 断点下载的原理就是通过读取本地文件的大小， 然后将大小的值传给服务器， 服务器会从当前点开始返回数据。
+- 5. 异常的处理， 异常处理也是通过回调传递给使用者。 其中HttpException是对异常的统一处理。
 
 
 ####3.4 Bitmap模块
