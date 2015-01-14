@@ -28,23 +28,23 @@ Volley 是 Google 推出的 Android 异步网络请求框架和图片加载框�
 简单介绍一些概念，在`详细设计`中会仔细介绍。  
 Volley 的调用比较简单，通过 newRequestQueue(…) 函数新建并启动一个请求队列`RequestQueue`后，只需要往这个`RequestQueue`不断 add Request 即可。  
 
-**Volley：** Volley 对外暴露的 API，通过 newRequestQueue(…) 函数新建并启动一个请求队列`RequestQueue`。  
+**Volley：**Volley 对外暴露的 API，通过 newRequestQueue(…) 函数新建并启动一个请求队列`RequestQueue`。  
 
-**Request：** 表示一个请求的抽象类。`StringRequest`、`JsonRequest`、`ImageRequest` 都是它的子类，表示某种类型的请求。  
+**Request：**表示一个请求的抽象类。`StringRequest`、`JsonRequest`、`ImageRequest` 都是它的子类，表示某种类型的请求。  
 
-**RequestQueue：** 表示请求队列，里面包含一个`CacheDispatcher`(用于处理走缓存请求的调度线程)、`NetworkDispatcher`数组(用于处理走网络请求的调度线程)，一个`ResponseDelivery`(返回结果分发接口)，通过 start() 函数启动时会启动`CacheDispatcher`和`NetworkDispatchers`。  
+**RequestQueue：**表示请求队列，里面包含一个`CacheDispatcher`(用于处理走缓存请求的调度线程)、`NetworkDispatcher`数组(用于处理走网络请求的调度线程)，一个`ResponseDelivery`(返回结果分发接口)，通过 start() 函数启动时会启动`CacheDispatcher`和`NetworkDispatchers`。  
 
-**CacheDispatcher：** 一个线程，用于调度处理走缓存的请求。启动后会不断从缓存请求队列中取请求处理，队列为空则等待，请求处理结束则将结果传递给`ResponseDelivery`去执行后续处理。当结果未缓存过、缓存失效或缓存需要刷新的情况下，该请求都需要重新进入`NetworkDispatcher`去调度处理。  
+**CacheDispatcher：**一个线程，用于调度处理走缓存的请求。启动后会不断从缓存请求队列中取请求处理，队列为空则等待，请求处理结束则将结果传递给`ResponseDelivery`去执行后续处理。当结果未缓存过、缓存失效或缓存需要刷新的情况下，该请求都需要重新进入`NetworkDispatcher`去调度处理。  
 
-**NetworkDispatcher：** 一个线程，用于调度处理走网络的请求。启动后会不断从网络请求队列中取请求处理，队列为空则等待，请求处理结束则将结果传递给`ResponseDelivery`去执行后续处理，并判断结果是否要进行缓存。  
+**NetworkDispatcher：**一个线程，用于调度处理走网络的请求。启动后会不断从网络请求队列中取请求处理，队列为空则等待，请求处理结束则将结果传递给`ResponseDelivery`去执行后续处理，并判断结果是否要进行缓存。  
 
-**ResponseDelivery：** 返回结果分发接口，目前只有基于`ExecutorDelivery`的在入参 handler 对应线程内进行分发。  
+**ResponseDelivery：**返回结果分发接口，目前只有基于`ExecutorDelivery`的在入参 handler 对应线程内进行分发。  
 
-**HttpStack：** 处理 Http 请求，返回请求结果。目前 Volley 中有基于 HttpURLConnection 的`HurlStack`和 基于 Apache HttpClient 的`HttpClientStack`。  
+**HttpStack：**处理 Http 请求，返回请求结果。目前 Volley 中有基于 HttpURLConnection 的`HurlStack`和 基于 Apache HttpClient 的`HttpClientStack`。  
 
-**Network** 调用`HttpStack`处理请求，并将结果转换为可被`ResponseDelivery`处理的`NetworkResponse`。  
+**Network：**调用`HttpStack`处理请求，并将结果转换为可被`ResponseDelivery`处理的`NetworkResponse`。  
 
-**Cache** 缓存请求结果，Volley 默认使用的是基于 sdcard 的`DiskBasedCache`。`NetworkDispatcher`得到请求结果后判断是否需要存储在 Cache，`CacheDispatcher`会从 Cache 中取缓存结果。  
+**Cache：**缓存请求结果，Volley 默认使用的是基于 sdcard 的`DiskBasedCache`。`NetworkDispatcher`得到请求结果后判断是否需要存储在 Cache，`CacheDispatcher`会从 Cache 中取缓存结果。  
 
 ###3. 流程图
 Volley 请求流程图  
@@ -204,8 +204,8 @@ public <T> Request<T> add(Request<T> request);
 void finish(Request<?> request)
 ```
 Request 请求结束  
-> 1）首先从正在进行中请求集合`mCurrentRequests`中移除该请求。  
-> 2）然后查找请求等待集合`mWaitingRequests`中是否存在等待的请求，如果存在，则将等待队列移除，并将等待队列所有的请求添加到缓存请求队列中，让缓存请求处理线程`CacheDispatcher`自动处理。  
+> (1). 首先从正在进行中请求集合`mCurrentRequests`中移除该请求。  
+> (2). 然后查找请求等待集合`mWaitingRequests`中是否存在等待的请求，如果存在，则将等待队列移除，并将等待队列所有的请求添加到缓存请求队列中，让缓存请求处理线程`CacheDispatcher`自动处理。  
 
 ####(5). 请求取消
 ```java
@@ -296,9 +296,9 @@ public NetworkResponse performRequest(Request<?> request) throws VolleyError;
 ####4.2.11 BasicNetwork.java
 实现 Network，Volley 中默认的网络接口实现类。调用`HttpStack`处理请求，并将结果转换为可被`ResponseDelivery`处理的`NetworkResponse`。  
 主要实现了以下功能：  
-1）利用 HttpStack 执行网络请求。  
-2）如果 Request 中带有实体信息，如 Etag,Last-Modify 等，则进行缓存新鲜度的验证，并处理 304（Not Modify）响应。  
-3）如果发生超时，认证失败等错误，进行重试操作，直到成功、抛出异常(不满足重试策略等)结束。  
+(1). 利用 HttpStack 执行网络请求。  
+(2). 如果 Request 中带有实体信息，如 Etag,Last-Modify 等，则进行缓存新鲜度的验证，并处理 304（Not Modify）响应。  
+(3). 如果发生超时，认证失败等错误，进行重试操作，直到成功、抛出异常(不满足重试策略等)结束。  
 
 ####4.2.12 HttpStack.java
 用于处理 Http 请求，返回请求结果的接口。目前 Volley 中的实现有基于 HttpURLConnection 的 HurlStack 和 基于 Apache HttpClient 的 HttpClientStack。  
@@ -356,9 +356,9 @@ public static String parseCharset(Map<String, String> headers)
 public static Cache.Entry parseCacheHeaders(NetworkResponse response)
 ```
 **比较重要的方法**，通过网络响应中的缓存控制 Header 和 Body 内容，构建缓存实体。如果 Header 的 Cache-Control 字段含有`no-cache`或`no-store`表示不缓存，返回 null。  
-1）根据 Date 首部，获取响应生成时间  
-2）根据 ETag 首部，获取响应实体标签  
-3）根据 Cache－Control 和 Expires 首部，计算出缓存的过期时间，和缓存的新鲜度时间
+(1). 根据 Date 首部，获取响应生成时间  
+(2). 根据 ETag 首部，获取响应实体标签  
+(3). 根据 Cache－Control 和 Expires 首部，计算出缓存的过期时间，和缓存的新鲜度时间
 
 >两点需要说明下：  
 >1.没有处理`Last-Modify`首部，而是处理存储了`Date`首部，并在后续的新鲜度验证时，使用`Date`来构建`If-Modified-Since`。
@@ -485,8 +485,7 @@ Volley 中所有错误异常的父类，继承自 Exception，可通过此类设
 
 ###5. 杂谈
 ####5.1 关于 Http 缓存
-Volley 构建了一套相对完整的符合 Http 语义的缓存机制。
-    
+Volley 构建了一套相对完整的符合 Http 语义的缓存机制。  
 **优点和特点**   
 (1). 根据`Cache-Control`和`Expires`首部来计算缓存的过期时间。如果两个首部都存在情况下，以`Cache-Control`为准。  
 (2). 利用`If-None-Match`和`If-Modified-Since`对过期缓存或者不新鲜缓存，进行请求再验证，并处理 304 响应，更新缓存。  
