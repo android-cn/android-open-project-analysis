@@ -1,109 +1,279 @@
-﻿XUtils 实现原理解析
+XUtils 实现原理解析
 ====================================
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 XUtils 部分。  
 > 项目地址：[XUtils](https://github.com/wyouflf/xUtils)，分析的版本：[192c2a886c](https://github.com/wyouflf/xUtils/commit/192c2a886c2d467e50718c6e469de63696f5cded)，Demo 地址：[xUtils Demo](https://github.com/android-cn/android-open-project-demo/tree/master/xutils-demo)  
 > 分析者：[Caij](https://github.com/Caij)，校对者：[maogy](https://github.com/maogy)，校对状态：未完成   
 
-
+  
 ###1. 功能介绍  
 xUtils一个Android公共库框架，主要包括四个部分：View，Db, Http, Bitmap 四个模块。
-- View模块主要的功能是通过注解绑定UI，资源，事件。减少代码冗余。
+- View模块主要的功能是通过注解绑定UI，资源，事件。
 - Db模块是一个数据库orm框架， 简单的语句就能进行数据的操作。
-- Http模块主要访问网络，支持同步，异步方式的请求，支持文件的下载，上传。
-- Bitmap模块是加载图片以及图片的处理， 支持加载本地，网络图片。而且支持图片的内存和本地缓存。
+- Http模块主要访问网络，支持同步，异步方式的请求，支持文件的下载。
+- Bitmap模块是加载图片以及图片的处理， 支持加载本地，网络图片。而且支持图片的内存和本地缓存。  
+
 
 ###2. 详细设计
-####2.1 核心类功能介绍
-#####2.1.1 View模块
+####2.1 View模块
+#####2.2.1 总体设计
+#####2.1.2 流程图
+![流程图](image/view_sque.png)
+#####2.1.3 核心类功能介绍
+######请先了解[注解](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/annotation.md) ，[动态代理](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/proxy.md)  可以帮助到您， 如果已经了解请忽略。
 注解和反射知识是这个模块的主要内容
-- ViewUtils，其实主要功能就是通过反射和注解将Ui和资源、事件和资源绑定。
-- ResLoader, 资源文件的绑定。
-- EventListenerManager view和事件方法的绑定， 其中的设计是通过动态代理。
+######ViewUtils.java  
+View和各种事件的注入以及资源的注入。
+- 主要函数
+```java
+	public static void inject(Object handler, View view)
+	public static void inject(Object handler, Activity acticity)
+```  
+第一个参数Object handler代表的是需要注入的对象， 第二个参数是需要注入View（这个View就是handler的成员变量）所在的View或者Activity。
+```java
+	private static void injectObject(Object handler, ViewFinder finder)	 
+``` 
+该方法完成了View和各种事件的注入以及资源的注入。主要的原理就是通过反射和注解。  
+1.完成Activity的setContentView。  
+2.完成View的注入。  
+3.完成资源的注入。  
+4.完成各种事件的注入。  
+######ViewFinder.java  
+ 需要注入对象的包装对象。
+- 主要函数
+```java  
+	public View findViewById(int id, int pid)
+	public View findViewById(int id)
+```
+如果存在父View， 优先从父View寻找，否则从当前的View或者Activity中寻找。
+######ResLoader.java  
+获取资源文件值。
+######EventListenerManager.java  
+事件的注入， 其中的设计是通过动态代理。
+######注解
 
-#####2.1.2 Db模块
+####2.2 Db模块
+#####2.2.1 总体设计
+#####2.2.2 流程图
+![流程图](image/db_sque.png)
+#####2.2.3 核心类功能介绍
 注解、反射和数据库操作知识这个模块的主要内容
-- DbUtils，主要功能数据库的创建，数据库的增删改查。
-- SqlInfoBuilder， sql建表、增删改语句的组合。
-- Selector，sql查询语句的组合。
-- WhereBuilder， sql条件语句的组合。
+######DbUtils.java  
+主要功能数据库的创建，数据库的增删改查。
+- 主要成员变量
+```java 
+	private static HashMap<String, DbUtils> daoMap = new HashMap<String, DbUtils>();
+```  
+存放DbUtils实例对象的map，每个数据库对应一个实例， key为数据库的名称。
+- 主要函数
+```java 
+private synchronized static DbUtils getInstance(DaoConfig daoConfig)
+```
+采取的是单例模式，根据DaoConfig创建数据库， 中间还涉及到数据库升级。
+```java 
+	delete；
+	findAll；
+	findById；
+	saveOrUpdate；// 当数据库没有时保存， 存在时修改。
+	update；
+```
+增删改查。
 
-#####2.1.3 Http模块
-Handler异步通信，Http网络请求， IO流。
-- HttpUtils，支持异步同步访问网络数据， 断点下载文件和上传文件。
-- HttpHandler，获取网络数据逻辑的实现。
-- InternalHandler 实现线程的通信
-- StringDownLoadHandler 将io流转化为String。
-- FileDownLoadHandler 将io流转化为File。
-- HttpException统一异常的处理
+######DaoConfig.java
+```java
+	private String dbName = "xUtils.db"; // default db name数据库名称
+	private int dbVersion = 1; //数据库版本
+	private DbUpgradeListener dbUpgradeListener; //升级监听事件
+```
+数据库配置类。
+######FindTempCache.java  
+数据库查询数据的缓存。
 
-#####2.1.4 Bitmap模块  
-- BitmapUtils，图片的异步加载，支持本地和网络图片， 图片的压缩处理， 图片的内存缓存已经本地缓存。
-- BitmapLoadTask， 加载图片的异步任务。
-- BitmapCache， 图片的下载， 缓存， 压缩。
-- BitmapGlobalConfig， 配置， 包括线程池， 缓存的大小。
+######SqlInfoBuilder.java  
+sql建表、增删改语句的组合。
+- 主要函数
+```java 
+public static SqlInfo buildCreateTableSqlInfo(DbUtils db, Class<?> entityType)  
+public static SqlInfo buildDeleteSqlInfo(DbUtils db, Class<?> entityType, Object idValue)
+public static SqlInfo buildDeleteSqlInfo(DbUtils db, Class<?> entityType, WhereBuilder whereBuilder)
+public static SqlInfo buildDeleteSqlInfo(DbUtils db, Object entity)
+public static SqlInfo buildInsertSqlInfo(DbUtils db, Object entity)
+public static SqlInfo buildUpdateSqlInfo(DbUtils db, Object entity, String... updateColumnNames)
+public static SqlInfo buildUpdateSqlInfo(DbUtils db, Object entity, WhereBuilder whereBuilder, String... updateColumnNames)
+```
+######SqlInfo.java  
+sql语句和值包装对象。
 
-####2.2 类关系图
-#####2.2.1 View模块
- ![View类图](image/ViewClass.png)
- 
-#####2.2.2 Db模块
- ![Db类图](image/DbSequence.png)
+######Table.java  
+表对象。
 
-#####2.2.3Http模块
- ![Http类图](image/HttpClass.png)
- 
-#####2.2.4Bitmap模块
- ![Bitmap类图](image/BitmapClass.png)
- 
-###3. 流程图
-主要功能流程图  
-####3.1 View模块
-######请先了解[注解](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/annotation.md)  [动态代理](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/proxy.md)  可以帮助到您， 如果已经了解请忽略。
-![View时序图](image/ViewSequence.png)
-- 主要的顺序就是在ViewUtils的`inject(View)`将需要的绑定数据的对象传入，`injectObject(Object, ViewFinder)` 主要通过反射获取对象的成员变量和方法， 
-然后获取成员变量和方法的注解的值， 将成员变量赋值， 事件和方法绑定， 在EventListenerManager中是通过代理将事件和方法绑定。
+######Column.java  
+表中列对象。
 
-####3.2 DB模块
-![Db流程图](image/db_sq.png)
-- `DbUtils`中`getInstance()`获取XUtils的实例，里面的操作就是检查数据库版本和升级，然后就是创建数据库（单例模式， 如果存在数据库不会重复创建）。
- `createDatabase()`通过配置创建数据库。save，find，update，delete 都是然后通过`SqlInfoBuilder`或者Selector组合对象的sql语句， 然后通过系统自带数据库api进行数据库操作。
- `SqlInfoBuilder`的原理也是反射加注解。
- 
-####3.3 Http模块
-![Http流程图](image/HttpSequence.png)
-- 1.HttpUtils通过send或者down获取网络请求。
-- 2.HttpHandler异步任务读取数据，任务开始的时候会调用`onPreExecute` , 然后在`doInBackground()`中访问网络;  
-sendRequest()向服务器发送请求;  
-handleResponse()将网络数据包装入ResponseInfo;   
-FileDownloadHandler 将网络数据转化为File;  
-StringDownloadHandler 将网络数据返回为字符串;  
-updateProgress()是在DownloadHandler数据读写时候的回调， 此方法又调用publishProgress()，
-publishProgress()通过Handler回调onProgressUpdate() ,
-onProgressUpdate()调用RequestCallback，完成回调流程。（缓存策略是读取的时候优先从缓存中读取， 读取的时候判断缓存是否过期， 如果没有缓存或者缓存已过期就会从服务器读取， 这里的缓存时间可以配置）
-- 3.回调 在HttpHandler中 updateProgress()是在DownloadHandler数据读写时候的回调， 此方法又调用publishProgress()，publishProgress()通过Handler回调onProgressUpdate() ,onProgressUpdate()调用RequestCallback，完成回调流程。  
-中断下载也是通过回调完成， 在将网络数据转化为本地数据的时候， 回调HttpHandler中 updateProgress()， updateProgress()返回当前的是否中断的状态，如果当用户选择停止的时候直接停止数据读写。
-- 4. 断点下载的原理就是通过读取本地文件的大小， 然后将大小的值传给服务器， 服务器会从当前点开始返回数据。
-- 5. 异常的处理， 异常处理也是通过回调传递给使用者。 其中HttpException是对异常的统一处理。
+######Id.java  
+表对应的主键对象。
 
+######Selector.java  
+sql查询语句的组合。
 
-####3.4 Bitmap模块
-![Bitmap流程图](image/BitmapSequence.png)
-######图片看不清可以下载到电脑中查看
-- 1.BitmapUtils，display。
-- 2.BitmapGlobalConfig 获取缓存。 如果图片在运行内存缓存中存在， 就直接回调DefaultBitmapLoadCallBack。
-- 3.如果图片在运行内存缓存中不存在， 则开启异步任务BitmapLoadTask， 在doInBackground中优先从闪存缓存中读取， 再从网络读取。
-- 4.下载的过程在BitmapCache中，  下载完优先存入sd缓存， 再加入运行内存缓存。
-- 5. 其中机制和http模块类似，有些细节可以看demo里面的源码， 很多都写了注释。
+######WhereBuilder.java  
+sql条件语句的组合。
 
-###4. 总体设计
- 
-- 1.View和Bb模块 主要是以反射加注解为主。 
-- 2.Http和Bitmap模块的构架。
-
+#####2.3 Http模块
+#####2.3.1 总体设计
 ![整体构建思路](image/design.png)
+#####2.3.2 流程图
+![流程图](image/http_sque.png)
+Handler异步通信，Http网络请求， IO流。
+######HttpUtils.java 
+支持异步同步访问网络数据， 断点下载文件。
+- 主要成员变量
+```java 
+	//网络数据的缓存。
+	public final static HttpCache sHttpCache = new HttpCache();
+	//访问网络的HttpClient。
+	private final DefaultHttpClient httpClient; 
+	private final HttpContext httpContext = new BasicHttpContext();
+	//线程池。
+	private final static PriorityExecutor EXECUTOR = new PriorityExecutor(DEFAULT_POOL_SIZE);
+```
+- 主要函数
+```java
+public HttpUtils(int connTimeout, String userAgent) {
+		//配置超时时间，UserAgent， http版本信息协议等一些信息
+        .....
+		//将配置的参数统一放到httpClient中
+        httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(params, schemeRegistry), params);
+		....
+
+		//下面这个关键，设置拦截器。 默认加上gizp压缩。 通过gizp压缩后的数据传输效率高很多。
+        httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
+            @Override
+            public void process(org.apache.http.HttpRequest httpRequest, HttpContext httpContext) throws org.apache.http.HttpException, IOException {
+                if (!httpRequest.containsHeader(HEADER_ACCEPT_ENCODING)) { 
+                    httpRequest.addHeader(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
+                }
+            }
+        });
+
+        httpClient.addResponseInterceptor(new HttpResponseInterceptor() {
+            @Override
+            public void process(HttpResponse response, HttpContext httpContext) throws org.apache.http.HttpException, IOException {
+                final HttpEntity entity = response.getEntity();
+                if (entity == null) {
+                    return;
+                }
+                final Header encoding = entity.getContentEncoding();
+                if (encoding != null) {
+                    for (HeaderElement element : encoding.getElements()) {
+                        if (element.getName().equalsIgnoreCase("gzip")) {
+							//这里判断从服务器传输的数据是否需要通过gzip解压。
+                            response.setEntity(new GZipDecompressingEntity(response.getEntity())); 
+                            return;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+```
+```java 
+	//访问网络数据
+	private <T> HttpHandler<T> sendRequest(HttpRequest request, RequestParams params, RequestCallBack<T> callBack);
+	//下载网络文件
+	public HttpHandler<File> download(HttpRequest.HttpMethod method, String url, String target,
+                                      RequestParams params, boolean autoResume, boolean autoRename, RequestCallBack<File> callback);
+```
+
+######HttpRequest.java 
+网络请求的包装类。 包括url， 访问请求方法， 参数值等。
+
+######RequestCallBack.java
+完成数据请求回调接口。  
+
+######HttpHandler.java
+获取网络数据逻辑的实现。这里可以理解为系统内部AsyncTask。
+- 访问网络数据处理流程图
+![流程图](image/request_sque.png)
+
+######HttpCache.java  
+网络数据的缓存，内部包含LruMemoryCache。 主要作用是解决包装一层过期时间的问题。
+
+######StringDownLoadHandler.java 
+`handleEntity()`将网络io流转化为String。
+
+######FileDownLoadHandler.java
+`handleEntity()`将网络io流转化为File。
+
+######HttpException.java  
+统一异常
+
+#####2.4 Bitmap模块  
+#####2.4.1 总体设计
+请查看http模块
+#####2.4.2 流程图
+请查看http模块
+![Bitmap详细流程图](image/BitmapSequence.png)
+######BitmapUtils.java  
+图片的异步加载，支持本地和网络图片， 图片的压缩处理， 图片的内存缓存已经本地缓存。
+- 主要成员变量
+```java 
+	private BitmapGlobalConfig globalConfig; // 线程池，缓存，和网络的配置
+    private BitmapDisplayConfig defaultDisplayConfig; //图片显示的配置
+```
+- 主要函数
+```java
+	/**
+     * @param container 表示需要显示图片的View
+     * @param uri 图片的uri
+     * @param displayConfig 图片显示的配置
+     * @param callBack 图片加载的回调接口
+     */
+	public <T extends View> void display(T container, String uri, BitmapDisplayConfig displayConfig, BitmapLoadCallBack<T> callBack)
+```
+- 设置图片流程图
+![流程图](image/bitmap_sque.png)
+
+######BitmapLoadTask.java  
+加载图片的异步任务。在`doInBackground`中读取图片资源
+
+######BitmapCache.java 
+- 主要函数
+```java
+	//下载网络图片， 然后根据配置压缩图片， 将图片缓存。
+	public Bitmap downloadBitmap(String uri, BitmapDisplayConfig config, final BitmapUtils.BitmapLoadTask<?> task)
+	//从运存缓存中读取bitmap
+	public Bitmap getBitmapFromMemCache(String uri, BitmapDisplayConfig config)
+	//从闪存缓存中读取bitmap
+	public Bitmap getBitmapFromDiskCache(String uri, BitmapDisplayConfig config) 
+```
+
+######BitmapGlobalConfig.java  
+配置， 包括线程池， 缓存的大小。  
+```java
+//闪存缓存的路径
+private String diskCachePath;
+//运存缓存的最大值
+private int memoryCacheSize = 1024 * 1024 * 4; // 4MB
+//闪存缓存的最大值
+private int diskCacheSize = 1024 * 1024 * 50;  // 50M
+//从网络加载数据的线程池
+private final static PriorityExecutor BITMAP_LOAD_EXECUTOR = new PriorityExecutor(DEFAULT_POOL_SIZE);
+//从闪存读取数据的线程池
+private final static PriorityExecutor DISK_CACHE_EXECUTOR = new PriorityExecutor(2);
+//bitmap缓存的的时间
+private long defaultCacheExpiry = 1000L * 60 * 60 * 24 * 30; // 30 days
+
+######DefaultDownloader.java
+获取bitmap， 支持三种获取路径， 本地文件，资产文件， 和网络图片。
+```
+
+######DefaultBitmapLoadCallBack.java
+图片加载完成的的回调， 默认回调将获取的bitmap值传递给view。
 
 
-###5. 杂谈
+
+###3. 杂谈
 和Volley框架相比
 ####相同点：
 - 1.采用了网络数据缓存机制。  
@@ -115,9 +285,4 @@ onProgressUpdate()调用RequestCallback，完成回调流程。（缓存策略�
 - 2.Volley将Http请求数据先缓存进byte[]， 然后是分配给不同的请求转化为需要的格式。xUtils是直接转化为想要的格式。 Volley：扩展性好， 但是不能存在大数据请求，否则就OOM。xUtils：不缓存入byte[] 支持大数据的请求， 速度比Volley稍快，但扩展性就低。
 - 4.Volley访问网络数据时直接开启固定个数线程访问网络， 在run方法中执行死循环， 阻塞等待请求队列。 xUtils是开启线程池来管理线程。
 - 5. 缓存失效策略， volley的所有网络数据支持从http响应头中控制是否缓存和读取缓存失效时间，每个请求可以控制是否缓存和缓存失效时间。 Xutils网络数据请求是统一自定义缓存失效时间。
-
-
-
-  
-
 
