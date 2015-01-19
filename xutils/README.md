@@ -166,7 +166,9 @@ sql条件语句的组合。
 #####2.3.1 总体设计
 ![整体构建思路](image/http_design.png)
 #####2.3.2 流程图
-![流程图](image/http_sque.png)
+![流程图](image/http_sque.png)  
+#####2.3.3 类图
+![流程图](image/http_class.png)
 #####1.HttpUtils.java 
 支持异步同步访问网络数据， 断点下载文件。
 ```java 
@@ -238,7 +240,7 @@ public HttpUtils(int connTimeout, String userAgent) {
 ![流程图](image/request_sque.png)
 
 #####5.HttpCache.java  
-网络数据的缓存，内部包含LruMemoryCache。 主要作用是解决包装一层过期时间的问题。
+网络数据的缓存，内部包含LruMemoryCache。
 
 #####6.StringDownLoadHandler.java 
 `handleEntity()`将网络io流转化为String。
@@ -257,6 +259,8 @@ public HttpUtils(int connTimeout, String userAgent) {
 ![整体构建思路](image/bitmap_design.png)
 #####2.4.2 流程图
 请查看http模块
+#####2.4.3 类图
+![类图](image/bitmap_class.png)
 #####1.BitmapUtils.java  
 图片的异步加载，支持本地和网络图片， 图片的压缩处理， 图片的内存缓存已经本地缓存。
 ```java 
@@ -273,7 +277,7 @@ public HttpUtils(int connTimeout, String userAgent) {
 	public <T extends View> void display(T container, String uri, BitmapDisplayConfig displayConfig, BitmapLoadCallBack<T> callBack)
 ```
 设置图片流程图  
-![流程图](image/bitmap_sque.png)
+![流程图](image/bitmap_sque.png)  
 详细流程图  
 ![Bitmap详细流程图](image/BitmapSequence.png)
 #####BitmapLoadTask.java  
