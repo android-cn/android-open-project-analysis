@@ -34,7 +34,7 @@ TabPageIndicator、IconPageIndicator继承自HorizontalScrollView是由于它们
 	* 添加控制属性的方法
 
 2. 自定义View的绘制  
-重写onDraw()方法,按需求绘制自定义的view。onDraw方法是每一帧都会执行的方法，所以不要在该方法里做一些内存分配以及复杂的操作，比如创建Paint对象,Paint应该在初始化的时候就创建。
+重写onDraw()方法,按需求绘制自定义的view。每次屏幕发生绘制以及动画执行过程中，onDraw方法都会被调用到，避免在onDraw方法里面执行复杂的操作，避免创建对象，比如绘制过程中使用的Paint，应该在初始化的时候就创建，而不是在onDraw方法中。
 
 3. 使View具有交互性  
 一个好的自定义View还应该具有交互性，使用户可以感受到UI上的微小变化，并且这些变化应该尽可能的和现实世界的物理规律保持一致，更自然。Android提供一个输入事件模型，帮助你处理用户的输入事件,你可以借助GestureDetector、Scroller、属性动画等使得过渡更加自然和流畅。 
