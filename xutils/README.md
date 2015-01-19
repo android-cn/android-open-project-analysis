@@ -329,7 +329,6 @@ private long defaultCacheExpiry = 1000L * 60 * 60 * 24 * 30; // 30 days
 ####相同点：
 - 1.采用了网络数据缓存机制。  
 - 2.通过handler进行线程通信
-- 3.Bitmap 模块采用运行内存缓存， 本地缓存， 图片的压缩处理。 
 
 ####不同点：
 - 1. Volley的Http请求在 android 2.3 版本之前是通过HttpClient ，在之后的版本是通过URLHttpConnection。xUtils都是通过HttpClient请求网络（bitmap模块图片下载是通过URLHttpConnection）。 URLHttpConnection默认支持GZIP压缩，api操作简单。
