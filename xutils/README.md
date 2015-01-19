@@ -13,7 +13,9 @@ xUtils一个Android公共库框架，主要包括四个部分：View，Db, Http,
 - Bitmap模块是加载图片以及图片的处理， 支持加载本地，网络图片。而且支持图片的内存和本地缓存。  
 
 
-###2. 详细设计
+###2. 详细设计  
+  
+  
 ####2.1 View模块
 #####2.1.1 总体设计
 流程和关系较少， 请看下面的详细分析
@@ -38,8 +40,9 @@ View和各种事件的注入以及资源的注入。
 - 完成View的注入。  
 - 完成资源的注入。  
 - 完成各种事件的注入。  
+  
 #####2.ViewFinder.java  
- 上述第二个参数的包装对象。
+上述第二个参数的包装对象。  
 ######(1)主要函数
 ```java  
 	public View findViewById(int id, int pid)
@@ -72,6 +75,8 @@ public static void addEventMethod(
 
 #####5.注解类
 
+  
+    
 ####2.2 Db模块
 #####2.2.1 总体设计
 流程和关系较少， 请看下面的详细分析
@@ -154,7 +159,9 @@ sql查询语句的组合。
 
 #####10.WhereBuilder.java  
 sql条件语句的组合。
-
+  
+    
+	
 #####2.3 Http模块
 #####2.3.1 总体设计
 ![整体构建思路](image/http_design.png)
@@ -227,7 +234,7 @@ public HttpUtils(int connTimeout, String userAgent) {
 
 #####4.HttpHandler.java
 获取网络数据逻辑的实现。这里可以理解为系统内部AsyncTask。
-- 访问网络数据处理流程图
+访问网络数据处理流程图  
 ![流程图](image/request_sque.png)
 
 #####5.HttpCache.java  
@@ -241,7 +248,10 @@ public HttpUtils(int connTimeout, String userAgent) {
 
 ######8.HttpException.java  
 统一异常
-
+  
+    
+	  
+	  
 #####2.4 Bitmap模块  
 #####2.4.1 总体设计
 ![整体构建思路](image/bitmap_design.png)
@@ -262,14 +272,18 @@ public HttpUtils(int connTimeout, String userAgent) {
      */
 	public <T extends View> void display(T container, String uri, BitmapDisplayConfig displayConfig, BitmapLoadCallBack<T> callBack)
 ```
-设置图片流程图
+设置图片流程图  
 ![流程图](image/bitmap_sque.png)
-详细流程图
+详细流程图  
 ![Bitmap详细流程图](image/BitmapSequence.png)
 #####BitmapLoadTask.java  
 加载图片的异步任务。在`doInBackground`中读取图片资源
 
 #####2.BitmapCache.java 
+```java
+    private LruDiskCache mDiskLruCache; //闪存缓存
+    private LruMemoryCache<MemoryCacheKey, Bitmap> mMemoryCache; //运存缓存
+```
 #####(1)主要函数
 ```java
 	//下载网络图片， 然后根据配置压缩图片， 将图片缓存。
