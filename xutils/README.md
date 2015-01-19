@@ -280,10 +280,10 @@ public HttpUtils(int connTimeout, String userAgent) {
 ![流程图](image/bitmap_sque.png)  
 详细流程图  
 ![Bitmap详细流程图](image/BitmapSequence.png)
-#####BitmapLoadTask.java  
+#####2.BitmapLoadTask.java  
 加载图片的异步任务。在`doInBackground`中读取图片资源
 
-#####2.BitmapCache.java 
+#####3.BitmapCache.java 
 ```java
     private LruDiskCache mDiskLruCache; //闪存缓存
     private LruMemoryCache<MemoryCacheKey, Bitmap> mMemoryCache; //运存缓存
@@ -298,7 +298,7 @@ public HttpUtils(int connTimeout, String userAgent) {
 	public Bitmap getBitmapFromDiskCache(String uri, BitmapDisplayConfig config) 
 ```
 
-#####3.BitmapGlobalConfig.java  
+#####4.BitmapGlobalConfig.java  
 配置， 包括线程池， 缓存的大小。  
 ```java
 //闪存缓存的路径
@@ -316,10 +316,10 @@ private long defaultCacheExpiry = 1000L * 60 * 60 * 24 * 30; // 30 days
 
 ```
 
-#####4.DefaultDownloader.java
+#####5.DefaultDownloader.java
 获取bitmap， 支持三种获取路径， 本地文件，资产文件， 和网络图片。
 
-#####5.DefaultBitmapLoadCallBack.java
+#####6.DefaultBitmapLoadCallBack.java
 图片加载完成的的回调， 默认回调将获取的bitmap值传递给view。
 
 
