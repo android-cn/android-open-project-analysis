@@ -28,21 +28,16 @@ xUtils一个Android公共库框架，主要包括四个部分：View，Db, Http,
 View和各种事件的注入以及资源的注入。
 ######(1)主要函数
 ```java
-	public static void inject(Object handler, View view)
-	public static void inject(Object handler, Activity acticity)
-```  
-第一个参数Object handler代表的是需要注入的对象， 第二个参数是需要注入View（这个View就是handler的成员变量）所在的View或者Activity。
-```java
 	private static void injectObject(Object handler, ViewFinder finder)	 
 ``` 
+第一个参数Object handler代表的是需要注入的对象， 第二个参数是需要注入View（这个View就是handler的成员变量）所在的View或者Activity的包装对象。
 该方法完成了View和各种事件的注入以及资源的注入。主要的原理就是通过反射和注解。  
 - 完成Activity的setContentView。  
 - 完成View的注入。  
 - 完成资源的注入。  
 - 完成各种事件的注入。  
   
-#####2.ViewFinder.java  
-上述第二个参数的包装对象。  
+#####2.ViewFinder.java    
 ######(1)主要函数
 ```java  
 	public View findViewById(int id, int pid)
@@ -240,7 +235,7 @@ public HttpUtils(int connTimeout, String userAgent) {
 ![流程图](image/request_sque.png)
 
 #####5.HttpCache.java  
-网络数据的缓存，内部包含LruMemoryCache。
+网络数据的缓存，内部包含LruMemoryCache。在获取数据的时候会判断是否过期。
 
 #####6.StringDownLoadHandler.java 
 `handleEntity()`将网络io流转化为String。
@@ -292,7 +287,7 @@ public HttpUtils(int connTimeout, String userAgent) {
 ```java
 	//下载网络图片， 然后根据配置压缩图片， 将图片缓存。
 	public Bitmap downloadBitmap(String uri, BitmapDisplayConfig config, final BitmapUtils.BitmapLoadTask<?> task)
-	//从运存缓存中读取bitmap
+	//从运存缓存中读取bitmap 在获取的时候会判断是否过期
 	public Bitmap getBitmapFromMemCache(String uri, BitmapDisplayConfig config)
 	//从闪存缓存中读取bitmap
 	public Bitmap getBitmapFromDiskCache(String uri, BitmapDisplayConfig config) 
@@ -313,13 +308,28 @@ private final static PriorityExecutor BITMAP_LOAD_EXECUTOR = new PriorityExecuto
 private final static PriorityExecutor DISK_CACHE_EXECUTOR = new PriorityExecutor(2);
 //bitmap缓存的的时间
 private long defaultCacheExpiry = 1000L * 60 * 60 * 24 * 30; // 30 days
-
+//bitmap缓存
+private BitmapCache bitmapCache;
 ```
 
-#####5.DefaultDownloader.java
+#####5.BitmapDisplayConfig.java
+```java
+	//图片显示的大小
+    private BitmapSize bitmapMaxSize;
+	//图片的动画
+    private Animation animation;
+	// 图片加载过程中的显示图片
+    private Drawable loadingDrawable;
+	// 图片加载失败的显示图片
+    private Drawable loadFailedDrawable;
+	// 图片显示的配置色彩
+    private Bitmap.Config bitmapConfig = Bitmap.Config.RGB_565;
+```
+
+#####6.DefaultDownloader.java
 获取bitmap， 支持三种获取路径， 本地文件，资产文件， 和网络图片。
 
-#####6.DefaultBitmapLoadCallBack.java
+#####7.DefaultBitmapLoadCallBack.java
 图片加载完成的的回调， 默认回调将获取的bitmap值传递给view。
 
 
