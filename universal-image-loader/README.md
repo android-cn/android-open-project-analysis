@@ -2,7 +2,7 @@ Android Universal Image Loader 源码分析
 ====================================
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 Android Universal Image Loader 部分  
 > 项目地址：[Android-Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader)，分析的版本：[eb794c3](https://github.com/nostra13/Android-Universal-Image-Loader/commit/eb794c306c1707a6cce80764b01f52109d5b9056)，Demo 地址：[UIL Demo](https://github.com/android-cn/android-open-project-demo/tree/master/universal-image-loader-demo)  
-> 分析者：[huxian99](https://github.com/huxian99)，校对者：[Grumoon](https://github.com/grumoon)、[Trinea](https://github.com/trinea)，校对状态：进行中
+> 分析者：[huxian99](https://github.com/huxian99)，校对者：[Grumoon](https://github.com/grumoon)、[Trinea](https://github.com/trinea)，校对状态：完成
 
 ###1. 功能介绍
 ####1.1 Android Universal Image Loader
@@ -128,8 +128,8 @@ imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
 **options:** 图片显示的配置项。比如加载前、加载中、加载失败应该显示的占位图片，图片是否需要在磁盘缓存，是否需要在内存缓存等。  
 **listener:** 图片加载各种时刻的回调接口，包括开始加载、加载失败、加载成功、取消加载四个时刻的回调函数。  
 **progressListener:** 图片加载进度的回调接口。  
-此函数流程图如下：  
-// TODO 需要流程图。  
+函数流程图如下：  
+![ImageLoader Display Image Flow Chart](image/display-image-flow-chart.png)  
 
 #####4.2.2 ImageLoaderConfiguration.java
 `ImageLoader`的配置信息，包括图片最大尺寸、线程池、缓存、下载器、解码器等等。  
@@ -465,7 +465,8 @@ runTask(displayBitmapTask, syncLoading, handler, engine);
 从上面代码段中可以看到先是从内存缓存中去读取 bitmap 对象，若 bitmap 对象不存在，则调用 tryLoadBitmap() 函数获取 bitmap 对象，获取成功后若在 DisplayImageOptions.Builder 中设置了 cacheInMemory(true), 同时将 bitmap 对象缓存到内存中。  
 最后新建`DisplayBitmapTask`显示图片。  
 
-函数主要流程如下：  
+函数流程图如下：  
+![Load and Display Image Task Flow Chart](image/load-display-flow-chart.png)  
 1. 判断图片的内存缓存是否存在，若存在直接执行步骤 8；  
 2. 判断图片的磁盘缓存是否存在，若存在直接执行步骤 5；  
 3. 从网络上下载图片；  
@@ -794,12 +795,12 @@ Bitmap decode(ImageDecodingInfo imageDecodingInfo) throws IOException;
 3. 否则，调用`ImageSizeUtils.computeImageSampleSize(…)`计算缩放比例。  
 在 computeImageSampleSize(…) 中  
 1. 如果`viewScaleType`等于`ViewScaleType.FIT_INSIDE`；  
-1.1 如果`scaleType`等于`ImageScaleType.IN_SAMPLE_POWER_OF_2`，则不断 *2 直到长或宽小于最大尺寸；  
-1.2 否则取长和宽分别与最大尺寸比例中较大值。  
+1.1 如果`scaleType`等于`ImageScaleType.IN_SAMPLE_POWER_OF_2`，则缩放比例从 1 开始不断 *2 直到宽或高小于最大尺寸；  
+1.2 否则取宽和高分别与最大尺寸比例中较大值，即`Math.max(srcWidth / targetWidth, srcHeight / targetHeight)`。  
 2. 如果`scaleType`等于`ViewScaleType.CROP`；  
-2.1 如果`scaleType`等于`ImageScaleType.IN_SAMPLE_POWER_OF_2`，则不断 *2 直到长和宽都小于最大尺寸。  
-2.2 否则取长和宽分别与最大尺寸比例中较小值。  
-3. 最后判断长和宽是否超过最大值，如果是 *2 或是 +1 缩放。  
+2.1 如果`scaleType`等于`ImageScaleType.IN_SAMPLE_POWER_OF_2`，则缩放比例从 1 开始不断 *2 直到宽和高都小于最大尺寸。  
+2.2 否则取宽和高分别与最大尺寸比例中较小值，即`Math.min(srcWidth / targetWidth, srcHeight / targetHeight)`。  
+3. 最后判断宽和高是否超过最大值，如果是 *2 或是 +1 缩放。  
 
 #####(5). considerExactScaleAndOrientatiton(Bitmap subsampledBitmap, ImageDecodingInfo decodingInfo, int rotation, boolean flipHorizontal)
 根据参数将图片放大、翻转、旋转为合适的样子返回。  
