@@ -66,10 +66,9 @@ imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
 ###2. 总体设计
 ####2.1. 总体设计图
 ![总体设计图](image/overall-design.png)  
-上面是 Volley 的总体设计图。  
-整个库分为`ImageLoaderEngine`，`Cache`和`ImageDownloader`，`ImageDecoder`，`BitmapDisplayer`，`BitmapProcessor`五大模块，其中`Cache`分为`MemoryCache`和`DiskCache`两部分。  
+上面是 UIL 的总体设计图。整个库分为`ImageLoaderEngine`，`Cache`和`ImageDownloader`，`ImageDecoder`，`BitmapDisplayer`，`BitmapProcessor`五大模块，其中`Cache`分为`MemoryCache`和`DiskCache`两部分。  
 
-简单的将就是`ImageLoader`将加载及显示的任务交给`ImageLoaderEngine`，`ImageLoaderEngine`分发任务到线程池去执行，任务通过`Cache`和`ImageDownloader`获取数据，中间可能经过`BitmapProcessor`和`ImageDecoder`处理，最终交给`BitmapDisplayer`在`ImageAware`中显示。  
+简单的讲就是`ImageLoader`将加载及显示图片的任务交给`ImageLoaderEngine`，`ImageLoaderEngine`分发任务到线程池去执行，任务通过`Cache`及`ImageDownloader`获取数据，中间可能经过`BitmapProcessor`和`ImageDecoder`处理，最终转换为`Bitmap`交给`BitmapDisplayer`在`ImageAware`中显示。  
 
 ####2.2. UIL 中的概念
 简单介绍一些概念，在`4. 详细设计`中会仔细介绍。  
@@ -789,14 +788,18 @@ Bitmap decode(ImageDecodingInfo imageDecodingInfo) throws IOException;
 得到图片 Exif 信息中的翻转以及旋转角度信息。  
 
 #####(4). prepareDecodingOptions(ImageSize imageSize, ImageDecodingInfo decodingInfo)
-得到图片缩放的比例。如果`scaleType`  
-是`ImageScaleType.NONE`，则缩放比例为 1；  
-是`ImageScaleType.NONE_SAFE`，则缩放比例为 `(int)Math.ceil(Math.max((float)srcWidth / maxWidth, (float)srcHeight / maxHeight))`；  
-否则，调用`ImageSizeUtils.computeImageSampleSize(…)`计算缩放比例。在 computeImageSampleSize(…) 中，如果`viewScaleType`  
-是`ViewScaleType.FIT_INSIDE`，如果`scaleType`是`ImageScaleType.IN_SAMPLE_POWER_OF_2`，则不断 *2 直到长或宽小于最大尺寸。否则取长和宽分别与最大尺寸比例中较大值。  
-是`ViewScaleType.CROP`，如果`scaleType`是`ImageScaleType.IN_SAMPLE_POWER_OF_2`，则不断 *2 直到长和宽都小于最大尺寸。否则取长和宽分别与最大尺寸比例中较小值。  
-最后判断长和宽是否超过最大值，如果是 *2 或是 +1 缩放。  
-// TODO 图
+得到图片缩放的比例。  
+1. 如果`scaleType`等于`ImageScaleType.NONE`，则缩放比例为 1；  
+2. 如果`scaleType`等于`ImageScaleType.NONE_SAFE`，则缩放比例为 `(int)Math.ceil(Math.max((float)srcWidth / maxWidth, (float)srcHeight / maxHeight))`；  
+3. 否则，调用`ImageSizeUtils.computeImageSampleSize(…)`计算缩放比例。  
+在 computeImageSampleSize(…) 中  
+1. 如果`viewScaleType`等于`ViewScaleType.FIT_INSIDE`；  
+1.1 如果`scaleType`等于`ImageScaleType.IN_SAMPLE_POWER_OF_2`，则不断 *2 直到长或宽小于最大尺寸；  
+1.2 否则取长和宽分别与最大尺寸比例中较大值。  
+2. 如果`scaleType`等于`ViewScaleType.CROP`；  
+2.1 如果`scaleType`等于`ImageScaleType.IN_SAMPLE_POWER_OF_2`，则不断 *2 直到长和宽都小于最大尺寸。  
+2.2 否则取长和宽分别与最大尺寸比例中较小值。  
+3. 最后判断长和宽是否超过最大值，如果是 *2 或是 +1 缩放。  
 
 #####(5). considerExactScaleAndOrientatiton(Bitmap subsampledBitmap, ImageDecodingInfo decodingInfo, int rotation, boolean flipHorizontal)
 根据参数将图片放大、翻转、旋转为合适的样子返回。  
