@@ -66,13 +66,13 @@ imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
 ###2. 总体设计
 ####2.1. 总体设计图
 ![总体设计图](image/overall-design.png)  
-上面是 UIL 的总体设计图。整个库分为`ImageLoaderEngine`，`Cache`和`ImageDownloader`，`ImageDecoder`，`BitmapDisplayer`，`BitmapProcessor`五大模块，其中`Cache`分为`MemoryCache`和`DiskCache`两部分。  
+上面是 UIL 的总体设计图。整个库分为`ImageLoaderEngine`，`Cache`及`ImageDownloader`，`ImageDecoder`，`BitmapDisplayer`，`BitmapProcessor`五大模块，其中`Cache`分为`MemoryCache`和`DiskCache`两部分。  
 
-简单的讲就是`ImageLoader`将加载及显示图片的任务交给`ImageLoaderEngine`，`ImageLoaderEngine`分发任务到线程池去执行，任务通过`Cache`及`ImageDownloader`获取数据，中间可能经过`BitmapProcessor`和`ImageDecoder`处理，最终转换为`Bitmap`交给`BitmapDisplayer`在`ImageAware`中显示。  
+简单的讲就是`ImageLoader`收到加载及显示图片的任务，并将它交给`ImageLoaderEngine`，`ImageLoaderEngine`分发任务到具体线程池去执行，任务通过`Cache`及`ImageDownloader`获取图片，中间可能经过`BitmapProcessor`和`ImageDecoder`处理，最终转换为`Bitmap`交给`BitmapDisplayer`在`ImageAware`中显示。  
 
 ####2.2. UIL 中的概念
 简单介绍一些概念，在`4. 详细设计`中会仔细介绍。  
-**ImageLoaderEngine：**任务分发器，负责分发`LoadAndDisplayImageTask`和`ProcessAndDisplayImageTask`给具体的线程池去执行，具体参考`4.2.6 ImageLoaderEngine.java`。  
+**ImageLoaderEngine：**任务分发器，负责分发`LoadAndDisplayImageTask`和`ProcessAndDisplayImageTask`给具体的线程池去执行，本文中也称其为`engine`，具体参考`4.2.6 ImageLoaderEngine.java`。  
 
 **ImageAware：**显示图片的对象，可以是`ImageView`等，具体参考`4.2.9 ImageAware.java`。  
 
@@ -80,9 +80,9 @@ imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
 
 **Cache：**图片缓存，分为`MemoryCache`和`DiskCache`两部分。  
 
-**MemoryCache：**内存图片缓存，向内存缓存图片或从内存缓存读取图片，具体参考`4.2.24 MemoryCache.java`。  
+**MemoryCache：**内存图片缓存，可向内存缓存缓存图片或从内存缓存读取图片，具体参考`4.2.24 MemoryCache.java`。  
 
-**DiskCache：**本地图片缓存，向本地磁盘缓存图片或从本地磁盘读取图片，具体参考`4.2.38 DiskCache.java`。  
+**DiskCache：**本地图片缓存，可向本地磁盘缓存保存图片或从本地磁盘读取图片，具体参考`4.2.38 DiskCache.java`。  
 
 **ImageDecoder：**图片解码器，负责将图片输入流`InputStream`转换为`Bitmap`对象, 具体参考`4.2.53 ImageDecoder.java`。 
 
@@ -114,7 +114,7 @@ imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
 
 #####(2). init(ImageLoaderConfiguration configuration)
 初始化配置参数，参数`configuration`为`ImageLoader`的配置信息，包括图片最大尺寸、任务线程池、磁盘缓存、下载器、解码器等等。  
-内部实现会初始化`ImageLoaderEngine engine`属性，该属性为任务调度器。  
+实现中会初始化`ImageLoaderEngine engine`属性，该属性为任务分发器。  
 
 #####(3). displayImage(String uri, ImageAware imageAware, DisplayImageOptions options, ImageLoadingListener listener, ImageLoadingProgressListener progressListener)
 加载并显示图片或加载并执行回调接口。`ImageLoader` 加载图片主要分为三类接口：  
@@ -122,13 +122,14 @@ imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
 * `loadImage(…)` 表示异步加载图片并执行回调接口。  
 * `loadImageSync(…)` 表示同步加载图片。  
 
-以上三类接口最终都会调用到这个函数进行图片加载。函数入参解释：  
+以上三类接口最终都会调用到这个函数进行图片加载。函数参数解释如下：  
 **uri:** 图片的 uri。uri 支持多种来源的图片，包括 http、https、file、content、assets、drawable 及自定义，具体介绍可见`ImageDownloader`。  
 **imageAware:** 一个接口，表示需要加载图片的对象，可包装 View。  
 **options:** 图片显示的配置项。比如加载前、加载中、加载失败应该显示的占位图片，图片是否需要在磁盘缓存，是否需要在内存缓存等。  
 **listener:** 图片加载各种时刻的回调接口，包括开始加载、加载失败、加载成功、取消加载四个时刻的回调函数。  
 **progressListener:** 图片加载进度的回调接口。  
-函数流程图如下：  
+
+**函数流程图如下：**  
 ![ImageLoader Display Image Flow Chart](image/display-image-flow-chart.png)  
 
 #####4.2.2 ImageLoaderConfiguration.java
@@ -148,9 +149,9 @@ imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
 #####(6). BitmapProcessor processorForDiskCache
 图片处理器，用于处理从磁盘缓存中读取到的图片。  
 #####(7). Executor taskExecutor
-`ImageLoaderEngine`中用于执行图片获取任务的 Executor。  
+`ImageLoaderEngine`中用于执行从源获取图片任务的 Executor。  
 #####(18). Executor taskExecutorForCachedImages
-`ImageLoaderEngine`中用于执行缓存图片获取任务的 Executor。  
+`ImageLoaderEngine`中用于执行从缓存获取图片任务的 Executor。  
 #####(19). boolean customExecutor
 用户是否自定义了上面的 taskExecutor。  
 #####(20). boolean customExecutorForCachedImages
@@ -168,9 +169,9 @@ imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
 #####(26). ImageDownloader downloader
 图片下载器。  
 #####(27). ImageDecoder decoder
-图片解码器，可使用我们常用的`BitmapFactory.decode(…) 将图片资源解码成 itmap 对象。  
+图片解码器，内部可使用我们常用的`BitmapFactory.decode(…)`将图片资源解码成`Bitmap`对象。  
 #####(28). DisplayImageOptions defaultDisplayImageOptions
-图片显示的配置项。比如加载前、加载中、加载失败应该显示的占位图片，图片是否需要在磁盘缓存，是否需要在 memory 缓存等。  
+图片显示的配置项。比如加载前、加载中、加载失败应该显示的占位图片，图片是否需要在磁盘缓存，是否需要在内存缓存等。  
 #####(29). ImageDownloader networkDeniedDownloader
 不允许访问网络的图片下载器。  
 #####(30). ImageDownloader slowNetworkDownloader
@@ -190,7 +191,7 @@ public ImageLoaderConfiguration build() {
 }
 ```  
 #####(2). initEmptyFieldsWithDefaultValues()
-初始化值为 Null 的属性。若用户没有配置相关项，UIL 会通过调用`DefaultConfigurationFactory`中的函数返回一个默认值当配置。  
+初始化值为`null`的属性。若用户没有配置相关项，UIL 会通过调用`DefaultConfigurationFactory`中的函数返回一个默认值当配置。  
 `taskExecutorForCachedImages`、`taskExecutor`及`ImageLoaderEngine`的`taskDistributor`的默认值如下：  
 
 parameters | taskDistributor | taskExecutorForCachedImages/taskExecutor
@@ -242,11 +243,11 @@ public InputStream getStream(String imageUri, Object extra) throws IOException {
 
 **主要属性：**  
 #####(1). ImageLoaderConfiguration configuration
-ImageLoader的配置信息，可包括图片最大尺寸、线程池、缓存、下载器、解码器等等。  
+`ImageLoader`的配置信息，可包括图片最大尺寸、线程池、缓存、下载器、解码器等等。  
 #####(2). Executor taskExecutor
-用于执行图片获取任务的 Executor，为`configuration`中的 taskExecutor，如果为 null，则会调用`DefaultConfigurationFactory.createExecutor(…)`根据配置返回一个默认的线程池。  
+用于执行从源获取图片任务的 Executor，为`configuration`中的 taskExecutor，如果为`null`，则会调用`DefaultConfigurationFactory.createExecutor(…)`根据配置返回一个默认的线程池。  
 #####(3). Executor taskExecutorForCachedImages
-用于执行缓存图片获取任务的 Executor，为`configuration`中的 taskExecutorForCachedImages，如果为 null，则会调用`DefaultConfigurationFactory.createExecutor(…)`根据配置返回一个默认的线程池。  
+用于执行从缓存获取图片任务的 Executor，为`configuration`中的 taskExecutorForCachedImages，如果为`null`，则会调用`DefaultConfigurationFactory.createExecutor(…)`根据配置返回一个默认的线程池。  
 #####(4). Executor taskDistributor
 任务分发线程池，任务指`LoadAndDisplayImageTask`和`ProcessAndDisplayImageTask`，因为只需要分发给上面的两个 Executor 去执行任务，不存在较耗时或阻塞操作，所以用无并发数(Int 最大值)限制的线程池即可。  
 #####(5). Map<Integer, String> cacheKeysForImageAwares
@@ -254,13 +255,13 @@ ImageLoader的配置信息，可包括图片最大尺寸、线程池、缓存、
 #####(6). Map<String, ReentrantLock> uriLocks
 图片正在加载的重入锁 map，key 为图片的 uri，value 为标识其正在加载的重入锁。  
 #####(7). AtomicBoolean paused
-是否被暂停。如果为 true，则所有新的加载或显示任务都会等待直到取消暂停(为 false)。  
+是否被暂停。如果为`true`，则所有新的加载或显示任务都会等待直到取消暂停(为`false`)。  
 #####(8). AtomicBoolean networkDenied
-是否不允许访问网络，如果为 true，则所有不在缓存中需要网络访问的请求都会失败，通过`ImageLoadingListener.onLoadingFailed(…)`回调返回失败原因为`网络访问被禁止`。  
+是否不允许访问网络，如果为`true`，通过`ImageLoadingListener.onLoadingFailed(…)`获取图片，则所有不在缓存中需要网络访问的请求都会失败，返回失败原因为`网络访问被禁止`。  
 #####(9). AtomicBoolean slowNetwork
-是否是慢网络情况，如果为 true，则自动调用`SlowNetworkImageDownloader`下载图片。  
+是否是慢网络情况，如果为`true`，则自动调用`SlowNetworkImageDownloader`下载图片。  
 #####(10). Object pauseLock
-暂停的等待锁，可在 engine 被暂停后调用这个锁等待。  
+暂停的等待锁，可在`engine`被暂停后调用这个锁等待。  
 
 **主要函数：**  
 #####(1). void submit(final LoadAndDisplayImageTask task)
@@ -268,7 +269,7 @@ ImageLoader的配置信息，可包括图片最大尺寸、线程池、缓存、
 #####(2). void submit(ProcessAndDisplayImageTask task)
 添加一个`ProcessAndDisplayImageTask`。直接用`taskExecutorForCachedImages`执行该 task。  
 #####(3). void pause()
-暂停图片加载任务。所有新的加载或显示任务都会等待直到取消暂停(为 false)。  
+暂停图片加载任务。所有新的加载或显示任务都会等待直到取消暂停(为`false`)。  
 #####(4). void resume()
 继续图片加载任务。
 #####(5). stop()
@@ -422,7 +423,7 @@ void onProgressUpdate(String imageUri, View view, int current, int total)
 ```
 会在获取图片存储到文件系统时被回调。其中`total`表示图片总大小，为网络请求结果`Response Header`中`content-length`字段，如果不存在则为 -1。  
 
-#####`
+#####4.2.18 DisplayBitmapTask.java
 显示图片的`Task`，实现了`Runnable`接口，必须在主线程调用。  
 
 **主要函数：**  
@@ -465,7 +466,7 @@ runTask(displayBitmapTask, syncLoading, handler, engine);
 从上面代码段中可以看到先是从内存缓存中去读取 bitmap 对象，若 bitmap 对象不存在，则调用 tryLoadBitmap() 函数获取 bitmap 对象，获取成功后若在 DisplayImageOptions.Builder 中设置了 cacheInMemory(true), 同时将 bitmap 对象缓存到内存中。  
 最后新建`DisplayBitmapTask`显示图片。  
 
-函数流程图如下：  
+**函数流程图如下：**  
 ![Load and Display Image Task Flow Chart](image/load-display-flow-chart.png)  
 1. 判断图片的内存缓存是否存在，若存在直接执行步骤 8；  
 2. 判断图片的磁盘缓存是否存在，若存在直接执行步骤 5；  
