@@ -273,8 +273,12 @@ public HttpUtils(int connTimeout, String userAgent) {
 ```
 设置图片流程图  
 ![流程图](image/bitmap_sque.png)  
+  
+
+  
+  
 详细流程图  
-![Bitmap详细流程图](image/BitmapSequence.png)
+![Bitmap详细流程图](image/bitmap_de_sque.png)
 #####2.BitmapLoadTask.java  
 加载图片的异步任务。在`doInBackground`中读取图片资源
 
