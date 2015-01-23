@@ -97,8 +97,8 @@ imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
 **DisplayBitmapTask：**用于显示图片的任务, 具体参考`4.2.18 DisplayBitmapTask.java`。  
 
 ###3. 流程图
-![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/universal-image-loader-flow.png)  
-上图为图片加载及显示流程图。  
+![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/uil-flow.png)  
+上图为图片加载及显示流程图，在uil库中给出，这里用中文重新画出。  
 
 ###4. 详细设计
 ####4.1 类关系图
@@ -673,7 +673,7 @@ protected abstract int getSize(Bitmap value)
 以 uri 的 MD5 值作为文件名。  
 
 #####4.2.38 DiskCache.java
-Bitmap 磁盘缓存接口。  
+图片的磁盘缓存接口。  
 
 **主要函数:**  
 #####(1) File get(String imageUri)
