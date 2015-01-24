@@ -12,7 +12,7 @@ CircularFloatingActionMenu 实现原理解析
 可自定义动画、菜单、角度范围、半径等。  
 
 ####1.2 概念
-![Menu Demo](image/menu-demo.png)  
+![Menu Demo](image/menu-demo.jpeg)  
 以上是简单的圆形弹出菜单示例，更详细的示例图见：[Screenshot](https://github.com/android-cn/android-open-project-demo/blob/master/circular-floating-actionmenu-demo/README.md#2-screenshot)。  
 **菜单按钮(Event)：**点击会弹出圆形菜单的控件，如上图的 + 对应控件，对应代码中的`FloatingActionButton.java`。  
 
