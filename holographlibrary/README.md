@@ -1,18 +1,16 @@
 HoloGraphLibrary 实现原理解析
 ====================================
-> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 HoloGraphLibrary部分  
+> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 HoloGraphLibrary 部分  
 > 项目地址：[HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary)，分析的版本：[028cd2a](https://github.com/Androguide/HoloGraphLibrary/commit/028cd2ae6916308bbb96472aafa9ecd8b1343d5c "Commit id is 028cd2ae6916308bbb96472aafa9ecd8b1343d5c")，Demo 地址：[HoloGraphLibrary Demo](https://github.com/android-cn/android-open-project-demo/tree/master/holo-graph-library-demo)    
 > 分析者：[AaronPlay](https://github.com/AaronPlay)，校对者：[lightSky](https://github.com/lightSky)，校对状态：完成   
 
-
 ###1. 功能介绍  
- 
-HoloGraphLibrary是一个专注于常用制图控件的开源项目，扩展了一些常用的基本绘图类型，包括折线图，饼状图以及柱状图。
+HoloGraphLibrary 是一个可用于绘制图表的项目，支持绘制线状图、柱状图、饼状图。  
 
-优点：图形设计友好，使用方便。
+优点：图形设计友好，使用方便。  
 
 ###2. 总体设计
-本项目较为简单，总体设计请参考4.1类关系图。 
+本项目较为简单，总体设计请参考`4.1类关系图`。 
 
 ###3. 流程图
 本项目的每个控件的流程较为类似，可以抽象成一个流程图来理解。
