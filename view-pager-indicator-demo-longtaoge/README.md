@@ -1,14 +1,8 @@
-Android-ViewPagerIndicator实现原理解析
-====================================
-> 本文为 [Android-ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) 原理解析中的概论部分  
-> 项目地址：[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator)，  
-> 分析的版本：[Version 2.4.1 *(2012-09-11)*](https://github.com/JakeWharton/Android-ViewPagerIndicator)，  
-> Demo 地址：[ViewPagerIndicator Demo](https://github.com/android-cn/android-open-project-analysis/tree/master/view_pager_indicator_longtaoge/ListSamples)    
-> 分析者：[longtaoge](https://github.com/longtaoge)，  
-> 校对者：[](https://github.com/longtaoge) 
-> 校对状态：未完成   
-
- 
+Android-ViewPagerIndicator 源码解析
+----------------
+> 本文为 [Android-ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) 原理解析中 ViewPagerIndicator 部分  
+> 项目地址：[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator)，分析的版本：，Demo 地址：[ViewPagerIndicator Demo](https://github.com/android-cn/android-open-project-analysis/tree/master/view_pager_indicator_longtaoge/ListSamples)    
+> 分析者：[longtaoge](https://github.com/longtaoge)，校对者：，校对状态：未完成   
 
 ## 1. 功能介绍    ##
 

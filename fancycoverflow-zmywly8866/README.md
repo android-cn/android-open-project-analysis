@@ -1,5 +1,9 @@
-FancyCoverFlow 实现原理解析
-====================================
+FancyCoverFlow  源码解析
+----------------
+> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 FancyCoverFlow 部分  
+> 项目地址：[FancyCoverFlow](https://github.com/davidschreiber/FancyCoverFlow)，分析的版本：，Demo 地址：    
+> 分析者：[zmywly8866](https://github.com/zmywly8866)，校对者：，校对状态：未完成   
+
 ### 1. 功能介绍  
 (1)功能介绍：FancyCoverFlow是一个提供给你的应用一个独特的外观和感觉的灵活的Android coverflow组件，通俗来讲它就是android平台的一款开源软件，实现了类似苹果系统上的coverflow效果。
 (2)优、缺点：
