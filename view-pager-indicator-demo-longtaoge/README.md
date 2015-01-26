@@ -2,7 +2,7 @@ Android-ViewPagerIndicator 源码解析
 ----------------
 > 本文为 [Android-ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) 原理解析中 ViewPagerIndicator 部分  
 > 项目地址：[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator)，分析的版本：，Demo 地址：[ViewPagerIndicator Demo](https://github.com/android-cn/android-open-project-analysis/tree/master/view_pager_indicator_longtaoge/ListSamples)    
-> 分析者：[longtaoge](https://github.com/longtaoge)，校对者：，校对状态：未完成   
+> 分析者：[longtaoge](https://github.com/longtaoge)，校对者：，完成状态：未完成   
 
 ## 1. 功能介绍    ##
 
@@ -12,7 +12,7 @@ Android-ViewPagerIndicator 源码解析
 
 这是一个[ViewPager][2]的自定义扩展控件，提供了圆形，图标、线形、页签、标题、下划线共六种Viewpager的自定义指示器，使用方便，功能齐全。 同时兼容 [ActionBarSherlock][3]!
 
-![ViewPagerIndicator Sample Screenshot][11]
+![ViewPagerIndicator Sample Screenshot][image/ViewPagerIndicator.gif]
 ![ViewPagerIndicator Sample Screenshots][9]
 
 
@@ -103,7 +103,6 @@ a dependency:
  [8]: http://developer.android.com/guide/developing/projects/projects-eclipse.html#ReferencingLibraryProject
  [9]: https://raw.github.com/JakeWharton/Android-ViewPagerIndicator/master/sample/screens.png
  [10]: https://play.google.com/store/apps/details?id=com.viewpagerindicator.sample  
- [11]: https://github.com/android-cn/android-open-project-analysis/blob/master/view_pager_indicator_longtaoge/image/ViewPagerIndicator.gif
 
 
 

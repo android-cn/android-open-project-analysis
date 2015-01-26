@@ -2,7 +2,7 @@ greenDAO 源码解析
 ----------------
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 greenDAO 部分  
 > 项目地址：[greenDAO](https://github.com/greenrobot/greenDAO)，分析的版本：，Demo 地址：    
-> 分析者：[maogy](https://github.com/maogy)，校对者：，校对状态：未完成   
+> 分析者：[maogy](https://github.com/maogy)，校对者：，完成状态：未完成   
 
 1.功能介绍
 1.1greenDao是一个ORM库，将传统数据库操作建表、编写sql语句、使用事务批量处理，都封装到greenDao中，提供方便的面向对象接口，完成数据库操作.库里面还提供异步数据库操作，缓存查找出来的结果.整个代码设计很巧妙，包名和包的功能明确、类名、变量名都非常好理解.整个单元测试代码很完善.

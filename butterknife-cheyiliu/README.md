@@ -2,7 +2,7 @@ ButterKnife 源码解析
 ----------------
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 ButterKnife 部分  
 > 项目地址：[Butter Knife](https://github.com/JakeWharton/butterknife)，分析的版本：，Demo 地址：    
-> 分析者：[cheyiliu](https://github.com/cheyiliu)，校对者：，校对状态：未完成   
+> 分析者：[cheyiliu](https://github.com/cheyiliu)，校对者：，完成状态：未完成   
 
 # 简介
 
