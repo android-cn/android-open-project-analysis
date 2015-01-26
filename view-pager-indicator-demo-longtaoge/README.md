@@ -12,7 +12,7 @@ Android-ViewPagerIndicator 源码解析
 
 这是一个[ViewPager][2]的自定义扩展控件，提供了圆形，图标、线形、页签、标题、下划线共六种Viewpager的自定义指示器，使用方便，功能齐全。 同时兼容 [ActionBarSherlock][3]!
 
-![ViewPagerIndicator Sample Screenshot][image/ViewPagerIndicator.gif]
+![ViewPagerIndicator Sample Screenshot](image/ViewPagerIndicator.gif)
 ![ViewPagerIndicator Sample Screenshots][9]
 
 
