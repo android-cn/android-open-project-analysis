@@ -283,7 +283,7 @@ public InputStream getStream(String imageUri, Object extra) throws IOException {
 #####(9). getLoadingUriForView(ImageAware imageAware)
 得到某个`imageAware`正在加载的图片 uri。  
 #####(10). prepareDisplayTaskFor(ImageAware imageAware, String memoryCacheKey)
-准备开始一个`LoadAndDisplayImageTask`。向`cacheKeysForImageAwares`中插入`ImageAware`的 id 和图片在内存缓存中的 key。  
+准备开始一个`Task`。向`cacheKeysForImageAwares`中插入`ImageAware`的 id 和图片在内存缓存中的 key。  
 #####(11). void cancelDisplayTaskFor(ImageAware imageAware)
 取消一个显示任务。从`cacheKeysForImageAwares`中删除`ImageAware`对应元素。  
 #####(12). denyNetworkDownloads(boolean denyNetworkDownloads)
@@ -502,7 +502,7 @@ if (bitmap == null || bitmap.getWidth() <= 0 || bitmap.getHeight() <= 0) {
 }
 ```
 首先根据 uri 看看磁盘中是不是已经缓存了这个文件，如果已经缓存，调用 decodeImage 函数，将图片文件 decode 成 bitmap 对象；
-如果 bitmap 不合法或缓存文件不存在，判断是否需要缓存在磁盘，需要则调用`tryCacheImageOnDisk()`函数去下载并缓存图片到本地磁盘，再通过`decodeImage(imageUri)`函数将图片文件decode成bitmap对象，否则直接通过`decodeImage(imageUri)`下载图片并解析。  
+如果 bitmap 不合法或缓存文件不存在，判断是否需要缓存在磁盘，需要则调用`tryCacheImageOnDisk()`函数去下载并缓存图片到本地磁盘，再通过`decodeImage(imageUri)`函数将图片文件decode成bitmap对象，否则直接通过`decodeImage(imageUriForDecoding)`下载图片并解析。  
 
 #####(3) tryCacheImageOnDisk()
 下载图片并存储在磁盘内，根据磁盘缓存图片最长宽高的配置处理图片。  
@@ -644,7 +644,7 @@ protected abstract int getSize(Bitmap value)
 限制总字节大小的内存缓存，会在缓存满时优先删除先进入缓存的元素，继承自`LimitedMemoryCache`。  
 实现了`LimitedMemoryCache`缓存`removeNext()`函数，总是返回最先进入缓存的元素。  
 
-**以上所有`LimitedMemoryCache`子类都有个问题，就是虽然通过 Bitmap 虽然通过`WeakReference<Bitmap>`包装，但实际根本不会被虚拟机回收，因为他们子类中同时都保留了 Bitmap 的强引用。大都是 UIL 早期实现的版本，不推荐使用。**  
+**以上所有`LimitedMemoryCache`子类都有个问题，就是 Bitmap 虽然通过`WeakReference<Bitmap>`包装，但实际根本不会被虚拟机回收，因为他们子类中同时都保留了 Bitmap 的强引用。大都是 UIL 早期实现的版本，不推荐使用。**  
 
 #####4.2.32 LruMemoryCache.java
 限制总字节大小的内存缓存，会在缓存满时优先删除最近最少使用的元素，实现了`MemoryCache`。LRU(Least Recently Used) 为最近最少使用算法。  
@@ -715,7 +715,7 @@ protected abstract int getSize(Bitmap value)
 #####4.2.42 DiskLruCache.java
 限制总字节大小的内存缓存，会在缓存满时优先删除最近最少使用的元素。  
 
-通过缓存目录下名为`journal`的文件记录缓存的所有操作，并在缓存`open`时读取`journal`的文件内容存储到`LinkedHashMap<String, Entry> lruEntries`中，后面`get(String key)`获取缓存内容时，会先存`lruEntries`中得到图片文件名返回文件。  
+通过缓存目录下名为`journal`的文件记录缓存的所有操作，并在缓存`open`时读取`journal`的文件内容存储到`LinkedHashMap<String, Entry> lruEntries`中，后面`get(String key)`获取缓存内容时，会先从`lruEntries`中得到图片文件名返回文件。  
 
 LRU 的实现跟上面内存缓存类似，`lruEntries`为`new LinkedHashMap<String, Entry>(0, 0.75f, true)`，LinkedHashMap 第三个参数表示是否需要根据访问顺序(accessOrder)排序，true 表示根据`accessOrder`排序，最近访问的跟最新加入的一样放到最后面，false 表示根据插入顺序排序。这里为 true 且缓存满时`trimToSize()`函数始终删除第一个元素，即始终删除最近最少访问的文件。  
 
@@ -742,7 +742,7 @@ LRU 的实现跟上面内存缓存类似，`lruEntries`为`new LinkedHashMap<Str
 `DECODING_ERROR` decode image 为 Bitmap 时错误。  
 `NETWORK_DENIED` 当图片不在缓存中，且设置不允许访问网络时的错误。  
 `OUT_OF_MEMORY` 内存溢出错误。  
-`UNKNOWN` 位置错误。  
+`UNKNOWN` 未知错误。  
 
 #####4.2.48 FlushedInputStream.java
 为了解决早期 Android 版本`BitmapFactory.decodeStream(…)`在慢网络情况下 decode image 异常的 Bug。  
