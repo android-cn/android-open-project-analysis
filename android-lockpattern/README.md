@@ -1,7 +1,7 @@
 android-lockpattern 实现原理解析
 ====================================
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 android-lockpattern 部分  
-> 项目地址：[android-lockpattern](https://code.google.com/p/android-lockpattern/)，分析的版本：v3.1，Demo 地址：等待添加    
+> 项目地址：[android-lockpattern](https://code.google.com/p/android-lockpattern/)，分析的版本：[40293d2250c2](https://code.google.com/p/android-lockpattern/source/detail?r=40293d2250c2b273223ba25e4aeb3d290a0fdfad)，Demo 地址：等待添加    
 > 分析者：[爱早起](https://github.com/liang7)，校对者：[${校对者}](${校对者 Github 地址})，校对状态：未完成   
 
 ###1. 介绍

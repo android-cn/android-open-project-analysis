@@ -2,7 +2,7 @@ PhotoView 实现原理解析
 ====================================
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 PhotoView 部分  
 > 项目地址：[PhotoView](https://github.com/chrisbanes/PhotoView)，分析的版本：[48427bf](https://github.com/chrisbanes/PhotoView/commit/48427bff9bb1a408cfebf6697aa019c0788ded76)，Demo 地址：[PhotoView-demo](https://github.com/android-cn/android-open-project-demo/tree/master/photoview-demo)    
-> 分析者：[dkmeteor](https://github.com/dkmeteor)，校对者：[cpacm](https://github.com/cpacm)，校对状态：未完成   
+> 分析者：[dkmeteor](https://github.com/dkmeteor)，校对者：[cpacm](https://github.com/cpacm)，校对状态：完成   
 
 
 ###1. 功能介绍
@@ -212,14 +212,92 @@ PhotoView不再使用时,可用于释放相关资源。移除Observer, Listener.
 
 根据PhotoView的宽高和Drawable的宽高计算FIT_CENTER状态的Matrix.
 
+- public void onDrag(float dx, float dy)
+
+OnGestureListener接口回调的实现方法.
+
+实际完成拖拽/移动效果.
+核心代码:
+
+    mSuppMatrix.postTranslate(dx, dy);
+
+通过改代码修改Matrix中View的起始位置,制造出图片被拖拽移动的效果.
+
+- public void onFling(float startX, float startY, float velocityX, float velocityY)
+
+OnGestureListener接口回调的实现方法.
+实际完成惯性滑动效果.
+
+惯性滑动效果分两部分完成.
+
+1) 调用 
+
+    mScroller.fling(startX, startY, velocityX, velocityY, minX,
+                        maxX, minY, maxY, 0, 0);
+
+进行惯性滑动辅助计算.
+
+对Scroller不了解的可以参考官方说明 [Scroller](http://developer.android.com/reference/android/widget/Scroller.html)
+
+简单来讲,Scroller是一个辅助计算器,它可以帮你计算出某一时刻View的滚动状态及位置,但是它本身不会对View进行任何更改
+
+2) 使用了FlingRunnable和Compat.postOnAnimation(imageView,mFlingRunnable)在每一帧绘制前更新Matrix状态
+关于FlingRunnable和Compat.postOnAnimation类的作用机制可以参考下面 4.1.4的说明.
+
+- public void onScale(float scaleFactor, float focusX, float focusY)
+
+OnGestureListener接口回调的实现方法.
+
+实际完成缩放效果.
+
+核心代码:
+
+    mSuppMatrix.postScale(scaleFactor, scaleFactor, focusX, focusY);
+
+对Matrix作用机制不了解的话,可以拉到文档最后,有一个针对Matrix的简略介绍.
+
+
+###### 内部类 FlingRunnable
+
+实现惯性滑动的动画效果.
+
+这个Runnable必须配合 View.postOnAnimation(view,runnable) 使用.
+
+在下一帧绘制前,系统会执行该Runnable,这样我们就可以在runnable中更新UI状态.
+
+原理上类似一个递归调用,每次UI绘制前更新UI状态,并指定下次UI更新前再执行自己.
+
+这种写法 与 使用循环或Handler每隔16ms刷新一次UI基本等价,但是更为方便快捷.
+
+更新UI的核心逻辑非常简单,根据mScroller计算出的偏移量更新Matrix状态:
+    
+        mSuppMatrix.postTranslate(dx, dy);
+
+
+###### 内部类 AnimatedZoomRunnable
+实现双击时的 缩放动画.
+
+作用机制基本同上.
+
+区别是AnimatedZoomRunnable的执行进度由AccelerateDecelerateInterpolator控制.
+
+对Interpolator没有概念的可以参阅官方Demo
+[Interpolator](http://developer.android.com/samples/Interpolator/src/com.example.android.interpolator/InterpolatorFragment.html)
+
+你也可以简单认为这就是一个动画进度控制器.
+
+核心逻辑依然很简单,根据动画进度缩小/放大图片
+
+    mSuppMatrix.postScale(deltaScale, deltaScale, mFocalX, mFocalY);
+
 ### 接口及工具类
 ---
 ##### 4.1.4 Compat
 用于做View.postOnAnimation方法在低版本上的兼容.
 
-注：View.postOnAnimation (Runnable action) 在PhotoView中用于处理  双击 放大/缩小 时的动画效果.
+注：View.postOnAnimation (Runnable action) 在PhotoView中用于处理  双击 放大/缩小 惯性滑动时的动画效果.
 
-每次系统绘图时都会调用此回调，通过在此时改变视图状态以实现动画效果。该方法仅支持 api >= 16
+每次系统绘图前都会先执行这个Runnable回调，通过在此时改变视图状态以实现动画效果。该方法仅支持 api >= 16
 所以PhotoView中使用了Compat类来做低版本兼容。
 
 实际上也可以使用android.support.v4.view.ViewCompat替代。
@@ -307,7 +385,7 @@ Camera类可以将矩阵变换抽象成 视点（摄像机） 在三维空间内
 - public void setRotate(float degrees, float px, float py)
 
     以(px,py)为中心,旋转degrees度
-	
+    
     ![rotate](images/rotate.png)
 
 - public void setSkew(float kx, float ky, float px, float py)

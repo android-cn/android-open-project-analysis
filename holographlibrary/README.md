@@ -1,18 +1,16 @@
 HoloGraphLibrary 实现原理解析
 ====================================
-> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 HoloGraphLibrary部分  
-> 项目地址：[HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary)，分析的版本：[ccc2771](https://github.com/Androguide/HoloGraphLibrary/commit/028cd2ae6916308bbb96472aafa9ecd8b1343d5c"Commit id is 28cd2ae6916308bbb96472aafa9ecd8b1343d5c")，Demo 地址：[HoloGraphLibrary Demo](https://github.com/android-cn/android-open-project-demo/tree/master/holo-graph-library-demo)    
-> 分析者：[AaronPlay](https://github.com/AaronPlay)，校对者：[${校对者}](${校对者 Github 地址})，校对状态：未完成   
-
+> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 HoloGraphLibrary 部分  
+> 项目地址：[HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary)，分析的版本：[028cd2a](https://github.com/Androguide/HoloGraphLibrary/commit/028cd2ae6916308bbb96472aafa9ecd8b1343d5c "Commit id is 028cd2ae6916308bbb96472aafa9ecd8b1343d5c")，Demo 地址：[HoloGraphLibrary Demo](https://github.com/android-cn/android-open-project-demo/tree/master/holo-graph-library-demo)    
+> 分析者：[AaronPlay](https://github.com/AaronPlay)，校对者：[lightSky](https://github.com/lightSky)，校对状态：完成   
 
 ###1. 功能介绍  
- 
-HoloGraphLibrary是一个专注于常用制图控件的开源项目，扩展了一些常用的基本绘图类型，包括折线图，饼状图以及柱状图。
+HoloGraphLibrary 是一个可用于绘制图表的项目，支持绘制线状图、柱状图、饼状图。  
 
-优点：图形设计友好，使用方便。
+优点：图形设计友好，使用方便。  
 
 ###2. 总体设计
-本项目较为简单，总体设计请参考4.1类关系图。 
+本项目较为简单，总体设计请参考`4.1类关系图`。 
 
 ###3. 流程图
 本项目的每个控件的流程较为类似，可以抽象成一个流程图来理解。
@@ -40,6 +38,8 @@ BarGraph.java:继承View类，负责柱状图的绘制。
 ![](image/bargraphflow.png)
 
 - onDraw源码分析
+
+1.绘制的样式定义（柱体颜色、宽度大小等属性）
 
 ```java
 
@@ -81,6 +81,32 @@ BarGraph.java:继承View类，负责柱状图的绘制。
                 
 ```
 
+2.绘制计算过程（详细看源码）：
+
+1）绘制x轴
+
+2）确定柱体的数量
+
+3）计算柱体所需的宽度
+
+4）如果使用动画，柱体最大值（影响绘画的高度）使用动态计算的最大值
+
+5）计算x轴上标签的字体的大小（不考虑动画状态，否则会导致字体抖动）
+
+6）设置柱体边界
+
+7）绘制柱体
+
+8）创建选择区域
+
+9）绘制标签
+
+10）绘制柱体顶部的文字
+
+11）限制总体宽度，防止弹出
+
+12）若有使用后，设置监听，对进行动画更新
+
 ####4.2.2饼状图
 PieSlice.java: 扇形，构成饼状图的基本元素。封装了颜色，值，标题，路径以及区域等属性。
 
@@ -89,6 +115,16 @@ PieGraph.java:继承View类, 负责绘制饼状图。
 - onDraw的流程图：
 
 ![](image/piegraphflow.png)
+
+绘制计算过程（详细看源码）：
+
+1）若有背景图片，设置背景图片
+
+2）设置扇形的开始的位置，大小，圆心
+
+3）计算不同的扇形的大小，从上次结束的位置进行绘制，记录好该扇形结束的位置。重复此步骤，直到所有扇形绘制完成。
+
+
 
 ####4.2.3折线图：
 LinePoint.java：折线的最基本元素，两点构成一条直线，属性包括二维坐标，路径以及区域等属性。
@@ -101,10 +137,18 @@ LineGraph.java: 继承View类，负责折线图的绘制。
 
 ![](image/linegraphflow.png)
 
+绘制计算过程（详细看源码）：
 
+1）若需要填充，先对整个绘制范围内进行直线绘制，然后擦除折线以上的直线。
+
+2）绘制X轴
+
+3）绘制折线
+
+4）绘制折点
 
 ###5. 杂谈
-对于控件类的开源库，可以把重点放在与用户交互关联的触发器上。而这个开源库，也有开发者fork之后扩展得更加有趣。[->链接](https://bitbucket.org/danielnadeau/holographlibrary)
+其实，这个项目的代码并不适写的很好，但无碍我们的使用，有兴趣的同学可以重构一下。对于控件类的开源库，可以把重点放在与用户交互关联的触发器上。而这个开源库，也有开发者fork之后扩展得更加有趣。[->链接](https://bitbucket.org/danielnadeau/holographlibrary)
 
 **延伸：**
 
