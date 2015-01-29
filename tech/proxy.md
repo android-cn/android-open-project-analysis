@@ -1,14 +1,49 @@
 动态代理
 ----------------
 > 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 公共技术点的 动态代理 部分  
-> 分析者：[Caij](https://github.com/Caij)
+> 分析者：[Caij](https://github.com/Caij)，校对者：[Trinea](https://github.com/Trinea)，校对状态：完成
 
-#####一、什么是动态代理？
-- 1. 首先理解几个概念: 委托类和代理类 （委托类指的是被代理类）  
-- 2. 动态代理指的是通过代理类代理委托类的一些方法， 代理对象是jdk动态产生。
-- 3. 动态代理可以提供对另一个对象的访问，同时隐藏实际对象的具体事实； 另一点就是委托类中的某些方法不是我们需要的， 可以通过代理来实现自己想要的效果。
+#####一、相关概念
+`代理`：如果我们要提供一个给三方使用的 jar ，其中类 A 是很全的功能实现，我们不希望完全暴露给三方调用，所以类 A 设置为包权限，新建类 B，以类 A 为构造函数的入参，重写类 A 需要对外暴露的函数，这种方式我们就称为代理，这里类 A 称为被代理类，也称为委托类，类 B 称为委托类。根据委托类生成方式的不同，代理可以分为静态代理和动态代理。  
+通过上面的介绍我们能知道代理的好处是可以隐藏代理类的实现。  
 
-#####二、动态代理的实现？
+`静态代理`：委托类代码由开发者自己编写的代理方式称为静态代理。如下是简单的静态代理实例：  
+```java
+class ClassA {
+    public void operateMethod1() {};
+
+    public void operateMethod2() {};
+
+    public void operateMethod3() {};
+}
+
+public class ClassB {
+    private ClassA a;
+
+    public ClassB(ClassA a) {
+        this.a = a;
+    }
+
+    public void operateMethod1() {
+        a.operateMethod1();
+    };
+
+    public void operateMethod2() {
+        a.operateMethod2();
+    };
+
+    // not export operateMethod3()
+}
+```
+
+`动态代理`：委托类代码由 JDK 运行时刻动态生成的代理方式称为动态代理。  
+这种代理方式的一大好处是很方便对代理类的函数做统一或特殊处理，如记录所有函数执行时间、所有函数执行前添加验证判断、对某个特殊函数进行特殊操作。  
+
+对于[编译时刻注解]()生成委托类的代理方式我们也叫做`静态代理`，因为委托类代码在运行时已经决定。  
+由于`静态代理`比较简单，本文不做介绍，重点介绍`动态代理`。  
+
+#####二、动态代理实例
+现在我们想统计某个类所有函数的执行时间
 ![proxy](image/proxy/proxy_flow.png)  
 
 ```java
