@@ -115,7 +115,6 @@ b. 绘制计算过程（详细看源码）
 4）绘制折点  
 
 ####5. 杂谈
-其实，这个项目的代码并不适写的很好，但无碍我们的使用，有兴趣的同学可以重构一下。对于控件类的开源库，可以把重点放在与用户交互关联的触发器上。而这个开源库，也有开发者 fork 之后扩展得更加有趣。[->链接](https://bitbucket.org/danielnadeau/holographlibrary)
+其实，这个项目的代码并不适写的很好，但无碍我们的使用，有兴趣的同学可以重构一下，也有开发者 fork 之后扩展得更加有趣。[->链接](https://bitbucket.org/danielnadeau/holographlibrary)。对于控件类的开源库，可以把重点放在绘制以及事件处理上。  
 
-**延伸：**
-关于 View 绘制的原理请浏览：[View 绘制流程](../tech/viewdrawflow.md)
+**延伸：**关于 View 绘制的原理请浏览：[View 绘制流程](../tech/viewdrawflow.md)  
