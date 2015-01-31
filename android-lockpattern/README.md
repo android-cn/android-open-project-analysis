@@ -23,10 +23,10 @@ Android 的图案密码解锁，通过手势连接 3 * 3 的点矩阵绘制图�
 本项目较为简单，总体设计略过，具体实现请参考下面的分析。  
 
 ###3. 流程图
-####3.1 创建解锁图形
+####3.1 创建解锁图案流程图
 ![Create Pattern](image/CreatePattern.png)  
 
-####3.2 验证解锁图形
+####3.2 验证解锁图案流程图
 ![Compare Pattern](image/ComparePattern.png)  
 
 ###4. 详细设计
@@ -38,42 +38,42 @@ Android 的图案密码解锁，通过手势连接 3 * 3 的点矩阵绘制图�
 `LockPatternActivity`类负责所有外部请求，根据`ACTION_CREATE_PATTERN` `ACTION_COMPARE_PATTERN` `ACTION_VERIFY_CAPTCHA` 等`Action`选择操作模式，加载设置后初始化`LockPatternView`，在用户完成操作后退出并返回结果。
 
 **主要方法说明：**  
-(1) public void onCreate(Bundle savedInstanceState)  
+* public void onCreate(Bundle savedInstanceState)  
 首次创建时调用，根据 intent 设置 theme，设置 resultIntent，调用 loadSettings() initContentView()。  
-(2) private void loadSettings()  
+* private void loadSettings()  
 根据metaData与Settings类的内容进行显示模式、最少图形点数、自动存储、自定义加密等配置。  
-(3) private void initContentView()  
+* private void initContentView()  
 根据Aciton与配置信息初始化UI，实例化OnPatternListener设置到LockPatternView类的对象。  
-(4) private void doCheckAndCreatePattern(final List<Cell> pattern)  
+* private void doCheckAndCreatePattern(final List<Cell> pattern)  
 首先检查pattern是否合法，然后判断Intent是否保存有特征码，如果没有就把pattern加密并提取特征码put到Intent，如果有就把特征码解密并与pattern对比，根据对比结果设置UI。  
-(5) private void doComparePattern(final List<Cell> pattern)  
+* private void doComparePattern(final List<Cell> pattern)  
 首先检查pattern是否合法，然后从Intent或者Settings中get特征码，把特征码解密后与pattern对比，成功则调用finishWithResultOk(null)，失败次数超过最大次数则调用finishWithNegativeResult(result_failed)。  
-(6) private void finishWithResultOk(char[] pattern)  
-(7) private void finishWithNegativeResult(int resultCode)  
+* private void finishWithResultOk(char[] pattern)  
+* private void finishWithNegativeResult(int resultCode)  
 
 #####4.2.2 LockPatternView.java
 `LockPatternView`类主要是显示解锁的图形界面，在用户操作的时候显示连线与动画，用户操作完成后根据结果做提示。  
 
 **添加图形点**  
-(1) private int getRowHit(float y)  
+* private int getRowHit(float y)  
 遍历所有图形点行高，寻找坐标 y 在哪个图案点的行高范围内。  
-(2) private int getColumnHit(float x)  
+* private int getColumnHit(float x)  
 遍历所有图形点列宽，寻找坐标 x 在哪个图案点的列宽范围内。  
-(3) private Cell checkForNewHit(float x, float y)  
+* private Cell checkForNewHit(float x, float y)  
 根据`getRowHit(float y)`与`getColumnHit(float x)`返回的行、列判断是否是新的图形点，如果是返回新点，否则返回 null。  
-(4) private Cell detectAndAddHit(float x, float y)  
+* private Cell detectAndAddHit(float x, float y)  
 调用`checkForNewHit(float x, float y)`返回当前图形点，如图形点非 null，继续判断 pattern list 是否为空，如果不为空就把 last 与当前的图形点之间同一直线的其他点加入 list，然后把当前点加入 list。  
 
 **按下事件**  
-(1) handleActionDown(MotionEvent event)  
+* handleActionDown(MotionEvent event)  
 首先清理屏幕，获取当前手指的坐标，调用`detectAndAddHit(float x, float y)`并判断其返回值发送通知与局部刷新。  
 
 **移动事件**  
-(1) private void handleActionMove(MotionEvent event)  
+* private void handleActionMove(MotionEvent event)  
 检查手指移动过程中每一个点的坐标，判断如果 pattern list 不为空，则把最后一个图形点的坐标与当前手指坐标的区域进行局部刷新，如果在移动过程中加入了新的图形点则以此点坐标继续局部刷新。  
 
 **弹起事件**  
-(1) private void handleActionUp(MotionEvent event)  
+* private void handleActionUp(MotionEvent event)  
 检查 pattern list 如果不为空则停止添加，发送完成消息，全局刷新。  
 
 **onDraw**
@@ -99,14 +99,14 @@ startActivityForResult(intent, REQ_CREATE_PATTERN);
 protected void onActivityResult(int requestCode, int resultCode,
         Intent data) {
     switch (requestCode) {
-    case REQ_CREATE_PATTERN: {
-        if (resultCode == RESULT_OK) {
-            char[] pattern = data.getCharArrayExtra(
-                    LockPatternActivity.EXTRA_PATTERN);
-            ...
+        case REQ_CREATE_PATTERN: {
+            if (resultCode == RESULT_OK) {
+                char[] pattern = data.getCharArrayExtra(
+                        LockPatternActivity.EXTRA_PATTERN);
+                ...
+            }
+            break;
         }
-        break;
-    }// REQ_CREATE_PATTERN
     }
 }
 ```
@@ -129,28 +129,28 @@ startActivityForResult(intent, REQ_ENTER_PATTERN);
 protected void onActivityResult(int requestCode, int resultCode,
         Intent data) {
     switch (requestCode) {
-    case REQ_ENTER_PATTERN: {
-    
-        switch (resultCode) {
-        case RESULT_OK:
-            // The user passed
-            break;
-        case RESULT_CANCELED:
-            // The user cancelled the task
-            break;
-        case LockPatternActivity.RESULT_FAILED:
-            // The user failed to enter the pattern
-            break;
-        case LockPatternActivity.RESULT_FORGOT_PATTERN:
-            // The user forgot the pattern and invoked your recovery Activity.
+        case REQ_ENTER_PATTERN: {
+        
+            switch (resultCode) {
+            case RESULT_OK:
+                // The user passed
+                break;
+            case RESULT_CANCELED:
+                // The user cancelled the task
+                break;
+            case LockPatternActivity.RESULT_FAILED:
+                // The user failed to enter the pattern
+                break;
+            case LockPatternActivity.RESULT_FORGOT_PATTERN:
+                // The user forgot the pattern and invoked your recovery Activity.
+                break;
+            }
+
+            int retryCount = data.getIntExtra(
+                    LockPatternActivity.EXTRA_RETRY_COUNT, 0);
+
             break;
         }
-
-        int retryCount = data.getIntExtra(
-                LockPatternActivity.EXTRA_RETRY_COUNT, 0);
-
-        break;
-    }// REQ_ENTER_PATTERN
     }
 }
 ```
