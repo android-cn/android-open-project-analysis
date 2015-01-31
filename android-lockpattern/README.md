@@ -6,7 +6,7 @@ android-lockpattern 实现原理解析
 
 ###1. 介绍
 ####1.1 关于
-Android 的图案密码解锁，通过手势连接 3 * 3 的点矩阵绘制图案表示解锁密码。基于[Android Source Code](https://android.googlesource.com/platform/frameworks/base/+/master/core/java/com/android/internal/widget/LockPatternView.java)。  
+Android 的图案密码解锁，通过手势连接 3 * 3 的点矩阵绘制图案表示解锁密码。基于 [Android Source Code](https://android.googlesource.com/platform/frameworks/base/+/master/core/java/com/android/internal/widget/LockPatternView.java)。  
 
 ####1.2 特点
 - 支持: Android 1.6+ (API 4+)。
@@ -111,7 +111,7 @@ protected void onActivityResult(int requestCode, int resultCode,
 }
 ```
 
-####6.3 验证图形锁
+####5.3 验证图形锁
 
 ```
 private static final int REQ_ENTER_PATTERN = 2;
