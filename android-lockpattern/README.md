@@ -6,7 +6,7 @@ android-lockpattern 实现原理解析
 
 ###1. 介绍
 ####1.1 关于
-Android 的图案密码解锁，通过手势连接 3 * 3 的点矩阵绘制图案表示解锁密码。基于[Android Source Code](https://android.googlesource.com/platform/frameworks/base/+/master/core/java/com/android/internal/widget/LockPatternView.java)
+Android 的图案密码解锁，通过手势连接 3 * 3 的点矩阵绘制图案表示解锁密码。基于[Android Source Code](https://android.googlesource.com/platform/frameworks/base/+/master/core/java/com/android/internal/widget/LockPatternView.java)。  
 
 ####1.2 特点
 - 支持: Android 1.6+ (API 4+)。
@@ -41,13 +41,13 @@ Android 的图案密码解锁，通过手势连接 3 * 3 的点矩阵绘制图�
 * public void onCreate(Bundle savedInstanceState)  
 首次创建时调用，根据 intent 设置 theme，设置 resultIntent，调用 loadSettings() initContentView()。  
 * private void loadSettings()  
-根据metaData与Settings类的内容进行显示模式、最少图形点数、自动存储、自定义加密等配置。  
+根据 metaData 与 Settings 类的内容得到显示模式、最少图形点数、自动存储、自定义加密等配置。  
 * private void initContentView()  
-根据Aciton与配置信息初始化UI，实例化OnPatternListener设置到LockPatternView类的对象。  
+根据 Aciton 与配置信息初始化 UI，实例化 OnPatternListener 设置到 LockPatternView 类的对象。  
 * private void doCheckAndCreatePattern(final List<Cell> pattern)  
-首先检查pattern是否合法，然后判断Intent是否保存有特征码，如果没有就把pattern加密并提取特征码put到Intent，如果有就把特征码解密并与pattern对比，根据对比结果设置UI。  
+首先检查 pattern 是否合法，然后判断 Intent 是否保存有特征码，如果没有就把 pattern 加密并提取特征码 put 到 Intent，如果有就把特征码解密并与 pattern 对比，根据对比结果设置 UI。  
 * private void doComparePattern(final List<Cell> pattern)  
-首先检查pattern是否合法，然后从Intent或者Settings中get特征码，把特征码解密后与pattern对比，成功则调用finishWithResultOk(null)，失败次数超过最大次数则调用finishWithNegativeResult(result_failed)。  
+首先检查 pattern 是否合法，然后从 Intent 或者 Settings 中 get 特征码，把特征码解密后与 pattern 对比，成功则调用 finishWithResultOk(null)，失败次数超过最大次数则调用 finishWithNegativeResult(result_failed)。  
 * private void finishWithResultOk(char[] pattern)  
 * private void finishWithNegativeResult(int resultCode)  
 
