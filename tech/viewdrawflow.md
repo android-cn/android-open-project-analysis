@@ -1,6 +1,6 @@
 View 绘制流程
 ----------------
-> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 公共技术点中的 View 绘制流程 部分  
+> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 公共技术点中的 View 绘制流程 部分  
  分析者：[lightSky](https://github.com/lightSky)  
 
 #### View 绘制机制  

@@ -1,6 +1,6 @@
-CircularFloatingActionMenu 实现原理解析
+CircularFloatingActionMenu 源码解析
 ====================================
-> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 circular-foating-action-menu 部分  
+> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 circular-foating-action-menu 部分  
 > 项目地址：[CircularFloatingActionMenu](https://github.com/oguzbilgener/CircularFloatingActionMenu)，分析的版本：[8efb1aa](https://github.com/oguzbilgener/CircularFloatingActionMenu/commit/8efb1aab2b361ed9019fa4af6e5d43e77777bcb6)，Demo 地址：[CFAMenu-demo](https://github.com/android-cn/android-open-project-demo/tree/master/circular-floating-actionmenu-demo)    
 > 分析者：[cpacm](https://github.com/cpacm)，校对者：[dkmeteor](https://github.com/dkmeteor)、[Trinea](https://github.com/trinea)，校对状态：进行中   
 

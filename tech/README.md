@@ -1,6 +1,6 @@
 源码解析公共技术点
 ----------------
-> 这里主要放 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 涉及到的公共技术点，如注解、动态代理、事件传递、View 绘制流程等
+> 这里主要放 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 涉及到的公共技术点，如注解、动态代理、事件传递、View 绘制流程等
 
 大家可直接按下面规范添加或修改已有技术点，并在群里通知下其他人。
 

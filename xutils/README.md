@@ -1,6 +1,6 @@
-xUtils 实现原理解析
+xUtils 源码解析
 ====================================
-> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 xUtils 部分。  
+> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 xUtils 部分。  
 > 项目地址：[xUtils](https://github.com/wyouflf/xUtils)，分析的版本：[192c2a886c](https://github.com/wyouflf/xUtils/commit/192c2a886c2d467e50718c6e469de63696f5cded)，Demo 地址：[xUtils Demo](https://github.com/android-cn/android-open-project-demo/tree/master/xutils-demo)  
 > 分析者：[Caij](https://github.com/Caij)，校对者：[maogy](https://github.com/maogy)，校对状态：未完成   
 

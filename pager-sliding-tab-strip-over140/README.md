@@ -1,6 +1,6 @@
 Android PagerSlidingTabStrip 源码解析
 ----------------
-> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 PagerSlidingTabStrip 部分  
+> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 PagerSlidingTabStrip 部分  
 > 项目地址：[PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip)，分析的版本：，Demo 地址：    
 > 分析者：[over140](https://github.com/over140)，校对者：，完成状态：未完成   
 

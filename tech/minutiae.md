@@ -1,6 +1,6 @@
-Android 开源项目实现原理解析细节点
+Android 开源项目源码解析细节点
 ====================================
-> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 细节点 部分  
+> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 细节点 部分  
 > 分析者：[Trinea](https://github.com/trinea)，校对者：[Grumoon](https://github.com/grumoon)、[Trinea](https://github.com/trinea)，校对状态：未完成
 
 ###Volley 细节点

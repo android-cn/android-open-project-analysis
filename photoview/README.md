@@ -1,6 +1,6 @@
-PhotoView 实现原理解析
+PhotoView 源码解析
 ====================================
-> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 PhotoView 部分  
+> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 PhotoView 部分  
 > 项目地址：[PhotoView](https://github.com/chrisbanes/PhotoView)，分析的版本：[48427bf](https://github.com/chrisbanes/PhotoView/commit/48427bff9bb1a408cfebf6697aa019c0788ded76)，Demo 地址：[PhotoView-demo](https://github.com/android-cn/android-open-project-demo/tree/master/photoview-demo)    
 > 分析者：[dkmeteor](https://github.com/dkmeteor)，校对者：[cpacm](https://github.com/cpacm)，校对状态：完成   
 

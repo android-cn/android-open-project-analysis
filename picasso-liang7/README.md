@@ -1,6 +1,6 @@
 Picasso 源码解析
 ----------------
-> 本文为 [Android开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 Picasso 部分    
+> 本文为 [Android开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 Picasso 部分    
 > 项目地址：[Picasso](https://github.com/square/picasso)，分析的版本：，Demo 地址：[picasso-demo](https://github.com/android-cn/android-open-project-demo/tree/master/picasso-demo)  
 > 分析者：[愛早起](https://github.com/liang7)，校对者：完成状态：未完成  
 

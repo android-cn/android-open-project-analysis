@@ -1,6 +1,6 @@
 Java 动态代理
 ----------------
-> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 公共技术点中的 动态代理 部分  
+> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 公共技术点中的 动态代理 部分  
  项目地址：[Jave Proxy](http://www.grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/6-b27/java/lang/reflect/Proxy.java#Proxy)，分析的版本：[openjdk 1.6](http://www.grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/6-b27/java/lang/reflect/Proxy.java#Proxy)，Demo 地址：[Proxy Demo](https://github.com/android-cn/android-open-project-demo/tree/master/java-dynamic-proxy)  
  分析者：[Caij](https://github.com/Caij)，校对者：[Trinea](https://github.com/Trinea)，校对状态：完成  
 
@@ -590,7 +590,7 @@ invoke(Object proxy, Method method, Object[] args)
 
 #### 4.2 基于 REST 的 Android 端网络请求框架 Retrofit  
 作用：简化网络请求操作。  
-一般情况下每个网络请求我们都需要调用一次`HttpURLConnection`或者`HttpClient`进行请求，或者像 [Volley](https://github.com/android-cn/android-open-project-analysis/tree/master/volley "Volley 实现原理解析") 一样丢进等待队列中，Retrofit 极大程度简化了这些操作，示例代码如下：  
+一般情况下每个网络请求我们都需要调用一次`HttpURLConnection`或者`HttpClient`进行请求，或者像 [Volley](https://github.com/android-cn/android-open-project-analysis/tree/master/volley "Volley 源码解析") 一样丢进等待队列中，Retrofit 极大程度简化了这些操作，示例代码如下：  
 ```java
 public interface GitHubService {
   @GET("/users/{user}/repos")
@@ -607,4 +607,4 @@ GitHubService service = restAdapter.create(GitHubService.class);
 ```java
 List<Repo> repos = service.listRepos("octocat");
 ```
-即可开始网络请求，`Retrofit`的原理就是基于动态代理，它同时用到了 [注解](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/annotation.md "注解 详解") 的原理，本文不做深入介绍，具体请等待 [Retrofit 实现原理解析](https://github.com/android-cn/android-open-project-analysis/tree/master/retrofit) 完成。  
+即可开始网络请求，`Retrofit`的原理就是基于动态代理，它同时用到了 [注解](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/annotation.md "注解 详解") 的原理，本文不做深入介绍，具体请等待 [Retrofit 源码解析](https://github.com/android-cn/android-open-project-analysis/tree/master/retrofit) 完成。  

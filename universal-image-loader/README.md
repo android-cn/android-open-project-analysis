@@ -1,6 +1,6 @@
 Android Universal Image Loader 源码分析
 ====================================
-> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 Android Universal Image Loader 部分  
+> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 Android Universal Image Loader 部分  
 > 项目地址：[Android-Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader)，分析的版本：[eb794c3](https://github.com/nostra13/Android-Universal-Image-Loader/commit/eb794c306c1707a6cce80764b01f52109d5b9056)，Demo 地址：[UIL Demo](https://github.com/android-cn/android-open-project-demo/tree/master/universal-image-loader-demo)  
 > 分析者：[huxian99](https://github.com/huxian99)，校对者：[Grumoon](https://github.com/grumoon)、[Trinea](https://github.com/trinea)，校对状态：完成
 
@@ -719,7 +719,7 @@ protected abstract int getSize(Bitmap value)
 
 LRU 的实现跟上面内存缓存类似，`lruEntries`为`new LinkedHashMap<String, Entry>(0, 0.75f, true)`，LinkedHashMap 第三个参数表示是否需要根据访问顺序(accessOrder)排序，true 表示根据`accessOrder`排序，最近访问的跟最新加入的一样放到最后面，false 表示根据插入顺序排序。这里为 true 且缓存满时`trimToSize()`函数始终删除第一个元素，即始终删除最近最少访问的文件。  
 
-来源于 JakeWharton 的开源项目 [DiskLruCache](https://github.com/JakeWharton/DiskLruCache)，具体分析请等待 [DiskLruCache 实现原理解析](https://github.com/android-cn/android-open-project-analysis/tree/master/disk-lru-cache) 完成。  
+来源于 JakeWharton 的开源项目 [DiskLruCache](https://github.com/JakeWharton/DiskLruCache)，具体分析请等待 [DiskLruCache 源码解析](https://github.com/android-cn/android-open-project-analysis/tree/master/disk-lru-cache) 完成。  
 
 #####4.2.43 LruDiskCache.java
 限制总字节大小的内存缓存，会在缓存满时优先删除最近最少使用的元素，实现了`DiskCache`。  
