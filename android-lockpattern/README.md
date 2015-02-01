@@ -1,4 +1,4 @@
-android-lockpattern 源码解析
+Android Lock Pattern 源码解析
 ====================================
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 android-lockpattern 部分  
 > 项目地址：[android-lockpattern](https://code.google.com/p/android-lockpattern/)，分析的版本：[40293d2250c2](https://code.google.com/p/android-lockpattern/source/detail?r=40293d2250c2b273223ba25e4aeb3d290a0fdfad)，Demo 地址：等待添加    
@@ -206,6 +206,6 @@ adb pull /data/system/gesture.key gesture.key
 
 参考`4.2.3`中的图形摘要规则，然后我写了一个python脚本，生成了9个点所有组合的摘要字符串，同时再生成对应的SHA-1 HEX，这个字典也就57m。
 
-![Compare Pattern](image/password.png) 
+![Compare Pattern](image/password.jpg) 
 
 把`gesture.key`中的加密字符串在字典中反查即可得出图形锁的原始信息摘要，然后就可以按步骤画图解锁了。

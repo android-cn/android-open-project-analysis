@@ -37,7 +37,7 @@ PhotoView这个库实际上比较简单,关键点其实就是Touch事件处理�
 ###3. 流程图
 Touch及手势事件判定及传递流程：
 
-![流程图](images/flow.jpg)
+![流程图](images/flow.png)
 
 如图，从架构上看，干净利落的将事件层层分离，交由不同的Detector处理，最后再将处理结果回调给PhtotViewAttacher中的Matrix去实现图形变换效果。
 
