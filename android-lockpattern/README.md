@@ -206,4 +206,6 @@ adb pull /data/system/gesture.key gesture.key
 
 参考`4.2.3`中的图形摘要规则，然后我写了一个python脚本，生成了9个点所有组合的摘要字符串，同时再生成对应的SHA-1 HEX，这个字典也就57m。
 
+![Compare Pattern](image/password.png) 
+
 把`gesture.key`中的加密字符串在字典中反查即可得出图形锁的原始信息摘要，然后就可以按步骤画图解锁了。
