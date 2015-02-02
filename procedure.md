@@ -21,7 +21,7 @@
 - 示例工程需要在认领后`三天内`完成全部提交，中间每天需要有一定的提交  
   
 ###三. 编写原理文档  
-到 [android-open-project-analysis](https://github.com/android-cn/android-open-project-analysis) 项目下新建文件夹  
+到 [android-open-project-analysis](https://github.com/android-cn/android-open-project-analysis) 的`phase2`分支下新建文件夹  
 ####3.1 文件夹规范  
 - 该文件夹以`开源库名`命名，全小写，单词间用-连接。如果已有该文件夹，则以`开源库名-${GitHub 用户名}`命名，如`event-bus-trinea`；  
 - 从 [common](https://github.com/android-cn/android-open-project-analysis/tree/master/common) 文件夹下拷贝模板文件 README.md，复制到上面的文件夹中，所有内容在 README.md 中用 [Markdown](https://github.com/android-cn/blog/blob/master/dev-tool/markdown.md) 编写。如果内容较多可分多个 md 文件，但 README.md 为总体的概括文件；  
