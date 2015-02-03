@@ -6,10 +6,11 @@ android-Ultra-Pull-To-Refresh 源码解析
  
 
 ###1. 功能介绍  
-功能介绍，包括功能或优点等  
+下拉刷新，是每个Android应用都会需要的功能。android-Ultra-Pull-To-Refresh是一个强大的Andriod下拉刷新框架。    
+主要特点：  
+(1).继承于 ViewGroup，Content 部分可以包含任何View。  
+(2).简洁完善的 Header 部分抽象，方便进行拓展，构建符合需求的头部。
 
-**完成时间**  
-- `一天内`完成  
 
 ###2. 详细设计
 ###2.1 类详细介绍
