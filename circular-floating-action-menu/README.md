@@ -262,7 +262,7 @@ stateChangeListener 为状态变化的监听器，开关都会响应相应的方
 Animator属性动画以及其他动画的实现请参考我写的博客  
 [Android的动画效果](http://www.cnblogs.com/cpacm/p/4067283.html)
 
-###2.2 如何使用
+####4.3 如何使用
         // Set up the white button on the lower right corner
         // more or less with default parameter
         ImageView fabIconNew = new ImageView(this);
