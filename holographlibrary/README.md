@@ -1,196 +1,120 @@
-HoloGraphLibrary 实现原理解析
+HoloGraphLibrary 源码解析
 ====================================
-> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 HoloGraphLibrary部分  
-> 项目地址：[HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary)，分析的版本：[ccc2771](https://github.com/Androguide/HoloGraphLibrary/commit/028cd2ae6916308bbb96472aafa9ecd8b1343d5c"Commit id is 28cd2ae6916308bbb96472aafa9ecd8b1343d5c")，Demo 地址：[HoloGraphLibrary Demo](https://github.com/android-cn/android-open-project-demo/tree/master/holo-graph-library-demo)    
-> 分析者：[AaronPlay](https://github.com/AaronPlay)，校对者：[${校对者}](${校对者 Github 地址})，校对状态：未完成   
-
+> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 HoloGraphLibrary 部分  
+> 项目地址：[HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary)，分析的版本：[028cd2a](https://github.com/Androguide/HoloGraphLibrary/commit/028cd2ae6916308bbb96472aafa9ecd8b1343d5c "Commit id is 028cd2ae6916308bbb96472aafa9ecd8b1343d5c")，Demo 地址：[HoloGraphLibrary Demo](https://github.com/android-cn/android-open-project-demo/tree/master/holo-graph-library-demo)    
+> 分析者：[AaronPlay](https://github.com/AaronPlay)，校对者：[lightSky](https://github.com/lightSky)，校对状态：完成   
 
 ###1. 功能介绍  
- 
-HoloGraphLibrary是一个专注于常用制图控件的开源项目，扩展了一些常用的基本绘图类型，包括折线图，饼状图以及柱状图。
+HoloGraphLibrary 是一个可用于绘制图表的项目，支持绘制线状图、柱状图、饼状图。  
 
-优点：图形设计友好，使用方便。
+优点：图形设计友好，使用方便。  
 
 ###2. 总体设计
-本项目较为简单，总体设计请参考4.1类关系图。 
+本项目较为简单，总体设计请参考`4.1类关系图`。 
 
 ###3. 流程图
-本项目的每个控件的流程较为类似，所以抽象成一个流程图。
-
-![](image/holographflow.png)
+本项目的每个控件的流程较为类似，可以抽象成一个流程图来理解。  
+![](image/holographflow.png)  
 
 ###4. 详细设计
+####4.1 类关系图
+![](image/uml.png)  
+其中`LineGraph`、`BarGraph`、`PieGraph`分别对应线状图、柱状图、饼状图控件。  
+其他除 View 以外的类都表示封装的数据。  
 
-###4.1 类关系图
- 
-![](image/uml.png)
+####4.2 核心类功能介绍
+#####4.2.1 柱状图：
+`Bar.java`：用于表现一个柱体，构成柱状图的基本元素。封装了颜色，名字，`BarStackSegment`（下文将会涉及）数组等属性。若需要对`Bar`的每一个片段进行控制，改变`BarStackSegment`数组属性即可。  
 
+`BarStackSegment.java`：一般来说，一个柱体用于展示一个类型的数据，而`BarStackSegment`是作为柱体的扩展部分，用在同一个柱体上不同区间展示不同数据。  
 
-###4.2 核心类功能介绍
- 
-####4.2.1柱状图：
-Bar.java:用于表现一个柱体，构成柱状图的基本元素。封装了颜色，名字，BarStackSegment（下文将会涉及）数组等属性。若需要对Bar的每一个片段进行控制，通过改变BarStackSegment的数组即可。
+`BarGraph.java`：继承`View`类，表示柱状图控件，通过数据绘制负责柱状图。  
 
-BarStackSegment.java:  一般来说，一个柱体用于展示一个类型的数据，而BarStackSegment是作为柱体的扩展部分，用在同一个柱体上有展现多个不同区间的数据。
+(1). onDraw 流程图  
+![](image/bargraphflow.png)  
 
-BarGraph.java:继承View类，负责柱状图的绘制。
-
-- onDraw的流程图：
-
-![](image/bargraphflow.png)
-
-- onDraw源码分析
+(2). onDraw 源码分析  
+a. 绘制的样式定义（柱体颜色、宽度大小等属性）  
+```java
+public void onDraw(Canvas ca) {
+    ...
     
-        public void onDraw(Canvas ca) {
-        
-                //判断是否需要绘制或者刷新
-                if (fullImage == null || shouldUpdate) {
-                    //画布初始化
-                    fullImage = Bitmap.createBitmap(getWidth(), getHeight(), Config.ARGB_8888);
-                    Canvas canvas = new Canvas(fullImage);
-                    canvas.drawColor(Color.TRANSPARENT);
-                    NinePatchDrawable popup = (NinePatchDrawable) this.getResources().getDrawable(R.drawable.popup_black);
-        
-                    //柱体的样式定义
-                    float maxValue = 0;
-                    float padding = 7;
-                    int selectPadding = 4;
-                    float bottomPadding = 40;
-        
-                    //定义绘制柱体的区间
-                    float usableHeight;
-                    if (showBarText) {
-                        this.p.setTextSize(40);
-                        this.p.getTextBounds(unit, 0, 1, r3);
-                        usableHeight = getHeight() - bottomPadding - Math.abs(r3.top - r3.bottom) - 26;
-                    } else {
-                        usableHeight = getHeight() - bottomPadding;
-                    }
-        
-                    //定义笔刷
-                    p.setColor(Color.BLACK);
-                    p.setStrokeWidth(2);
-                    p.setAlpha(50);
-                    p.setAntiAlias(true);
-        
-                    canvas.drawLine(0, getHeight() - bottomPadding + 10, getWidth(), getHeight() - bottomPadding + 10, p);
-        
-                    float barWidth = (getWidth() - (padding * 2) * points.size()) / points.size();
-        
-                    for (Bar p : points) {
-                        maxValue += p.getValue();
-                    }
-        
-                    r = new Rect();
-        
-                    path.reset();
-        
-                    //绘制柱体
-                    int count = 0;
-                    for (Bar p : points) {
-                        //绘制每个柱体里的自定义区间
-                        if(p.getStackedBar()){
-                            ArrayList<BarStackSegment> values = new ArrayList<BarStackSegment>(p.getStackedValues());
-                            int prevValue = 0;
-                            //标记每个区间段的起始位置
-                            for(BarStackSegment value : values) {
-                                value.Value += prevValue;
-                                prevValue += value.Value;
-                            }
-                            Collections.reverse(values);
-        
-        
-                            for(BarStackSegment value : values) {
-                                r.set((int) ((padding * 2) * count + padding + barWidth * count), (int) ((getHeight() - bottomPadding - (usableHeight * (value.Value / maxValue)))), (int) ((padding * 2) * count + padding + barWidth * (count + 1)), (int) ((getHeight() - bottomPadding)));
-                                path.addRect(new RectF(r.left - selectPadding, r.top - selectPadding, r.right + selectPadding, r.bottom + selectPadding), Path.Direction.CW);
-                                p.setPath(path);
-                                p.setRegion(new Region(r.left - selectPadding, r.top - selectPadding, r.right + selectPadding, r.bottom + selectPadding));
-                                this.p.setColor(value.Color);
-                                this.p.setAlpha(255);
-                                canvas.drawRect(r, this.p);
-                            }
-                        }else {
-                            //若没有自定义区间，则正常绘制
-                            r.set((int) ((padding * 2) * count + padding + barWidth * count), (int) (getHeight() - bottomPadding - (usableHeight * (p.getValue() / maxValue))), (int) ((padding * 2) * count + padding + barWidth * (count + 1)), (int) (getHeight() - bottomPadding));
-                            path.addRect(new RectF(r.left - selectPadding, r.top - selectPadding, r.right + selectPadding, r.bottom + selectPadding), Path.Direction.CW);
-                            p.setPath(path);
-                            p.setRegion(new Region(r.left - selectPadding, r.top - selectPadding, r.right + selectPadding, r.bottom + selectPadding));
-                            this.p.setColor(p.getColor());
-                            this.p.setAlpha(255);
-                            canvas.drawRect(r, this.p);
-                        }
-        
-                        //标题绘制
-                        this.p.setTextSize(20);
-                        canvas.drawText(p.getName(), (int) (((r.left + r.right) / 2) - (this.p.measureText(p.getName()) / 2)), getHeight() - 5, this.p);
-                        if (showBarText) {
-                            this.p.setTextSize(40);
-                            this.p.setColor(Color.WHITE);
-                            this.p.getTextBounds(unit + p.getValue(), 0, 1, r2);
-                            if (popup != null)
-                                popup.setBounds((int) (((r.left + r.right) / 2) - (this.p.measureText(unit + p.getValue()) / 2)) - 14, r.top + (r2.top - r2.bottom) - 26, (int) (((r.left + r.right) / 2) + (this.p.measureText(unit + p.getValue()) / 2)) + 14, r.top);
-                            popup.draw(canvas);
-                            if (isAppended())
-                                canvas.drawText(p.getValue() + unit, (int) (((r.left + r.right) / 2) - (this.p.measureText(unit + p.getValue()) / 2)), r.top - 20, this.p);
-                            else
-                                canvas.drawText(unit + p.getValue(), (int) (((r.left + r.right) / 2) - (this.p.measureText(unit + p.getValue()) / 2)), r.top - 20, this.p);
-                        }
-                        if (indexSelected == count && listener != null) {
-                            this.p.setColor(Color.parseColor("#33B5E5"));
-                            this.p.setAlpha(100);
-                            canvas.drawPath(p.getPath(), this.p);
-                            this.p.setAlpha(255);
-                        }
-                        count++;
-                    }
-                    shouldUpdate = false;
-                }
-        
-                ca.drawBitmap(fullImage, 0, 0, null);
-        
-            }    
+    // 柱体的样式定义
+    float maxValue = 0;
+    float padding = 7;
+    int selectPadding = 4;
+    float bottomPadding = 40;
 
-####4.2.2饼状图
-PieSlice.java: 扇形，构成饼状图的基本元素。封装了颜色，值，标题，路径以及区域等属性。
+    // 定义绘制柱体的区间
+    float usableHeight;
+    if (showBarText) {
+        this.p.setTextSize(40);
+        this.p.getTextBounds(unit, 0, 1, r3);
+        usableHeight = getHeight() - bottomPadding - Math.abs(r3.top - r3.bottom) - 26;
+    } else {
+        usableHeight = getHeight() - bottomPadding;
+    }
+    
+    ...                    
+    
+    // 绘制柱体
+    int count = 0;
+    for (Bar p : points) {
+        // 绘制每个柱体里的自定义区间
+        if(p.getStackedBar()){
+                 ...
+        }else {
+            // 若没有自定义区间，则正常绘制
+            ...
+        }
+    }    
+    ...
+}            
+```
 
-PieGraph.java:继承View类, 负责绘制饼状图。
+b. 绘制计算过程（详细看源码）  
+1）绘制 X 轴  
+2）确定柱体的数量  
+3）计算柱体所需的宽度  
+4）如果使用动画，柱体最大值（影响绘画的高度）使用动态计算的最大值  
+5）计算 X 轴上标签的字体的大小（不考虑动画状态，否则会导致字体抖动）  
+6）设置柱体边界  
+7）绘制柱体  
+8）创建选择区域  
+9）绘制标签  
+10）绘制柱体顶部的文字  
+11）限制总体宽度，防止弹出  
+12）若有使用后，设置监听，对进行动画更新  
 
-- onDraw的流程图：
+#####4.2.2 饼状图
+`PieSlice.java`：扇形，构成饼状图的基本元素。封装了颜色，值，标题，路径以及区域等属性。  
 
-![](image/piegraphflow.png)
+`PieGraph.java`：：继承`View`类，表示饼状图控件，通过数据绘制负责饼状图。  
 
-####4.2.3折线图：
-LinePoint.java：折线的最基本元素，两点构成一条直线，属性包括二维坐标，路径以及区域等属性。
+(1). onDraw 流程图  
+![](image/piegraphflow.png)  
 
-Line.java : 由点构成线，里面封装了一个包含LinePoint的数组。
+(2). 绘制计算过程（详细看源码）  
+1）若有背景图片，设置背景图片  
+2）设置扇形的开始的位置，大小，圆心  
+3）计算不同的扇形的大小，从上次结束的位置进行绘制，记录好该扇形结束的位置。重复此步骤，直到所有扇形绘制完成  
 
-LineGraph.java: 继承View类，负责折线图的绘制。
+#####4.2.3 折线图：
+`LinePoint.java`：折线的最基本元素，两点构成一条直线，属性包括二维坐标，路径以及区域等属性。  
 
-- onDraw的流程图：
+`Line.java`：由点构成线，里面封装了一个包含`LinePoint`的数组。  
 
-![](image/linegraphflow.png)
+`LineGraph.java`：：继承`View`类，表示折线图控件，通过数据绘制负责折线图。  
+(1). onDraw 流程图  
+![](image/linegraphflow.png)  
 
+(2). 绘制计算过程（详细看源码）  
+1）若需要填充，先对整个绘制范围内进行直线绘制，然后擦除折线以上的直线  
+2）绘制 X 轴  
+3）绘制折线  
+4）绘制折点  
 
+####5. 杂谈
+其实，这个项目的代码并不适写的很好，但无碍我们的使用，有兴趣的同学可以重构一下，也有开发者 fork 之后扩展得更加有趣。[->链接](https://bitbucket.org/danielnadeau/holographlibrary)。对于控件类的开源库，可以把重点放在绘制以及事件处理上。  
 
-###5. 杂谈
-对于控件类的开源库，可以把重点放在与用户交互关联的触发器上。而这个开源库，也有开发者fork之后扩展得更加有趣。[->链接](https://bitbucket.org/danielnadeau/holographlibrary)
-
-**延伸：**
-
-关于View绘制的原理请浏览：[View 绘制流程](../tech/viewdrawflow.md)
-
-
-###6. 修改完善  
-在完成了上面 5 个部分后，移动模块顺序，将  
-`2. 详细设计` -> `2.1 核心类功能介绍` -> `2.2 类关系图` -> `3. 流程图` -> `4. 总体设计`  
-顺序变为  
-`2. 总体设计` -> `3. 流程图` -> `4. 详细设计` -> `4.1 类关系图` -> `4.2 核心类功能介绍`  
-并自行校验优化一遍，确认无误后，让`校对 Buddy`进行校对，`校对 Buddy`校队完成后将  
-`校对状态：未完成`  
-变为：  
-`校对状态：已完成`  
-
-**完成时间**  
-- `两天内`完成  
-
-**到此便大功告成，恭喜大家^_^**  
+**延伸：**关于 View 绘制的原理请浏览：[View 绘制流程](../tech/viewdrawflow.md)  

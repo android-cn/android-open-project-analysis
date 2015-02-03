@@ -1,419 +1,610 @@
-¶¯Ì¬´úÀí
+Java åŠ¨æ€ä»£ç†
 ----------------
-> ±¾ÎÄÎª [Android ¿ªÔ´ÏîÄ¿ÊµÏÖÔ­Àí½âÎö](https://github.com/android-cn/android-open-project-analysis) ¹«¹²¼¼ÊõµãµÄ ¶¯Ì¬´úÀí ²¿·Ö  
-> ·ÖÎöÕß£º[Caij](https://github.com/Caij)
+> æœ¬æ–‡ä¸º [Android å¼€æºé¡¹ç›®æºç è§£æ](https://github.com/android-cn/android-open-project-analysis) å…¬å…±æŠ€æœ¯ç‚¹ä¸­çš„ åŠ¨æ€ä»£ç† éƒ¨åˆ†  
+ é¡¹ç›®åœ°å€ï¼š[Jave Proxy](http://www.grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/6-b27/java/lang/reflect/Proxy.java#Proxy)ï¼Œåˆ†æçš„ç‰ˆæœ¬ï¼š[openjdk 1.6](http://www.grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/6-b27/java/lang/reflect/Proxy.java#Proxy)ï¼ŒDemo åœ°å€ï¼š[Proxy Demo](https://github.com/android-cn/android-open-project-demo/tree/master/java-dynamic-proxy)  
+ åˆ†æè€…ï¼š[Caij](https://github.com/Caij)ï¼Œæ ¡å¯¹è€…ï¼š[Trinea](https://github.com/Trinea)ï¼Œæ ¡å¯¹çŠ¶æ€ï¼šå®Œæˆ  
 
-#####Ò»¡¢Ê²Ã´ÊÇ¶¯Ì¬´úÀí£¿
-- 1. Ê×ÏÈÀí½â¼¸¸ö¸ÅÄî: Î¯ÍĞÀàºÍ´úÀíÀà £¨Î¯ÍĞÀàÖ¸µÄÊÇ±»´úÀíÀà£©  
-- 2. ¶¯Ì¬´úÀíÖ¸µÄÊÇÍ¨¹ı´úÀíÀà´úÀíÎ¯ÍĞÀàµÄÒ»Ğ©·½·¨£¬ ´úÀí¶ÔÏóÊÇjdk¶¯Ì¬²úÉú¡£
-- 3. ¶¯Ì¬´úÀí¿ÉÒÔÌá¹©¶ÔÁíÒ»¸ö¶ÔÏóµÄ·ÃÎÊ£¬Í¬Ê±Òş²ØÊµ¼Ê¶ÔÏóµÄ¾ßÌåÊÂÊµ£» ÁíÒ»µã¾ÍÊÇÎ¯ÍĞÀàÖĞµÄÄ³Ğ©·½·¨²»ÊÇÎÒÃÇĞèÒªµÄ£¬ ¿ÉÒÔÍ¨¹ı´úÀíÀ´ÊµÏÖ×Ô¼ºÏëÒªµÄĞ§¹û¡£
+### 1. ç›¸å…³æ¦‚å¿µ
+#### 1.1 ä»£ç†
+åœ¨æŸäº›æƒ…å†µä¸‹ï¼Œæˆ‘ä»¬ä¸å¸Œæœ›æˆ–æ˜¯ä¸èƒ½ç›´æ¥è®¿é—®å¯¹è±¡ Aï¼Œè€Œæ˜¯é€šè¿‡è®¿é—®ä¸€ä¸ªä¸­ä»‹å¯¹è±¡ Bï¼Œç”± B å»è®¿é—® A è¾¾æˆç›®çš„ï¼Œè¿™ç§æ–¹å¼æˆ‘ä»¬å°±ç§°ä¸ºä»£ç†ã€‚  
+è¿™é‡Œå¯¹è±¡ A æ‰€å±ç±»æˆ‘ä»¬ç§°ä¸ºå§”æ‰˜ç±»ï¼Œä¹Ÿç§°ä¸ºè¢«ä»£ç†ç±»ï¼Œå¯¹è±¡ B æ‰€å±ç±»ç§°ä¸ºä»£ç†ç±»ã€‚  
+ä»£ç†ä¼˜ç‚¹æœ‰ï¼š  
+* éšè—å§”æ‰˜ç±»çš„å®ç°  
+* è§£è€¦ï¼Œä¸æ”¹å˜å§”æ‰˜ç±»ä»£ç æƒ…å†µä¸‹åšä¸€äº›é¢å¤–å¤„ç†ï¼Œæ¯”å¦‚æ·»åŠ åˆå§‹åˆ¤æ–­åŠå…¶ä»–å…¬å…±æ“ä½œ  
 
-#####¶ş¡¢¶¯Ì¬´úÀíµÄÊµÏÖ£¿
-![proxy](image/proxy/proxy_flow.png)  
+æ ¹æ®ç¨‹åºè¿è¡Œå‰ä»£ç†ç±»æ˜¯å¦å·²ç»å­˜åœ¨ï¼Œå¯ä»¥å°†ä»£ç†åˆ†ä¸ºé™æ€ä»£ç†å’ŒåŠ¨æ€ä»£ç†ã€‚  
+
+#### 1.2 é™æ€ä»£ç†
+ä»£ç†ç±»åœ¨ç¨‹åºè¿è¡Œå‰å·²ç»å­˜åœ¨çš„ä»£ç†æ–¹å¼ç§°ä¸ºé™æ€ä»£ç†ã€‚  
+é€šè¿‡ä¸Šé¢è§£é‡Šå¯ä»¥çŸ¥é“ï¼Œç”±å¼€å‘äººå‘˜ç¼–å†™æˆ–æ˜¯ç¼–è¯‘å™¨ç”Ÿæˆä»£ç†ç±»çš„æ–¹å¼éƒ½å±äºé™æ€ä»£ç†ï¼Œå¦‚ä¸‹æ˜¯ç®€å•çš„é™æ€ä»£ç†å®ä¾‹ï¼š  
+```java
+class ClassA {
+    public void operateMethod1() {};
+
+    public void operateMethod2() {};
+
+    public void operateMethod3() {};
+}
+
+public class ClassB {
+    private ClassA a;
+
+    public ClassB(ClassA a) {
+        this.a = a;
+    }
+
+    public void operateMethod1() {
+        a.operateMethod1();
+    };
+
+    public void operateMethod2() {
+        a.operateMethod2();
+    };
+
+    // not export operateMethod3()
+}
+```
+ä¸Šé¢`ClassA`æ˜¯å§”æ‰˜ç±»ï¼Œ`ClassB`æ˜¯ä»£ç†ç±»ï¼Œ`ClassB`ä¸­çš„å‡½æ•°éƒ½æ˜¯ç›´æ¥è°ƒç”¨`ClassA`ç›¸åº”å‡½æ•°ï¼Œå¹¶ä¸”éšè—äº†`Class`çš„`operateMethod3()`å‡½æ•°ã€‚  
+
+é™æ€ä»£ç†ä¸­ä»£ç†ç±»å’Œå§”æ‰˜ç±»ä¹Ÿå¸¸å¸¸ç»§æ‰¿åŒä¸€çˆ¶ç±»æˆ–å®ç°åŒä¸€æ¥å£ã€‚  
+
+#### 1.3 åŠ¨æ€ä»£ç†
+ä»£ç†ç±»åœ¨ç¨‹åºè¿è¡Œå‰ä¸å­˜åœ¨ã€è¿è¡Œæ—¶ç”±ç¨‹åºåŠ¨æ€ç”Ÿæˆçš„ä»£ç†æ–¹å¼ç§°ä¸ºåŠ¨æ€ä»£ç†ã€‚  
+
+Java æä¾›äº†åŠ¨æ€ä»£ç†çš„å®ç°æ–¹å¼ï¼Œå¯ä»¥åœ¨è¿è¡Œæ—¶åˆ»åŠ¨æ€ç”Ÿæˆä»£ç†ç±»ã€‚è¿™ç§ä»£ç†æ–¹å¼çš„ä¸€å¤§å¥½å¤„æ˜¯å¯ä»¥æ–¹ä¾¿å¯¹ä»£ç†ç±»çš„å‡½æ•°åšç»Ÿä¸€æˆ–ç‰¹æ®Šå¤„ç†ï¼Œå¦‚è®°å½•æ‰€æœ‰å‡½æ•°æ‰§è¡Œæ—¶é—´ã€æ‰€æœ‰å‡½æ•°æ‰§è¡Œå‰æ·»åŠ éªŒè¯åˆ¤æ–­ã€å¯¹æŸä¸ªç‰¹æ®Šå‡½æ•°è¿›è¡Œç‰¹æ®Šæ“ä½œï¼Œè€Œä¸ç”¨åƒé™æ€ä»£ç†æ–¹å¼é‚£æ ·éœ€è¦ä¿®æ”¹æ¯ä¸ªå‡½æ•°ã€‚  
+
+`é™æ€ä»£ç†`æ¯”è¾ƒç®€å•ï¼Œæœ¬æ–‡ä¸Šé¢å·²ç®€å•ä»‹ç»ï¼Œä¸‹é¢é‡ç‚¹ä»‹ç»`åŠ¨æ€ä»£ç†`ã€‚  
+
+### 2. åŠ¨æ€ä»£ç†å®ä¾‹
+#### å®ç°åŠ¨æ€ä»£ç†åŒ…æ‹¬ä¸‰æ­¥ï¼š  
+(1). æ–°å»ºå§”æ‰˜ç±»ï¼›  
+(2). å®ç°`InvocationHandler`æ¥å£ï¼Œè¿™æ˜¯è´Ÿè´£è¿æ¥ä»£ç†ç±»å’Œå§”æ‰˜ç±»çš„ä¸­é—´ç±»å¿…é¡»å®ç°çš„æ¥å£ï¼›  
+(3). é€šè¿‡`Proxy`ç±»æ–°å»ºä»£ç†ç±»å¯¹è±¡ã€‚  
+
+ä¸‹é¢é€šè¿‡å®ä¾‹å…·ä½“ä»‹ç»ï¼Œå‡å¦‚ç°åœ¨æˆ‘ä»¬æƒ³ç»Ÿè®¡æŸä¸ªç±»æ‰€æœ‰å‡½æ•°çš„æ‰§è¡Œæ—¶é—´ï¼Œä¼ ç»Ÿçš„æ–¹å¼æ˜¯åœ¨ç±»çš„æ¯ä¸ªå‡½æ•°å‰æ‰“ç‚¹ç»Ÿè®¡ï¼ŒåŠ¨æ€ä»£ç†æ–¹å¼å¦‚ä¸‹ï¼š  
+#### 2.1 æ–°å»ºå§”æ‰˜ç±»
+```java
+public interface Operate {
+
+    public void operateMethod1();
+
+    public void operateMethod2();
+
+    public void operateMethod3();
+}
+
+public class OperateImpl implements Operate {
+
+    @Override
+    public void operateMethod1() {
+        System.out.println("Invoke operateMethod1");
+        sleep(110);
+    }
+
+    @Override
+    public void operateMethod2() {
+        System.out.println("Invoke operateMethod2");
+        sleep(120);
+    }
+
+    @Override
+    public void operateMethod3() {
+        System.out.println("Invoke operateMethod3");
+        sleep(130);
+    }
+
+    private static void sleep(long millSeconds) {
+        try {
+            Thread.sleep(millSeconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+`Operate`æ˜¯ä¸€ä¸ªæ¥å£ï¼Œå®šäº†äº†ä¸€äº›å‡½æ•°ï¼Œæˆ‘ä»¬è¦ç»Ÿè®¡è¿™äº›å‡½æ•°çš„æ‰§è¡Œæ—¶é—´ã€‚  
+`OperateImpl`æ˜¯å§”æ‰˜ç±»ï¼Œå®ç°`Operate`æ¥å£ã€‚æ¯ä¸ªå‡½æ•°ç®€å•è¾“å‡ºå­—ç¬¦ä¸²ï¼Œå¹¶ç­‰å¾…ä¸€æ®µæ—¶é—´ã€‚  
+åŠ¨æ€ä»£ç†è¦æ±‚å§”æ‰˜ç±»å¿…é¡»å®ç°äº†æŸä¸ªæ¥å£ï¼Œæ¯”å¦‚è¿™é‡Œå§”æ‰˜ç±»`OperateImpl`å®ç°äº†`Operate`ï¼ŒåŸå› ä¼šåç»­åœ¨å¾®åšå…¬å¸ƒã€‚  
+
+#### 2.2. å®ç° InvocationHandler æ¥å£
+```java
+public class TimingInvocationHandler implements InvocationHandler {
+
+    private Object target;
+
+    public TimingInvocationHandler() {}
+
+    public TimingInvocationHandler(Object target) {
+        this.target = target;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        long start = System.currentTimeMillis();
+        Object obj = method.invoke(target, args);
+        System.out.println(method.getName() + " cost time is:" + (System.currentTimeMillis() - start));
+        return obj;
+    }
+}
+```
+`target`å±æ€§è¡¨ç¤ºå§”æ‰˜ç±»å¯¹è±¡ã€‚  
+
+`InvocationHandler`æ˜¯è´Ÿè´£è¿æ¥ä»£ç†ç±»å’Œå§”æ‰˜ç±»çš„ä¸­é—´ç±»å¿…é¡»å®ç°çš„æ¥å£ã€‚å…¶ä¸­åªæœ‰ä¸€ä¸ª  
+```java
+public Object invoke(Object proxy, Method method, Object[] args)
+```
+å‡½æ•°éœ€è¦å»å®ç°ï¼Œå‚æ•°ï¼š  
+`proxy`è¡¨ç¤ºä¸‹é¢`2.3 é€šè¿‡ Proxy.newProxyInstance() ç”Ÿæˆçš„ä»£ç†ç±»å¯¹è±¡`ã€‚  
+`method`è¡¨ç¤ºä»£ç†å¯¹è±¡è¢«è°ƒç”¨çš„å‡½æ•°ã€‚  
+`args`è¡¨ç¤ºä»£ç†å¯¹è±¡è¢«è°ƒç”¨çš„å‡½æ•°çš„å‚æ•°ã€‚  
+
+è°ƒç”¨ä»£ç†å¯¹è±¡çš„æ¯ä¸ªå‡½æ•°å®é™…æœ€ç»ˆéƒ½æ˜¯è°ƒç”¨äº†`InvocationHandler`çš„`invoke`å‡½æ•°ã€‚è¿™é‡Œæˆ‘ä»¬åœ¨`invoke`å®ç°ä¸­æ·»åŠ äº†å¼€å§‹ç»“æŸè®¡æ—¶ï¼Œå…¶ä¸­è¿˜è°ƒç”¨äº†å§”æ‰˜ç±»å¯¹è±¡`target`çš„ç›¸åº”å‡½æ•°ï¼Œè¿™æ ·ä¾¿å®Œæˆäº†ç»Ÿè®¡æ‰§è¡Œæ—¶é—´çš„éœ€æ±‚ã€‚  
+`invoke`å‡½æ•°ä¸­æˆ‘ä»¬ä¹Ÿå¯ä»¥é€šè¿‡å¯¹`method`åšä¸€äº›åˆ¤æ–­ï¼Œä»è€Œå¯¹æŸäº›å‡½æ•°ç‰¹æ®Šå¤„ç†ã€‚  
+
+#### 2.3. é€šè¿‡ Proxy ç±»é™æ€å‡½æ•°ç”Ÿæˆä»£ç†å¯¹è±¡
+```java
+public class Main {
+    public static void main(String[] args) {
+        // create proxy instance
+        TimingInvocationHandler timingInvocationHandler = new TimingInvocationHandler(new OperateImpl());
+        Operate operate = (Operate)(Proxy.newProxyInstance(Operate.class.getClassLoader(), new Class[] {Operate.class},
+                timingInvocationHandler));
+        
+        // call method of proxy instance
+        operate.operateMethod1();
+        System.out.println();
+        operate.operateMethod2();
+        System.out.println();
+        operate.operateMethod3();
+    }
+}
+```
+è¿™é‡Œæˆ‘ä»¬å…ˆå°†å§”æ‰˜ç±»å¯¹è±¡`new OperateImpl()`ä½œä¸º`TimingInvocationHandler`æ„é€ å‡½æ•°å…¥å‚åˆ›å»º`timingInvocationHandler`å¯¹è±¡ï¼›  
+ç„¶åé€šè¿‡`Proxy.newProxyInstance(â€¦)`å‡½æ•°æ–°å»ºäº†ä¸€ä¸ªä»£ç†å¯¹è±¡ï¼Œå®é™…ä»£ç†ç±»å°±æ˜¯åœ¨è¿™æ—¶å€™åŠ¨æ€ç”Ÿæˆçš„ã€‚æˆ‘ä»¬è°ƒç”¨è¯¥ä»£ç†å¯¹è±¡çš„å‡½æ•°å°±ä¼šè°ƒç”¨åˆ°`timingInvocationHandler`çš„`invoke`å‡½æ•°(æ˜¯ä¸æ˜¯æœ‰ç‚¹ç±»ä¼¼é™æ€ä»£ç†)ï¼Œè€Œ`invoke`å‡½æ•°å®ç°ä¸­è°ƒç”¨å§”æ‰˜ç±»å¯¹è±¡`new OperateImpl()`ç›¸åº”çš„ method(æ˜¯ä¸æ˜¯æœ‰ç‚¹ç±»ä¼¼é™æ€ä»£ç†)ã€‚  
 
 ```java
-	import java.lang.reflect.InvocationHandler;
-	import java.lang.reflect.Method;
-	import java.lang.reflect.Proxy;
-
-	/**
-	 * @author Caij
-	 */
-	public class ProxyDemo {
-		
-		
-		public static void main(String[] args) {
-			/**
-			 * ´úÀíÖ»ÄÜ´úÀí±»´úÀíÀàÊµÏÖ½Ó¿ÚµÄ·½·¨£¬ ËùÒÔ±»´úÀí±ØĞëÊµÏÖ½Ó¿Ú
-			 * */
-			final CurrentClass currentClass = new CurrentClass();
-			//±»´úÀíÀàÊµÏÖµÄ½Ó¿Ú
-			Class<?>[] interfaces = new Class[]{ProxyInterface.class};
-			//Èç¹ûÓĞÊµ¼ÊµÄÎ¯ÍĞÀà¿ÉÒÔÕâÑùĞ´
-			interfaces = currentClass.getClass().getInterfaces();
-			ProxyInterface proxy = (ProxyInterface) Proxy.newProxyInstance(currentClass.getClass().getClassLoader(), 
-						interfaces , new Handler(currentClass));
-			proxy.sayGood();
-		}
-	}
-
-	class Handler implements InvocationHandler {
-		
-		private Object object;
-		
-		public Handler(Object ob) {
-			this.object = ob;
-		}
-		
-		public Handler() {
-		}
-
-		/* (non-Javadoc)
-		 * @see java.lang.reflect.InvocationHandler#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.Object[])
-		 * Õâ¸ö·½·¨ÖĞµ÷ÓÃ½Ó¿ÚÖĞµÄ·½·¨
-		 */
-		@Override
-		public Object invoke(Object proxy, Method method, Object[] args)
-				throws Throwable {
-			if (method.getName().equals("sayGood")) {
-				System.out.println("very good"); //ĞèÒª´úÀíµÄ·½·¨ĞŞ¸Ä
-				return null; //  ·µ»ØÖµÎª¿Õ Ö±½Ó·µ»Ønull
-			}
-			return object == null ? null : method.invoke(object, args); //²»ĞèÒªĞŞ¸ÄµÄ·½·¨µ÷ÓÃCurrentClassµÄ·½·¨ 
-		}
-		
-	}
-
-	interface ProxyInterface {
-		public void sayHello();
-		public void sayGood();
-	}
-
-	class CurrentClass implements ProxyInterface {
-
-		@Override
-		public void sayHello() {
-			System.out.println("hello");
-		}
-
-		@Override
-		public void sayGood() {
-			System.out.println("good");
-		}
-	}
+public static Object newProxyInstance(ClassLoader loader, Class<?>[] interfaces, InvocationHandler h)
 ```
+`loader`è¡¨ç¤ºç±»åŠ è½½å™¨  
+`interfaces`è¡¨ç¤ºå§”æ‰˜ç±»çš„æ¥å£ï¼Œç”Ÿæˆä»£ç†ç±»æ—¶éœ€è¦å®ç°è¿™äº›æ¥å£  
+`h`æ˜¯`InvocationHandler`å®ç°ç±»å¯¹è±¡ï¼Œè´Ÿè´£è¿æ¥ä»£ç†ç±»å’Œå§”æ‰˜ç±»çš„ä¸­é—´ç±»  
 
-#####Èı¡¢¶¯Ì¬´úÀíµÄÊµÏÖÔ­Àí£¿
-- 1. Ìá¹©Î¯ÍĞÀàÊµÏÖµÄ½Ó¿Ú
-- 2. Í¨¹ıÊµÏÖµÄ½Ó¿Ú¶¯Ì¬Éú³É´úÀíÀà£¬ È»ºóÔÚ¹¹Ôì·½·¨ÖĞ´«ÈëInvocationHandler £¬ÔÚÃ¿¸öÊµÏÖ·½·¨ÖĞµ÷ÓÃInvocationHandlerµÄinvoke()¡£
-- 3. È»ºóÖØĞ´invoke() ·½·¨£¬ °Ñ×Ô¼ºĞèÒªµÄÂß¼­¼ÓÈë¡£  
-×¢Òâ1¡¢À¹½ØÆ÷ÖĞinvoke·½·¨ÌåµÄÄÚÈİ¾ÍÊÇ´úÀí¶ÔÏó·½·¨ÌåµÄÄÚÈİ
-    2¡¢µ±¿Í»§¶ËÖ´ĞĞ´úÀí¶ÔÏó·½·¨Ê±£¬½øÈëµ½ÁËÀ¹½ØÆ÷µÄinvoke·½·¨Ìå
-    3¡¢À¹½ØÆ÷ÖĞinvoke·½·¨µÄmethod²ÎÊıÊÇÔÚµ÷ÓÃµÄÊ±ºò¸³ÖµµÄ
+æˆ‘ä»¬å¯ä»¥è¿™æ ·ç†è§£ï¼Œå¦‚ä¸Šçš„åŠ¨æ€ä»£ç†å®ç°å®é™…æ˜¯åŒå±‚çš„é™æ€ä»£ç†ï¼Œå¼€å‘è€…æä¾›äº†å§”æ‰˜ç±» Bï¼Œç¨‹åºåŠ¨æ€ç”Ÿæˆäº†ä»£ç†ç±» Aã€‚å¼€å‘è€…è¿˜éœ€è¦æä¾›ä¸€ä¸ªå®ç°äº†`InvocationHandler`çš„å­ç±» Cï¼Œå­ç±» C è¿æ¥ä»£ç†ç±» A å’Œå§”æ‰˜ç±» Bï¼Œå®ƒæ˜¯ä»£ç†ç±» A çš„å§”æ‰˜ç±»ï¼Œå§”æ‰˜ç±» B çš„ä»£ç†ç±»ã€‚ç”¨æˆ·ç›´æ¥è°ƒç”¨ä»£ç†ç±» A çš„å¯¹è±¡ï¼ŒA å°†è°ƒç”¨è½¬å‘ç»™å§”æ‰˜ç±» Cï¼Œå§”æ‰˜ç±» C å†å°†è°ƒç”¨è½¬å‘ç»™å®ƒçš„å§”æ‰˜ç±» Bã€‚  
 
-![proxyÔ­Àí](image/proxy/proxy_detail.png)  
-
+### 3. åŠ¨æ€ä»£ç†åŸç†
+å®é™…ä¸Šé¢æœ€åä¸€æ®µå·²ç»è¯´æ¸…äº†åŠ¨æ€ä»£ç†çš„çœŸæ­£åŸç†ã€‚æˆ‘ä»¬æ¥ä»”ç»†åˆ†æä¸‹
+#### 3.1 ç”Ÿæˆçš„åŠ¨æ€ä»£ç†ç±»ä»£ç 
+ä¸‹é¢æ˜¯ä¸Šé¢ç¤ºä¾‹ç¨‹åºè¿è¡Œæ—¶è‡ªåŠ¨ç”Ÿæˆçš„åŠ¨æ€ä»£ç†ç±»ä»£ç ï¼Œå¦‚ä½•å¾—åˆ°è¿™äº›ç”Ÿæˆçš„ä»£ç è¯·è§[ProxyUtils](https://github.com/android-cn/android-open-project-demo/blob/master/java-dynamic-proxy/src/com/codekk/java/test/dynamicproxy/util/ProxyUtils.java)ï¼ŒæŸ¥çœ‹ class æ–‡ä»¶å¯ä½¿ç”¨ jd-gui  
 ```java
-    /** 
-     * loader:Àà¼ÓÔØÆ÷ 
-     * interfaces:Ä¿±ê¶ÔÏóÊµÏÖµÄ½Ó¿Ú 
-     * h:InvocationHandlerµÄÊµÏÖÀà 
-     */  
-    public static Object newProxyInstance(ClassLoader loader,  
-                          Class<?>[] interfaces,  
-                          InvocationHandler h)  
-        throws IllegalArgumentException  
-        {  
-        if (h == null) {  
-            throw new NullPointerException();  
-        }  
-      
-        /* 
-         * Look up or generate the designated proxy class. 
-         */  
-        Class cl = getProxyClass(loader, interfaces);  
-      
-        /* 
-         * Invoke its constructor with the designated invocation handler. 
-         */  
-        try {  
-                // µ÷ÓÃ´úÀí¶ÔÏóµÄ¹¹Ôì·½·¨£¨Ò²¾ÍÊÇ$Proxy0(InvocationHandler h)£©  
-            Constructor cons = cl.getConstructor(constructorParams);  
-                // Éú³É´úÀíÀàµÄÊµÀı²¢°ÑInvocationHandlerµÄÊµÀı´«¸øËüµÄ¹¹Ôì·½·¨  
-            return (Object) cons.newInstance(new Object[] { h });  
-        } catch (NoSuchMethodException e) {  
-            throw new InternalError(e.toString());  
-        } catch (IllegalAccessException e) {  
-            throw new InternalError(e.toString());  
-        } catch (InstantiationException e) {  
-            throw new InternalError(e.toString());  
-        } catch (InvocationTargetException e) {  
-            throw new InternalError(e.toString());  
-        }  
-        }  
-		
-		/** 
-		* Õâ¸ö·½·¨ÆäÊµ¾ÍÊÇÍ¨¹ıÌá¹©µÄ½Ó¿Ú²úÉúÒ»¸öÊµÏÖÀàµÄ×Ö½ÚÂë
-		*/ 
-		public static Class<?> getProxyClass(ClassLoader loader,   
-                                             Class<?>... interfaces)  
-        throws IllegalArgumentException  
-        {  
-        // Èç¹ûÄ¿±êÀàÊµÏÖµÄ½Ó¿ÚÊı´óÓÚ65535¸öÔòÅ×³öÒì³££¨ÎÒXX£¬Ë­»áĞ´ÕâÃ´NBµÄ´úÂë°¡£¿£©  
-        if (interfaces.length > 65535) {  
-            throw new IllegalArgumentException("interface limit exceeded");  
-        }  
-      
-        // ÉùÃ÷´úÀí¶ÔÏóËù´ú±íµÄClass¶ÔÏó£¨ÓĞµãŞÖ¿Ú£©  
-        Class proxyClass = null;  
-      
-        String[] interfaceNames = new String[interfaces.length];  
-      
-        Set interfaceSet = new HashSet();   // for detecting duplicates  
-      
-        // ±éÀúÄ¿±êÀàËùÊµÏÖµÄ½Ó¿Ú  
-        for (int i = 0; i < interfaces.length; i++) {  
-              
-            // ÄÃµ½Ä¿±êÀàÊµÏÖµÄ½Ó¿ÚµÄÃû³Æ  
-            String interfaceName = interfaces[i].getName();  
-            Class interfaceClass = null;  
-            try {  
-            // ¼ÓÔØÄ¿±êÀàÊµÏÖµÄ½Ó¿Úµ½ÄÚ´æÖĞ  
-            interfaceClass = Class.forName(interfaceName, false, loader);  
-            } catch (ClassNotFoundException e) {  
-            }  
-            if (interfaceClass != interfaces[i]) {  
-            throw new IllegalArgumentException(  
-                interfaces[i] + " is not visible from class loader");  
-            }  
-      
-            // ÖĞ¼äÊ¡ÂÔÁËÒ»Ğ©ÎŞ¹Ø½ôÒªµÄ´úÂë .......  
-              
-            // °ÑÄ¿±êÀàÊµÏÖµÄ½Ó¿Ú´ú±íµÄClass¶ÔÏó·Åµ½SetÖĞ  
-            interfaceSet.add(interfaceClass);  
-      
-            interfaceNames[i] = interfaceName;  
-        }  
-      
-        // °ÑÄ¿±êÀàÊµÏÖµÄ½Ó¿ÚÃû³Æ×÷Îª»º´æ£¨Map£©ÖĞµÄkey  
-        Object key = Arrays.asList(interfaceNames);  
-      
-        Map cache;  
-          
-        synchronized (loaderToCache) {  
-            // ´Ó»º´æÖĞ»ñÈ¡cache  
-            cache = (Map) loaderToCache.get(loader);  
-            if (cache == null) {  
-            // Èç¹û»ñÈ¡²»µ½£¬ÔòĞÂ½¨µØ¸öHashMapÊµÀı  
-            cache = new HashMap();  
-            // °ÑHashMapÊµÀıºÍµ±Ç°¼ÓÔØÆ÷·Åµ½»º´æÖĞ  
-            loaderToCache.put(loader, cache);  
-            }  
-      
-        }  
-      
-        synchronized (cache) {  
-      
-            do {  
-            // ¸ù¾İ½Ó¿ÚµÄÃû³Æ´Ó»º´æÖĞ»ñÈ¡¶ÔÏó  
-            Object value = cache.get(key);  
-            if (value instanceof Reference) {  
-                proxyClass = (Class) ((Reference) value).get();  
-            }  
-            if (proxyClass != null) {  
-                // Èç¹û´úÀí¶ÔÏóµÄClassÊµÀıÒÑ¾­´æÔÚ£¬ÔòÖ±½Ó·µ»Ø  
-                return proxyClass;  
-            } else if (value == pendingGenerationMarker) {  
-                try {  
-                cache.wait();  
-                } catch (InterruptedException e) {  
-                }  
-                continue;  
-            } else {  
-                cache.put(key, pendingGenerationMarker);  
-                break;  
-            }  
-            } while (true);  
-        }  
-      
-        try {  
-            // ÖĞ¼äÊ¡ÂÔÁËÒ»Ğ©´úÂë .......  
-              
-            // ÕâÀï¾ÍÊÇ¶¯Ì¬Éú³É´úÀí¶ÔÏóµÄ×î¹Ø¼üµÄµØ·½ £¬ ²úÉú´úÀí¶ÔÏóµÄ×Ö½ÚÂë£¬ µ×²ãÊÇÍ¨¹ıjniÊµÏÖµÄ¡£ 
-            byte[] proxyClassFile = ProxyGenerator.generateProxyClass(  
-                proxyName, interfaces);  
-            try {  
-                // ¸ù¾İ´úÀíÀàµÄ×Ö½ÚÂëÉú³É´úÀíÀàµÄÊµÀı  
-                proxyClass = defineClass0(loader, proxyName,  
-                proxyClassFile, 0, proxyClassFile.length);  
-            } catch (ClassFormatError e) {  
-                throw new IllegalArgumentException(e.toString());  
-            }  
-            }  
-            // add to set of all generated proxy classes, for isProxyClass  
-            proxyClasses.put(proxyClass, null);  
-      
-        }   
-        // ÖĞ¼äÊ¡ÂÔÁËÒ»Ğ©´úÂë .......  
-          
-        return proxyClass;  
-        }  
-```
+import com.codekk.java.test.dynamicproxy.Operate;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.UndeclaredThrowableException;
 
-**ÕâÀïµÄ´úÀí¶ÔÏó¿ÉÒÔÀí½âÎªÕâÑù**
+public final class $Proxy0 extends Proxy
+  implements Operate
+{
+  private static Method m4;
+  private static Method m1;
+  private static Method m5;
+  private static Method m0;
+  private static Method m3;
+  private static Method m2;
+
+  public $Proxy0(InvocationHandler paramInvocationHandler)
+    throws 
+  {
+    super(paramInvocationHandler);
+  }
+
+  public final void operateMethod1()
+    throws 
+  {
+    try
+    {
+      h.invoke(this, m4, null);
+      return;
+    }
+    catch (Error|RuntimeException localError)
+    {
+      throw localError;
+    }
+    catch (Throwable localThrowable)
+    {
+      throw new UndeclaredThrowableException(localThrowable);
+    }
+  }
+
+  public final boolean equals(Object paramObject)
+    throws 
+  {
+    try
+    {
+      return ((Boolean)h.invoke(this, m1, new Object[] { paramObject })).booleanValue();
+    }
+    catch (Error|RuntimeException localError)
+    {
+      throw localError;
+    }
+    catch (Throwable localThrowable)
+    {
+      throw new UndeclaredThrowableException(localThrowable);
+    }
+  }
+
+  public final void operateMethod2()
+    throws 
+  {
+    try
+    {
+      h.invoke(this, m5, null);
+      return;
+    }
+    catch (Error|RuntimeException localError)
+    {
+      throw localError;
+    }
+    catch (Throwable localThrowable)
+    {
+      throw new UndeclaredThrowableException(localThrowable);
+    }
+  }
+
+  public final int hashCode()
+    throws 
+  {
+    try
+    {
+      return ((Integer)h.invoke(this, m0, null)).intValue();
+    }
+    catch (Error|RuntimeException localError)
+    {
+      throw localError;
+    }
+    catch (Throwable localThrowable)
+    {
+      throw new UndeclaredThrowableException(localThrowable);
+    }
+  }
+
+  public final void operateMethod3()
+    throws 
+  {
+    try
+    {
+      h.invoke(this, m3, null);
+      return;
+    }
+    catch (Error|RuntimeException localError)
+    {
+      throw localError;
+    }
+    catch (Throwable localThrowable)
+    {
+      throw new UndeclaredThrowableException(localThrowable);
+    }
+  }
+
+  public final String toString()
+    throws 
+  {
+    try
+    {
+      return (String)h.invoke(this, m2, null);
+    }
+    catch (Error|RuntimeException localError)
+    {
+      throw localError;
+    }
+    catch (Throwable localThrowable)
+    {
+      throw new UndeclaredThrowableException(localThrowable);
+    }
+  }
+
+  static
+  {
+    try
+    {
+      m4 = Class.forName("com.codekk.java.test.dynamicproxy.Operate").getMethod("operateMethod1", new Class[0]);
+      m1 = Class.forName("java.lang.Object").getMethod("equals", new Class[] { Class.forName("java.lang.Object") });
+      m5 = Class.forName("com.codekk.java.test.dynamicproxy.Operate").getMethod("operateMethod2", new Class[0]);
+      m0 = Class.forName("java.lang.Object").getMethod("hashCode", new Class[0]);
+      m3 = Class.forName("com.codekk.java.test.dynamicproxy.Operate").getMethod("operateMethod3", new Class[0]);
+      m2 = Class.forName("java.lang.Object").getMethod("toString", new Class[0]);
+      return;
+    }
+    catch (NoSuchMethodException localNoSuchMethodException)
+    {
+      throw new NoSuchMethodError(localNoSuchMethodException.getMessage());
+    }
+    catch (ClassNotFoundException localClassNotFoundException)
+    {
+      throw new NoClassDefFoundError(localClassNotFoundException.getMessage());
+    }
+  }
+}
+```  
+ä»ä¸­æˆ‘ä»¬å¯ä»¥çœ‹å‡ºåŠ¨æ€ç”Ÿæˆçš„ä»£ç†ç±»æ˜¯ä»¥`$Proxy`ä¸ºç±»åå‰ç¼€ï¼Œç»§æ‰¿è‡ª`Proxy`ï¼Œå¹¶ä¸”å®ç°äº†`Proxy.newProxyInstance(â€¦)`ç¬¬äºŒä¸ªå‚æ•°ä¼ å…¥çš„æ‰€æœ‰æ¥å£çš„ç±»ã€‚  
+å¦‚æœä»£ç†ç±»å®ç°çš„æ¥å£ä¸­å­˜åœ¨é public æ¥å£ï¼Œåˆ™å…¶åŒ…åä¸ºè¯¥æ¥å£çš„åŒ…åï¼Œå¦åˆ™ä¸º`com.sun.proxy`ã€‚  
+å…¶ä¸­çš„`operateMethod1()`ã€`operateMethod2()`ã€`operateMethod3()`å‡½æ•°éƒ½æ˜¯ç›´æ¥äº¤ç»™`h`å»å¤„ç†ï¼Œ`h`åœ¨çˆ¶ç±»`Proxy`ä¸­å®šä¹‰ä¸º  
+```java
+protected InvocationHandler h;
+```
+å³ä¸º`Proxy.newProxyInstance(â€¦)`ç¬¬ä¸‰ä¸ªå‚æ•°ã€‚  
+æ‰€ä»¥`InvocationHandler`çš„å­ç±» C è¿æ¥ä»£ç†ç±» A å’Œå§”æ‰˜ç±» Bï¼Œå®ƒæ˜¯ä»£ç†ç±» A çš„å§”æ‰˜ç±»ï¼Œå§”æ‰˜ç±» B çš„ä»£ç†ç±»ã€‚  
+  
+#### 3.2. ç”ŸæˆåŠ¨æ€ä»£ç†ç±»åŸç†
+ä»¥ä¸‹é’ˆå¯¹ Java 1.6 æºç è¿›è¡Œåˆ†æï¼ŒåŠ¨æ€ä»£ç†ç±»æ˜¯åœ¨è°ƒç”¨`Proxy.newProxyInstance(â€¦)`å‡½æ•°æ—¶ç”Ÿæˆçš„ã€‚  
+#### (1). newProxyInstance(â€¦) 
+å‡½æ•°ä»£ç å¦‚ä¸‹ï¼š  
+```java
+public static Object newProxyInstance(ClassLoader loader,
+                                      Class<?>[] interfaces,
+                                      InvocationHandler h)
+    throws IllegalArgumentException
+{
+    if (h == null) {
+        throw new NullPointerException();
+    }
+
+    /*
+     * Look up or generate the designated proxy class.
+     */
+    Class cl = getProxyClass(loader, interfaces);
+
+    /*
+     * Invoke its constructor with the designated invocation handler.
+     */
+    try {
+        Constructor cons = cl.getConstructor(constructorParams);
+        return (Object) cons.newInstance(new Object[] { h });
+    } catch (NoSuchMethodException e) {
+        throw new InternalError(e.toString());
+    } catch (IllegalAccessException e) {
+        throw new InternalError(e.toString());
+    } catch (InstantiationException e) {
+        throw new InternalError(e.toString());
+    } catch (InvocationTargetException e) {
+        throw new InternalError(e.toString());
+    }
+}
+```
+ä»ä¸­å¯ä»¥çœ‹å‡ºå®ƒå…ˆè°ƒç”¨`getProxyClass(loader, interfaces)`å¾—åˆ°åŠ¨æ€ä»£ç†ç±»ï¼Œç„¶åå°†`InvocationHandler`ä½œä¸ºä»£ç†ç±»æ„é€ å‡½æ•°å…¥å‚æ–°å»ºä»£ç†ç±»å¯¹è±¡ã€‚  
+
+#### (2). getProxyClass(â€¦) 
+å‡½æ•°ä»£ç åŠè§£é‡Šå¦‚ä¸‹(çœç•¥äº†åŸè‹±æ–‡æ³¨é‡Š)ï¼š 
 ```java
 /**
- * @author Caij
- * Àí½â·½Ê½£ºÕâÑùĞ´±ãÓÚÀí½â£¬ µ×²ãµÄÊµÏÖÊÇÓĞjavaĞéÄâ»úÊµÏÖµÄ
- * ´úÀíÀàÊµÏÖÁË²ÎÊıÖĞËùÓĞµÄ½Ó¿Ú
- * È»ºóÔÚÃ¿¸ö·½·¨ÖĞµ÷ÓÃInvocationHandler invoke·½·¨£¬ È»ºó½«²ÎÊı´«Èë
+ * å¾—åˆ°ä»£ç†ç±»ï¼Œä¸å­˜åœ¨åˆ™åŠ¨æ€ç”Ÿæˆ
+ * @param loader ä»£ç†ç±»æ‰€å± ClassLoader
+ * @param interfaces ä»£ç†ç±»éœ€è¦å®ç°çš„æ¥å£
+ * @return
  */
-public class ´úÀíÀà implements MyInterface{
-	
-	private InvocationHandler handler;
-	
-	public MyInterfaceAdapter(InvocationHandler handler) {
-		this.handler = handler;
-	}
+public static Class<?> getProxyClass(ClassLoader loader,
+                                     Class<?>... interfaces)
+    throws IllegalArgumentException
+{
+    if (interfaces.length > 65535) {
+        throw new IllegalArgumentException("interface limit exceeded");
+    }
+    // ä»£ç†ç±»ç±»å¯¹è±¡
+    Class proxyClass = null;
 
-	@Override
-	public void sayHello() {
-		try {
-			handler.invoke(this, this.getClass().getMethod("sayHello"), null);
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-	}
+    /* collect interface names to use as key for proxy class cache */
+    String[] interfaceNames = new String[interfaces.length];
 
-	@Override
-	public void sayGood() {
-		try {
-			handler.invoke(this, this.getClass().getMethod("sayGood"), null);
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-	}
+    Set interfaceSet = new HashSet();       // for detecting duplicates
+
+    /**
+     * å…¥å‚ interfaces æ£€éªŒï¼ŒåŒ…å«ä¸‰éƒ¨åˆ†
+     * ï¼ˆ1ï¼‰æ˜¯å¦åœ¨å…¥å‚æŒ‡å®šçš„ ClassLoader å†…
+     * ï¼ˆ2ï¼‰æ˜¯å¦æ˜¯ Interface
+     * ï¼ˆ3ï¼‰interfaces ä¸­æ˜¯å¦æœ‰é‡å¤
+     */
+    for (int i = 0; i < interfaces.length; i++) {
+        String interfaceName = interfaces[i].getName();
+        Class interfaceClass = null;
+        try {
+            interfaceClass = Class.forName(interfaceName, false, loader);
+        } catch (ClassNotFoundException e) {
+        }
+        if (interfaceClass != interfaces[i]) {
+            throw new IllegalArgumentException(
+                interfaces[i] + " is not visible from class loader");
+        }
+
+        if (!interfaceClass.isInterface()) {
+            throw new IllegalArgumentException(
+                interfaceClass.getName() + " is not an interface");
+        }
+
+        if (interfaceSet.contains(interfaceClass)) {
+            throw new IllegalArgumentException(
+                "repeated interface: " + interfaceClass.getName());
+        }
+        interfaceSet.add(interfaceClass);
+
+        interfaceNames[i] = interfaceName;
+    }
+
+    // ä»¥æ¥å£åå¯¹åº”çš„ List ä½œä¸ºç¼“å­˜çš„ key
+    Object key = Arrays.asList(interfaceNames);
+
+    /*
+     * loaderToCache æ˜¯ä¸ªåŒå±‚çš„ Map
+     * ç¬¬ä¸€å±‚ key ä¸º ClassLoaderï¼Œç¬¬äºŒå±‚ key ä¸º ä¸Šé¢çš„ Listï¼Œvalue ä¸ºä»£ç†ç±»çš„å¼±å¼•ç”¨
+     */
+    Map cache;
+    synchronized (loaderToCache) {
+        cache = (Map) loaderToCache.get(loader);
+        if (cache == null) {
+            cache = new HashMap();
+            loaderToCache.put(loader, cache);
+        }
+    }
+
+    /*
+     * ä»¥ä¸Šé¢çš„æ¥å£åå¯¹åº”çš„ List ä¸º key æŸ¥æ‰¾ä»£ç†ç±»ï¼Œå¦‚æœç»“æœä¸ºï¼š
+     * (1) å¼±å¼•ç”¨ï¼Œè¡¨ç¤ºä»£ç†ç±»å·²ç»åœ¨ç¼“å­˜ä¸­
+     * (2) pendingGenerationMarker å¯¹è±¡ï¼Œè¡¨ç¤ºä»£ç†ç±»æ­£åœ¨ç”Ÿæˆä¸­ï¼Œç­‰å¾…ç”Ÿæˆå®Œæˆé€šçŸ¥ã€‚
+     * (3) null è¡¨ç¤ºä¸åœ¨ç¼“å­˜ä¸­ä¸”æ²¡æœ‰å¼€å§‹ç”Ÿæˆï¼Œæ·»åŠ æ ‡è®°åˆ°ç¼“å­˜ä¸­ï¼Œç»§ç»­ç”Ÿæˆä»£ç†ç±»
+     */
+    synchronized (cache) {
+        do {
+            Object value = cache.get(key);
+            if (value instanceof Reference) {
+                proxyClass = (Class) ((Reference) value).get();
+            }
+            if (proxyClass != null) {
+                // proxy class already generated: return it
+                return proxyClass;
+            } else if (value == pendingGenerationMarker) {
+                // proxy class being generated: wait for it
+                try {
+                    cache.wait();
+                } catch (InterruptedException e) {
+                }
+                continue;
+            } else {
+                cache.put(key, pendingGenerationMarker);
+                break;
+            }
+        } while (true);
+    }
+
+    try {
+        String proxyPkg = null;     // package to define proxy class in
+
+        /*
+         * å¦‚æœ interfaces ä¸­å­˜åœ¨é public çš„æ¥å£ï¼Œåˆ™æ‰€æœ‰é public æ¥å£å¿…é¡»åœ¨åŒä¸€åŒ…ä¸‹é¢ï¼Œåç»­ç”Ÿæˆçš„ä»£ç†ç±»ä¹Ÿä¼šåœ¨è¯¥åŒ…ä¸‹é¢
+         */
+        for (int i = 0; i < interfaces.length; i++) {
+            int flags = interfaces[i].getModifiers();
+            if (!Modifier.isPublic(flags)) {
+                String name = interfaces[i].getName();
+                int n = name.lastIndexOf('.');
+                String pkg = ((n == -1) ? "" : name.substring(0, n + 1));
+                if (proxyPkg == null) {
+                    proxyPkg = pkg;
+                } else if (!pkg.equals(proxyPkg)) {
+                    throw new IllegalArgumentException(
+                        "non-public interfaces from different packages");
+                }
+            }
+        }
+
+        if (proxyPkg == null) {     // if no non-public proxy interfaces,
+            proxyPkg = "";          // use the unnamed package
+        }
+
+        {
+            // å¾—åˆ°ä»£ç†ç±»çš„ç±»åï¼Œjdk 1.6 ç‰ˆæœ¬ä¸­ç¼ºå°‘å¯¹è¿™ä¸ªç”Ÿæˆç±»å·²ç»å­˜åœ¨çš„å¤„ç†ã€‚
+            long num;
+            synchronized (nextUniqueNumberLock) {
+                num = nextUniqueNumber++;
+            }
+            String proxyName = proxyPkg + proxyClassNamePrefix + num;
+
+            // åŠ¨æ€ç”Ÿæˆä»£ç†ç±»çš„å­—èŠ‚ç 
+            // æœ€ç»ˆè°ƒç”¨ sun.misc.ProxyGenerator.generateClassFile() å¾—åˆ°ä»£ç†ç±»ç›¸å…³ä¿¡æ¯å†™å…¥ DataOutputStream å®ç°
+            byte[] proxyClassFile = ProxyGenerator.generateProxyClass(
+                proxyName, interfaces);
+            try {
+                // native å±‚å®ç°ï¼Œè™šæ‹ŸæœºåŠ è½½ä»£ç†ç±»å¹¶è¿”å›å…¶ç±»å¯¹è±¡
+                proxyClass = defineClass0(loader, proxyName,
+                    proxyClassFile, 0, proxyClassFile.length);
+            } catch (ClassFormatError e) {
+                throw new IllegalArgumentException(e.toString());
+            }
+        }
+        // add to set of all generated proxy classes, for isProxyClass
+        proxyClasses.put(proxyClass, null);
+
+    } finally {
+        // ä»£ç†ç±»ç”ŸæˆæˆåŠŸåˆ™ä¿å­˜åˆ°ç¼“å­˜ï¼Œå¦åˆ™ä»ç¼“å­˜ä¸­åˆ é™¤ï¼Œç„¶åé€šçŸ¥ç­‰å¾…çš„è°ƒç”¨
+        synchronized (cache) {
+            if (proxyClass != null) {
+                cache.put(key, new WeakReference(proxyClass));
+            } else {
+                cache.remove(key);
+            }
+            cache.notifyAll();
+        }
+    }
+    return proxyClass;
 }
 ```
 
-#####ËÄ¡¢¶¯Ì¬´úÀíºÍ×°ÊÎ£¬ ¼Ì³Ğ£¨¾²Ì¬´úÀí£©µÄ±È½Ï¡£
-´úÂë£º ÕâÀïµÄCurrentClass ºÍ ProxyInterface ÊÇÒ»ÖĞ´úÀíÊµÏÖÖĞµÄ¶ÔÏó¡£
+**å‡½æ•°ä¸»è¦åŒ…æ‹¬ä¸‰éƒ¨åˆ†ï¼š**  
+* å…¥å‚ interfaces æ£€éªŒï¼ŒåŒ…å«æ˜¯å¦åœ¨å…¥å‚æŒ‡å®šçš„ ClassLoader å†…ã€æ˜¯å¦æ˜¯ Interfaceã€interfaces ä¸­æ˜¯å¦æœ‰é‡å¤
+* ä»¥æ¥å£åå¯¹åº”çš„ List ä¸º key æŸ¥æ‰¾ä»£ç†ç±»ï¼Œå¦‚æœç»“æœä¸ºï¼š
+  * å¼±å¼•ç”¨ï¼Œè¡¨ç¤ºä»£ç†ç±»å·²ç»åœ¨ç¼“å­˜ä¸­ï¼›
+  * pendingGenerationMarker å¯¹è±¡ï¼Œè¡¨ç¤ºä»£ç†ç±»æ­£åœ¨ç”Ÿæˆä¸­ï¼Œç­‰å¾…ç”Ÿæˆå®Œæˆè¿”å›ï¼›
+  * null è¡¨ç¤ºä¸åœ¨ç¼“å­˜ä¸­ä¸”æ²¡æœ‰å¼€å§‹ç”Ÿæˆï¼Œæ·»åŠ æ ‡è®°åˆ°ç¼“å­˜ä¸­ï¼Œç»§ç»­ç”Ÿæˆä»£ç†ç±»ã€‚
+* å¦‚æœä»£ç†ç±»ä¸å­˜åœ¨è°ƒç”¨`ProxyGenerator.generateProxyClass(â€¦)`ç”Ÿæˆä»£ç†ç±»å¹¶å­˜å…¥ç¼“å­˜ï¼Œé€šçŸ¥åœ¨ç­‰å¾…çš„ç¼“å­˜ã€‚  
+
+**å‡½æ•°ä¸­å‡ ä¸ªæ³¨æ„çš„åœ°æ–¹ï¼š**  
+* ä»£ç†ç±»çš„ç¼“å­˜ key ä¸ºæ¥å£åå¯¹åº”çš„ Listï¼Œæ¥å£é¡ºåºä¸åŒè¡¨ç¤ºä¸åŒçš„ key å³ä¸åŒçš„ä»£ç†ç±»ã€‚  
+* å¦‚æœ interfaces ä¸­å­˜åœ¨é public çš„æ¥å£ï¼Œåˆ™æ‰€æœ‰é public æ¥å£å¿…é¡»åœ¨åŒä¸€åŒ…ä¸‹é¢ï¼Œåç»­ç”Ÿæˆçš„ä»£ç†ç±»ä¹Ÿä¼šåœ¨è¯¥åŒ…ä¸‹é¢ã€‚  
+* ä»£ç†ç±»å¦‚æœåœ¨ ClassLoader ä¸­å·²ç»å­˜åœ¨çš„æƒ…å†µæ²¡æœ‰åšå¤„ç†ã€‚  
+* å¯ä»¥å¼€å¯ System Properties çš„`sun.misc.ProxyGenerator.saveGeneratedFiles`å¼€å…³ï¼Œä¿å­˜åŠ¨æ€ç±»åˆ°ç›®çš„åœ°å€ã€‚  
+
+Java 1.7 çš„å®ç°ç•¥æœ‰ä¸åŒï¼Œé€šè¿‡`getProxyClass0(â€¦)`å‡½æ•°å®ç°ï¼Œå®ç°ä¸­è°ƒç”¨ä»£ç†ç±»çš„ç¼“å­˜ï¼Œåˆ¤æ–­ä»£ç†ç±»åœ¨ç¼“å­˜ä¸­æ˜¯å¦å·²ç»å­˜åœ¨ï¼Œå­˜åœ¨ç›´æ¥è¿”å›ï¼Œä¸å­˜åœ¨åˆ™è°ƒç”¨`proxyClassCache`çš„`valueFactory`å±æ€§è¿›è¡ŒåŠ¨æ€ç”Ÿæˆï¼Œ`valueFactory`çš„`apply`å‡½æ•°ä¸ä¸Šé¢çš„`getProxyClass(â€¦)`å‡½æ•°é€»è¾‘ç±»ä¼¼ã€‚  
+
+### 4. ä½¿ç”¨åœºæ™¯
+#### 4.1 J2EE Web å¼€å‘ä¸­ Spring çš„ AOP(é¢å‘åˆ‡é¢ç¼–ç¨‹) ç‰¹æ€§
+ä½œç”¨ï¼šç›®æ ‡å‡½æ•°ä¹‹é—´è§£è€¦ã€‚  
+æ¯”å¦‚åœ¨ Dao ä¸­ï¼Œæ¯æ¬¡æ•°æ®åº“æ“ä½œéƒ½éœ€è¦å¼€å¯äº‹åŠ¡ï¼Œè€Œä¸”åœ¨æ“ä½œçš„æ—¶å€™éœ€è¦å…³æ³¨æƒé™ã€‚ä¸€èˆ¬å†™æ³•æ˜¯åœ¨ Dao çš„æ¯ä¸ªå‡½æ•°ä¸­æ·»åŠ ç›¸åº”é€»è¾‘ï¼Œé€ æˆä»£ç å†—ä½™ï¼Œè€¦åˆåº¦é«˜ã€‚  
+ä½¿ç”¨åŠ¨æ€ä»£ç†å‰ä¼ªä»£ç å¦‚ä¸‹ï¼š  
 ```java
-	/**
-	 * ¼Ì³ĞĞŞ¸Ä·½·¨
-	 * @author Caij
-	 */
-	class ExtendsClass extends CurrentClass {
-
-		/* (non-Javadoc)
-		 * @see com.caij.proxy.CurrentClass#sayHello()
-		 * ÒòÎªÕâ¸ö·½·¨Äã²»ÂúÒâ£¬ ÖØĞ´
-		 */
-		@Override
-		public void sayHello() {
-			System.out.println("very good");
-		}
-	}
-
-	/**
-	 * @author Caij
-	 * ×°ÊÎ  ĞŞ¸Ä·½·¨
-	 */
-	class DecorateClass implements ProxyInterface {
-		
-		private CurrentClass clazz;
-		
-		public DecorateClass(CurrentClass currentClass) {
-			this.clazz = currentClass;
-		}
-
-		/* (non-Javadoc)
-		 * @see com.caij.proxy.ProxyInterface#sayHello()
-		 * ÔÚ²»ĞèÒª¸Ä±äµÄ·½·¨Ö±½Óµ÷ÓÃ±»×°ÊÎÀàµÄ·½·¨
-		 */
-		@Override
-		public void sayHello() {
-			clazz.sayGood();
-		}
-
-		/* (non-Javadoc)
-		 * @see com.caij.proxy.ProxyInterface#sayGood()
-		 * ÔÚĞèÒª¸Ä±äµÄ·½·¨ÖĞĞ´×Ô¼ºÏëÒªµÄÂß¼­
-		 */
-		@Override
-		public void sayGood() {
-			System.out.println("very good");
-		}
-	}
+Dao {
+    insert() {
+        åˆ¤æ–­æ˜¯å¦æœ‰ä¿å­˜çš„æƒé™ï¼›
+        å¼€å¯äº‹åŠ¡ï¼›
+        æ’å…¥ï¼›
+        æäº¤äº‹åŠ¡ï¼›
+    }
+    
+    delete() {
+        åˆ¤æ–­æ˜¯å¦æœ‰åˆ é™¤çš„æƒé™ï¼›
+        å¼€å¯äº‹åŠ¡ï¼›
+        åˆ é™¤ï¼›
+        æäº¤äº‹åŠ¡ï¼›
+    }
+}
 ```
-
-- 1.ÏàÍ¬µã£º  
-	* ¶¼¿ÉÒÔ¸Ä±ä¶ÔÏóÖĞµÄ·½·¨¡£
-- 2.²»Í¬µã
-	* Ê¹ÓÃ³¡¾°²»Í¬£¬ ÔÚÃ»ÓĞ¾ßÌåµÄÀàµÄÊ±ºò×°ÊÎÊÇÊµÏÖ²»ÁËµÄ¡£ ¼Ì³Ğ»áÔì³É´óÁ¿µÄ´úÂëÈßÓà£¬ ±ÈÈçĞèÒªÊµÏÖµÄÊÇÒ»¸ö½Ó¿Ú£¬ ÄÇ¸ö½Ó¿ÚÓĞ20¸ö·½·¨£¬ ¾Í±ØĞëÖØĞ´20¸ö·½·¨¡£ÔÚÕâÖÖ»·¾³¾ÍÊ¹ÓÃ¶¯Ì¬´úÀí£¬ Ö»¹Ø×¢×Ô¼º´úÀíµÄ·½·¨¡£
-	* ¾²Ì¬´úÀíÍ¨³£Ö»´úÀíÒ»¸öÀà£¬¶¯Ì¬´úÀíÊÇ´úÀíÒ»¸ö½Ó¿ÚÏÂµÄ¶à¸öÊµÏÖÀà¡£¾²Ì¬´úÀíÊÂÏÈÖªµÀÒª´úÀíµÄÊÇÊ²Ã´£¬¶ø¶¯Ì¬´úÀí²»ÖªµÀÒª´úÀíÊ²Ã´¶«Î÷£¬Ö»ÓĞÔÚÔËĞĞÊ±²ÅÖªµÀ¡£
-	
-#####Îå¡¢Ê¹ÓÃ³¡¾°
-- 1. androidÖĞ¼àÌıÊÂ¼şµÄ´úÀí¡£  
-	* ÀíÓÉ£º ¼àÌı½Ó¿ÚÊÇÃ»ÓĞÊµÀıµÄ£¬ Ê¹ÓÃ¼Ì³Ğ»òÕß×°ÊÎµÄ»°ĞèÒªÊµÏÖ½Ó¿Ú£¬ ¶øÔÚÊÂ¼ş´úÀíµÄÊ±ºò¶¼ÊÇÍ¨¹ı·´Éä¼¼Êõ£¬ Ê¹ÓÃ´úÀí·Ç³£·½±ã£¬Èç¹ûÒª´´½¨ÊµÏÖ¼àÌı½Ó¿ÚµÄ¶ÔÏóÔì³É´úÂëÈßÓà£¬ À©Õ¹ĞÔ²î¡£
+ä½¿ç”¨åŠ¨æ€ä»£ç†çš„ä¼ªä»£ç å¦‚ä¸‹ï¼š
 ```java
-	public class MainActivity extends Activity {
+// ä½¿ç”¨åŠ¨æ€ä»£ç†ï¼Œç»„åˆæ¯ä¸ªåˆ‡é¢çš„å‡½æ•°ï¼Œè€Œæ¯ä¸ªåˆ‡é¢åªéœ€è¦å…³æ³¨è‡ªå·±çš„é€»è¾‘å°±è¡Œï¼Œè¾¾åˆ°å‡å°‘ä»£ç ï¼Œæ¾è€¦åˆçš„æ•ˆæœ
+invoke(Object proxy, Method method, Object[] args)
+                    throws Throwable {
+    åˆ¤æ–­æ˜¯å¦æœ‰æƒé™ï¼›
+    å¼€å¯äº‹åŠ¡ï¼›
+    Object ob = method.invoke(dao, args)ï¼›
+    æäº¤äº‹åŠ¡ï¼›
+    return ob; 
+}            
+``` 
 
-		@Override
-		protected void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			setContentView(R.layout.activity_main);
-			Button btn = (Button) findViewById(R.id.btn);
-	//		btn.setOnClickListener(new Listener());
-			
-			Class<?>[] interfaces = new Class[] {OnClickListener.class};
-			//´úÀíÀàÆäÊµÊµÏÖinterfacesÖĞËùÒÔ½Ó¿Ú
-			OnClickListener proxy = (OnClickListener) Proxy.newProxyInstance(OnClickListener.class.getClass().getClassLoader(), 
-				interfaces , new InvocationHandler() {
-				
-				@Override
-				public Object invoke(Object proxy, Method method, Object[] args)
-						throws Throwable {
-					if (method.getName().equals("onClick")) {
-						onClick(); //ĞèÒª´úÀíµÄ·½·¨ĞŞ¸Ä
-						return null; //  ·µ»ØÖµÎª¿Õ Ö±½Ó·µ»Ønull
-					}
-					return null; 
-				}
-			});
-			btn.setOnClickListener(proxy);
-		}
-		
-		
-		public void onClick() {
-			Toast.makeText(MainActivity.this, "ÎÒ±»µã»÷ÁË", Toast.LENGTH_LONG).show(); 
-		}
-		
-		private class Listener implements OnClickListener {
-
-			@Override
-			public void onClick(View v) {
-				onClick();
-			}
-		}
-
-	}
-```	
-
-- 2. web¿ª·¢ÖĞspring aop±à³Ì
-	* ÀíÓÉ£ºÄ¿±ê·½·¨Ö®¼äÍêÈ«ÊÇËÉñîºÏ¡£  ±ÈÈçÔÚDaoÖĞ£¬ Ã¿´ÎÊı¾İ¿â²Ù×÷¶¼ĞèÒª¿ªÆôÊÂÎñ£¬ ¶øÇÒÔÚ²Ù×÷µÄÊ±ºòĞèÒª¹Ø×¢È¨ÏŞ¡£  Èç¹ûÕâĞ©Âß¼­¶¼·ÅÔÚdaoÖĞ¾Í»áÔì³É´úÂëÈßÓà£¬ ñîºÏ¶È¸ß¡£
+#### 4.2 åŸºäº REST çš„ Android ç«¯ç½‘ç»œè¯·æ±‚æ¡†æ¶ Retrofit  
+ä½œç”¨ï¼šç®€åŒ–ç½‘ç»œè¯·æ±‚æ“ä½œã€‚  
+ä¸€èˆ¬æƒ…å†µä¸‹æ¯ä¸ªç½‘ç»œè¯·æ±‚æˆ‘ä»¬éƒ½éœ€è¦è°ƒç”¨ä¸€æ¬¡`HttpURLConnection`æˆ–è€…`HttpClient`è¿›è¡Œè¯·æ±‚ï¼Œæˆ–è€…åƒ [Volley](https://github.com/android-cn/android-open-project-analysis/tree/master/volley "Volley æºç è§£æ") ä¸€æ ·ä¸¢è¿›ç­‰å¾…é˜Ÿåˆ—ä¸­ï¼ŒRetrofit æå¤§ç¨‹åº¦ç®€åŒ–äº†è¿™äº›æ“ä½œï¼Œç¤ºä¾‹ä»£ç å¦‚ä¸‹ï¼š  
 ```java
-	//Î±´úÂë
-	Dao {
-		save() {
-			ÅĞ¶ÏÊÇ·ñÓĞ±£´æµÄÈ¨ÏŞ£»
-			¿ªÆôÊÂÎñ£»
-			±£´æ£»
-			Ìá½»ÊÂÎñ£»
-		}
-		
-		delete() {
-			ÅĞ¶ÏÊÇ·ñÓĞÉ¾³ıµÄÈ¨ÏŞ£»
-			¿ªÆôÊÂÎñ£»
-			É¾³ı£»
-			Ìá½»ÊÂÎñ£»
-		}
-	}
-	
-	// Ê¹ÓÃ¶¯Ì¬´úÀí, ×éºÏÃ¿¸öÇĞÃæµÄ·½·¨£¬ ¶øÃ¿¸öÇĞÃæÖ»ĞèÒª¹Ø×¢×Ô¼ºµÄÂß¼­¾ÍĞĞ£¬ ¾Í´ïµ½¼õÉÙ´úÂë£¬ ËÉñîºÏµÄĞ§¹û
-	invoke(Object proxy, Method method, Object[] args)
-						throws Throwable {
-					ÅĞ¶ÏÊÇ·ñÓĞÈ¨ÏŞ£»
-					¿ªÆôÊÂÎñ£»
-					Object ob = method.invoke(dao, args)£»
-					Ìá½»ÊÂÎñ£»
-					return ob; 
-				}
-				
-				
-```	
-	
+public interface GitHubService {
+  @GET("/users/{user}/repos")
+  List<Repo> listRepos(@Path("user") String user);
+}
+
+RestAdapter restAdapter = new RestAdapter.Builder()
+    .setEndpoint("https://api.github.com")
+    .build();
+
+GitHubService service = restAdapter.create(GitHubService.class);
+```
+ä»¥åæˆ‘ä»¬åªéœ€è¦ç›´æ¥è°ƒç”¨  
+```java
+List<Repo> repos = service.listRepos("octocat");
+```
+å³å¯å¼€å§‹ç½‘ç»œè¯·æ±‚ï¼Œ`Retrofit`çš„åŸç†å°±æ˜¯åŸºäºåŠ¨æ€ä»£ç†ï¼Œå®ƒåŒæ—¶ç”¨åˆ°äº† [æ³¨è§£](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/annotation.md "æ³¨è§£ è¯¦è§£") çš„åŸç†ï¼Œæœ¬æ–‡ä¸åšæ·±å…¥ä»‹ç»ï¼Œå…·ä½“è¯·ç­‰å¾… [Retrofit æºç è§£æ](https://github.com/android-cn/android-open-project-analysis/tree/master/retrofit) å®Œæˆã€‚  
