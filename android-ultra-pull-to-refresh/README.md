@@ -6,10 +6,11 @@ android-Ultra-Pull-To-Refresh 源码解析
  
 
 ###1. 功能介绍  
-下拉刷新，是每个Android应用都会需要的功能。android-Ultra-Pull-To-Refresh是一个强大的Andriod下拉刷新框架。    
+下拉刷新，几乎是每个Android应用都会需要的功能。android-Ultra-Pull-To-Refresh（以下简称 UltraPTR ）便是一个强大的Andriod下拉刷新框架。    
 主要特点：  
-(1).继承于 ViewGroup，Content 部分可以包含任何View。  
-(2).简洁完善的 Header 部分抽象，方便进行拓展，构建符合需求的头部。
+(1).继承于 ViewGroup，Content 可以包含任何View。  
+(2).简洁完善的 Header 抽象，方便进行拓展，构建符合需求的头部。
+> 对比 [Android-PullToRefresh](https://github.com/chrisbanes/Android-PullToRefresh) 项目，UltraPTR 没有实现加载更多的功能，但我认为下拉刷新和加载更多不是同一层次的功能，下拉刷新是更广意义上的使用需求，而加载更多的功能应该交由 Content 自己去实现。这应该是和Google官方推出 SwipeRefreshLayout 是相同的设计思路，但对比 SwipeRefreshLayout，UltraPTR 更灵活，更容易拓展。
 
 
 ###2. 详细设计
