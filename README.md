@@ -1,4 +1,4 @@
-Android 开源项目源码解析
+Android 开源项目源码解析开发版
 ====================================
 Android 开源项目源码解析开发地址，请大家基于这个库开发。  
 [android-cn/android-open-project-analysis](https://github.com/android-cn/android-open-project-analysis) 只用作存放稳定版本。  
