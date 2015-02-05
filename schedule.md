@@ -1,6 +1,15 @@
 时间计划表
 ============
-####1. 进行中计划
+####1. 二期计划(进行中)
+大家根据自己的时间安排补充 Demo、功能介绍、详细设计、流程图、总体设计、完成 6个阶段的 DeadLine 时间点。  
+
+预计时间可参考：[Common README](https://github.com/android-cn/android-open-project-analysis/blob/master/common/README.md)，另外为了详细设计更细致，该阶段大家可多预留时间。  
+
+开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
+:--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
+[android-Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh) | [grumoon](https://github.com/grumoon) |  | | | | | | 
+
+####2. 一期计划(已完成)
 **本期暂定截止事件为 12 月 25 日，请大家在相应阶段完成后将时间改为`Done`，其中`校验阶段`由 Buddy 校验完成后改为 `Done`**  
 
 开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成 | 校验  
@@ -23,9 +32,8 @@
 ~~[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)~~ | [waylife](https://github.com/waylife) | | Done | Done | 11/23 | 11/30 | 12/7 | 12/14 |  
 ~~[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator)~~ | [longtaoge](https://github.com/longtaoge) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
 
-####2. 之前的计划安排
-根据自己的时间安排补充 Demo、功能介绍、详细设计、流程图、总体设计、完成 6个阶段的 DeadLine 时间点。  
-预计时间可参考：[Common README](https://github.com/android-cn/android-open-project-analysis/blob/master/common/README.md)  
+####3. 一期开始的计划安排
+这个只是作为纪念，时间估计有点保守，不存在参考的价值。  
 
 开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
