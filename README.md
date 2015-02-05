@@ -7,11 +7,11 @@ Android 开源项目源码解析开发地址，请大家基于这个库开发。
 ###1. 加入协作 QQ 群
 在`Android 开源交流 QQ 群`内的朋友请私聊群主 Trinea 问群号，告诉他你有兴趣分析的开源库库名。  
 
-不在[群内的朋友](# "开源交流 6 个群已满，不再开新群对外")，请到 [codeKK About](http://codekk.com/about) 评论留下你想分析的库地址和 QQ，我们会联系你。  
+不在[群内的朋友](# "抱歉，开源交流 6 个群已满，不再开新群对外")，请到 [codeKK About](http://codekk.com/about) 评论留下你想分析的库地址和 QQ，我们会联系你。  
 
 请继续读完下面的步骤。  
 ###2. 了解编写步骤
-具体步骤请见：[编写步骤](./blob/master/procedure.md)  
+具体步骤请见：[编写步骤](./procedure.md)  
 
 ## 二、开源项目源码分析第一期成果
 **在线网站：[www.codekk.com](http://codekk.com/open-source-project-analysis)**  
