@@ -11,7 +11,7 @@ Android 开源项目源码解析开发地址，请大家基于这个库开发。
 
 请继续读完下面的步骤。  
 ###2. 了解编写步骤
-具体步骤请见：[编写步骤](https://github.com/android-cn/android-open-project-analysis/blob/master/procedure.md)  
+具体步骤请见：[编写步骤](./blob/master/procedure.md)  
 
 ## 二、开源项目源码分析第一期成果
 **在线网站：[www.codekk.com](http://codekk.com/open-source-project-analysis)**  

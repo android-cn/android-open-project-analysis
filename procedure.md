@@ -4,7 +4,7 @@
 - 进群后  
 按照群公告修改群昵称，以想分析的库开头。群里发下自己的 Github 帐号并 @Trinea 以添加权限  
 - 填写时间计划表  
-读完本文档后，根据自己的时间安排，填写 [时间计划表](https://github.com/android-cn/android-open-project-analysis/blob/master/schedule.md)，并在以后编写的每个阶段完成后更新时间计划表 
+读完本文档后，根据自己的时间安排，填写 [时间计划表](./schedule.md)，并在以后编写的每个阶段完成后更新时间计划表 
 
 ###二. 编写该开源库的使用示例
 到 [android-open-project-demo](https://github.com/android-cn/android-open-project-demo) 项目下新建文件夹，用于后续上传该开源库使用示例工程代码  
