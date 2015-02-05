@@ -21,7 +21,7 @@
 具体可参考：[EventBus Demo ReadMe](https://github.com/android-cn/android-open-project-demo/tree/master/event-bus-demo)  
   
 ###三. 编写原理文档  
-到 [android-open-project-analysis](../) 的`master`分支下新建文件夹，用于分析文档及相关资源    
+到 [android-open-project-analysis](../../) 的`master`分支下新建文件夹，用于分析文档及相关资源    
 ####3.1 文件夹规范  
 - 该文件夹以`开源库名`命名，全小写，单词间用-连接。如果已有该文件夹，则以`开源库名-${GitHub 用户名}`命名，如`event-bus-trinea`；  
 - 从 [common](./common) 文件夹下拷贝模板文件 README.md，复制到上面的文件夹中  
