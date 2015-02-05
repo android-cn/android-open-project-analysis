@@ -1,22 +1,17 @@
 Android 开源项目源码解析开发版
 ====================================
 Android 开源项目源码解析开发地址，请大家基于这个库开发。  
-[android-cn/android-open-project-analysis](https://github.com/android-cn/android-open-project-analysis) 只用作存放稳定版本。  
+[android-cn/android-open-project-analysis](https://github.com/android-cn/android-open-project-analysis) 以后只用于作存放稳定版本。  
 
 ## 一、具体计划
 请先读完下面步骤  
-###1. 加入开源交流 QQ 群
-见上面几行，入群理由必须为群简介问题答案。  
+###1. 加入协作 QQ 群
+在`Android 开源交流 QQ 群`内的朋友请私聊群主问群号，以自己`有兴趣分析的开源库库名`申请加入`协作 QQ 群`。 
 
-###2. 开始认领
-问群主`协作 QQ 群`群号，以自己`有兴趣分析的开源库库名`申请加入`协作 QQ 群`。  
+不在群内的朋友因为开源交流群已满不再对外，请暂时到 [codeKK About](http://codekk.com/about) 评论中留言你想分析的库地址和 QQ。  
 
-###3. 寻找 Buddy  
-加入`协作 QQ 群`后，在群里找到一个后期帮忙做校验的 Buddy  
-
-###4. 开始
-了解编写步骤：[编写步骤](https://github.com/android-cn/android-open-project-analysis/blob/master/procedure.md)  
-填写自己的时间安排：[时间计划表](https://github.com/android-cn/android-open-project-analysis/blob/master/schedule.md)
+###2. 了解编写步骤
+[编写步骤](https://github.com/android-cn/android-open-project-analysis/blob/master/procedure.md)  
 
 ## 二、开源项目源码分析第一期成果
 **在线网站：[www.codekk.com](http://codekk.com/open-source-project-analysis)**  
@@ -38,14 +33,3 @@ Android 开源项目源码解析开发地址，请大家基于这个库开发。
 [公共技术点之 Java 注解 Annotation](http://codekk.com/open-source-project-analysis/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8BJava%20%E6%B3%A8%E8%A7%A3%20Annotation) | [Trinea](https://github.com/Trinea)
 [公共技术点之依赖注入](http://codekk.com/open-source-project-analysis/detail/Android/%E6%89%94%E7%89%A9%E7%BA%BF/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5) | [扔物线](https://github.com/rengwuxian)
 [公共技术点之 View 事件传递](http://codekk.com/open-source-project-analysis/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8BView%20%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92) | [Trinea](https://github.com/Trinea)
-
-## 三、加入我们
-- 如果你在用各种开源库  
-- 如果你有兴趣去深挖它们优雅的实现  
-- 如果你希望知其然知其所以然提高自己  
- 
-那么加入我们吧！！！  
-> 欢迎加入 QQ 交流群：[383537512(入群理由必须填写群简介问题答案)](http://shang.qq.com/wpa/qunwpa?idkey=69b7c4278fc3a33690d4847ed7f9a72b9e4feb51221265a7326cf5261ccd5862 "入群理由必须填写群简介问题答案")(二群有空位)  
-> [377723625](http://shang.qq.com/wpa/qunwpa?idkey=12ba39b0c3f5d27620ab0cb63ff80507a8a30fd743a11fad028e7742a871e0dc "入群理由必须填写群简介问题答案")(一群已满) [63224677](http://shang.qq.com/wpa/qunwpa?idkey=fb2eaf0c4b4a8c838ad15e6bdd69d901f038a50f4a77360845b9e6d7ee0ba3ee "入群理由必须填写群简介问题答案")(三群已满) [148844489](http://shang.qq.com/wpa/qunwpa?idkey=5dc2f22b2f9fe3b6136f9cad29399713b118bfaa9a2330e410757362a37572bc "入群理由必须填写群简介问题答案")(四群已满) [214742675](http://jq.qq.com/?_wv=1027&k=Zl6Yyj "入群理由必须填写群简介问题答案")(五群已满) [185715999](http://jq.qq.com/?_wv=1027&k=fJlrh1 "入群理由必须填写群简介问题答案")(六群已满) 请不要重复加群  
-
-#### 我们不重复造轮子不表示我们不需要知道轮子该怎么造及如何更好的造！ 
