@@ -10,8 +10,8 @@
 ####技术点列表
 技术点 | 作者  
 :-- |:--
-[依赖注入](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/dependency-injection.md) | [扔物线](https://github.com/rengwuxian)
-[注解](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/annotation.md) | [Trinea](https://github.com/Trinea)
-[动态代理](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/proxy.md)| [Caij](https://github.com/Caij)
-[事件传递](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/touch-event.md) | [Trinea](https://github.com/Trinea)
-[View 绘制流程](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/viewdrawflow.md)  | [lightSky](https://github.com/lightSky)
+[依赖注入](dependency-injection.md) | [扔物线](https://github.com/rengwuxian)
+[注解](annotation.md) | [Trinea](https://github.com/Trinea)
+[动态代理](proxy.md)| [Caij](https://github.com/Caij)
+[事件传递](touch-event.md) | [Trinea](https://github.com/Trinea)
+[View 绘制流程](viewdrawflow.md)  | [lightSky](https://github.com/lightSky)
