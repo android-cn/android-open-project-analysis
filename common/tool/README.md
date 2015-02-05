@@ -23,4 +23,4 @@
 
 ###4. 翻墙
 - 云梯  
-[云梯推荐，全平台支持，3 天内可退，合买买月 5 元](http://www.trinea.cn/dev-tools/vpn-tool/)
+[云梯推荐，全平台支持，不满意可 3 天内全额退款](http://refyt.com/?r=b5b36c4d20772997)
