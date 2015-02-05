@@ -3,7 +3,7 @@
 ####1. 二期计划(进行中)
 大家根据自己的时间安排补充 Demo、功能介绍、详细设计、流程图、总体设计、完成 6个阶段的 DeadLine 时间点。  
 
-预计时间可参考：[Common README](https://github.com/android-cn/android-open-project-analysis/blob/master/common/README.md)，另外为了详细设计更细致，该阶段大家可多预留时间。  
+预计时间可参考：[common README](./common/README.md)，另外为了详细设计更细致，该阶段大家可多预留时间。  
 
 开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
