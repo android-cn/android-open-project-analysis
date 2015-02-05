@@ -7,7 +7,7 @@
 
 开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
-[android-Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh) | [grumoon](https://github.com/grumoon) |  | | | | | | 
+[Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh) | [grumoon](https://github.com/grumoon) |  | | | | | | 
 
 ####2. 一期计划(已完成)
 **本期暂定截止事件为 12 月 25 日，请大家在相应阶段完成后将时间改为`Done`，其中`校验阶段`由 Buddy 校验完成后改为 `Done`**  
