@@ -5,6 +5,8 @@
 
 预计时间可参考：[common README](./common/README.md)，另外为了详细设计更细致，该阶段大家可多预留时间。  
 
+Budddy 暂不需要填写。  
+
 开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
 [Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh) | [grumoon](https://github.com/grumoon) |  | | | | | | 

@@ -2,7 +2,7 @@ ${项目名} 源码解析
 ====================================
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 ${项目名} 部分  
 > 项目地址：[${项目名}](${项目原地址})，分析的版本：[${commitId}.substring(0, 7)](${项目原地址}/commit/${commitId} "Commit id is ${commitId}")，Demo 地址：[${项目名} Demo](https://github.com/android-cn/android-open-project-demo/tree/master/${项目 Demo 地址})    
-> 分析者：[${分析者}](${分析者 Github 地址})，分析状态：未完成，校对者：[${校对者}](${校对者 Github 地址})，校对状态：未完成   
+> 分析者：[${分析者}](${分析者 Github 地址})，分析状态：未完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始   
 
 建议大家看下 [Volley](../volley/README.md)、[UIL](../universal-image-loader/README.md)、[Dagger](../dagger/README.md)、[Event Bus](../event-bus/README.md) 的分析，了解分析该到什么程度，以及类似流程图和总体设计该怎么做。  
 
@@ -57,7 +57,7 @@ ${项目名} 源码解析
 变为：  
 `分析状态：已完成`  
 
-本期校对会由专门的`Buddy`完成，可以会对分析文档进行修改，请大家理解。  
+本期校对会由专门的`Buddy`完成，可能会对分析文档进行一些修改，请大家理解。  
 
 **完成时间**  
 - `两天内`完成  
