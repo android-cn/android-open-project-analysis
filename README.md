@@ -5,6 +5,12 @@ Android 开源项目源码解析
 
 这里是稳定版，最新版见：[源码分析开发版](https://github.com/aosp-exchange-group/android-open-project-analysis)  
 
+`codeKK`是我们对外的账号，专注于开源项目源码解析、开源项目分享、Android 职位推荐。  
+> 我们的网站：[www.codekk.com](http://codekk.com)  
+ 我们的微博：[code-kk](http://weibo.com/codek2)  
+ 我们的微信：codekk，二维码如下：  
+ ![img](https://raw.githubusercontent.com/aosp-exchange-group/about/master/weixin-qrcode.jpg) 
+
 ## 一、开源项目源码分析第一期成果
 **在线网站：[www.codekk.com](http://codekk.com/open-source-project-analysis)**  
 
