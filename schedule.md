@@ -14,6 +14,7 @@ Budddy 暂不需要填写。
 [PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip) | [ayyb1988](https://github.com/ayyb1988)| | | | | | |
 [ActiveAndroid](https://github.com/pardom/ActiveAndroid) | [ouyangxiangshao](https://github.com/ouyangxiangshao)| | 02/08 | | | | |
 [base-adapter-helper](https://github.com/JoanZapata/base-adapter-helper) | [hongyangAndroid](https://github.com/hongyangAndroid)| | | | | | |
+[NineoldAnimations](https://github.com/JakeWharton/NineOldAndroids)|[Mr.Simple](https://github.com/bboyfeiyu) | | Done |Done |Done | Done|Done|Done
 
 ####2. 一期计划(已完成)
 **本期暂定截止事件为 12 月 25 日，请大家在相应阶段完成后将时间改为`Done`，其中`校验阶段`由 Buddy 校验完成后改为 `Done`**  
