@@ -31,7 +31,7 @@ Class<?> myObjectClass = MyObject.class;
 	Class<?> clazz = me.getClass();
 ```         
 
-   如果你在编译期不知道类的名字,但是你知道它的完整的类路径,那么你则以如下的形式来获取Class对象:
+   如果你在编译期不能获取具体类型,但是你知道它的完整的类路径,那么你则以如下的形式来获取Class对象:
 
 ```  
 Class<?> myObjectClass = Class.forName("com.simple.User");
