@@ -1,8 +1,5 @@
 # 公共技术之 Java反射 Reflection 
 
-> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 公共技术点中的 Java 反射 部分  
- 分析者：[Mr.Simple](https://github.com/bboyfeiyu)，校对者：，校对状态： 
- 
 ## 1. 了解Java中的反射
 ### 1.1 什么是Java的反射
    Java反射是可以让我们在运行时获取类的函数、字段、父类、接口等Class内部信息的机制。通过反射还可以让我们在运行期实例化对象，调用方法，通过调用get/set方法获取变量的值,即使方法或字段是私有的的也可以通过反射的形式调用,这种“看透class”的能力被称为内省,这种能力在框架开发中尤为重要。
@@ -11,7 +8,7 @@
 
 ## 1.2 Class类
    那么既然反射是操作Class信息的,Class又是什么呢?    
-   ![java](./image/reflection/arch.png)         
+   ![这里写图片描述](./image/reflection/arch.png)         
    当我们编写完一个Java项目之后,所有的Java文件都会被编译成一个.class文件，这些Class对象承载了这个类型的父类、接口、构造函数、方法、字段等原始信息，这些class文件在程序运行时会被ClassLoader加载到虚拟机中。当一个类被加载以后，Java虚拟机就会在内存中自动产生一个Class对象。我们通过new的形式创建对象实际上就是通过这些Class来创建,只是这个过程对于我们是不透明的而已。      
    下面的章节中我们会为大家演示反射的一些常用api,从代码的角度理解反射。        
 
@@ -27,11 +24,11 @@ Class<?> myObjectClass = MyObject.class;
    如果你已经得到了某个对象,但是你想获取这个对象的Class对象,那么你可以通过下面的方法得到:
    
 ```
-	Student me = new Student("mr.simple");
-	Class<?> clazz = me.getClass();
+Student me = new Student("mr.simple");
+Class<?> clazz = me.getClass();
 ```         
 
-   如果你在编译期不能获取具体类型,但是你知道它的完整的类路径,那么你则以如下的形式来获取Class对象:
+   如果你在编译期获取不到目标类型,但是你知道它的完整类路径,那么你可以通过如下的形式来获取Class对象:
 
 ```  
 Class<?> myObjectClass = Class.forName("com.simple.User");
@@ -54,7 +51,7 @@ public static Class<?> forName (String className, boolean shouldInitialize, Clas
 
 	
 ### 2.2 通过Class对象构造目标类型的对象	
-   一旦你拿到Class对象之后,你就可以为所欲为了！它就像潘多拉的魔盒,但更多的时候当你善用它的时候它就是神兵利器,当你心怀鬼胎之时它就会变成恶魔。但获取Class对象只是第一步,我们需要在执行那些强大的行为之前通过Class对象构造出该类型的对象,然后才能通过该对象释放它的能量。
+   一旦你拿到Class对象之后,你就可以为所欲为了！当你善用它的时候它就是神兵利器,当你心怀鬼胎之时它就会变成恶魔。但获取Class对象只是第一步,我们需要在执行那些强大的行为之前通过Class对象构造出该类型的对象,然后才能通过该对象释放它的能量。
 	我们知道,在java中药构造对象,必须通过该类的构造函数,那么其实反射也是一样一样的。但是它们确实有区别的,通过反射构造对象,我们首先要获取类的Constructor(构造器)对象,然后通过Constructor来创建目标类的对象。还是直接上代码的。     
 	
 ```
@@ -84,7 +81,16 @@ public Constructor<T> getConstructor (Class...<?> parameterTypes)
 public Constructor[]<?> getConstructors ()
 
 ```   
-   	
+ 注意,当你通过反射获取到Constructor、Method、Field后,在反射调用之前将此对象的 accessible 标志设置为true,以此来提升反射速度。值为 true 则指示反射的对象在使用时应该取消 Java 语言访问检查。值为 false 则指示反射的对象应该实施 Java 语言访问检查。例如 :     
+```
+   Constructor<?> constructor = clz.getConstructor(String.class);
+   // 设置Constructor的Accessible
+   constructor.setAccessible(true);
+
+   // 设置Methohd的Accessible
+   Method learnMethod = Student.class.getMethod("learn", String.class);
+   learnMethod.setAccessible(true);
+```    
    由于后面还会用到Student以及相关的类,我们在这里就先给出它们的代码吧。      
 **Person.java**     
        
@@ -163,7 +169,7 @@ public interface Examination {
 ## 3 反射获取类中函数
 
 ### 3.1 获取当前类中定义的方法
-   要获取当前类中定义的所有方法可以通过Class中的getDeclaredMethods函数,它会获取到当前类中的public、default、protected、private的所有方法。而getDeclaredMethods则是获取某个指定的方法。代码示例如下 :  
+   要获取当前类中定义的所有方法可以通过Class中的getDeclaredMethods函数,它会获取到当前类中的public、default、protected、private的所有方法。而getDeclaredMethod(String name,Class...<?> parameterTypes)则是获取某个指定的方法。代码示例如下 :  
 
 ``` 
  private static void showDeclaredMethods() {
@@ -339,7 +345,7 @@ public Method[] getFields ()
 
 
 ## 6 获取注解信息
-在框架开发中,注解加反射的组合使用是最为常见形式的。关于注解方面的知识请参考[Java注解](./annotation.md),定义注解时我们会通过@Target指定该注解能够作用的类型,看如下示例:    
+在框架开发中,注解加反射的组合使用是最为常见形式的。关于注解方面的知识请参考<a href="http://codekk.com/open-source-project-analysis/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8BJava%20%E6%B3%A8%E8%A7%A3%20Annotation" target="_blank">公共技术点之Java 注解 Annotation</a>,定义注解时我们会通过@Target指定该注解能够作用的类型,看如下示例:    
 
 ```
     @Target({
@@ -387,7 +393,6 @@ public class Student extends Person implements Examination {
 class Annotatation tag = Student class Test Annoatation
 字段的Test注解tag : mGrade Test Annotation 
 ```
->  
 
 **接口说明**
 
