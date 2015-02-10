@@ -15,7 +15,8 @@ Budddy 暂不需要填写。
 [ActiveAndroid](https://github.com/pardom/ActiveAndroid) | [ouyangxiangshao](https://github.com/ouyangxiangshao)| | 02/12 | 02/17 | 03/01 | 03/04 | 03/10 | 03/14
 [base-adapter-helper](https://github.com/JoanZapata/base-adapter-helper) | [hongyangAndroid](https://github.com/hongyangAndroid)| | | | | | |
 [NineoldAnimations](https://github.com/JakeWharton/NineOldAndroids)|[Mr.Simple](https://github.com/bboyfeiyu) | | Done |Done |Done | Done|Done|Done
-[Side-Menu.Android](https://github.com/Yalantis/Side-Menu.Android)|[cpacm](https://github.com/cpacm) | | 02/18 |02/20 |03/01|03/03|03/07|03/12
+[Side-Menu.Android](https://github.com/Yalantis/Side-Menu.Android)|[cpacm](https://github.com/cpacm) | | 02/18 |02/20 |03/01|03/03|03/07|03/12  
+[Cling](https://github.com/kevinshine/cling) | [kevinshine](https://github.com/kevinshine) |  | Done | 02/12 | 03/01 | 03/05 | 03/10 | 03/15  
 
 ####2. 一期计划(已完成)
 **本期暂定截止事件为 12 月 25 日，请大家在相应阶段完成后将时间改为`Done`，其中`校验阶段`由 Buddy 校验完成后改为 `Done`**  
