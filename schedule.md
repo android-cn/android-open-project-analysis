@@ -15,6 +15,7 @@ Budddy 暂不需要填写。
 [ActiveAndroid](https://github.com/pardom/ActiveAndroid) | [ouyangxiangshao](https://github.com/ouyangxiangshao)| | 02/12 | 02/17 | 03/01 | 03/04 | 03/10 | 03/14
 [base-adapter-helper](https://github.com/JoanZapata/base-adapter-helper) | [hongyangAndroid](https://github.com/hongyangAndroid)| | | | | | |
 [NineoldAnimations](https://github.com/JakeWharton/NineOldAndroids)|[Mr.Simple](https://github.com/bboyfeiyu) | | Done |Done |Done | Done|Done|Done
+[Side-Menu.Android](https://github.com/Yalantis/Side-Menu.Android)|[cpacm](https://github.com/cpacm) | | 02/18 |02/20 |03/01|03/03|03/07|03/12
 
 ####2. 一期计划(已完成)
 **本期暂定截止事件为 12 月 25 日，请大家在相应阶段完成后将时间改为`Done`，其中`校验阶段`由 Buddy 校验完成后改为 `Done`**  
@@ -27,7 +28,7 @@ Budddy 暂不需要填写。
 [ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator) | [lightSky](https://github.com/lightSky) | [aaronplay](https://github.com/AaronPlay)  | Done | Done | Done | Done | Done | Done |  Done
 [HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary) | [aaronplay](https://github.com/AaronPlay) |[lightSky](https://github.com/lightSky)  | Done | Done | Done | Done | Done | Done |  
 [XUtils](https://github.com/wyouflf/xUtils) | [Caij](https://github.com/Caij) | [maogy](https://github.com/maogy) | Done| Done | Done | Done | Done | 12/17 |  
-[CircularFloat…](https://github.com/oguzbilgener/CircularFloatingActionMenu "CircularFloatingActionMenu") | [cpacm](https://github.com/cpacm) | [dkmeteor](https://github.com/dkmeteor) | Done | Done | Done | Done | Done | 12/07 |  
+[CircularFloat…](https://github.com/oguzbilgener/CircularFloatingActionMenu "CircularFloatingActionMenu") | [cpacm](https://github.com/cpacm) | [dkmeteor](https://github.com/dkmeteor) | Done | Done | Done | Done | Done | Done |  
 [UniversalImage…](https://github.com/nostra13/Android-Universal-Image-Loader "Android-Universal-Image-Loader") | [huxian99](https://github.com/huxian99) | [grumoon](https://github.com/grumoon) | Done | Done | Done | Done | Done | Done |   
 [PhotoView](https://github.com/chrisbanes/PhotoView/) | [dkmeteor](https://github.com/dkmeteor) | [cpacm](https://github.com/cpacm) | Done | Done | Done | Done | Done | 12/12 |   
 [picasso](https://github.com/square/picasso) | [爱早起](https://github.com/liang7) | | Done | Done | Done | delay | delay | delay |  
