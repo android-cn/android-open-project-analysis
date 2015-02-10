@@ -1,96 +1,53 @@
-CircularFloatingActionMenu 实现原理解析
+CircularFloatingActionMenu 源码解析
 ====================================
-> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 circular-foating-action-menu 部分  
-> 项目地址：[CircularFloatingActionMenu](https://github.com/oguzbilgener/CircularFloatingActionMenu)，分析的版本：[e9ccdad](https://github.com/android-cn/android-open-project-demo/commit/1306e632d5a7734cd8451f4e10dff763f9ab4097)，Demo 地址：[circular-foating-action-menu](https://github.com/android-cn/android-open-project-demo/tree/master/CircularFloatingActionMenu-demo)    
-> 分析者：[cpacm](https://github.com/cpacm)，校对者：[${校对者}](${校对者 Github 地址})，校对状态：未完成   
+> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 circular-foating-action-menu 部分  
+> 项目地址：[CircularFloatingActionMenu](https://github.com/oguzbilgener/CircularFloatingActionMenu)，分析的版本：[8efb1aa](https://github.com/oguzbilgener/CircularFloatingActionMenu/commit/8efb1aab2b361ed9019fa4af6e5d43e77777bcb6)，Demo 地址：[CFAMenu-demo](https://github.com/android-cn/android-open-project-demo/tree/master/circular-floating-actionmenu-demo)    
+> 分析者：[cpacm](https://github.com/cpacm)，校对者：[dkmeteor](https://github.com/dkmeteor)、[Trinea](https://github.com/trinea)，校对状态：进行中   
 
 ###1. 功能介绍  
-“一个灵感来自Path路径的Android上可定制圆形浮动菜单动画”  
+一个与著名应用 [Path](https://play.google.com/store/apps/details?id=com.path) 菜单类似的圆形弹出菜单，可方便的定制菜单以及动画。  
+菜单可能是非完整圆形，本文统称为`圆形菜单`。  
 
-一个可定制的圆形浮动菜单，我们可以往里面添加子项使其充当一个可缩放的菜单按钮。
-####1.1 可定制
-可以根据提供的基础库自己编辑动画类，实现自制的动画效果。
-####1.2 多方面
-不止是在ImageView上可实现，大部分的view都可以充当菜单按钮从而呼出子菜单
-![Alt text](https://github.com/android-cn/android-open-project-analysis/blob/master/circular-floating-action-menu/demo.gif "图片样例")
+####1.1 特点
+可自定义动画、菜单、角度范围、半径等。  
+
+####1.2 概念
+![Menu Demo](image/menu-demo.jpeg)  
+以上是简单的圆形弹出菜单示例，更详细的示例图见：[Screenshot](https://github.com/android-cn/android-open-project-demo/blob/master/circular-floating-actionmenu-demo/README.md#2-screenshot)。  
+**菜单按钮(Event)：**点击会弹出圆形菜单的控件，如上图的 + 对应控件，对应代码中的`FloatingActionButton.java`。  
+
+**子菜单按钮(Event)：**圆形菜单中的控件，如上图的定位、视频、相机、文本对应的控件，对应代码中的`SubActionButton.java`。  
+
+**菜单：**整个菜单，包含上面的`菜单按钮`和`子菜单按钮`，对应代码中的`FloatingActionMenu.java`。  
+
+**菜单动画回调：**点击`菜单按钮`弹出`子菜单按钮`的动画设置的抽象类，对应代码中的`MenuAnimationHandler.java`。  
 
 ###2. 总体设计
-###2.1 核心类功能介绍
-主要分成两部分，一部分是构成菜单的view部分，另一部分是动画的操作类
-首先是view的部分，主要是三个部件组成:
-(1)SubActionButton 选项按钮，即按菜单键弹出来的选项按钮。  
+本项目较为简单，总体设计省略。  
 
-这个类继承自FrameLayout控件，实现一个自定义图标的功能
-可以根据构造函数传进来的参数来选择不同风格的图案底纹
-然后将其传给menu菜单以便控制.  
+###3. 流程图
+![设计流程图](image/circlemenu.jpg "流程图")  
+流程图如上图所示，中间最复杂的可能是计算`子菜单按钮`位置的地方。
 
-(2)FloatingActionButton 菜单按钮，点击即可唤出SubActionButton按钮  
+###4. 详细设计
+####4.1 类关系图
+![uml](image/menu_uml.jpg "uml")  
+以上是`CircularFloatingActionMenu`主要类的关系图。  
 
-这个类跟SubActionButton基本相似，同样可以通过内部自定义的build构造器来定制自己的按钮。  
+`FloatingActionButton`、`SubActionButton`都是继承自`FrameLayout`的自定义控件，可支持以其他 View 为内容，如`ImageView`、`TextView`。  
 
-（3）FloatingActionMenu 那么最重要的类来了，它存放着所有的按钮以及动画操作。
-基本结构图如下
-![Alt text](https://github.com/android-cn/android-open-project-analysis/blob/master/circular-floating-action-menu/menu.jpg "menu")  
+`FloatingActionMenu`由`FloatingActionButton`、`SubActionButton`以及`MenuAnimationHandler`等构成。  
 
-接下来是动画部分
-(1)MenuAnimationHandler
-这是是所有动画类的父类，它主要定义了菜单打开，关闭，以及运行结束后状态的保存的方法  
- 
-    restoreSubActionViewAfterAnimation(FloatingActionMenu.Item subActionItem, ActionType actionType)
-	animateMenuOpening(Point center)
-	animateMenuClosing(Point center)  
-	
-（2）DefaultAnimationHandler
-这一个默认的动画类，当我们不对动画做修改时就会默认使用这个类里面的动画效果。我们也可以参考这个类来进行设计新的动画效果
-动画效果主要是通过
-    bjectAnimator.ofPropertyValuesHolder(menu.getSubActionItems().get(i).view, pvhX, pvhY, pvhR, pvhsX, pvhsY, pvhA);
-来实现
+####4.2 类功能介绍
+`CircularFloatingActionMenu`源码主要分成两部分，一部分是构成菜单的 View 部分，另一部分是动画的操作类。  
 
-###2.2 如何使用
-    // Set up the white button on the lower right corner
-        // more or less with default parameter
-        ImageView fabIconNew = new ImageView(this);
-        fabIconNew.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new_light));
-        FloatingActionButton rightLowerButton = new FloatingActionButton.Builder(this)
-                .setContentView(fabIconNew)
-                .build();
+View 部分包含我们上面提到的菜单按钮`FloatingActionButton.java`、子菜单按钮`SubActionButton.java`、菜单`FloatingActionMenu.java`。 
 
-        SubActionButton.Builder rLSubBuilder = new SubActionButton.Builder(this);
-        ImageView rlIcon1 = new ImageView(this);
-        ImageView rlIcon2 = new ImageView(this);
-        ImageView rlIcon3 = new ImageView(this);
-        ImageView rlIcon4 = new ImageView(this);
+动画部分包含菜单动画回调抽象类`MenuAnimationHandler.java`以及它默认的实现`DefaultAnimationHandler.java`。  
 
-        rlIcon1.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_chat_light));
-        rlIcon2.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_camera_light));
-        rlIcon3.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_video_light));
-        rlIcon4.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_place_light));
-
-        // Build the menu with default options: light theme, 90 degrees, 72dp radius.
-        // Set 4 default SubActionButtons
-        FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(this)
-                .addSubActionView(rLSubBuilder.setContentView(rlIcon1).build())
-                .addSubActionView(rLSubBuilder.setContentView(rlIcon2).build())
-                .addSubActionView(rLSubBuilder.setContentView(rlIcon3).build())
-                .addSubActionView(rLSubBuilder.setContentView(rlIcon4).build())
-                .setAnimationHandler(new SliderAnimationHandler())
-                .attachTo(rightLowerButton)
-                .build();
-如以上代码所示  
-
-（1）先建立一个view来作为一个总容器，设置好图片，然后作为菜单的按钮  
-
-（2）建立好选项菜单的视图，添加属性后，添加到FloatingActionMenu中的ArrayList<item>数组中，并同时绑定上面的菜单按钮。  
-
-（3）如果使用自己定义的动画，setAnimationHandler(new SliderAnimationHandler())。  
-
-这样子，一个简单的案例就做好了
-
-![流程图](https://github.com/android-cn/android-open-project-analysis/blob/master/circular-floating-action-menu/流程图.jpg "流程图")
-
-###3详细设计
-
-##SubActionButton
+#####4.2.1 SubActionButton.java 
+子菜单按钮，即按菜单键弹出来的选项按钮。这个类继承自`FrameLayout`，实现一个自定义图标的功能。  
+可以根据构造函数传进来的参数来选择不同风格的图案底纹，然后将其传给`FloatingActionMenu`以便控制。  
 首先是构造函数
 ```java
 public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, Drawable backgroundDrawable, View contentView, LayoutParams contentParams) {
@@ -136,10 +93,10 @@ public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, 
     public static final int THEME_DARKER = 3;
 ```
 
-之后是设定ImageView到这个按钮上，并且设定与父view的距离。（通过setMargins()）
-这个我们在创建subActionButton时就要调用。核心函数是addView(contentView, params)。这个方法能够在视图上再添加一个view，作为子视图。
+之后是设定 ImageView 到这个按钮上，并且设定与父 View 的距离。（通过 setMargins()）  
+这个我们在创建 subActionButton 时就要调用。核心函数是 addView(contentView, params)。这个方法能够在视图上再添加一个 view，作为子视图。
 ```java
-/**
+    /**
      * Sets a content view with custom LayoutParams that will be displayed inside this SubActionButton.
      * @param contentView
      * @param params
@@ -158,7 +115,7 @@ public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, 
 
 最后就是一个建造器了，专门生成用于生成该类的建造器，静态全局
 ```java
- /**
+    /**
      * A builder for {@link com.cpacm.library.SubActionButton} in conventional Java Builder format
      * 菜单选项的建造器
      */
@@ -174,13 +131,17 @@ public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, 
         }
     }
 ```
-传入activity，视图特性配置，主题的id,背景图，imageview（子视图），mageview（子视图）的特性配置。用这些来配置选项按钮。
-##FloatingActionButton
-菜单按钮其实跟选项按钮的代码模式差不多，也是由设定子视图和一个建造器组成。
-不过它多了几个方法：  
+传入 activity，视图特性配置，主题的 id，背景图，imageview（子视图），imageview（子视图）的特性配置。用这些来配置选项按钮。
+
+#####4.2.2 FloatingActionButton.java
+菜单按钮，点击会弹出圆形菜单的控件。   
+
+这个类跟`SubActionButton`基本相似，同样可以通过内部自定义的`build`构造器来定制自己的按钮。  
+菜单按钮其实跟选项按钮的代码模式差不多，也是由设定子视图和一个建造器组成。  
+不过它多了几个方法：    
 设定位置，如左下，右下等方位
 ```java
-/**
+    /**
      * Sets the position of the button by calculating its Gravity from the position parameter
      * @param position one of 8 specified positions.
      * @param layoutParams
@@ -188,51 +149,17 @@ public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, 
     public void setPosition(int position, FrameLayout.LayoutParams layoutParams) {
         int gravity;
         switch(position) {
-            case POSITION_TOP_CENTER:
-                gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-                break;
-            case POSITION_TOP_RIGHT:
-                gravity = Gravity.TOP | Gravity.RIGHT;
-                break;
-            case POSITION_RIGHT_CENTER:
-                gravity = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
-                break;
-            case POSITION_BOTTOM_CENTER:
-                gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-                break;
-            case POSITION_BOTTOM_LEFT:
-                gravity = Gravity.BOTTOM | Gravity.LEFT;
-                break;
-            case POSITION_LEFT_CENTER:
-                gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
-                break;
-            case POSITION_TOP_LEFT:
-                gravity = Gravity.TOP | Gravity.LEFT;
-                break;
-            case POSITION_BOTTOM_RIGHT:
-                default:
-                gravity = Gravity.BOTTOM | Gravity.RIGHT;
-                break;
+            ...//具体代码请自行查看源代码
         }
         layoutParams.gravity = gravity;
         setLayoutParams(layoutParams);
     }
 ```
 
-将视图绑定到activity的主视图中。这样我们就能在activity的主视图中操作这个view了。
-```java
-    /**
-     * Attaches it to the Activity content view with specified LayoutParams.
-     * @param layoutParams
-     */
-    public void attach(FrameLayout.LayoutParams layoutParams) {
-        ((ViewGroup)getActivityContentView()).addView(this, layoutParams);
-    }
-```
-
+将视图绑定到 activity 的主视图中。这样我们就能在 activity 的主视图中操作这个 view 了。
 FloatingActionButton的建造器
 ```java
-/**
+    /**
      * A builder for {@link com.cpacm.library.FloatingActionButton} in conventional Java Builder format
      */
     public static class Builder {
@@ -248,11 +175,15 @@ FloatingActionButton的建造器
             }
     }
 ```
-比SubActionButton多了一个位置的属性。
+比 SubActionButton 多了一个位置的属性。
 
-##FloatingActionMenu
-这个类也是由一个建造器生成，那么我们从建造器开始说起
-我们先看看生成Menu的代码：
+#####4.2.3 FloatingActionMenu.java
+那么最重要的类来了，`FloatingActionMenu`表示整个菜单，它存放着所有的按钮以及动画操作。  
+
+基本结构图如下：  
+![Alt text](image/menu.jpg "menu")  
+这个类也是由一个建造器生成，那么我们从建造器开始说起  
+我们先看看生成 Menu 的代码：
 ```java
 FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(this)
                 .addSubActionView(rLSubBuilder.setContentView(rlIcon1).build())
@@ -264,120 +195,29 @@ FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(this)
                 .build();
 ```
 
-* Builder(this)将activity传入menu中
-* addSubActionView 添加选项按钮到activity的视图中。在FloatingActionMenu中管理SubActionView是一个Item的list集合，每次加一个按钮就往里面添加。Item是一个辅助类，里面包括一个视图，x坐标,y坐标,长度,宽度。
+* Builder(this) 将 activity 传入 menu 中
+* addSubActionView 添加选项按钮到 activity 的视图中。在 FloatingActionMenu中管理 SubActionView 是一个 Item 的 list 集合，每次加一个按钮就往里面添加。Item 是一个辅助类，里面包括一个视图，x 坐标，y 坐标，长度，宽度。
 * setAnimationHandler 则是设定动画。
-* attachTo是将menu与activity的视图绑定。（即把菜单按钮的视图添加到activity的视图中）
-  
-item类
-```java
-    /**
-     * A simple structure to put a view and its x, y, width and height values together
-     */
-    public static class Item {
-        public int x;
-        public int y;
-        public int width;
-        public int height;
+* attachTo 是将 menu 与 activity 的视图绑定。（即把菜单按钮的视图添加到 activity 的视图中）  
 
-        public View view;
+FloatingActionMenu 类主要是管理菜单按钮和选项按钮的位置和状态（开和关）  
+（1）首先是通过 view 的 onClick 监听器来控制状态  
 
-        public Item(View view, int width, int height) {
-            this.view = view;
-            this.width = width;
-            this.height = height;
-            x = 0;
-            y = 0;
-        }
-    }
-```
-FloatingActionMenu类主要是管理菜单按钮和选项按钮的位置和状态（开和关）  
-（1）首先是通过view的onClick监听器来控制状态
-```java
-    /**
-     * A simple click listener used by the main action view
-     */
-    public class ActionViewClickListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View v) {
-            toggle(animated);
-        }
-    }
-    
-    /**
-     * Toggles the menu
-     * @param animated if true, the open/close action is executed by the current {@link MenuAnimationHandler}
-     */
-    public void toggle(boolean animated) {
-        if(open) {
-            close(animated);
-        }
-        else {
-            open(animated);
-        }
-    }
-```
-（2）开关主要是两种状态，开的时候会获得菜单按钮的中心位置center（getActionViewCenter()）和计算item的位置（calculateItemPositions()）。然后发送动画的请求到AnimationHandler中（animationHandler.animateMenuOpening(center)）。
+（2）开关主要是两种状态，开的时候会获得菜单按钮的中心位置 center（getActionViewCenter()）和计算 item 的位置（calculateItemPositions()）。然后发送动画的请求到 AnimationHandler 中（animationHandler.animateMenuOpening(center)）。
 ```java
     /**
      * Simply opens the menu by doing necessary calculations.
      * @param animated if true, this action is executed by the current {@link MenuAnimationHandler}
      */
     public void open(boolean animated) {
-        // Find the center of the action view
-        Point center = getActionViewCenter();
-        // populate destination x,y coordinates of Items
-        calculateItemPositions();
-
-        if(animated && animationHandler != null) {
-            // If animations are enabled and we have a MenuAnimationHandler, let it do the heavy work
-            if(animationHandler.isAnimating()) {
-                // Do not proceed if there is an animation currently going on.
-                return;
-            }
-
-            for (int i = 0; i < subActionItems.size(); i++) {
-                // It is required that these Item views are not currently added to any parent
-                // Because they are supposed to be added to the Activity content view,
-                // just before the animation starts
-                if (subActionItems.get(i).view.getParent() != null) {
-                    throw new RuntimeException("All of the sub action items have to be independent from a parent.");
-                }
-                // Initially, place all items right at the center of the main action view
-                // Because they are supposed to start animating from that point.
-                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(subActionItems.get(i).width, subActionItems.get(i).height, Gravity.TOP | Gravity.LEFT);
-                params.setMargins(center.x - subActionItems.get(i).width / 2, center.y - subActionItems.get(i).height / 2, 0, 0);
-                //
-                ((ViewGroup) getActivityContentView()).addView(subActionItems.get(i).view, params);
-            }
-            // Tell the current MenuAnimationHandler to animate from the center
-            animationHandler.animateMenuOpening(center);
-        }
-        else {
-            // If animations are disabled, just place each of the items to their calculated destination positions.
-            for (int i = 0; i < subActionItems.size(); i++) {
-                // This is currently done by giving them large margins
-                final FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(subActionItems.get(i).width, subActionItems.get(i).height, Gravity.TOP | Gravity.LEFT);
-                params.setMargins(subActionItems.get(i).x, subActionItems.get(i).y, 0, 0);
-                subActionItems.get(i).view.setLayoutParams(params);
-                // Because they are placed into the main content view of the Activity,
-                // which is itself a FrameLayout
-                ((ViewGroup) getActivityContentView()).addView(subActionItems.get(i).view, params);
-            }
-        }
-        // do not forget to specify that the menu is open.
-        open = true;
-
-        if(stateChangeListener != null) {
-            stateChangeListener.onMenuOpened(this);
-        }
+        ...//具体代码请自行查看源代码
     }
 ```
-其中item的x,y是记录视图的终点位置，然后经过动画把view移到x,y的位置上。  
-stateChangeListener为状态变化的监听器，开关都会响应相应的方法。主要在AnimationHandler中添加具体方法。
+其中 item 的 x，y 是记录视图的终点位置，然后经过动画把 view 移到 x，y 的位置上。  
+
+stateChangeListener 为状态变化的监听器，开关都会响应相应的方法。主要在 AnimationHandler 中添加具体方法。
 ```java
-/**
+    /**
      * A listener to listen open/closed state changes of the Menu
      */
     public static interface MenuStateChangeListener {
@@ -391,40 +231,23 @@ stateChangeListener为状态变化的监听器，开关都会响应相应的方�
      * Calculates the desired positions of all items.
      */
     private void calculateItemPositions() {
-        // Create an arc that starts from startAngle and ends at endAngle
-        // in an area that is as large as 4*radius^2
-        Point center = getActionViewCenter();
-        //内切弧形路径
-        RectF area = new RectF(center.x - radius, center.y - radius, center.x + radius, center.y + radius);
-        Path orbit = new Path();
-        orbit.addArc(area, startAngle, endAngle - startAngle);
-
-        PathMeasure measure = new PathMeasure(orbit, false);
-
-        // Prevent overlapping when it is a full circle
-        int divisor;
-        if(Math.abs(endAngle - startAngle) >= 360 || subActionItems.size() <= 1) {
-            divisor = subActionItems.size();
-        }
-        else {
-            divisor = subActionItems.size() -1;
-        }
-
-        // Measure this path, in order to find points that have the same distance between each other
-        for(int i=0; i<subActionItems.size(); i++) {
-            float[] coords = new float[] {0f, 0f};
-            measure.getPosTan((i) * measure.getLength() / divisor, coords, null);
-            // get the x and y values of these points and set them to each of sub action items.
-            subActionItems.get(i).x = (int) coords[0] - subActionItems.get(i).width / 2;
-            subActionItems.get(i).y = (int) coords[1] - subActionItems.get(i).height / 2;
-        }
+        ...//具体代码请自行查看源代码
     }
 ```
 
-##DefaultAnimationHandler
-动画实现的主要类，继承自MenuAnimationHandler
-主要通过Animator来实现属性动画。  
-里面有一个restoreSubActionViewAfterAnimation的方法，它主要是恢复选项按钮到未打开的状态。
+#####4.2.4 MenuAnimationHandler.java
+这是是所有动画类的父类，它主要定义了菜单打开，关闭，以及运行结束后状态的保存的方法。  
+
+    animateMenuOpening(Point center)
+    animateMenuClosing(Point center)   
+    restoreSubActionViewAfterAnimation(FloatingActionMenu.Item subActionItem, ActionType actionType)
+
+#####4.2.5 DefaultAnimationHandler.java
+这一个默认的动画类，当我们不对动画做修改时就会默认使用这个类里面的动画效果。我们也可以参考这个类来进行设计新的动画效果。  
+动画效果主要是通过`ObjectAnimator.ofPropertyValuesHolder(menu.getSubActionItems().get(i).view, pvhX, pvhY, pvhR, pvhsX, pvhsY, pvhA)`来实现。  
+动画实现的主要类，继承自 MenuAnimationHandler    
+主要通过 Animator 来实现属性动画。    
+里面有一个 restoreSubActionViewAfterAnimation 的方法，它主要是恢复选项按钮到未打开的状态。 
 ```java
     /**
      * Restores the specified sub action view to its final state, accoding to the current actionType
@@ -433,48 +256,53 @@ stateChangeListener为状态变化的监听器，开关都会响应相应的方�
      * @param actionType
      */
     protected void restoreSubActionViewAfterAnimation(FloatingActionMenu.Item subActionItem, ActionType actionType) {
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) subActionItem.view.getLayoutParams();
-        subActionItem.view.setTranslationX(0);
-        subActionItem.view.setTranslationY(0);
-        subActionItem.view.setRotation(0);
-        subActionItem.view.setScaleX(1);
-        subActionItem.view.setScaleY(1);
-        subActionItem.view.setAlpha(1);
-        if(actionType == ActionType.OPENING) {
-            //与父视图的边框距离，只要设置左上两个方位就能确定位置
-            params.setMargins(subActionItem.x, subActionItem.y, 0, 0);
-            subActionItem.view.setLayoutParams(params);
-        }
-        else if(actionType == ActionType.CLOSING) {
-            Point center = menu.getActionViewCenter();
-            params.setMargins(center.x - subActionItem.width / 2, center.y - subActionItem.height / 2, 0, 0);
-            subActionItem.view.setLayoutParams(params);
-            ((ViewGroup) menu.getActivityContentView()).removeView(subActionItem.view);
-        }
+        ...//具体代码请自行查看源代码
     }
 ```
 Animator属性动画以及其他动画的实现请参考我写的博客  
 [Android的动画效果](http://www.cnblogs.com/cpacm/p/4067283.html)
 
-![uml](https://github.com/android-cn/android-open-project-analysis/blob/master/circular-floating-action-menu/menu_uml.jpg "uml")
+####4.3 如何使用
+        // Set up the white button on the lower right corner
+        // more or less with default parameter
+        ImageView fabIconNew = new ImageView(this);
+        fabIconNew.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new_light));
+        FloatingActionButton rightLowerButton = new FloatingActionButton.Builder(this)
+                .setContentView(fabIconNew)
+                .build();
 
+        SubActionButton.Builder rLSubBuilder = new SubActionButton.Builder(this);
+        ImageView rlIcon1 = new ImageView(this);
+        ImageView rlIcon2 = new ImageView(this);
+        ImageView rlIcon3 = new ImageView(this);
+        ImageView rlIcon4 = new ImageView(this);
 
+        rlIcon1.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_chat_light));
+        rlIcon2.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_camera_light));
+        rlIcon3.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_video_light));
+        rlIcon4.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_place_light));
 
-###4. 杂谈
-动画的类型有点少，以及不支持分辨率奇葩的机型，如魅族3
+        // Build the menu with default options: light theme, 90 degrees, 72dp radius.
+        // Set 4 default SubActionButtons
+        FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(this)
+                .addSubActionView(rLSubBuilder.setContentView(rlIcon1).build())
+                .addSubActionView(rLSubBuilder.setContentView(rlIcon2).build())
+                .addSubActionView(rLSubBuilder.setContentView(rlIcon3).build())
+                .addSubActionView(rLSubBuilder.setContentView(rlIcon4).build())
+                .setAnimationHandler(new SliderAnimationHandler())
+                .attachTo(rightLowerButton)
+                .build();
+如以上代码所示  
 
+（1）先建立一个 view 来作为一个总容器，设置好图片，然后作为菜单的按钮  
 
-###5. 修改完善  
-在完成了上面 5 个部分后，移动模块顺序，将  
-`2. 详细设计` -> `2.1 核心类功能介绍` -> `2.2 类关系图` -> `3. 流程图` -> `4. 总体设计`  
-顺序变为  
-`2. 总体设计` -> `3. 流程图` -> `4. 详细设计` -> `4.1 类关系图` -> `4.2 核心类功能介绍`  
-并自行校验优化一遍，确认无误后，让`校对 Buddy`进行校对，`校对 Buddy`校队完成后将  
-`校对状态：未完成`  
-变为：  
-`校对状态：已完成`  
+（2）建立好选项菜单的视图，添加属性后，添加到 FloatingActionMenu 中的 ArrayList<item> 数组中，并同时绑定上面的菜单按钮。  
 
-**完成时间**  
-- `两天内`完成  
+（3）如果使用自己定义的动画，setAnimationHandler(new SliderAnimationHandler())。  
 
-**到此便大功告成，恭喜大家^_^**  
+这样子，一个简单的案例就做好了
+
+![流程图](image/流程图.jpg "流程图")
+
+###5. 杂谈
+动画的类型有点少，以及在屏幕尺寸异常的机子上测试时（如 mx3 的 1800x1080）会出现子选项偏离中心菜单键的问题，原因出在 view 的位置计算上，它没有考虑到一些特殊机型的机子。

@@ -1,6 +1,6 @@
-${项目名} 实现原理解析
+${项目名} 源码解析
 ====================================
-> 本文为 [Android 开源项目实现原理解析](https://github.com/android-cn/android-open-project-analysis) 中 ${项目名} 部分  
+> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 ${项目名} 部分  
 > 项目地址：[${项目名}](${项目原地址})，分析的版本：[${commitId}.substring(0, 7)](${项目原地址}/commit/${commitId} "Commit id is ${commitId}")，Demo 地址：[${项目名} Demo](https://github.com/android-cn/android-open-project-demo/tree/master/${项目 Demo 地址})    
 > 分析者：[${分析者}](${分析者 Github 地址})，校对者：[${校对者}](${校对者 Github 地址})，校对状态：未完成   
 
@@ -13,7 +13,7 @@ ${项目名} 实现原理解析
 - `一天内`完成  
 
 ###2. 详细设计
-###2.1 核心类功能介绍
+###2.1 类详细介绍
 核心类、函数功能介绍及核心功能流程图，流程图可使用 StartUML、Visio 或 Google Drawing。  
 ###2.2 类关系图
 类关系图，类的继承、组合关系图，可是用 StartUML 工具。  
