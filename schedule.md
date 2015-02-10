@@ -13,11 +13,15 @@ Budddy 暂不需要填写。
 [dynamic-load-apk](https://github.com/singwhatiwanna/dynamic-load-apk) | [FFish](https://github.com/FFish) | | 02/13 | 02/28 | 03/07 | 03/11 | 03/17 | 03/19
 [PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip) | [ayyb1988](https://github.com/ayyb1988)| | | | | | |
 [ActiveAndroid](https://github.com/pardom/ActiveAndroid) | [ouyangxiangshao](https://github.com/ouyangxiangshao)| | 02/12 | 02/17 | 03/01 | 03/04 | 03/10 | 03/14
-[base-adapter-helper](https://github.com/JoanZapata/base-adapter-helper) | [hongyangAndroid](https://github.com/hongyangAndroid)| | | | | | |
+[base-adapter-helper](https://github.com/JoanZapata/base-adapter-helper) | [hongyangAndroid](https://github.com/hongyangAndroid)| | 02/14 | 02/14 | 02/15 | 03/01 | 03/03 | 03/05
 [NineoldAnimations](https://github.com/JakeWharton/NineOldAndroids)|[Mr.Simple](https://github.com/bboyfeiyu) | | Done |Done |Done | Done|Done|Done
 [Side-Menu.Android](https://github.com/Yalantis/Side-Menu.Android)|[cpacm](https://github.com/cpacm) | | 02/18 |02/20 |03/01|03/03|03/07|03/12  
 [Cling](https://github.com/kevinshine/cling) | [kevinshine](https://github.com/kevinshine) |  | Done | 02/12 | 03/01 | 03/05 | 03/10 | 03/15  
+<<<<<<< HEAD
 [PullToZoomInListView](https://github.com/matrixxun/PullToZoomInListView) | [zTimC](https://github.com/Yom9c) |  | 02/11 | 2/20 | 03/01 | 03/8 | 03/15 |3/19|
+=======
+[CalendarListview](https://github.com/traex/CalendarListview) | [Rogary](https://github.com/Rogary) |  | 02/12 | 02/13 | 02/18 | 03/05 | 03/10 | 03/15  
+>>>>>>> bd9aff579822a5ad27fe8ba6368820b46ea1faa2
 
 ####2. 一期计划(已完成)
 **本期暂定截止事件为 12 月 25 日，请大家在相应阶段完成后将时间改为`Done`，其中`校验阶段`由 Buddy 校验完成后改为 `Done`**  
