@@ -11,7 +11,7 @@ Budddy 暂不需要填写。
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
 [Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh) | [grumoon](https://github.com/grumoon) |  | Done | 02/13 | 02/28 | 03/06 | 03/11 | 03/15   
 [dynamic-load-apk](https://github.com/singwhatiwanna/dynamic-load-apk) | [FFish](https://github.com/FFish) | | 02/13 | 02/28 | 03/07 | 03/11 | 03/17 | 03/19
-[PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip) | [ayyb1988](https://github.com/ayyb1988)| | | | | | |
+[PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip) | [ayyb1988](https://github.com/ayyb1988)| |02/12 |02/22 |03/01 |03/06 |03/11 |03/15
 [ActiveAndroid](https://github.com/pardom/ActiveAndroid) | [ouyangxiangshao](https://github.com/ouyangxiangshao)| | 02/12 | 02/17 | 03/01 | 03/04 | 03/10 | 03/14
 [base-adapter-helper](https://github.com/JoanZapata/base-adapter-helper) | [hongyangAndroid](https://github.com/hongyangAndroid)| | 02/14 | 02/14 | 02/15 | 03/01 | 03/03 | 03/05
 [NineoldAnimations](https://github.com/JakeWharton/NineOldAndroids)|[Mr.Simple](https://github.com/bboyfeiyu) | | Done |Done |Done | Done|Done|Done
