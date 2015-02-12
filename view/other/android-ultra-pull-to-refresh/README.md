@@ -14,8 +14,22 @@ android-Ultra-Pull-To-Refresh 源码解析
 
 
 ###2. 详细设计
-###2.1 类详细介绍
-核心类、函数功能介绍及核心功能流程图，流程图可使用 StartUML、Visio 或 Google Drawing。  
+###2.1 核心类功能介绍
+####2.1.1 PtrHandler.java
+####2.1.2 PtrDefaultHandler.java
+####2.1.3 PtrUIHandler.java
+####2.1.4 PtrUIHandlerHolder.java
+####2.1.5 PtrFrameLayout.java
+####2.1.6 PtrClassicFrameLayout.java
+####2.1.7 PtrClassicDefaultHeader.java
+####2.1.8 PtrUIHandlerHook.java
+####2.1.9 MaterialHeader.java
+####2.1.10 MaterialProgressDrawable.java
+####2.1.11 StoreHouseHeader.java
+####2.1.12 StoreHouseBarItem.java
+####2.1.13 StoreHouseBarItem.java
+####2.1.14 PtrLocalDisplay.java
+  
 ###2.2 类关系图
 类关系图，类的继承、组合关系图，可是用 StartUML 工具。  
 
