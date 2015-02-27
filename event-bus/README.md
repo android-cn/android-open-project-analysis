@@ -32,11 +32,11 @@ EventBus 负责存储订阅者、事件相关信息，订阅者和发布者都�
 ###4. 详细设计
 ####4.1 类关系图
 ![eventbus img](image/class-relation.png)  
-以上是 EventBus 主要类的关系图，从中我们也可以看出大部分类都与 EventBus 直接关联。上部分主要是订阅者相关信息，中间是 EventBus 类，下面是 发布者发布事件后的调用，具体类的功能请看下面的详细介绍。  
+以上是 EventBus 主要类的关系图，从中我们也可以看出大部分类都与 EventBus 直接关联。上部分主要是订阅者相关信息，中间是 EventBus 类，下面是发布者发布事件后的调用。具体类的功能请看下面的详细介绍。  
 
 ####4.2 类详细介绍
 #####4.2.1 EventBus.java 
-EventBus 类负责所有对外暴露的 API，其中的 register、post、unregister 函数配合上自定义的 EventType 及事件响应函数即可完成核心功能，见 3.2 图。  
+EventBus 类负责所有对外暴露的 API，其中的 register()、post()、unregister() 函数配合上自定义的 EventType 及事件响应函数即可完成核心功能，见 3.2 图。  
 EventBus 默认可通过静态函数 getDefault 获取单例，当然有需要也可以通过 EventBusBuilder 或 构造函数新建一个 EventBus，每个新建的 EventBus 发布和订阅事件都是相互隔离的，即一个 EventBus 对象中的发布者发布事件，另一个 EventBus 对象中的订阅者不会收到该订阅。  
 EventBus 中对外 API，主要包括两类：  
 **(1) register 和 unregister**  
@@ -93,7 +93,7 @@ EventBus.builder().throwSubscriberException(true).installDefaultEventBus()
 ```java
 public void onEvent(SubscriberExceptionEvent event) 
 ```  
-订阅该事件进行处理，默认为 true。 
+订阅该事件进行处理，默认为 true。  
 15.`sendNoSubscriberEvent`当没有事件处理函数对事件处理时是否发送 NoSubscriberEvent 事件，若此开关打开，订阅者可通过
 ```java
 public void onEvent(NoSubscriberEvent event)
@@ -116,7 +116,7 @@ e. 该方法名为 `onEvent` 则 threadMode 为`ThreadMode.PostThread`；
 该方法名为 `onEventAsync` 则 threadMode 为`ThreadMode.Async`；  
 其他情况且不在忽略名单 (skipMethodVerificationForClasses) 中则抛出异常。  
 f. 得到该方法唯一的参数即事件类型 eventType，将这个方法、threadMode、eventType 一起构造 SubscriberMethod 对象放到 ArrayList 中。  
-g. 回到 b 遍历 subscriberClass 的下一个方法，若方法遍历结束到 h；
+g. 回到 b 遍历 subscriberClass 的下一个方法，若方法遍历结束到 h；  
 h. 回到 a 遍历自己的父类，若父类遍历结束回到 i；  
 i. 若 ArrayList 依然为空则抛出异常，否则会将 ArrayList 做为 value，${subscriberClassName} 做为 key 放到缓存 HashMap 中。 
 对于事件函数的查找有两个小的性能优化点：  

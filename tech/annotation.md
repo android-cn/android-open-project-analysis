@@ -69,7 +69,7 @@ c. 运行时动态处理，如得到注解信息
 
 ### 3. Annotation 分类  
 #### 3.1 标准 Annotation，Override, Deprecated, SuppressWarnings  
-标准 Annotation 是指 Java 自带的几个 Annotation，上面三个分别表示重写函数，函数已经被禁止使用，忽略某项 Warning  
+标准 Annotation 是指 Java 自带的几个 Annotation，上面三个分别表示重写函数，不鼓励使用(有更好方式、使用有风险或已不在维护)，忽略某项 Warning  
 #### 3.2 元 Annotation，@Retention, @Target, @Inherited, @Documented  
 元 Annotation 是指用来定义 Annotation 的 Annotation，在后面 Annotation 自定义部分会详细介绍含义  
 #### 3.3 自定义 Annotation  
@@ -117,7 +117,7 @@ c. 若只有一个默认属性，可直接用 value() 函数。一个属性都�
 
 #### 4.3 元 Annotation  
 @Documented 是否会保存到 Javadoc 文档中  
-@Retention 保留时间，可选值 SOURCE（源码时），CLASS（编译时），RUNTIME（运行时），默认为 CLASS，SOURCE 大都为 Mark Annotation，这类 Annotation 大都用来校验，比如 Override, Deprecated, SuppressWarnings  
+@Retention 保留时间，可选值 SOURCE（源码时），CLASS（编译时），RUNTIME（运行时），默认为 CLASS，SOURCE 大都为 Mark Annotation，这类 Annotation 大都用来校验，比如 Override, SuppressWarnings  
 @Target 可以用来修饰哪些程序元素，如 TYPE, METHOD, CONSTRUCTOR, FIELD, PARAMETER 等，未标注则表示可修饰所有  
 @Inherited 是否可以被继承，默认为 false  
 
@@ -219,7 +219,7 @@ process 函数返回值表示这组 annotations 是否被这个 Processor 接受
     
 [RestMethodInfo.java](https://github.com/square/retrofit/blob/master/retrofit/src/main/java/retrofit/RestMethodInfo.java) 的 parseMethodAnnotations 方法如上，会检查每个方法的每个 Annotation， 看是否被 RestMethod 这个 Annotation 修饰的 Annotation 修饰，这个有点绕，就是是否被 GET、DELETE、POST、PUT、HEAD、PATCH 这些 Annotation 修饰，然后得到 Annotation 信息，在对接口进行动态代理时会掉用到这些 Annotation 信息从而完成调用。  
 
-Retrofit 原理涉及到[动态代理](http://codekk.com/open-source-project-analysis/detail/Android/Caij/Java%20%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86)，这里原理都只介绍 Annotation，具体原理分析请见 [Android 开源项目实现原理解析](http://www.codekk.com)   
+Retrofit 原理涉及到[动态代理](http://codekk.com/open-source-project-analysis/detail/Android/Caij/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8BJava%20%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86)，这里原理都只介绍 Annotation，具体原理分析请见 [Android 开源项目实现原理解析](http://www.codekk.com)   
 
 #### 6.2 Annotation — Butter Knife  
 (1) 调用
