@@ -665,5 +665,6 @@ mListView = (ListView) findViewById(R.id.id_lv_main);
 当遇到多种布局Item的时候，首先构造一个`MultiItemTypeSupport`接口对象，然后记得在`convert`中根据layoutId，分别进行赋值，因为不同的布局，控件可能不同，id也可能不同。
 
 贴张效果图
-![效果图](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/base-adapter-helper/image/snapshot.png =320x)
+<img src="https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/base-adapter-helper/image/snapshot.png" width = "320px"  />
+
 
