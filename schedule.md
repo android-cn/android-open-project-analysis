@@ -19,7 +19,8 @@ Budddy 暂不需要填写。
 [Cling](https://github.com/kevinshine/cling) | [kevinshine](https://github.com/kevinshine) |  | Done | 02/12 | 03/01 | 03/05 | 03/10 | 03/15  
 [PullToZoomInListView](https://github.com/matrixxun/PullToZoomInListView) | [zTimC](https://github.com/Yom9c) |  | Done | 2/20 | 03/01 | 03/8 | 03/15 |3/19|
 [CalendarListview](https://github.com/traex/CalendarListview) | [Rogary](https://github.com/Rogary) |  | Done | 02/13 | 02/18 | 03/05 | 03/10 | 03/15  
-[DiscreteSeekBar](https://github.com/AnderWeb/discreteSeekBar) | [Eason](https://github.com/wangeason) |  | 03/04 | 03/10 | 03/16 | 03/22 | 03/28 | 03/31|
+[DiscreteSeekBar](https://github.com/AnderWeb/discreteSeekBar) | [Eason](https://github.com/wangeason) |  | 03/04 | 03/10 | 03/16 | 03/22 | 03/28 | 03/31|    
+[SlidingMenu](https://github.com/jfeinstein10/SlidingMenu) | [huxian99](https://github.com/huxian99) |  | 03/06 | 03/08 | 03/12 | 03/14 | 03/18 | 03/20|    
 [AndroidResideMenu](https://github.com/SpecialCyCi/AndroidResideMenu) | [dkmeteor](https://github.com/dkmeteor) |  | 03/04 | 03/10 | 03/16 | 03/22 | 03/28 | 03/31|    
 
 ####2. 一期计划(已完成)
