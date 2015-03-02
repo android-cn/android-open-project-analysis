@@ -16,7 +16,7 @@ Budddy 暂不需要填写。
 [base-adapter-helper](https://github.com/JoanZapata/base-adapter-helper) | [hongyangAndroid](https://github.com/hongyangAndroid)| | DONE | DONE | DONE | DONE | DONE | DONE
 [NineoldAnimations](https://github.com/JakeWharton/NineOldAndroids)|[Mr.Simple](https://github.com/bboyfeiyu) | | Done |Done |Done | Done|Done|Done
 [Side-Menu.Android](https://github.com/Yalantis/Side-Menu.Android)|[cpacm](https://github.com/cpacm) | | 03/03 |03/05 |03/10|03/12|03/14|03/18  
-[Cling](https://github.com/kevinshine/cling) | [kevinshine](https://github.com/kevinshine) |  | Done | 02/12 | 03/01 | 03/05 | 03/10 | 03/15  
+[Cling](https://github.com/kevinshine/cling) | [kevinshine](https://github.com/kevinshine) |  | Done | Done | Done | Done | Done | Done  
 [PullToZoomInListView](https://github.com/matrixxun/PullToZoomInListView) | [zTimC](https://github.com/Yom9c) |  | Done | 2/20 | 03/01 | 03/8 | 03/15 |3/19|
 [CalendarListview](https://github.com/traex/CalendarListview) | [Rogary](https://github.com/Rogary) |  | Done | 02/13 | 02/18 | 03/05 | 03/10 | 03/15  
 [DiscreteSeekBar](https://github.com/AnderWeb/discreteSeekBar) | [Eason](https://github.com/wangeason) |  | 03/04 | 03/10 | 03/16 | 03/22 | 03/28 | 03/31|    
