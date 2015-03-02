@@ -10,7 +10,7 @@ Budddy 暂不需要填写。
 开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
 [Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh) | [grumoon](https://github.com/grumoon) |  | Done | Done | 03/04 | 03/06 | 03/11 | 03/15   
-[dynamic-load-apk](https://github.com/singwhatiwanna/dynamic-load-apk) | [FFish](https://github.com/FFish) | | Done | 02/28 | 03/07 | 03/11 | 03/17 | 03/19
+[dynamic-load-apk](https://github.com/singwhatiwanna/dynamic-load-apk) | [FFish](https://github.com/FFish) | | Done | Done | 03/07 | 03/11 | 03/17 | 03/19
 [PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip) | [ayyb1988](https://github.com/ayyb1988)| |02/12 |02/22 |03/01 |03/06 |03/11 |03/15
 [ActiveAndroid](https://github.com/pardom/ActiveAndroid) | [ouyangxiangshao](https://github.com/ouyangxiangshao)| | Done | 03/11 | 03/18 | 03/25 | 04/02 | 04/09
 [base-adapter-helper](https://github.com/JoanZapata/base-adapter-helper) | [hongyangAndroid](https://github.com/hongyangAndroid)| | DONE | DONE | DONE | DONE | DONE | DONE
