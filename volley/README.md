@@ -22,7 +22,7 @@ Volley 是 Google 推出的 Android 异步网络请求框架和图片加载框�
 ###2. 总体设计
 ####2.1. 总体设计图  
 ![总体设计图](image/design.png)  
-上面是 Volley 的总体设计图，主要是通过两种`Diapatch Thread`不断从`RequestQueue`中取出请求，根据是否已缓存调用`Cache`或`Network`这两类数据获取接口之一，从内存缓存或是服务器取得请求的数据，然后交由`ResponseDelivery`去做结果分发及回调处理。  
+上面是 Volley 的总体设计图，主要是通过两种`Dispatch Thread`不断从`RequestQueue`中取出请求，根据是否已缓存调用`Cache`或`Network`这两类数据获取接口之一，从内存缓存或是服务器取得请求的数据，然后交由`ResponseDelivery`去做结果分发及回调处理。  
 
 ####2.2. Volley 中的概念
 简单介绍一些概念，在`详细设计`中会仔细介绍。  
