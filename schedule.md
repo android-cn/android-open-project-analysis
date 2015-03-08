@@ -11,7 +11,7 @@ Budddy 暂不需要填写。
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
 [Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh) | [grumoon](https://github.com/grumoon) |  | Done | Done | 03/04 | 03/06 | 03/11 | 03/15   
 [dynamic-load-apk](https://github.com/singwhatiwanna/dynamic-load-apk) | [FFish](https://github.com/FFish) | | Done | Done | 03/07 | 03/11 | 03/17 | 03/19
-[PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip) | [ayyb1988](https://github.com/ayyb1988)| |02/12 |02/22 |03/01 |03/06 |03/11 |03/15
+[PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip) | [ayyb1988](https://github.com/ayyb1988)| |03/07 |03/08 |03/15 |03/22 |03/27 |03/27
 [ActiveAndroid](https://github.com/pardom/ActiveAndroid) | [ouyangxiangshao](https://github.com/ouyangxiangshao)| | Done | 03/11 | 03/18 | 03/25 | 04/02 | 04/09
 [base-adapter-helper](https://github.com/JoanZapata/base-adapter-helper) | [hongyangAndroid](https://github.com/hongyangAndroid)| | DONE | DONE | DONE | DONE | DONE | DONE
 [NineoldAnimations](https://github.com/JakeWharton/NineOldAndroids)|[Mr.Simple](https://github.com/bboyfeiyu) | | Done |Done |Done | Done|Done|Done
@@ -21,7 +21,8 @@ Budddy 暂不需要填写。
 [CalendarListview](https://github.com/traex/CalendarListview) | [Rogary](https://github.com/Rogary) |  | Done | 02/13 | 02/18 | 03/05 | 03/10 | 03/15  
 [DiscreteSeekBar](https://github.com/AnderWeb/discreteSeekBar) | [Eason](https://github.com/wangeason) |  | 03/04 | 03/10 | 03/16 | 03/22 | 03/28 | 03/31|    
 [SlidingMenu](https://github.com/jfeinstein10/SlidingMenu) | [huxian99](https://github.com/huxian99) |  | 03/06 | 03/08 | 03/12 | 03/14 | 03/18 | 03/20|    
-[AndroidResideMenu](https://github.com/SpecialCyCi/AndroidResideMenu) | [dkmeteor](https://github.com/dkmeteor) |  | 03/04 | 03/10 | 03/16 | 03/22 | 03/28 | 03/31|    
+[AndroidResideMenu](https://github.com/SpecialCyCi/AndroidResideMenu) | [dkmeteor](https://github.com/dkmeteor) |  | 03/04 | 03/10 | 03/16 | 03/22 | 03/28 | 03/31|
+[CircularReveal](https://github.com/ozodrukh/CircularReveal) | [Toaker](https://github.com/Toaker) | | 3/25 | 4/7 | 4/15 | 4/25 | 5/5 | 5/10 |     
 
 ####2. 一期计划(已完成)
 **本期暂定截止事件为 12 月 25 日，请大家在相应阶段完成后将时间改为`Done`，其中`校验阶段`由 Buddy 校验完成后改为 `Done`**  
@@ -45,6 +46,8 @@ Budddy 暂不需要填写。
 ~~[DataDroid](https://github.com/foxykeep/DataDroid)~~ | [cheyiliu](https://github.com/cheyiliu) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
 ~~[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)~~ | [waylife](https://github.com/waylife) | | Done | Done | 11/23 | 11/30 | 12/7 | 12/14 |  
 ~~[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator)~~ | [longtaoge](https://github.com/longtaoge) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
+ 
+
 
 ####3. 一期开始的计划安排
 这个只是作为纪念，时间估计有点保守，不存在参考的价值。  
