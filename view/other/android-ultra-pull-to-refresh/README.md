@@ -10,7 +10,7 @@ android-Ultra-Pull-To-Refresh 源码解析
 主要特点：  
 (1).继承于 ViewGroup ， Content 可以包含任何 View 。  
 (2).简洁完善的 Header 抽象，方便进行拓展，构建符合需求的头部。  
-> 对比 [Android-PullToRefresh](https://github.com/chrisbanes/Android-PullToRefresh) 项目，UltraPTR 没有实现 **加载更多** 的功能，但我认为 **下拉刷新** 和 **加载更多** 不是同一层次的功能， **下拉刷新** 有更广泛的需求，可以适用于任何页面。而 **加载更多** 的功能应该交由具体的 Content 自己去实现。这应该是和Google官方推出 SwipeRefreshLayout 是相同的设计思路，但对比 SwipeRefreshLayout ， UltraPTR 更灵活，更容易拓展。
+> 对比 [Android-PullToRefresh](https://github.com/chrisbanes/Android-PullToRefresh) 项目，UltraPTR 没有实现 **加载更多** 的功能，但我认为 **下拉刷新** 和 **加载更多** 不是同一层次的功能， **下拉刷新** 有更广泛的需求，可以适用于任何页面。而 **加载更多** 的功能应该交由具体的 Content 自己去实现。这应该是和 Google 官方推出 SwipeRefreshLayout 是相同的设计思路，但对比 SwipeRefreshLayout ， UltraPTR 更灵活，更容易拓展。
 
 ###2. 总体设计
 UltraPTR 总体设计比较简单清晰。  
@@ -116,7 +116,7 @@ if (viewGroup instanceof ScrollView || viewGroup instanceof AbsListView) {
     return viewGroup.getScrollY() == 0;
 }
 ```
-如果 Content 是AbsListView（ListView，GridView），通过getScrollY（）获取的值一直是0，所以这段代码的判断，无效。  
+如果 Content 是 AbsListView（ListView，GridView），通过 getScrollY() 获取的值一直是 0 ，所以这段代码的判断，无效。  
 
 ####4.1.3 PtrUIHandler.java
 下拉刷新 UI 接口，对下拉刷新 UI 变化的抽象。一般情况下， Header 会实现此接口，处理下拉过程中的头部 UI 的变化。  
@@ -317,8 +317,8 @@ public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte 
 }
 ```
 下拉过程中位置变化回调。  
-在拖动情况下，当下拉距离从小于 Header 高度到大于 Header 高度时，箭头 View 从向下，变成向上，同时改变文字显示。  
-当下拉距离从大于 Header 高度到小于 Header 高度时，箭头 View 从向上，变为向下，同时改变文字显示。
+在拖动情况下，当下拉距离从 **小于刷新高度到大于刷新高度** 时，箭头 View 从向下，变成向上，同时改变文字显示。  
+当下拉距离从 **大于刷新高度到小于刷新高度** 时，箭头 View 从向上，变为向下，同时改变文字显示。
 
 ####4.1.7 PtrClassicFrameLayout.java
 继承PtrFrameLayout.java，经典下拉刷新实现类。  
@@ -327,7 +327,7 @@ public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte 
 钩子任务类，实现了 Runnable 接口，可以理解为在原来的操作之间，插入了一段任务去执行。  
 一个钩子任务只能执行一次，通过调用 `takeOver` 去执行。执行结束，用户需要调用 `resume` 方法，去恢复执行原来的操作。  
 如果钩子任务已经执行过了，调用 `takeOver` 将会直接恢复执行原来的操作。  
-可以通过 PtrFrameLayout 类的 `setRefreshCompleteHook(PtrUIHandlerHook hook)` 进行设置。当用户调用 `refreshComplete()` 方法表示刷新结束以后，如果有 hook 存在，先执行 hook 的 `takeOver` 方法，执行结束，用户需要主动调用 hook 的 `resume` 方法，然后又才会进行 Header 回弹到顶部的动作。
+可以通过 PtrFrameLayout 类的 `setRefreshCompleteHook(PtrUIHandlerHook hook)` 进行设置。当用户调用 `refreshComplete()` 方法表示刷新结束以后，如果有 hook 存在，先执行 hook 的 `takeOver` 方法，执行结束，用户需要主动调用 hook 的 `resume` 方法，然后才会进行 Header 回弹到顶部的动作。
 ####4.1.9 MaterialHeader.java
 Material Design风格的头部实现  
 ![material-design-header](image/material-design-header.gif)
