@@ -19,7 +19,7 @@ Side Menu.Android 源码解析
 **（4）**主界面需要继承ViewAnimator.ViewAnimatorListener接口（如demo中的myActivity）。
  
 ##2. 流程图  
-![流程图](image/side_menu.jpg "流程图")
+![流程图](images/side_menu.jpg "流程图")
 
 ##3. 详细介绍  
 ####3.1 类
@@ -89,10 +89,10 @@ public interface ScreenShotable {
 2、getBitmap()方法,获取当前显示的Bitmap。  
 
 ####3.2 类关系图
-![类图](image/side_menu_class.jpg "类图")
+![类图](images/side_menu_class.jpg "类图")
 
 ##4.个人总结
 一个很简单的一个项目，所以从难度上没有什么好讲的（自己的收获则是熟悉了在Android5.0下Toolbar的用法）。  
 我认为问题最大的是它的扩展性太差，从ViewAnimator类的构造函数就能发现这个库一定要在相应的环境下（ActionBarActivity,DrawerLayout）才会产生作用。  
-其次是动画类型不能让开发者进行二次定制，要想改变动画类型则要进library库进行修改。  
-不过我认为它最大的意义在于提供了一种在Toolbar下自定义菜单的思路，这是最值得我们借鉴的~
+其次是动画类型不能让开发者进行二次定制，要想改变动画类型则要进library库进行修改。最后是ViewAnimator里的很多设置是通过回调函数返回给开发者自己设置，感觉变得更复杂了。  
+总体上而言这更像专门定制的一款UI设计。不过我认为它最大的意义在于提供了一种在Toolbar下自定义菜单的思路，这是最值得我们借鉴的~
