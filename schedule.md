@@ -23,7 +23,10 @@ Budddy 暂不需要填写。
 [SlidingMenu](https://github.com/jfeinstein10/SlidingMenu) | [huxian99](https://github.com/huxian99) |  | 03/06 | 03/08 | 03/12 | 03/14 | 03/18 | 03/20|    
 [AndroidResideMenu](https://github.com/SpecialCyCi/AndroidResideMenu) | [dkmeteor](https://github.com/dkmeteor) |  | 03/04 | 03/10 | 03/16 | 03/22 | 03/28 | 03/31|
 [CircularReveal](https://github.com/ozodrukh/CircularReveal) | [Toaker](https://github.com/Toaker) | | 3/25 | 4/7 | 4/15 | 4/25 | 5/5 | 5/10 |     
-[ORMLite](https://github.com/j256/ormlite-android) | [zhoutailiang](https://github.com/zhoutailiang) | | 3/25 | 4/2 | 4/23 | 5/7 | 5/21 | 6/1 |     
+[ORMLite](https://github.com/j256/ormlite-android) | [zhoutailiang](https://github.com/zhoutailiang) | | 3/25 | 4/2 | 4/23 | 5/7 | 5/21 | 6/1 |
+[ViewDragHelper](android/support/v4/widget/ViewDragHelper.java) | [雾雨](https://github.com/nyanpassu) | | 3/17 | 3/17 | 3/17 | 3/17 | 3/17 | 3/17
+[ButterKnife](https://github.com/JakeWharton/ButterKnife/) | [雾雨](https://github.com/nyanpassu) | | 3/20 | 3/20 | 3/20 | 3/20 | 3/20 | 3/20
+
 ####2. 一期计划(已完成)
 **本期暂定截止事件为 12 月 25 日，请大家在相应阶段完成后将时间改为`Done`，其中`校验阶段`由 Buddy 校验完成后改为 `Done`**  
 
