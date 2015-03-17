@@ -5,27 +5,25 @@
 
 预计时间可参考：[common README](./common/README.md)，另外为了详细设计更细致，该阶段大家可多预留时间。  
 
-Budddy 暂不需要填写。  
-
-开源库名 | 认领者 | 解析文档 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
-:--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
-[Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh) | [grumoon](https://github.com/grumoon) | [Ultra-Pull-To-Refresh](./view/other/android-ultra-pull-to-refresh)| | Done | Done | Done  | Done  | Done  | Done    
-[dynamic-load-apk](https://github.com/singwhatiwanna/dynamic-load-apk) | [FFish](https://github.com/FFish) | | | Done | Done | Done | Done | Done | 03/19
-[PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip) | [ayyb1988](https://github.com/ayyb1988)| |  |Done |03/012 |03/15 |03/22 |03/27 |03/27
-[ActiveAndroid](https://github.com/pardom/ActiveAndroid) | [ouyangxiangshao](https://github.com/ouyangxiangshao)| |  | Done | 03/11 | 03/18 | 03/25 | 04/02 | 04/09
-[base-adapter-helper](https://github.com/JoanZapata/base-adapter-helper) | [hongyangAndroid](https://github.com/hongyangAndroid)|  | | DONE | DONE | DONE | DONE | DONE | DONE
-[NineoldAnimations](https://github.com/JakeWharton/NineOldAndroids)|[Mr.Simple](https://github.com/bboyfeiyu) | |  | Done |Done |Done | Done|Done|Done
-[Side-Menu.Android](https://github.com/Yalantis/Side-Menu.Android)|[cpacm](https://github.com/cpacm) | |  | Done |Done |Done|Done|Pass|03/18  
-[Cling](https://github.com/kevinshine/cling) | [kevinshine](https://github.com/kevinshine) | |   | Done | Done | Done | Done | Done | Done  
-[PullToZoomInListView](https://github.com/matrixxun/PullToZoomInListView) | [zTimC](https://github.com/Yom9c) |  |  | Done | 2/20 | 03/01 | 03/8 | 03/15 |3/19|
-[CalendarListview](https://github.com/traex/CalendarListview) | [Rogary](https://github.com/Rogary) |  |  | Done | 02/13 | 02/18 | 03/05 | 03/10 | 03/15  
-[DiscreteSeekBar](https://github.com/AnderWeb/discreteSeekBar) | [Eason](https://github.com/wangeason) |  |  | Done | Done | 03/16 | 03/22 | 03/28 | 03/31|    
-[SlidingMenu](https://github.com/jfeinstein10/SlidingMenu) | [huxian99](https://github.com/huxian99) | |   | 03/06 | 03/08 | 03/12 | 03/14 | 03/18 | 03/20|    
-[AndroidResideMenu](https://github.com/SpecialCyCi/AndroidResideMenu) | [dkmeteor](https://github.com/dkmeteor) | |   | 03/04 | 03/10 | 03/16 | 03/22 | 03/28 | 03/31|
-[CircularReveal](https://github.com/ozodrukh/CircularReveal) | [Toaker](https://github.com/Toaker) | |  | 3/25 | 4/7 | 4/15 | 4/25 | 5/5 | 5/10 |     
-[ORMLite](https://github.com/j256/ormlite-android) | [zhoutailiang](https://github.com/zhoutailiang) | |  | 3/25 | 4/2 | 4/23 | 5/7 | 5/21 | 6/1 |
-[ViewDragHelper](android/support/v4/widget/ViewDragHelper.java) | [雾雨](https://github.com/nyanpassu) | | | 3/17 | 3/17 | 3/17 | 3/17 | 3/17 | 3/17
-[ButterKnife](https://github.com/JakeWharton/ButterKnife/) | [雾雨](https://github.com/nyanpassu) | |  | 3/20 | 3/20 | 3/20 | 3/20 | 3/20 | 3/20
+开源库名 | 认领者 | 解析文档 | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
+:--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
+[Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh) | [grumoon](https://github.com/grumoon) | [文档](./view/other/android-ultra-pull-to-refresh)|  Done | Done | Done  | Done  | Done  | Done    
+[dynamic-load-apk](https://github.com/singwhatiwanna/dynamic-load-apk) | [FFish](https://github.com/FFish) | | Done | Done | Done | Done | Done | 03/19
+[PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip) | [ayyb1988](https://github.com/ayyb1988)|  |Done |03/012 |03/15 |03/22 |03/27 |03/27
+[ActiveAndroid](https://github.com/pardom/ActiveAndroid) | [ouyangxiangshao](https://github.com/ouyangxiangshao)|  | Done | 03/11 | 03/18 | 03/25 | 04/02 | 04/09
+[base-adapter-helper](https://github.com/JoanZapata/base-adapter-helper) | [hongyangAndroid](https://github.com/hongyangAndroid)|  | DONE | DONE | DONE | DONE | DONE | DONE
+[NineoldAnimations](https://github.com/JakeWharton/NineOldAndroids)|[Mr.Simple](https://github.com/bboyfeiyu) | | Done |Done |Done | Done|Done|Done
+[Side-Menu.Android](https://github.com/Yalantis/Side-Menu.Android)|[cpacm](https://github.com/cpacm) | | Done |Done |Done|Done|Pass|03/18  
+[Cling](https://github.com/kevinshine/cling) | [kevinshine](https://github.com/kevinshine) |  | Done | Done | Done | Done | Done | Done  
+[PullToZoomInListView](https://github.com/matrixxun/PullToZoomInListView) | [zTimC](https://github.com/Yom9c) |  | Done | 2/20 | 03/01 | 03/8 | 03/15 |3/19|
+[CalendarListview](https://github.com/traex/CalendarListview) | [Rogary](https://github.com/Rogary) |  | Done | 02/13 | 02/18 | 03/05 | 03/10 | 03/15  
+[DiscreteSeekBar](https://github.com/AnderWeb/discreteSeekBar) | [Eason](https://github.com/wangeason) | | Done | Done | 03/16 | 03/22 | 03/28 | 03/31|    
+[SlidingMenu](https://github.com/jfeinstein10/SlidingMenu) | [huxian99](https://github.com/huxian99) | | 03/06 | 03/08 | 03/12 | 03/14 | 03/18 | 03/20|    
+[AndroidResideMenu](https://github.com/SpecialCyCi/AndroidResideMenu) | [dkmeteor](https://github.com/dkmeteor) | | 03/04 | 03/10 | 03/16 | 03/22 | 03/28 | 03/31|
+[CircularReveal](https://github.com/ozodrukh/CircularReveal) | [Toaker](https://github.com/Toaker) | | 3/25 | 4/7 | 4/15 | 4/25 | 5/5 | 5/10 |     
+[ORMLite](https://github.com/j256/ormlite-android) | [zhoutailiang](https://github.com/zhoutailiang) |  | 3/25 | 4/2 | 4/23 | 5/7 | 5/21 | 6/1 |
+[ViewDragHelper](android/support/v4/widget/ViewDragHelper.java) | [雾雨](https://github.com/nyanpassu) |  | 3/17 | 3/17 | 3/17 | 3/17 | 3/17 | 3/17
+[ButterKnife](https://github.com/JakeWharton/ButterKnife/) | [雾雨](https://github.com/nyanpassu) | | 3/20 | 3/20 | 3/20 | 3/20 | 3/20 | 3/20
 
 ####2. 一期计划(已完成)
 **本期暂定截止事件为 12 月 25 日，请大家在相应阶段完成后将时间改为`Done`，其中`校验阶段`由 Buddy 校验完成后改为 `Done`**  
