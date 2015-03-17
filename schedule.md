@@ -24,7 +24,7 @@ Budddy 暂不需要填写。
 [AndroidResideMenu](https://github.com/SpecialCyCi/AndroidResideMenu) | [dkmeteor](https://github.com/dkmeteor) |  | 03/04 | 03/10 | 03/16 | 03/22 | 03/28 | 03/31|
 [CircularReveal](https://github.com/ozodrukh/CircularReveal) | [Toaker](https://github.com/Toaker) | | 3/25 | 4/7 | 4/15 | 4/25 | 5/5 | 5/10 |     
 [ORMLite](https://github.com/j256/ormlite-android) | [zhoutailiang](https://github.com/zhoutailiang) | | 3/25 | 4/2 | 4/23 | 5/7 | 5/21 | 6/1 |
-[ViewDragHelper](android/support/v4/widget/ViewDragHelper.java) | [雾雨](https://github.com/nyanpassu) | | 3/17 | 3/17 | 3/17 | 3/17 | 3/17 | 3/17
+[ViewDragHelper](android/support/v4/widget/ViewDragHelper.java) | [雾雨](https://github.com/nyanpassu) | | 3/18 | 3/18 | 3/18 | 3/18 | 3/18 | 3/18
 [ButterKnife](https://github.com/JakeWharton/ButterKnife/) | [雾雨](https://github.com/nyanpassu) | | 3/20 | 3/20 | 3/20 | 3/20 | 3/20 | 3/20
 
 ####2. 一期计划(已完成)
