@@ -16,7 +16,7 @@
 [Side-Menu.Android](https://github.com/Yalantis/Side-Menu.Android)|[cpacm](https://github.com/cpacm) |[文档](./side-menu.android)| Done |Done |Done|Done|Pass|03/18  
 [Cling](https://github.com/kevinshine/cling) | [kevinshine](https://github.com/kevinshine) | [文档](./tool-lib/network/Cling) | Done | Done | Done | Done | Done | Done  
 [PullToZoomInListView](https://github.com/matrixxun/PullToZoomInListView) | [zTimC](https://github.com/Yom9c) |  | Done | 2/20 | 03/01 | 03/8 | 03/15 |3/19|
-[CalendarListview](https://github.com/traex/CalendarListview) | [Rogary](https://github.com/Rogary) | [文档](./view/list-view/calendar-list-view) | Done | 02/13 | 02/18 | 03/05 | 03/10 | 03/15  
+[CalendarListview](https://github.com/traex/CalendarListview) | [Rogary](https://github.com/Rogary) | [文档](./view/list-view/calendar-list-view) | Done | Done | Done | 03/18 | 03/20 | 03/25  
 [DiscreteSeekBar](https://github.com/AnderWeb/discreteSeekBar) | [Eason](https://github.com/wangeason) | [文档](./view/progress-bar/discrete-seek-bar)| Done | Done | 03/16 | 03/22 | 03/28 | 03/31|    
 [SlidingMenu](https://github.com/jfeinstein10/SlidingMenu) | [huxian99](https://github.com/huxian99) |[文档](./sliding-menu) | 03/06 | 03/08 | 03/12 | 03/14 | 03/18 | 03/20|    
 [AndroidResideMenu](https://github.com/SpecialCyCi/AndroidResideMenu) | [dkmeteor](https://github.com/dkmeteor) | | 03/04 | 03/10 | 03/16 | 03/22 | 03/28 | 03/31|
