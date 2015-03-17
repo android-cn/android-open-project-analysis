@@ -9,7 +9,7 @@ Budddy 暂不需要填写。
 
 开源库名 | 认领者 | 解析文档 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
-[Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh) | [grumoon](https://github.com/grumoon) | [Ultra-Pull-To-Refresh](./view/others/android-Ultra-Pull-To-Refresh)| | Done | Done | Done  | Done  | Done  | Done    
+[Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh) | [grumoon](https://github.com/grumoon) | [Ultra-Pull-To-Refresh](./view/other/android-ultra-pull-to-refresh)| | Done | Done | Done  | Done  | Done  | Done    
 [dynamic-load-apk](https://github.com/singwhatiwanna/dynamic-load-apk) | [FFish](https://github.com/FFish) | | | Done | Done | Done | Done | Done | 03/19
 [PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip) | [ayyb1988](https://github.com/ayyb1988)| |  |Done |03/012 |03/15 |03/22 |03/27 |03/27
 [ActiveAndroid](https://github.com/pardom/ActiveAndroid) | [ouyangxiangshao](https://github.com/ouyangxiangshao)| |  | Done | 03/11 | 03/18 | 03/25 | 04/02 | 04/09
