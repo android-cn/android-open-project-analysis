@@ -43,7 +43,7 @@ setContent(decorChild);
 ####4.2.2 CustomViewAbove.java  
 继承自ViewGroup，主要用于处理touch事件  
 事件处理流程图如下：  
-  
+![alt tex](./image/touch_event.jpg)  
 ####4.2.3 CustomViewBehind.java  
 主要的属性  
 ```java
@@ -69,8 +69,7 @@ private Drawable mSecondaryShadowDrawable;
 private int mShadowWidth;  
 /** 侧边栏滑动过程中fade动画的值，范围0-1f */  
 private float mFadeDegree;  
-
-
+```  
 
 ##5. 杂谈
 该项目存在的问题、可优化点及类似功能项目对比等，非所有项目必须。  
