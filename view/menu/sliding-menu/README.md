@@ -11,13 +11,13 @@ SlidingMenu是一个强大的侧边栏导航框架，并且已经被一些比较
 (2).使用简单方便，支持左滑和右滑等  
 (3).自定义侧边栏显示动画  
 
-##2. 总体设计
+##2. 总体设计  
 SlidingMenu总体由三个主要的类组成  
 SlidingMenu继承自RelativeLayout，对外暴露API给用户，同时在添加CustomViewAbove和CustomViewBehind  
 CustomViewAbove继承自ViewGroup，主要用来处理`触摸屏事件`  
 CustomViewBehind继承自ViewGroup，主要用来`配置参数`，`显示侧边栏的menu部分`  
 
-##3. 流程图
+##3. 流程图  
 请参考 `4.2.2 CustomViewAbove事件处理流程图`  
 
 ##4. 详细设计  
@@ -25,7 +25,7 @@ CustomViewBehind继承自ViewGroup，主要用来`配置参数`，`显示侧边�
 ![alt tex](./image/SlidingMenu.png)  
 ###4.2 核心类功能介绍  
 ####4.2.1 SlidingMenu.java  
-继承自RelativeLayout，对外提供API，用于配置侧边栏的侧滑模式，触摸模式，阴影，渐变及滑动效果等  
+继承自RelativeLayout，对外提供API，用于配置侧边栏的侧滑模式，触摸模式，阴影，渐变及滑动效果等。  
 构造器中可以看到主要初始化了mViewBehind，mViewAbove及一些属性。  
 主要看attachToActivity方法  
 ```java
@@ -44,78 +44,43 @@ public void attachToActivity(Activity activity, int slideStyle, boolean actionba
     ...
 }
 ```
-这里slideStyle选取SLIDING_WINDOW的case进行分析，可以看到主要是获取decorView，将decorView下面的decorChild(我们的根布局)移除，把SlidingMenu添加进来，把decorChild赋值给mViewAbove。  
+> 这里slideStyle选取SLIDING_WINDOW的case进行分析，可以看到主要是获取decorView，将decorView下面的decorChild(我们的根布局)移除，把SlidingMenu添加进来，把decorChild赋值给mViewAbove。  
 (SLIDING_CONTENT原理差不多)  
+
 SlidingMenu常用的属性设置：  
-/**
- * 设置侧边, 必须为LEFT(左边)，RIGHT(右边)，LEFT_RIGHT(左右两边)三者之一
- */
+// 设置侧边, 必须为LEFT(左边)，RIGHT(右边)，LEFT_RIGHT(左右两边)三者之一
 public void setMode(int mode)  
-/**
- * 设置触摸方式，必须为TOUCHMODE_FULLSCREEN(全屏可触摸)，
- * TOUCHMODE_MARGIN(边缘可触摸)，默认48dp  
- * TOUCHMODE_NONE(不可触摸)三者之一  
- */
+// 设置触摸方式，必须为TOUCHMODE_FULLSCREEN(全屏可触摸)，TOUCHMODE_MARGIN(边缘可触摸)，默认48dp, TOUCHMODE_NONE(不可触摸)三者之一  
 public void setTouchModeAbove(int i)  
-/**
- * 根据资源文件ID设置阴影部分的width  
- */
+// 根据资源文件ID设置阴影部分的width  
 public void setShadowWidthRes(int resId)  
-/**
- * 根据资源文件ID设置阴影部分的效果  
- */
+// 根据资源文件ID设置阴影部分的效果  
 public void setShadowDrawable(int resId)  
-/**
- * 根据资源文件ID设置第二个侧边栏阴影部分的效果  
- */
+// 根据资源文件ID设置第二个侧边栏阴影部分的效果  
 public void setSecondaryShadowDrawable(int resId)  
-/**
- * 根据资源文件ID设置主界面距离屏幕的偏移量  
- */
+// 根据资源文件ID设置主界面距离屏幕的偏移量  
 public void setBehindOffsetRes(int resID)  
-/**
- * 设置fade in和fade out效果的值  
- */
+// 设置fade in和fade out效果的值  
 public void setFadeDegree(float f)   
-/**
- * 设置滑动比例的值，范围为0-1之间  
- */
+// 设置滑动比例的值，范围为0-1之间  
 public void setBehindScrollScale(float f)  
-/**
- * 根据资源文件ID设置侧边栏布局    
- */
+// 根据资源文件ID设置侧边栏布局  
 public void setMenu(int res)  
-/**
- * 根据View设置侧边栏布局  
- */
+// 根据View设置侧边栏布局  
 public void setMenu(View v)  
-/**
- * 根据资源文件ID设置第二个侧边栏布局    
- */
+// 根据资源文件ID设置第二个侧边栏布局  
 public void setSecondaryMenu(int res)  
-/**
- * 根据View设置第二个侧边栏布局  
- */
+// 根据View设置第二个侧边栏布局  
 public void setSecondaryMenu(View v)  
-/**
- * 打开菜单  
- */
+// 打开菜单  
 public void showMenu()  
-/**
- * 打开第二个菜单  
- */
+// 打开第二个菜单  
 public void showSecondaryMenu()  
-/**
- * SlidingMenu的开关  
- */
+// SlidingMenu的开关  
 public void toggle()  
-/**
- * 检查侧边栏是否打开  
- */
+// 检查侧边栏是否打开  
 public boolean isMenuShowing()  
-/**
- * 检查第二个侧边栏是否打开  
- */
+// 检查第二个侧边栏是否打开  
 public boolean isSecondaryMenuShowing()  
 
 ####4.2.2 CustomViewAbove.java  
@@ -149,9 +114,9 @@ private int mShadowWidth;
 private float mFadeDegree;  
 ``` 
 在侧边栏滑动过程中, 通过回调CustomViewAbove的dispatchDraw方法画阴影部分和fade in/out效果。  
-/** 画阴影部分 */
+// 画阴影部分  
 public void drawShadow(View content, Canvas canvas)  
-/** 根据openPercent画fade in/out效果 */
+// 根据openPercent画fade in/out效果  
 public void drawFade(View content, Canvas canvas, float openPercent)  
 
 ##5. 杂谈
