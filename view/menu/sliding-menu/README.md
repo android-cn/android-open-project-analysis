@@ -14,35 +14,113 @@ SlidingMenu是一个强大的侧边栏导航框架，并且已经被一些比较
 ##2. 总体设计
 SlidingMenu总体由三个主要的类组成  
 SlidingMenu继承自RelativeLayout，对外暴露API给用户，同时在添加CustomViewAbove和CustomViewBehind  
-CustomViewAbove继承自ViewGroup，主要用来处理触摸屏事件  
-CustomViewBehind继承自ViewGroup，主要用来显示侧边栏的menu部分  
+CustomViewAbove继承自ViewGroup，主要用来处理`触摸屏事件`  
+CustomViewBehind继承自ViewGroup，主要用来`配置参数`，`显示侧边栏的menu部分`  
 
 ##3. 流程图
 请参考 `4.2.2 CustomViewAbove事件处理流程图`  
 
-##4. 详细设计
+##4. 详细设计  
+###4.1 类关系图  
+![alt tex](./image/SlidingMenu.png)  
+###4.2 核心类功能介绍  
 ####4.2.1 SlidingMenu.java  
 继承自RelativeLayout，对外提供API，用于配置侧边栏的侧滑模式，触摸模式，阴影，渐变及滑动效果等  
 构造器中可以看到主要初始化了mViewBehind，mViewAbove及一些属性。  
-主要看attachToActivity方法
+主要看attachToActivity方法  
 ```java
-public void attachToActivity(Activity activity, int slideStyle, boolean actionbarOverlay)
+public void attachToActivity(Activity activity, int slideStyle, boolean actionbarOverlay) {
+    ...
+    ...
+    ViewGroup decor = (ViewGroup) activity.getWindow().getDecorView();
+    ViewGroup decorChild = (ViewGroup) decor.getChildAt(0);
+    // save ActionBar themes that have transparent assets
+    decorChild.setBackgroundResource(background);
+    decor.removeView(decorChild);
+    decor.addView(this);
+    setContent(decorChild);
+    break;
+    ...
+    ...
+}
 ```
-主要部分
-```java
-mActionbarOverlay = false;
-ViewGroup decor = (ViewGroup) activity.getWindow().getDecorView();
-ViewGroup decorChild = (ViewGroup) decor.getChildAt(0);
-// save ActionBar themes that have transparent assets
-decorChild.setBackgroundResource(background);
-decor.removeView(decorChild);
-decor.addView(this);
-setContent(decorChild);
-```
-可以看到主要是获取decorView，将decorView下面的decorChild移除，把SlidingMenu添加进来，把decorChild赋值给mViewAbove  
+这里slideStyle选取SLIDING_WINDOW的case进行分析，可以看到主要是获取decorView，将decorView下面的decorChild(我们的根布局)移除，把SlidingMenu添加进来，把decorChild赋值给mViewAbove。  
+(SLIDING_CONTENT原理差不多)  
+SlidingMenu常用的属性设置：  
+/**
+ * 设置侧边, 必须为LEFT(左边)，RIGHT(右边)，LEFT_RIGHT(左右两边)三者之一
+ */
+public void setMode(int mode)  
+/**
+ * 设置触摸方式，必须为TOUCHMODE_FULLSCREEN(全屏可触摸)，
+ * TOUCHMODE_MARGIN(边缘可触摸)，默认48dp  
+ * TOUCHMODE_NONE(不可触摸)三者之一  
+ */
+public void setTouchModeAbove(int i)  
+/**
+ * 根据资源文件ID设置阴影部分的width  
+ */
+public void setShadowWidthRes(int resId)  
+/**
+ * 根据资源文件ID设置阴影部分的效果  
+ */
+public void setShadowDrawable(int resId)  
+/**
+ * 根据资源文件ID设置第二个侧边栏阴影部分的效果  
+ */
+public void setSecondaryShadowDrawable(int resId)  
+/**
+ * 根据资源文件ID设置主界面距离屏幕的偏移量  
+ */
+public void setBehindOffsetRes(int resID)  
+/**
+ * 设置fade in和fade out效果的值  
+ */
+public void setFadeDegree(float f)   
+/**
+ * 设置滑动比例的值，范围为0-1之间  
+ */
+public void setBehindScrollScale(float f)  
+/**
+ * 根据资源文件ID设置侧边栏布局    
+ */
+public void setMenu(int res)  
+/**
+ * 根据View设置侧边栏布局  
+ */
+public void setMenu(View v)  
+/**
+ * 根据资源文件ID设置第二个侧边栏布局    
+ */
+public void setSecondaryMenu(int res)  
+/**
+ * 根据View设置第二个侧边栏布局  
+ */
+public void setSecondaryMenu(View v)  
+/**
+ * 打开菜单  
+ */
+public void showMenu()  
+/**
+ * 打开第二个菜单  
+ */
+public void showSecondaryMenu()  
+/**
+ * SlidingMenu的开关  
+ */
+public void toggle()  
+/**
+ * 检查侧边栏是否打开  
+ */
+public boolean isMenuShowing()  
+/**
+ * 检查第二个侧边栏是否打开  
+ */
+public boolean isSecondaryMenuShowing()  
+
 ####4.2.2 CustomViewAbove.java  
-继承自ViewGroup，主要用于处理touch事件  
-事件处理流程图如下：  
+继承自ViewGroup，主要用于处理touch事件。  
+事件处理流程图如下(暂不分析多点触控)：  
 ![alt tex](./image/touch_event.jpg)  
 ####4.2.3 CustomViewBehind.java  
 主要的属性  
@@ -69,28 +147,32 @@ private Drawable mSecondaryShadowDrawable;
 private int mShadowWidth;  
 /** 侧边栏滑动过程中fade动画的值，范围0-1f */  
 private float mFadeDegree;  
-```  
+``` 
+在侧边栏滑动过程中, 通过回调CustomViewAbove的dispatchDraw方法画阴影部分和fade in/out效果。  
+/** 画阴影部分 */
+public void drawShadow(View content, Canvas canvas)  
+/** 根据openPercent画fade in/out效果 */
+public void drawFade(View content, Canvas canvas, float openPercent)  
 
 ##5. 杂谈
-该项目存在的问题、可优化点及类似功能项目对比等，非所有项目必须。  
-
-**完成时间**  
-- `两天内`完成  
-
-##6. 修改完善  
-在完成了上面 5 个部分后，移动模块顺序，将  
-`2. 详细设计` -> `2.1 核心类功能介绍` -> `2.2 类关系图` -> `3. 流程图` -> `4. 总体设计`  
-顺序变为  
-`2. 总体设计` -> `3. 流程图` -> `4. 详细设计` -> `4.1 类关系图` -> `4.2 核心类功能介绍`  
-并自行校验优化一遍，确认无误后将文章开头的  
-`分析状态：未完成`  
-变为：  
-`分析状态：已完成`  
-
-本期校对会由专门的`Buddy`完成，可能会对分析文档进行一些修改，请大家理解。  
-
-**完成时间**  
-- `两天内`完成  
-
-**到此便大功告成，恭喜大家^_^**  
-
+关于selector drawable存在的一些不理解
+SlidingMenu暴露几个关于selector drawable的API给用户, CustomViewBehind的drawSelector方法具体实现如下：  
+```java
+private boolean mSelectorEnabled = true;  
+private Bitmap mSelectorDrawable;  
+private View mSelectedView;  
+if (mSelectorDrawable != null && mSelectedView != null) {
+    canvas.save();
+    ...
+    if (mMode == SlidingMenu.LEFT) {
+        ...
+        canvas.drawBitmap(mSelectorDrawable, left, getSelectorTop(), null);     
+    } else if (mMode == SlidingMenu.RIGHT) {
+        ...
+        canvas.drawBitmap(mSelectorDrawable, right - mSelectorDrawable.getWidth(), getSelectorTop(), null);
+    }
+    canvas.restore();
+}
+```  
+其中canvas.drawBitmap时传入的paint为null，mSelectedView除了做判断外并没有看到实际使用
+根据它代码中clip出来的矩形(在滑动时主界面的左边部分)画bitmap对象，想不出其使用的场景在哪里，也想不出当时作者想到了什么才写下了这个方法，并提供API给用户。  
