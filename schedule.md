@@ -24,6 +24,7 @@
 [ORMLite](https://github.com/j256/ormlite-android) | [zhoutailiang](https://github.com/zhoutailiang) |  | 3/25 | 4/2 | 4/23 | 5/7 | 5/21 | 6/1 |
 [ViewDragHelper](android/support/v4/widget/ViewDragHelper.java) | [雾雨](https://github.com/nyanpassu) |  | 3/22 | 3/22 | 3/22 | 3/22 | 3/22 | 3/22
 [ButterKnife](https://github.com/JakeWharton/ButterKnife/) | [雾雨](https://github.com/nyanpassu) | | 3/25 | 3/25 | 3/25 | 3/25 | 3/25 | 3/25
+[fresco](https://github.com/facebook/fresco/) | [blackiedm](https://github.com/blackiedm) | | 4/1 | 4/7 | 4/30 | 5/14 | 5/28 | 6/10
 
 ####2. 一期计划(已完成)
 **本期暂定截止事件为 12 月 25 日，请大家在相应阶段完成后将时间改为`Done`，其中`校验阶段`由 Buddy 校验完成后改为 `Done`**  
