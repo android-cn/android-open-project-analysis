@@ -1,8 +1,8 @@
 Fresco 源码解析
 ====================================
-> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 ${项目名} 部分
-> 项目地址：[Fresco](https://github.com/facebook/fresco)，分析的版本：[${commitId}.substring(0, 7)](${项目原地址}/commit/${commitId} "Commit id is ${commitId}")，Demo 地址：[${项目名} Demo](https://github.com/android-cn/android-open-project-demo/tree/master/${项目 Demo 地址})
-> 分析者：[blackiedm](https://github.com/blackiedm)，分析状态：未完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始
+> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 Fresco 部分  
+ 项目地址：[Fresco](https://github.com/facebook/fresco)，分析的版本：[${commitId}.substring(0, 7)](${项目原地址}/commit/${commitId} "Commit id is ${commitId}")，Demo 地址：[Fresco Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/fresco-demo)  
+ 分析者：[blackiedm](https://github.com/blackiedm)，分析状态：未完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始
 
 
 ###1. 功能介绍  
