@@ -1,16 +1,10 @@
 CalendarListView 源码解析
-
 ====================================
 
 > 本文为 [CalendarListView](https://github.com/android-cn/android-open-project-analysis) 中 CalanderListView 部分  
-
 > 项目地址：[CalendarListView](https://github.com/traex/CalendarListview)，分析的版本：[063952b3e6](https://github.com/traex/CalendarListview "Commit id is 063952b3e6]")，Demo 地址：[calendar-list-view-demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/calendar-list-view-demo)  
 
-> 分析者：[Rogary](http://github.com/Rogary)，分析状态：未完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始
-
-
-
-
+> 分析者：[Rogary](http://github.com/Rogary)，分析状态：未完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始  
 
 ##1. 功能介绍  
 
