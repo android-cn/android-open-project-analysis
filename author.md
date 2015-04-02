@@ -1,5 +1,8 @@
 开源项目分析项目成员信息
 ============
+#### 第二期成员
+大家正在进行中:muscle::joy::dancers: 具体见：[Schedule](./zen/schedule.md)
+
 #### 第一期成员
 
 成员 | 分析文档 | GitHub | 微博 | 博客 | 其他 
