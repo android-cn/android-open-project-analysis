@@ -17,4 +17,5 @@ multimedia | 多媒体
 plugin | 插件化
 security | 安全
 sensors | 传感器
+common | 包含多个大功能模块的公共库
 other | 其他
