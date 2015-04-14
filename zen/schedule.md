@@ -7,10 +7,10 @@
 
 开源库名 | 认领者 | 解析文档 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
-[Ultra-Pull-To…](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh "Ultra-Pull-To-Refresh") | [grumoon](https://github.com/grumoon) | [文档](../view/other/android-ultra-pull-to-refresh) | | Done | Done | Done | Done  | Done  | Done    
+[Ultra-Pull-To…](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh "Ultra-Pull-To-Refresh") | [grumoon](https://github.com/grumoon) | [文档](../view/other/android-ultra-pull-to-refresh) | [lightSky](https://github.com/lightSky) | Done | Done | Done | Done  | Done  | Done    
 [dynamic-loa…](https://github.com/singwhatiwanna/dynamic-load-apk "dynamic-load-apk") | [FFish](https://github.com/FFish) |[文档](../tool-lib/plugin/dynamic-load-apk) | [Trinea](https://github.com/Trinea) | Done | Done | Done | Done | Done | Done
 [base-adapter-helper](https://github.com/JoanZapata/base-adapter-helper) | [hongyang…](https://github.com/hongyangAndroid "hongyangAndroid")| [文档](../tool-lib/other/base-adapter-helper) | | Done | Done | Done | Done | Done | Done
-[NineoldAnimations](https://github.com/JakeWharton/NineOldAndroids)|[Mr.Simple](https://github.com/bboyfeiyu) |[文档](../tool-lib/compatibility/nineoldanimations) | | Done |Done |Done | Done|Done|Done
+[NineoldAnimations](https://github.com/JakeWharton/NineOldAndroids)| [Mr.Simple](https://github.com/bboyfeiyu) |[文档](../tool-lib/compatibility/nineoldanimations) | [lightSky](https://github.com/lightSky) | Done |Done |Done | Done|Done|Done
 [Side-Menu.Android](https://github.com/Yalantis/Side-Menu.Android)|[cpacm](https://github.com/cpacm) |[文档](../view/menu/side-menu.android) | | Done |Done |Done|Done|Pass|03/18  
 [Cling](https://github.com/kevinshine/cling) | [kevinshine](https://github.com/kevinshine) | [文档](../tool-lib/network/Cling) | | Done | Done | Done | Done | Done | Done  
 [SlidingMenu](https://github.com/jfeinstein10/SlidingMenu) | [huxian99](https://github.com/huxian99) | [文档](../view/menu/sliding-menu) | | Done | Done | Done | Done | Done | Done |    
