@@ -1,8 +1,8 @@
 DynamicLoadApk 源码解析
 ====================================
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 DynamicLoadApk 部分  
-> 项目地址：[DynamicLoadApk](https://github.com/singwhatiwanna/dynamic-load-apk)，分析的版本：[354fc6c](https://github.com/singwhatiwanna/dynamic-load-apk/commit/354fc6c3d9ab2f55945096d81621f936f49a18e3 "Commit id is 354fc6c3d9ab2f55945096d81621f936f49a18e3")，Demo 地址：[DynamicLoadApk Demo](https://github.com/android-cn/android-open-project-demo/tree/master/dynamic-load-apk-demo)    
-> 分析者：[FFish](https://github.com/FFish)，分析状态：未完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始   
+> 项目地址：[DynamicLoadApk](https://github.com/singwhatiwanna/dynamic-load-apk)，分析的版本：[144571b](https://github.com/singwhatiwanna/dynamic-load-apk/commit/144571b51a6b42fd18b6e5ecee1142fcb8dc17e5 "Commit id is 144571b51a6b42fd18b6e5ecee1142fcb8dc17e5")，Demo 地址：[DynamicLoadApk Demo](https://github.com/android-cn/android-open-project-demo/tree/master/dynamic-load-apk-demo)    
+> 分析者：[FFish](https://github.com/FFish)，分析状态：完成，校对者：[Trinea](https://github.com/trinea)，校对状态：进行中   
 
 ###1. 功能介绍  
 DynamicLoadApk是实现Android App插件化开发的一个开源框架。它提供了3种开发方式，让开发者在无需理解其工作原理的情况下快速的集成插件化功能。
