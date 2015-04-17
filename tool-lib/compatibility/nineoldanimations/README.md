@@ -1,8 +1,8 @@
 NineOldAnimations 源码解析
 ====================================
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 NineOldAnimations 部分  
-> 项目地址：[NineOldAnimations](${https://github.com/JakeWharton/NineOldAndroids})，分析的版本：[d582f0e](${https://github.com/JakeWharton/NineOldAndroids/tree/d582f0ec8e79013e9fa96c07986160b52e662e63")，Demo 地址：[NineoldAnimations Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/nineoldanimations-demo)    
-> 分析者：[Mr.Simple](https://github.com/bboyfeiyu)，校对者：[${校对者}](${校对者 Github 地址})，校对状态：未完成   
+> 项目地址：[NineOldAnimations](https://github.com/JakeWharton/NineOldAndroids)，分析的版本：[d582f0e](https://github.com/JakeWharton/NineOldAndroids/tree/d582f0ec8e79013e9fa96c07986160b52e662e63")，Demo 地址：[NineoldAnimations Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/nineoldanimations-demo)    
+> 分析者：[Mr.Simple](https://github.com/bboyfeiyu)，校对者：[lightSky](https://github.com/lightSky)，校对状态：未完成   
  
 
 ###1. 功能介绍  
