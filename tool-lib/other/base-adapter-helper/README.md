@@ -1,7 +1,7 @@
 base-adapter-helper 源码分析
 ====================================
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 base-adapter-helper 部分  
-> 项目地址：[base-adapter-helper](https://github.com/JoanZapata/base-adapter-helper)    
+> 项目地址：[base-adapter-helper](https://github.com/JoanZapata/base-adapter-helper)，分析的版本：[e65d7d8](https://github.com/JoanZapata/base-adapter-helper/commit/e65d7d83c5f5181feb189e5ff4f5cc5835eaadfe "Commit id is e65d7d83c5f5181feb189e5ff4f5cc5835eaadfe")，Demo 地址：[base-adapter-helper Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/base-adapter-helper-demo)     
 > 分析者：[hongyangAndroid](https://github.com/hongyangAndroid)
 
 ###1. 功能介绍  
@@ -34,15 +34,15 @@ base-adapter-helper 是对我们传统的BaseAdapter的ViewHolder的模式的一
 ###2. 总体设计
 ####2.1 总体设计图  
 #####2.1.1 ViewHolder Pattern
-![ViewHolder Pattern](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/base-adapter-helper/image/view_holder_pattern.png)  
+![ViewHolder Pattern](image/view_holder_pattern.png)  
 #####2.1.2 总体设计图
-![总体设计图](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/base-adapter-helper/image/base-adapter-helpr.png)  
+![总体设计图](image/base-adapter-helpr.png)  
 由于base-adapter-helper本质上仍然是ViewHolder Pattern，上面贴出base-adapter-helper的总体设计图和ViewHolder Pattern的设计图，通过两图的比较，可以看出base-adapter-helper对传统的`BaseAdapter`进行了初步的实现（`QuickAdapter`），并且仅公布出`convert()`方法，在`convert()`中可以拿到`BaseAdapterHelper`,`BaseAdapterHelper`就相当于`ViewHolder`，但其内部提供了大量的辅助方法，用于设置View上的数据，甚至是事件等。
 
 
 ###3. 详细设计
 ####3.1 类关系图
-![类关系图](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/base-adapter-helper/image/base-adapter-helper-ClassDiagram.jpg)  
+![类关系图](image/base-adapter-helper-ClassDiagram.jpg)  
 这是 base-adapter-helper 框架的主要类关系图    
 
 1. 在BaseQucikAdapter中实现了BaseAdapter中通用的抽象方法
@@ -666,6 +666,6 @@ mListView = (ListView) findViewById(R.id.id_lv_main);
 
 贴张效果图
 
-<img src="https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/base-adapter-helper/image/snapshot.png" width = "320px"  />
+<img src="image/snapshot.png" width = "320px"  />
 
 添加多Item布局后的地址：[github](https://github.com/hongyangAndroid/base-adapter-helper)
