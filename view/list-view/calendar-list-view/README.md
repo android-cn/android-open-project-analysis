@@ -358,6 +358,6 @@ dependencies {
 
 
 
-类及其主要函数功能介绍、核心功能流程图，流程图可使用 [Google Drawing](https://docs.google.com/drawings)、[Visio](http://products.office.com/en-us/visio/flowchart-software)、[StarUML](http://staruml.io/)。  
-
+##3. 总体设计
+![onDrow](img/zongtisheji.png) 
 
