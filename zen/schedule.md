@@ -18,7 +18,7 @@
 [PagerSlidingTab…](https://github.com/astuetz/PagerSlidingTabStrip "PagerSlidingTabStrip") | [ayyb1988](https://github.com/ayyb1988) | | |Done |03/12 |03/15 |03/22 |03/27 |03/27
 [ActiveAndroid](https://github.com/pardom/ActiveAndroid) | [ouyang…](https://github.com/ouyangxiangshao "ouyangxiangshao") | | | Done | 03/11 | 03/18 | 03/25 | 04/02 | 04/09
 [PullToZoomIn…](https://github.com/matrixxun/PullToZoomInListView "PullToZoomInListView") | [zTimC](https://github.com/Yom9c) | | | Done | 2/20 | 03/01 | 03/8 | 03/15 |3/19|
-[CalendarListview](https://github.com/traex/CalendarListview) | [Rogary](https://github.com/Rogary) | [文档](../view/list-view/calendar-list-view) | | Done | Done | Done | 03/18 | 03/20 | 03/25  
+[CalendarListview](https://github.com/traex/CalendarListview) | [Rogary](https://github.com/Rogary) | [文档](../view/list-view/calendar-list-view) | | Done | Done | Done | Done | Done | Done  
 [AndroidResideMenu](https://github.com/SpecialCyCi/AndroidResideMenu) | [dkmeteor](https://github.com/dkmeteor) | [文档](../view/menu/reside-menu) | | 03/04 | 03/10 | 03/16 | 03/22 | 03/28 | 03/31|
 [CircularReveal](https://github.com/ozodrukh/CircularReveal) | [Toaker](https://github.com/Toaker) | | | 3/25 | 4/7 | 4/15 | 4/25 | 5/5 | 5/10 |     
 [ORMLite](https://github.com/j256/ormlite-android) | [zhoutailiang](https://github.com/zhoutailiang) | |  | 3/25 | 4/2 | 4/23 | 5/7 | 5/21 | 6/1 |
