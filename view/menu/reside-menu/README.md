@@ -107,13 +107,14 @@ TODO
     
     private void initValue(Activity activity){
         this.activity   = activity;
+        ...
         viewDecor = (ViewGroup) activity.getWindow().getDecorView();
         viewActivity = new TouchDisableView(this.activity);
         View mContent   = viewDecor.getChildAt(0);
         viewDecor.removeViewAt(0);
         viewActivity.setContent(mContent);
+        ...
         addView(viewActivity);
-		
     }
 	
 注意方法中这一部分代码,这是目前一种常见的View注入方式, SlidingMenu 和 SwipeBack 等库都使用类似机制以达到获得Activity中根视图控制权的目的.
