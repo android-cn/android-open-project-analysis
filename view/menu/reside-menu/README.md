@@ -38,7 +38,7 @@ TODO
 
 从视觉效果上来看,可能会有人以为Menu展开过程是个平移+缩小的效果,但是实际上这里只使用了一个Scale动画,并没有使用任何平移动画.
 	
-![Scale Animation](/image/Scale.png)
+![Scale Animation](./image/Scale.png)
 
 注意,缩放的中心点在屏幕外.
 	
@@ -132,10 +132,10 @@ TODO
 
 图:
 attachToActivity执行前
-![view-tree-pre-init](/image/view-tree-pre-init.png)
+![view-tree-pre-init](./image/view-tree-pre-init.png)
 
 attachToActivity执行后
-![view-tree-after-init](/image/view-tree-after-init.png)
+![view-tree-after-init](./image/view-tree-after-init.png)
 
 - public void openMenu(int direction)
 
