@@ -37,7 +37,7 @@ TODO
 #### 2.2动画原理简单介绍:
 
 从视觉效果上来看,可能会有人以为Menu展开过程是个平移+缩小的效果,但是实际上这里只使用了一个`Scale`动画,并没有使用任何平移动画.
-	
+    
 ![Scale Animation](./image/Scale.png)
 
 注意,缩放的中心点在屏幕外.
@@ -103,19 +103,17 @@ TODO
 	
 - private void initValue(Activity activity)
 
-	实例化`TouchDisableView`,并替换Activity中的`DecorView`.
-
-
-	private void initValue(Activity activity){
+实例化`TouchDisableView`,并替换Activity中的`DecorView`.
+    
+    private void initValue(Activity activity){
         this.activity   = activity;
-		...
         viewDecor = (ViewGroup) activity.getWindow().getDecorView();
         viewActivity = new TouchDisableView(this.activity);
         View mContent   = viewDecor.getChildAt(0);
         viewDecor.removeViewAt(0);
         viewActivity.setContent(mContent);
         addView(viewActivity);
-		...
+		
     }
 	
 注意方法中这一部分代码,这是目前一种常见的View注入方式, SlidingMenu 和 SwipeBack 等库都使用类似机制以达到获得Activity中根视图控制权的目的.
