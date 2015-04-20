@@ -166,7 +166,7 @@ attachToActivity执行后
 根据横竖屏设置Shadow缩放系数的调整值`shadowAdjustScaleX`和`shadowAdjustScaleY`.
 
 在打开Menu的过程中,阴影越来越明显.其原因在于,阴影的scale系数比content的系数要小,两者之间的差值即是`shadowAdjustScaleX`和`shadowAdjustScaleY`
-例如,menu完全打开时,content宽缩小到50%(mScaleValue),而阴影宽只缩小为原来的56%(mScaleValue+shadowAdjustScaleX),所以在打开的过程中,content缩小的更快,shadow缩小的更慢,相比较而言,漏出的shadow面积越来越大.
+例如,menu完全打开时,content宽缩小到50%(mScaleValue),而阴影宽只缩小为原来的56%(mScaleValue+shadowAdjustScaleX),所以在打开的过程中,content缩小的更快,shadow缩小的更慢,相比较而言,露出的shadow面积越来越大.
 
 
 - public void setDirectionDisable(int direction)
