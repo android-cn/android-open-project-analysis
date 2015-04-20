@@ -19,7 +19,7 @@ TODO
 #####优势：
 - 性能优异，几乎没有额外的重绘和性能损耗。
 - 良好的结构设计，易于扩展和改写。
-- 与DrawerLayout或SlidingMenu相比，完全是另一种风格，第一次见到时给人眼前一亮的感觉。
+- 与`DrawerLayout`或`SlidingMenu`相比，完全是另一种风格，第一次见到时给人眼前一亮的感觉。
 - 事件分发做了很好的处理，可以方便的与其它控件集成。
 
 
@@ -36,7 +36,7 @@ TODO
 
 #### 2.2动画原理简单介绍:
 
-从视觉效果上来看,可能会有人以为Menu展开过程是个平移+缩小的效果,但是实际上这里只使用了一个Scale动画,并没有使用任何平移动画.
+从视觉效果上来看,可能会有人以为Menu展开过程是个平移+缩小的效果,但是实际上这里只使用了一个`Scale`动画,并没有使用任何平移动画.
 	
 ![Scale Animation](./image/Scale.png)
 
@@ -85,7 +85,9 @@ TODO
 
 当屏幕右滑时,缩放中心是 (1.5 * width, 0.5 * height)	
 
-这和平时我们使用的缩放中心 (0.5 * width, 0.5 * height) 效果上有些不同,请结合2.2动画效果示意图
+这和平时我们使用的缩放中心 (0.5 * width, 0.5 * height)
+
+效果上有些不同,请结合2.2动画效果示意图
 	
 - private AnimatorSet buildScaleDownAnimation(View target,float targetScaleX,float targetScaleY)
 
@@ -101,7 +103,8 @@ TODO
 	
 - private void initValue(Activity activity)
 
-	实例化TouchDisableView,并替换Activity中的DecorView.
+	实例化`TouchDisableView`,并替换Activity中的`DecorView`.
+
 
 	private void initValue(Activity activity){
         this.activity   = activity;
@@ -125,7 +128,7 @@ TODO
 
 将自己添加到viewDecor的子节点上.
 
-此时ResideMenu成为了Activity中DecorView的唯一一个直接子节点,所有TouchEvent都由ResideMenu的dispatchTouchEvent最先处理,同时由TouchDisableView作为ContentView的容器,通过TouchDisableView的onInterceptTouchEvent返回值来控制是否屏蔽ContentView上的事件.例如,当Menu打开后,TouchDisableView的onInterceptTouchEvent将会固定返回true,此时TouchDisableView上发生的所有TouchEvent都会被拦截,而不会分发给ContentView处理.
+此方法执行后,`ResideMenu`成为了Activity中`DecorView`的唯一一个直接子节点,所有`TouchEvent`都由`ResideMenu`的`dispatchTouchEvent`最先处理,同时由`TouchDisableView`作为`ContentView`的容器,通过`TouchDisableView`的`onInterceptTouchEvent`返回值来控制是否屏蔽`ContentView`上的事件.例如,当Menu打开后,`TouchDisableView`的`onInterceptTouchEvent`将会固定返回`true`,此时`TouchDisableView`上发生的所有`TouchEvent`都会被拦截,而不会分发给`ContentView`处理.
 
 
 图:
@@ -147,12 +150,12 @@ attachToActivity执行后
 - private void hideScrollViewMenu(ScrollView scrollViewMenu)
 
 	展示/隐藏包含侧栏菜单的scrollViewMenu.
-	注意这里的显示和隐藏是通过addView或removeView实现的.未被添加到视图Tree的View不会参与measure,layout,draw等相关流程,menu未打开时,没有任何额外开销.这算是一项针对视图和OverDraw的优化吧.
+	注意这里的显示和隐藏是通过`addView`或`removeView`实现的.未被添加到视图Tree的View不会参与`measure`,`layout`,`draw`等相关流程,menu未打开时,没有任何额外开销.这算是一项针对视图和OverDraw的优化吧.
 	
 	
 - private void setScaleDirectionByRawX(float currentRawX)
 
-	根据当前TouchEvent的X轴位置与上一次TouchEvent的X轴位置判断当前滑动的方向.
+	根据当前`TouchEvent`的X轴位置与上一次`TouchEvent`的X轴位置判断当前滑动的方向.
 	
 - private float getTargetScale(float currentRawX)
 
@@ -166,7 +169,7 @@ attachToActivity执行后
 
 - private void setShadowAdjustScaleXByOrientation()
 
-根据横竖屏设置Shadiw缩放系数的调整值`shadowAdjustScaleX`和`shadowAdjustScaleY`.
+根据横竖屏设置Shadow缩放系数的调整值`shadowAdjustScaleX`和`shadowAdjustScaleY`.
 
 在打开Menu的过程中,阴影越来越明显.其原因在于,阴影的scale系数比content的系数要小,两者之间的差值即是`shadowAdjustScaleX`和`shadowAdjustScaleY`
 例如,menu完全打开时,content宽缩小到50%(mScaleValue),而阴影宽只缩小为原来的56%(mScaleValue+shadowAdjustScaleX),所以在打开的过程中,content缩小的更快,shadow缩小的更慢,相比较而言,漏出的shadow面积越来越大.
@@ -194,6 +197,7 @@ attachToActivity执行后
 - public void clearIgnoredViewList()
 - private boolean isInIgnoredView(MotionEvent ev)
 
+
 	switch (ev.getAction()){
         case MotionEvent.ACTION_DOWN:
 			...
@@ -208,7 +212,7 @@ attachToActivity执行后
 参考dispatchTouchEvent中部分代码,设置了IgnoredView后,在IgnoredView上开始的滑动事件,不会触发打开menu的效果.
 
 ##### 4.1.2 ResideMenuItem
-包装了侧栏菜单的一行,由一个ImageView和一个TextView组成,提供一些基本的对Text和Icon的设置方法.
+包装了侧栏菜单的一行,由一个`ImageView`和一个`TextView`组成,提供一些基本的对Text和Icon的设置方法.
 
 	<?xml version="1.0" encoding="utf-8"?>
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -238,8 +242,8 @@ attachToActivity执行后
 
 
 ##### 4.1.3 TouchDisableView
-该类本身的功能非常单纯，在本项目中起一个容器的作用,通过重载onInterceptTouchEvent方法并返回指定值来控制是否拦截内部子View的Touch事件。
-如果读者不了解onInterceptTouchEvent的运作机制,可以参考 [View 事件传递](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/touch-event.md)
+该类本身的功能非常单纯，在本项目中起一个容器的作用,通过重载`onInterceptTouchEvent`方法并返回指定值来控制是否拦截内部子`View`的`Touch`事件。
+如果读者不了解`onInterceptTouchEvent`的运作机制,可以参考 [View 事件传递](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/touch-event.md)
 
 以ResideMenu中的AnimatorListener回调为例:
 
