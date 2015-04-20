@@ -56,10 +56,10 @@ TODO
 
 - private void setScaleDirection(int direction)
 
-	本方法是该效果实现核心的部分,通过该方法配置了缩放动画的中心点.
+本方法是该效果实现核心的部分,通过该方法配置了缩放动画的中心点.
+	
 	
 	private void setScaleDirection(int direction){
-
         int screenWidth = getScreenWidth();
         float pivotX;
         float pivotY = getScreenHeight() * 0.5f;
@@ -116,9 +116,6 @@ TODO
     }
 	
 注意方法中这一部分代码,这是目前一种常见的View注入方式, SlidingMenu 和 SwipeBack 等库都使用类似机制以达到获得Activity中根视图控制权的目的.
-此时TouchDisableView成为了Activity中DecorView的唯一一个直接子节点,该View的onInterceptTouchEvent将第一个捕获发生在Activity内的所有onTouchEvent.该方法执行后TouchDisableView内的mContent则被设置成原先Activity的根视图.
-
-
 	
 - public void attachToActivity(Activity activity)
 
@@ -128,6 +125,7 @@ TODO
 
 将自己添加到viewDecor的子节点上.
 
+此时ResideMenu成为了Activity中DecorView的唯一一个直接子节点,所有TouchEvent都由ResideMenu的dispatchTouchEvent最先处理,同时由TouchDisableView作为ContentView的容器,通过TouchDisableView的onInterceptTouchEvent返回值来控制是否屏蔽ContentView上的事件.例如,当Menu打开后,TouchDisableView的onInterceptTouchEvent将会固定返回true,此时TouchDisableView上发生的所有TouchEvent都会被拦截,而不会分发给ContentView处理.
 
 
 图:
@@ -165,25 +163,49 @@ attachToActivity执行后
 	逻辑和流程太复杂,用文字不方便表述,看流程图吧.
 	
 ---
-TODO 不重要的设置类方法
 
 - private void setShadowAdjustScaleXByOrientation()
-- public void addMenuItem(ResideMenuItem menuItem)
-- public void addMenuItem(ResideMenuItem menuItem, int direction)
-- public void setMenuItems(List<ResideMenuItem> menuItems)
-- public void setMenuItems(List<ResideMenuItem> menuItems, int direction)
-- private void rebuildMenu()
-- public List<ResideMenuItem> getMenuItems()
-- public List<ResideMenuItem> getMenuItems(int direction) 
-- public void setMenuListener(OnMenuListener menuListener)
+
+根据横竖屏设置Shadiw缩放系数的调整值`shadowAdjustScaleX`和`shadowAdjustScaleY`.
+
+在打开Menu的过程中,阴影越来越明显.其原因在于,阴影的scale系数比content的系数要小,两者之间的差值即是`shadowAdjustScaleX`和`shadowAdjustScaleY`
+例如,menu完全打开时,content宽缩小到50%(mScaleValue),而阴影宽只缩小为原来的56%(mScaleValue+shadowAdjustScaleX),所以在打开的过程中,content缩小的更快,shadow缩小的更慢,相比较而言,漏出的shadow面积越来越大.
+
+
 - public void setDirectionDisable(int direction)
 - public void setSwipeDirectionDisable(int direction)
 - private boolean isInDisableDirection(int direction)
-- private void setScaleDirection(int direction)
+
+设置disable direction.
+	
+	 switch (ev.getAction()){
+        case MotionEvent.ACTION_DOWN:
+			...
+        case MotionEvent.ACTION_MOVE:
+                if (isInIgnoredView || isInDisableDirection(scaleDirection))
+                break;
+		...
+	}
+
+参考dispatchTouchEvent中部分代码,设置了disable direction后,在对应的方向上滑动时,不会触发打开menu的效果,
+
 - public void addIgnoredView(View v)
 - public void removeIgnoredView(View v)
 - public void clearIgnoredViewList()
 - private boolean isInIgnoredView(MotionEvent ev)
+
+	switch (ev.getAction()){
+        case MotionEvent.ACTION_DOWN:
+			...
+			isInIgnoredView = isInIgnoredView(ev) && !isOpened();
+			...
+        case MotionEvent.ACTION_MOVE:
+                if (isInIgnoredView || isInDisableDirection(scaleDirection))
+                break;
+		...
+	}
+
+参考dispatchTouchEvent中部分代码,设置了IgnoredView后,在IgnoredView上开始的滑动事件,不会触发打开menu的效果.
 
 ##### 4.1.2 ResideMenuItem
 包装了侧栏菜单的一行,由一个ImageView和一个TextView组成,提供一些基本的对Text和Icon的设置方法.
