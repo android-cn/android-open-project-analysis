@@ -36,10 +36,11 @@ TODO
 
 #### 2.2动画原理简单介绍:
 
-    从视觉效果上来看,可能会有人以为Menu展开过程是个平移+缩小的效果,但是实际上这里只使用了一个Scale动画,并没有使用任何平移动画.
+从视觉效果上来看,可能会有人以为Menu展开过程是个平移+缩小的效果,但是实际上这里只使用了一个Scale动画,并没有使用任何平移动画.
 	
-	[!Scale Animation](/image/Scale.png)
-	注意,缩放的中心点在屏幕外.
+[!Scale Animation](/image/Scale.png)
+
+注意,缩放的中心点在屏幕外.
 	
 ###3. 事件分发流程图
 
@@ -52,7 +53,6 @@ TODO
 ##### 4.1.1 ResideMenu
 核心类
 
-TODO 重点
 
 - private void setScaleDirection(int direction)
 
@@ -115,14 +115,9 @@ TODO 重点
 		...
     }
 	
-	注意方法中这一部分代码,这是目前一种常见的View注入方式, SlidingMenu 和 SwipeBack 等库都使用类似机制以达到获得Activity中根视图控制权的目的.
+注意方法中这一部分代码,这是目前一种常见的View注入方式, SlidingMenu 和 SwipeBack 等库都使用类似机制以达到获得Activity中根视图控制权的目的.
 此时TouchDisableView成为了Activity中DecorView的唯一一个直接子节点,该View的onInterceptTouchEvent将第一个捕获发生在Activity内的所有onTouchEvent.该方法执行后TouchDisableView内的mContent则被设置成原先Activity的根视图.
 
-图:
-initValue执行前
-initValue执行后
-
-TODO 加两张图  View-Tree
 
 	
 - public void attachToActivity(Activity activity)
@@ -134,8 +129,13 @@ TODO 加两张图  View-Tree
 将自己添加到viewDecor的子节点上.
 
 
-TODO 加张图  View-Tree
 
+图:
+attachToActivity执行前
+[!](/image/view-tree-pre-init.png)
+
+attachToActivity执行后
+[!](/image/view-tree-after-init.png)
 
 - public void openMenu(int direction)
 
