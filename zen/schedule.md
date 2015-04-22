@@ -20,7 +20,7 @@
 [PullToZoomIn…](https://github.com/matrixxun/PullToZoomInListView "PullToZoomInListView") | [zTimC](https://github.com/Yom9c) | | | Done | 2/20 | 03/01 | 03/8 | 03/15 |3/19|
 [CalendarListview](https://github.com/traex/CalendarListview) | [Rogary](https://github.com/Rogary) | [文档](../view/list-view/calendar-list-view) | | Done | Done | Done | Done | Done | Done  
 [AndroidResideMenu](https://github.com/SpecialCyCi/AndroidResideMenu) | [dkmeteor](https://github.com/dkmeteor) | [文档](../view/menu/reside-menu) | | 03/04 | 03/10 | 03/16 | 03/22 | 03/28 | 03/31|
-[CircularReveal](https://github.com/ozodrukh/CircularReveal) | [Toaker](https://github.com/Toaker) | | | 3/25 | 4/7 | 4/15 | 4/25 | 5/5 | 5/10 |     
+[CircularReveal](https://github.com/ozodrukh/CircularReveal) | [Toaker](https://github.com/Toaker) | | | Done | 4/7 | 4/15 | 4/25 | 5/5 | 5/10 |     
 [ORMLite](https://github.com/j256/ormlite-android) | [zhoutailiang](https://github.com/zhoutailiang) | |  | 3/25 | 4/2 | 4/23 | 5/7 | 5/21 | 6/1 |
 [ViewDragHelper](android/support/v4/widget/ViewDragHelper.java) | [雾雨](https://github.com/nyanpassu) | |  | 3/22 | 3/22 | 3/22 | 3/22 | 3/22 | 3/22
 [ButterKnife](https://github.com/JakeWharton/ButterKnife/) | [雾雨](https://github.com/nyanpassu) | | | 3/25 | 3/25 | 3/25 | 3/25 | 3/25 | 3/25
