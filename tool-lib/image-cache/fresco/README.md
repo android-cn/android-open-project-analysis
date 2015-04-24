@@ -57,14 +57,14 @@ Fresco.initialize(context);
 
 1. XML自定义使用：
 
-    * 在XML布局中，加入命名空间：
+    在XML布局中，加入命名空间：
 
         ```xml
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:fresco="http://schemas.android.com/apk/res-auto"
         ```
 
-    * 使用SimpleDraweeView:
+    使用SimpleDraweeView:
 
         ```xml
         <com.facebook.drawee.view.SimpleDraweeView
@@ -81,7 +81,7 @@ Fresco.initialize(context);
             />
         ```
 
-    * 设置图片路径：(支持的URIs: http://, https://, file://, content://, asset://, res://)
+    设置图片路径：(支持的URIs: http://, https://, file://, content://, asset://, res://)
 
         ```java
         //注意:这里是指绝对路径
