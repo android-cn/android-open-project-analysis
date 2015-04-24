@@ -5,11 +5,151 @@ Fresco 源码解析
  分析者：[blackiedm](https://github.com/blackiedm)，分析状态：未完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始
 
 
-###1. 功能介绍  
-功能介绍，包括功能或优点等  
+###1. 功能介绍
+####1.1 Fresco
+Fresco 是一个强大的图片加载和显示组件。支持从网络、本地文件系统、本地资源下载图片。
 
-**完成时间**  
-- `一天内`完成  
+它有三级缓存(两级内存、一级磁盘缓存)。并且支持Android2.3(API level 9) 及其以上系统。
+
+####1.2 特性
+- 出色的内存管理。当图片不显示即离屏时，占用的内存将会被释放（在Android5.0以下的系统）。
+- 支持渐进式图片格式(Progressive JPEG)。
+- 支持Gif和WebP图片格式。（而且还支持其动画）
+- 多样式的呈现方式。
+    - 取代居中，自定义聚焦点。
+    - 支持圆角或圆形图片展示。
+    - 获取图片失败时，可以点击占位图重新加载。
+    - 可以自定义背景，覆盖层，进度条。
+    - 支持自定义聚焦即手按下时的覆盖层。
+- 多样式加载
+    - 为图片指定不同远程路径，并且可以使用已经缓存在本地的图片。
+    - 支持先显示低清图片，当加载完成后在过渡为高清图片
+    - 图片加载完成后回调通知
+    - 如有EXIF缩略图，在大图加载完成之前，可先显示缩略图（只支持本地图片）
+    - 支持缩放或旋转功能
+    - 支持处理加载完成的图片
+    - 支持WebP格式图片
+
+####1.3 基本使用
+#####1.3.1 Manifest 配置 和 Gradle依赖
+在Manifest里面添加权限：
+
+```xml
+<uses-permission android:name="android.permission.INTERNET"/>
+```
+
+添加依赖：(x.x.x为版本号)
+
+```java
+dependencies{
+// your app's other dependencies
+compile 'com.facebook.fresco:fresco:x.x.x'
+}
+```
+#####1.3.2 初始化
+在Application初始化时，调用：
+
+```java
+Fresco.initialize(context);
+```
+#####1.3.3 基本使用
+一般情况下，使用SimpleDraweeView基本可完成你所需要的功能。
+
+1. XML自定义使用：
+
+    * 在XML布局中，加入命名空间：
+
+        ```xml
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:fresco="http://schemas.android.com/apk/res-auto"
+        ```
+
+    * 使用SimpleDraweeView:
+
+        ```xml
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/img"
+            android:layout_centerInParent="true"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_margin="10dp"
+            fresco:fadeDuration="1000"
+            fresco:actualImageScaleType="focusCrop"
+            fresco:placeholderImage="@color/placeholder"
+            fresco:placeholderImageScaleType="centerCrop"
+            fresco:failureImage="@color/error"
+            fresco:failureImageScaleType="center"
+            fresco:retryImage="@color/retrying"
+            fresco:retryImageScaleType="centerInside"
+            fresco:progressBarImage="@drawable/progress_bar"
+            fresco:progressBarImageScaleType="fitXY"
+            fresco:progressBarAutoRotateInterval="1000"
+            fresco:backgroundImage="@color/blue"
+            fresco:overlayImage="@color/transparent"
+            fresco:pressedStateOverlayImage="@color/transparent_50"
+            fresco:roundAsCircle="false"
+            fresco:roundedCornerRadius="10dp"
+            fresco:roundTopLeft="true"
+            fresco:roundTopRight="true"
+            fresco:roundBottomLeft="true"
+            fresco:roundBottomRight="true"
+            fresco:roundWithOverlayColor="@color/corner_color"
+            fresco:roundingBorderWidth="2dp"
+            fresco:roundingBorderColor="@color/border_color" />
+        ```
+
+    * 设置图片路径：(支持的URIs: http://, https://, file://, content://, asset://, res://)
+
+        ```java
+        //注意:这里是指绝对路径
+        simpleDraweeView.setImageURI(uri);
+        ```
+
+2. 代码自定义使用：
+
+    ```java
+    RoundingParams roundingParams = new RoundingParams();
+    roundingParams.setRoundAsCircle(true);
+    roundingParams.setBorder(R.color.border_color, 10);
+    //RoundingMethod.BITMAP_ONLY不支持failure图片，retry图片和动画（gif）,只作用于实际图片和占位图
+    roundingParams.setRoundingMethod(RoundingParams.RoundingMethod.BITMAP_ONLY);
+    //覆盖层模式
+    //roundingParams.setRoundingMethod(RoundingParams.RoundingMethod.OVERLAY_COLOR);
+    //roundingParams.setOverlayColor(getResources().getColor(R.color.corner_color));
+    //or GenericDraweeHierarchy hierarchy = simpleDraweeView.getHierarchy();
+    GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(getResources());
+    GenericDraweeHierarchy hierarchy = builder.setFadeDuration(1000)
+            //设置实际图片的scaleType
+            .setActualImageScaleType(ScalingUtils.ScaleType.FOCUS_CROP)
+            .setActualImageFocusPoint(new PointF(1f, 1f))
+             //.setActualImageColorFilter(new PorterDuffColorFilter(R.color.red, PorterDuff.Mode.DARKEN))
+                    //设置占位图drawable和scaleType
+            .setPlaceholderImage(getResources().getDrawable(R.color.placeholder), ScalingUtils.ScaleType.CENTER_CROP)
+                    //设置error drawable和scaleType
+            .setFailureImage(getResources().getDrawable(R.color.error), ScalingUtils.ScaleType.CENTER_CROP)
+                    //设置重试drawable， 记得在controller下设置setTapToRetryEnabled(true)
+            .setRetryImage(getResources().getDrawable(R.color.retrying))
+                    //设置加载条drawable
+            .setProgressBarImage(getResources().getDrawable(R.drawable.drawable_progress))
+            .setOverlay(getResources().getDrawable(R.color.transparent))
+            .setPressedStateOverlay(getResources().getDrawable(R.color.transparent_50))
+            .setRoundingParams(roundingParams)
+            .build();
+    simpleDraweeView.setHierarchy(hierarchy);
+    DraweeController controller = Fresco.newDraweeControllerBuilder()
+            //tap-to-retry load image
+            .setTapToRetryEnabled(true)
+            //.setAutoPlayAnimations(true)是否自动开启gif,webp动画,也可以在ControllerListener下手动启动动画
+            //在构建新的控制器时需要setOldController，这可以防止重新分配内存
+            .setOldController(simpleDraweeView.getController())
+            .setUri(uri)
+            .setControllerListener(this)
+            .build();
+    simpleDraweeView.setController(controller);
+    ```
+
+ 具体使用可参考[Fresco demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/fresco-demo)
+
 
 ###2. 详细设计
 ###2.1 类详细介绍
