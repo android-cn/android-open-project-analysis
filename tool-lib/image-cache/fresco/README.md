@@ -59,34 +59,34 @@ Fresco.initialize(context);
 
     在XML布局中，加入命名空间：
 
-        ```xml
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:fresco="http://schemas.android.com/apk/res-auto"
-        ```
+    ```xml
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    ```
 
     使用SimpleDraweeView:
 
-        ```xml
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/img"
-            android:layout_centerInParent="true"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_margin="10dp"
-            fresco:fadeDuration="1000"
-            fresco:placeholderImage="@color/placeholder"
-            fresco:failureImage="@color/error"
-            fresco:retryImage="@color/retrying"
-            fresco:backgroundImage="@color/blue"
-            />
-        ```
+    ```xml
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/img"
+        android:layout_centerInParent="true"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_margin="10dp"
+        fresco:fadeDuration="1000"
+        fresco:placeholderImage="@color/placeholder"
+        fresco:failureImage="@color/error"
+        fresco:retryImage="@color/retrying"
+        fresco:backgroundImage="@color/blue"
+        />
+    ```
 
     设置图片路径：(支持的URIs: http://, https://, file://, content://, asset://, res://)
 
-        ```java
-        //注意:这里是指绝对路径
-        simpleDraweeView.setImageURI(uri);
-        ```
+    ```java
+    //注意:这里是指绝对路径
+    simpleDraweeView.setImageURI(uri);
+    ```
 
 2. 代码自定义使用：
 
