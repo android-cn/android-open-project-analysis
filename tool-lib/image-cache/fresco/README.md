@@ -74,28 +74,11 @@ Fresco.initialize(context);
             android:layout_height="200dp"
             android:layout_margin="10dp"
             fresco:fadeDuration="1000"
-            fresco:actualImageScaleType="focusCrop"
             fresco:placeholderImage="@color/placeholder"
-            fresco:placeholderImageScaleType="centerCrop"
             fresco:failureImage="@color/error"
-            fresco:failureImageScaleType="center"
             fresco:retryImage="@color/retrying"
-            fresco:retryImageScaleType="centerInside"
-            fresco:progressBarImage="@drawable/progress_bar"
-            fresco:progressBarImageScaleType="fitXY"
-            fresco:progressBarAutoRotateInterval="1000"
             fresco:backgroundImage="@color/blue"
-            fresco:overlayImage="@color/transparent"
-            fresco:pressedStateOverlayImage="@color/transparent_50"
-            fresco:roundAsCircle="false"
-            fresco:roundedCornerRadius="10dp"
-            fresco:roundTopLeft="true"
-            fresco:roundTopRight="true"
-            fresco:roundBottomLeft="true"
-            fresco:roundBottomRight="true"
-            fresco:roundWithOverlayColor="@color/corner_color"
-            fresco:roundingBorderWidth="2dp"
-            fresco:roundingBorderColor="@color/border_color" />
+            />
         ```
 
     * 设置图片路径：(支持的URIs: http://, https://, file://, content://, asset://, res://)
@@ -108,42 +91,26 @@ Fresco.initialize(context);
 2. 代码自定义使用：
 
     ```java
-    RoundingParams roundingParams = new RoundingParams();
-    roundingParams.setRoundAsCircle(true);
-    roundingParams.setBorder(R.color.border_color, 10);
-    //RoundingMethod.BITMAP_ONLY不支持failure图片，retry图片和动画（gif）,只作用于实际图片和占位图
-    roundingParams.setRoundingMethod(RoundingParams.RoundingMethod.BITMAP_ONLY);
-    //覆盖层模式
-    //roundingParams.setRoundingMethod(RoundingParams.RoundingMethod.OVERLAY_COLOR);
-    //roundingParams.setOverlayColor(getResources().getColor(R.color.corner_color));
-    //or GenericDraweeHierarchy hierarchy = simpleDraweeView.getHierarchy();
     GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(getResources());
     GenericDraweeHierarchy hierarchy = builder.setFadeDuration(1000)
             //设置实际图片的scaleType
             .setActualImageScaleType(ScalingUtils.ScaleType.FOCUS_CROP)
             .setActualImageFocusPoint(new PointF(1f, 1f))
-             //.setActualImageColorFilter(new PorterDuffColorFilter(R.color.red, PorterDuff.Mode.DARKEN))
-                    //设置占位图drawable和scaleType
+            //设置占位图drawable和scaleType
             .setPlaceholderImage(getResources().getDrawable(R.color.placeholder), ScalingUtils.ScaleType.CENTER_CROP)
-                    //设置error drawable和scaleType
+            //设置error drawable和scaleType
             .setFailureImage(getResources().getDrawable(R.color.error), ScalingUtils.ScaleType.CENTER_CROP)
-                    //设置重试drawable， 记得在controller下设置setTapToRetryEnabled(true)
+            //设置重试drawable， 记得在controller下设置setTapToRetryEnabled(true)
             .setRetryImage(getResources().getDrawable(R.color.retrying))
-                    //设置加载条drawable
-            .setProgressBarImage(getResources().getDrawable(R.drawable.drawable_progress))
-            .setOverlay(getResources().getDrawable(R.color.transparent))
-            .setPressedStateOverlay(getResources().getDrawable(R.color.transparent_50))
-            .setRoundingParams(roundingParams)
             .build();
     simpleDraweeView.setHierarchy(hierarchy);
     DraweeController controller = Fresco.newDraweeControllerBuilder()
             //tap-to-retry load image
             .setTapToRetryEnabled(true)
-            //.setAutoPlayAnimations(true)是否自动开启gif,webp动画,也可以在ControllerListener下手动启动动画
             //在构建新的控制器时需要setOldController，这可以防止重新分配内存
             .setOldController(simpleDraweeView.getController())
+            //注意:uri是指绝对路径
             .setUri(uri)
-            .setControllerListener(this)
             .build();
     simpleDraweeView.setController(controller);
     ```
