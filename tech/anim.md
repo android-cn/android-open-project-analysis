@@ -1,4 +1,10 @@
-#一  View anim (Tween/Frame)
+Android 动画基础
+----------------
+> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 公共技术点中的 View 事件传递 部分  
+ 分析者：[lightSky](https://github.com/lightSky)，校对者：待定，校对状态：未完成  
+
+
+#一  传统View动画(Tween/Frame)
 
 ## 1.1 Tween动画##
 
@@ -116,7 +122,7 @@ android:toDegrees
 
 调用代码  
 
-```java
+```java 
 ImageView image = (ImageView) findViewById(R.id.image);  
 Animation hyperspaceJump = AnimationUtils.loadAnimation(this, R.anim.hyperspace_jump); 
 image.startAnimation(hyperspaceJump);  
@@ -167,7 +173,7 @@ image.startAnimation(hyperspaceJump);
 
 比如：res/anim/my_overshoot_interpolator.xml:  
 
-```
+```xml
 <?xml version="1.0" encoding="utf-8"?>  
 <overshootInterpolator xmlns:android="http://schemas.android.com/apk/res/android"  
 android:tension="7.0"/>  
@@ -187,7 +193,7 @@ android:tension="7.0"/>
 此方法由系统调用，input代表动画的时间，在0和1之间，也就是开始和结束之间。  
 
 线性（匀速）插值器定义如下：  
-```
+```java
 public float getInterpolation(float input) {    
         return input;    
 }
@@ -220,7 +226,7 @@ XML: @[package:]drawable.filename
  必须作为根元素，包含一个或者多个根元素  
 属性：android:oneshot ：true：只执行一次动画，false：循环执行  
 
-### 1.1.2  ```<item> ```
+### 1.2.2  ```<item> ```
 >A single frame of animation. Must be a child of a  ```<animation-list> ``` element.
 一帧独立动画，必须是 ```<animation-list> ```的子元素  
 
@@ -232,7 +238,7 @@ Integer类型.该帧的时长，单位为毫秒milliseconds.
 
 res/anim/rocket.xml:    
 
-```        
+```xml        
 <?xml version="1.0" encoding="utf-8"?>  
         <animation-list xmlns:android="http://schemas.android.com/apk/res/android"  
             android:oneshot="false">  
@@ -249,19 +255,6 @@ rocketImage.setBackgroundResource(R.drawable.rocket_thrust);
 rocketAnimation = (AnimationDrawable) rocketImage.getBackground();  
 rocketAnimation.start();
 ```
-###View anim与property anim 的比较
-
-####View anim 系统
-view animation system提供的能力只能够为View添加动画。因此如果你想为非View对象添加动画，就必须自己去实现，
-view animation system在View动画的展现方面也是有约束的，只暴露了View的很少方面。比如View支持缩放和旋转，但不支持背景颜色的动画。  
-view animation system的另一劣势是，其改变的是View的绘制效果，真正的View的属性保持不变，比如无论你在对话中如何缩放Button的大小，Button的有效点击区域还是没有应用到动画时的区域，其位置与大小都不变。  
-但是View animation system只需花费很少时间创建而且只需很少的代码。如果View 动画完成了你所有的动作，或者你存在的代码已经达到了你想要的效果，就没必要使用property 动画系统了。
-
-####property anim 系统
-完全弥补了View anim System的缺陷，你可以为一个对象的任何属性添加动画，（View或者非View），同时对象自己也会被修改。
-并且当属性变化的时候，property Anim系统会自动的刷新屏幕。  
-属性动画系统在处理动画方面也更加强劲。更高级的，你可以指定动画的属性，比如颜色，位置，大小，定义动画的插值器并且同步多个动画。  
-并且在Property Animation中，改变的是对象的实际属性，如Button的缩放，Button的位置与大小属性值都改变了。而且Property Animation不止可以应用于View，还可以应用于任何对象。
 
 
 #  二. Property Animation
@@ -329,7 +322,7 @@ Evaluators 告诉属性动画系统如何去计算一个属性值。它们通过
 属性动画中的主要的时序引擎，如动画时间，开始、结束属性值，相应时间属性值计算方法等。包含了所有计算动画值的核心函数。也包含了每一个动画时间上的细节，信息，一个动画是否重复，是否监听更新事件等，并且还可以设置自定义的计算类型。  
 
 使用ValueAnimator实现动画需要手动更新：  
-```
+```java 
 ValueAnimator animation = ValueAnimator.ofFloat(0f, 1f);
 animation.setDuration(1000);
 animation.addUpdateListener(new AnimatorUpdateListener() {
@@ -445,7 +438,7 @@ ObjectAnimator.ofPropertyValuesHolder(myView, pvhX, pvyY).start();
 **因此，Keyframe的定制性更高，你如果想精确控制某一个时间点的动画值及其运动规律，你可以自己创建特定的Keyframe**  
 
 **Keyframe使用**  
-为了实例化一个`keyframe`对象，你必须使用某一个工厂方法：ofInt(), ofFloat(), or ofObject() 去获取合适的`keyframe`类型，然后你调用`ofKeyframe`工厂方法去获取一个`PropertyValuesHolder`对象，一旦你拥有了该对象，你可以将PropertyValuesHolder作为参数获取一个`vanimatorv`，如下：  
+为了实例化一个`keyframe`对象，你必须使用某一个工厂方法：ofInt(), ofFloat(), or ofObject() 去获取合适的`keyframe`类型，然后你调用`ofKeyframe`工厂方法去获取一个`PropertyValuesHolder`对象，一旦你拥有了该对象，你可以将PropertyValuesHolder作为参数获取一个`Animator`，如下：  
 ```java
 Keyframe kf0 = Keyframe.ofFloat(0f, 0f);
 Keyframe kf1 = Keyframe.ofFloat(.5f, 360f);
@@ -463,7 +456,7 @@ rotationAnim.setDuration(5000);
 ValueAnimator - `<animator>`  
 ObjectAnimator - `<objectAnimator>`  
 AnimatorSet - `<set>`  
-```
+```xml
 <set android:ordering="sequentially">
     <set>
         <objectAnimator
@@ -483,7 +476,7 @@ AnimatorSet - `<set>`
         android:valueTo="1f"/>
 </set>
 ```
-```
+```java
 AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(myContext,
     R.anim.property_animator);
 set.setTarget(myObject);
@@ -582,7 +575,7 @@ Value Description
 floatType (default)  
 
 res/animator/property_animator.xml:  
-```
+```xml
 <set android:ordering="sequentially">  
     <set>  
         <objectAnimator  
@@ -605,17 +598,39 @@ res/animator/property_animator.xml:
 
 为了执行该动画，必须在代码中将该动画资源文件填充为一个AnimationSet对象，然后在执行动画前，为目标对象设置所有的动画集合。  
 简便的方法就是通过setTarget方法为目标对象设置动画集合，代码如下：  
-```
+```java
 AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(myContext,  
    R.anim.property_animator);  
 set.setTarget(myObject);  
 set.start();  
 ```
 
+#三 View anim与property anim 的比较
+
+####View anim 系统
+view animation system提供的能力只能够为View添加动画。因此如果你想为非View对象添加动画，就必须自己去实现，
+view animation system在View动画的展现方面也是有约束的，只暴露了View的很少方面。比如View支持缩放和旋转，但不支持背景颜色的动画。  
+view animation system的另一劣势是，其改变的是View的绘制效果，真正的View的属性保持不变，比如无论你在对话中如何缩放Button的大小，Button的有效点击区域还是没有应用到动画时的区域，其位置与大小都不变。  
+但是View animation system只需花费很少时间创建而且只需很少的代码。如果View 动画完成了你所有的动作，或者你存在的代码已经达到了你想要的效果，就没必要使用property 动画系统了。
+
+####property anim 系统
+完全弥补了View anim System的缺陷，你可以为一个对象的任何属性添加动画，（View或者非View），同时对象自己也会被修改。
+并且当属性变化的时候，property Anim系统会自动的刷新屏幕。  
+属性动画系统在处理动画方面也更加强劲。更高级的，你可以指定动画的属性，比如颜色，位置，大小，定义动画的插值器并且同步多个动画。  
+并且在Property Animation中，改变的是对象的实际属性，如Button的缩放，Button的位置与大小属性值都改变了。而且Property Animation不止可以应用于View，还可以应用于任何对象。
+
 平时使用的简单动画特效，使用View动画就可以满足，但是如果你想做的更加复杂，比如背景色的动画，或者不仅是View，还希望对其它对象添加动画等，那么你就得考虑使用Property动画了。  
 
-更多动画开源库及使用，可以参考个人博客动画系列：[Android动画](http://www.lightskystreet.com/categories/Android/Android%E5%8A%A8%E7%94%BB/)  
+更多动画开源库及使用，可以参考个人博客：[Android动画系列](http://www.lightskystreet.com/categories/Android/Android%E5%8A%A8%E7%94%BB/)，其中介绍了一些基本使用，也提到了一些GitHub上的动画开源库，可以作为Android动画学习的资料  
 
 参考文献：  
-http://developer.android.com/guide/topics/resources/animation-resource.html#val-animator-element
-http://blog.csdn.net/liuhe688/article/details/6660823
+http://developer.android.com/guide/topics/resources/animation-resource.html#val-animator-element  
+http://blog.csdn.net/liuhe688/article/details/6660823  
+http://developer.android.com/guide/topics/resources/animation-resource.html#Property  
+http://developer.android.com/guide/topics/graphics/prop-animation.html  
+http://android-developers.blogspot.jp/2011/02/animation-in-honeycomb.html  
+http://www.cnblogs.com/angeldevil/archive/2011/12/02/2271096.html  
+http://cogitolearning.co.uk/?p=1078  
+http://www.2cto.com/kf/201306/222725.html  
+http://my.oschina.net/banxi/blog/135633  
+http://zhouyunan2010.iteye.com/blog/1972789  
