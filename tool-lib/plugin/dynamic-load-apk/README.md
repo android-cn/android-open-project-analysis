@@ -14,23 +14,23 @@ DynamicLoadApk 是一个 Android App 插件化开发的开源框架。它提供�
 三种开发模式都可以在 demo 中看到。  
 
 ####1.2 核心概念
-1. 宿主：主 App，可以在其中加载插件，也称 Host。  
-2. 插件：插件 App，被宿主加载的 App，也称 Plugin，可以使跟一般 App 一样的 Apk 文件。  
-3. 代理组件：在宿主的 Manifest 中注册，真正被启动的组件。包括 DLProxyActivity(代理 Activity)、DLProxyFragmentActivity(代理 FragmentActivity)、DLProxyService(代理 Service)。  
-4. 插件组件：插件 App 中的组件。
-5. Base 组件：插件组件的基类，包括 DLBasePluginActivity(插件 Activity 的基类)、DLBasePluginFragmentActivity(插件 FragmentActivity 的基类)、DLBasePluginService(插件 Service 的基类)。  
+(1) 宿主：主 App，可以在其中加载插件，也称 Host。  
+(2) 插件：插件 App，被宿主加载的 App，也称 Plugin，可以使跟一般 App 一样的 Apk 文件。  
+(3) 代理组件：在宿主的 Manifest 中注册，真正被启动的组件。包括 DLProxyActivity(代理 Activity)、DLProxyFragmentActivity(代理 FragmentActivity)、DLProxyService(代理 Service)。  
+(4) 插件组件：插件 App 中的组件。
+(5) Base 组件：插件组件的基类，包括 DLBasePluginActivity(插件 Activity 的基类)、DLBasePluginFragmentActivity(插件 FragmentActivity 的基类)、DLBasePluginService(插件 Service 的基类)。  
 
 ###2. 总体设计
 ![总体设计图](image/overall-design.png)   
 上面是 DynamicLoadApk 的总体设计图，DynamicLoadApk 主要分为三大模块：  
-1. DLPluginManager 插件管理模块，负责插件的加载、管理以及启动插件组件。  
-2. Proxy 代理模块，包括代理 Activity、代理 FragmentActivity、代理 Service。
-3. Plugin 插件组件的基类模块
+(1) DLPluginManager 插件管理模块，负责插件的加载、管理以及启动插件组件。  
+(2) Proxy 代理模块，包括代理 Activity、代理 FragmentActivity、代理 Service。  
+(3) Plugin 插件组件的基类模块  
 具体每个模块作用及流程在下面介绍。  
 DynamicLoadApk 原理的核心思想可以总结为两个字：代理。通过在 Manifest 中注册代理 Activity 等，当需要启动插件 Activity 时启动相对应的代理 Activity，并在代理 Activity 启动的过程中初始化插件 Activity。  
 
 ###3. 流程图
-![流程图](image/flow-chart.png)
+![流程图](image/flow-chart.png)  
 上面是 DynamicLoadApk 的总体流程图。  
 1. 首先通过 DLPluginManager 的 loadApk 函数加载插件，每次插件此步只会执行一次。  
 2. 通过 DLPluginManager 的 startPluginActivity 等函数启动组件。  
@@ -38,7 +38,7 @@ DynamicLoadApk 原理的核心思想可以总结为两个字：代理。通过�
 
 ###4. 详细设计 
 ####4.1 类关系图
-![类关系图](image/class-relation.jpg)  
+![类关系图](image/class-relation.png)  
 
 ####4.2 类功能介绍
 #####4.2.1 DLPluginManager.java
