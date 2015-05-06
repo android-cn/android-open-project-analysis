@@ -31,7 +31,8 @@ DynamicLoadApk 原理的核心思想可以总结为两个字：代理。通过�
 **(1) DLPluginManager**   
 插件管理模块，负责插件的加载、管理以及启动插件组件。  
 **(2) Proxy**   
-代理模块，包括代理 Activity (DLProxyActivity)、代理 FragmentActivity(DLProxyFragmentActivity)、代理 Service(DLProxyService)。 **(3) 组件Proxy Impl**     
+代理模块，包括代理 Activity (DLProxyActivity)、代理 FragmentActivity(DLProxyFragmentActivity)、代理 Service(DLProxyService)。      
+**(3) Proxy Impl**     
 与(2)中的Proxy不同的是这部分Proxy并不是一个组件，而是负责构建、加载插件组件的管理器。这些Proxy Impl通过反射得到插件组件，然后将插件与Proxy组件建立关联，最后调用插件组件的onCreate函数将插件启动起来。      
 **(4) Plugin**  
 插件组件的基类模块。  
@@ -265,8 +266,11 @@ Ant 打包需要修改 build.xml 中 dex target 引用到的 compileclasspath �
     }
 ```
 
-####5.3 这里还有个插件和宿主资源 id 可能重复的问题没有解决
-需要修改 aapt 中资源 id 生成的规则。  
+#### 5.3 DynamicLoadApk待完善的问题
+
+1. 还未支持广播;
+2. Base Plugin中的that还未去掉，需要覆写Activity的相关方法；
+3. 插件和宿主资源 id 可能重复的问题没有解决，需要修改 aapt 中资源 id 生成的规则。
 
 ####5.4 其他插件化方案
 除了 DynamicLoadApk 用代理的方式实现外，目前还有两种插件化方案：  
@@ -274,8 +278,5 @@ Ant 打包需要修改 build.xml 中 dex target 引用到的 compileclasspath �
 (2). 动态生成一个插件类 A 继承自待启动插件 Activity，启动插件 A  
 具体可见：[Android 插件化](http://www.trinea.cn/android/android-plugin/)
 
-#### 5.5 DynamicLoadApk待完善的问题
 
-1. 还未支持广播;
-2. Base Plugin中的that还未去掉，需要覆写Activity的相关方法。
 
