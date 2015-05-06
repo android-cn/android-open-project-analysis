@@ -17,7 +17,7 @@ DynamicLoadApk 是一个 Android App 插件化开发的开源框架。它提供�
 ####1.2 核心概念
 **(1) 宿主：**主 App，可以加载插件，也称 Host。  
 **(2) 插件：**插件 App，被宿主加载的 App，也称 Plugin，可以使跟一般 App 一样的 Apk 文件。  
-**(3) 插件组件：**插件中的组件。
+**(3) 插件组件：**插件中的组件。  
 **(4) 代理组件：**在宿主的 Manifest 中注册，启动插件组件时真正被启动的组件。目前包括 DLProxyActivity(代理 Activity)、DLProxyFragmentActivity(代理 FragmentActivity)、DLProxyService(代理 Service)。  
 (5) Base 组件：插件组件的基类，目前包括 DLBasePluginActivity(插件 Activity 的基类)、DLBasePluginFragmentActivity(插件 FragmentActivity 的基类)、DLBasePluginService(插件 Service 的基类)。  
 
@@ -26,11 +26,11 @@ DynamicLoadApk 原理的核心思想可以总结为两个字：代理。通过�
 ###2. 总体设计
 ![总体设计图](image/overall-design.png)   
 上面是 DynamicLoadApk 的总体设计图，DynamicLoadApk 主要分为三大模块：  
-(1) DLPluginManager   
+**(1) DLPluginManager**   
 插件管理模块，负责插件的加载、管理以及启动插件组件。  
-(2) Proxy  
+**(2) Proxy**  
 代理模块，包括代理 Activity、代理 FragmentActivity、代理 Service。  
-(3) Plugin  
+**(3) Plugin**  
 插件组件的基类模块。  
 
 ###3. 流程图
@@ -266,7 +266,7 @@ Ant 打包需要修改 build.xml 中 dex target 引用到的 compileclasspath �
 需要修改 aapt 中资源 id 生成的规则。  
 
 ####5.4 其他插件化方案
-除了 DynamicLoadApk 用代理的方式实现外，目前还有两种插件化方案，
+除了 DynamicLoadApk 用代理的方式实现外，目前还有两种插件化方案：  
 (1). 用 Fragment 以及 schema 的方式实现  
 (2). 动态生成一个插件类 A 继承自待启动插件 Activity，启动插件 A  
 具体可见：[Android 插件化](http://www.trinea.cn/android/android-plugin/)
