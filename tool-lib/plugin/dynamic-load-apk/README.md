@@ -7,6 +7,7 @@ DynamicLoadApk 源码解析
 ###1. 功能介绍  
 ####1.1 简介
 DynamicLoadApk 是一个 Android App 插件化开发的开源框架。它提供了 3 种开发方式，让开发者在无需理解其工作原理的情况下快速的集成插件化功能。  
+
 1. 宿主程序与插件完全独立 
 2. 宿主程序开放部分接口供插件与之通信 
 3. 宿主程序耦合插件的部分业务逻辑 
@@ -14,65 +15,69 @@ DynamicLoadApk 是一个 Android App 插件化开发的开源框架。它提供�
 三种开发模式都可以在 demo 中看到。  
 
 ####1.2 核心概念
-(1) 宿主：主 App，可以在其中加载插件，也称 Host。  
-(2) 插件：插件 App，被宿主加载的 App，也称 Plugin，可以使跟一般 App 一样的 Apk 文件。  
-(3) 代理组件：在宿主的 Manifest 中注册，真正被启动的组件。包括 DLProxyActivity(代理 Activity)、DLProxyFragmentActivity(代理 FragmentActivity)、DLProxyService(代理 Service)。  
-(4) 插件组件：插件 App 中的组件。
-(5) Base 组件：插件组件的基类，包括 DLBasePluginActivity(插件 Activity 的基类)、DLBasePluginFragmentActivity(插件 FragmentActivity 的基类)、DLBasePluginService(插件 Service 的基类)。  
+**(1) 宿主：**主 App，可以加载插件，也称 Host。  
+**(2) 插件：**插件 App，被宿主加载的 App，也称 Plugin，可以使跟一般 App 一样的 Apk 文件。  
+**(3) 插件组件：**插件中的组件。
+**(4) 代理组件：**在宿主的 Manifest 中注册，启动插件组件时真正被启动的组件。目前包括 DLProxyActivity(代理 Activity)、DLProxyFragmentActivity(代理 FragmentActivity)、DLProxyService(代理 Service)。  
+(5) Base 组件：插件组件的基类，目前包括 DLBasePluginActivity(插件 Activity 的基类)、DLBasePluginFragmentActivity(插件 FragmentActivity 的基类)、DLBasePluginService(插件 Service 的基类)。  
+
+DynamicLoadApk 原理的核心思想可以总结为两个字：代理。通过在 Manifest 中注册代理组件，当需要启动插件组件时启动相对应的代理组件，并在代理组件启动的过程中初始化插件组件。  
 
 ###2. 总体设计
 ![总体设计图](image/overall-design.png)   
 上面是 DynamicLoadApk 的总体设计图，DynamicLoadApk 主要分为三大模块：  
-(1) DLPluginManager 插件管理模块，负责插件的加载、管理以及启动插件组件。  
-(2) Proxy 代理模块，包括代理 Activity、代理 FragmentActivity、代理 Service。  
-(3) Plugin 插件组件的基类模块  
-具体每个模块作用及流程在下面介绍。  
-DynamicLoadApk 原理的核心思想可以总结为两个字：代理。通过在 Manifest 中注册代理 Activity 等，当需要启动插件 Activity 时启动相对应的代理 Activity，并在代理 Activity 启动的过程中初始化插件 Activity。  
+(1) DLPluginManager   
+插件管理模块，负责插件的加载、管理以及启动插件组件。  
+(2) Proxy  
+代理模块，包括代理 Activity、代理 FragmentActivity、代理 Service。  
+(3) Plugin  
+插件组件的基类模块。  
 
 ###3. 流程图
 ![流程图](image/flow-chart.png)  
-上面是 DynamicLoadApk 的总体流程图。  
-1. 首先通过 DLPluginManager 的 loadApk 函数加载插件，每次插件此步只会执行一次。  
-2. 通过 DLPluginManager 的 startPluginActivity 等函数启动组件。  
-3. 代理 Activity 启动过程中初始化插件 Activity 并启动。  
+上面是 DynamicLoadApk 的总体流程图。   
+(1) 首先通过 DLPluginManager 的 loadApk 函数加载插件，每次插件此步只会执行一次。  
+(2) 通过 DLPluginManager 的 startPluginActivity 等函数启动组件。  
+(3) 代理 Activity 启动过程中初始化插件 Activity 并启动。  
 
 ###4. 详细设计 
 ####4.1 类关系图
 ![类关系图](image/class-relation.png)  
+以上是 DynamicLoadApk 主要类的关系图，跟总体设计中介绍的一样大致分为三部分。   
+对于 Proxy 部分，每个组件都存在 DLAttachable 接口，方便统一该组件不同类，如 Activity、FragmentActivity。每个组件的主要实现部分都统一放到了对应的 DL*Impl 中。  
+对于 Base Plugin 部分，每个组件都存在 DLPlugin 接口，同样是方便统一该组件不同类。  
 
 ####4.2 类功能介绍
 #####4.2.1 DLPluginManager.java
 DynamicLoadApk 框架的核心类，主要功能包括：  
-(1) 插件的加载和管理，下面介绍的函数 (2) 到 (8)。  
-(2) 调用插件的组件，目前包括 Activity、Service。  
+(1) 插件的加载和管理；  
+(2) 启动插件的组件，目前包括 Activity、Service。  
 
-主要属性：   
-`mNativeLibDir`为 native lib 存放目录的路径。  
-`mPackagesHolder` key 为包名，value 为插件信息`DLPluginPackage`的 HashMap，存储已经加载了的插件信息。  
+**主要属性：**   
+`mNativeLibDir`为插件 native lib 拷贝到宿主中后的存放目录路径。  
+`mPackagesHolder` HashMap，key 为包名，value 为表示插件信息的`DLPluginPackage`，存储已经加载过的插件信息。  
 
-主要函数：  
+**主要函数：**  
 **(1) getInstance(Context context)**  
-获取 DLPluginManager 对象单例。  
-在私有构造函数中将`mNativeLibDir`变量赋值为当前 App 应用程序数据目录下名为`pluginlib`子目录的全路径。  
+获取 DLPluginManager 对象的单例。  
+在私有构造函数中将`mNativeLibDir`变量赋值为宿主 App 应用程序数据目录下名为`pluginlib`子目录的全路径。  
 
 **(2) loadApk(String dexPath)**  
-加载插件。  
-参数 dexPath 为插件的文件路径。  
-这个函数是直接调用 loadApk(final String dexPath, boolean hasSoLib)。  
+加载插件。参数 dexPath 为插件的文件路径。  
+这个函数直接调用 loadApk(final String dexPath, boolean hasSoLib)。  
 
 **(3) loadApk(final String dexPath, boolean hasSoLib)**  
-加载插件 Apk。  
-参数 dexPath 为插件的文件路径，hasSoLib 表示插件是否含有 so 库。  
+加载插件 Apk。参数 dexPath 为插件的文件路径，hasSoLib 表示插件是否含有 so 库。  
 
-**注意：**再调用插件的组件前，必须先调用上面两个函数之一加载插件，并且只能在宿主中调用。  
+**注意：**在启动插件的组件前，必须先调用上面两个函数之一加载插件，并且只能在宿主中调用。  
 
-loadApk 流程图如下：  
+流程图如下：  
 ![load-apk-flow-chart](./image/load-apk-flow-chart.png)  
 loadApk 函数调用 preparePluginEnv 函数加载插件，图中虚线框为 preparePluginEnv 的流程图。  
 
 **(4) preparePluginEnv(PackageInfo packageInfo, String dexPath)**  
-加载插件及其资源。  
-调用`createDexClassLoader(…)`、`createAssetManager(…)`、`createResources(…)`函数完成上面流程图中的相应部分。  
+加载插件及其资源。流程图如上图。  
+调用`createDexClassLoader(…)`、`createAssetManager(…)`、`createResources(…)`函数完成相应初始化部分。  
 
 **(5) createDexClassLoader(String dexPath)**  
 利用`DexClassLoader`加载插件，DexClassLoader初始化函数如下：    
@@ -82,7 +87,7 @@ public DexClassLoader (String dexPath, String optimizedDirectory, String library
 其中`dexPath`为插件的路径。  
 `optimizedDirectory`优化后的`dex`存放路径。这里将路径设置为当前 App 应用程序数据目录下名为`dex`的子目录中。  
 `libraryPath`为 Native Library 存放的路径。这里将路径设置为`mNativeLibDir`，在`getInstance(Context)`函数中已经初始化。  
-`parent`父 ClassLoader，ClassLoader 采用双亲委托模式查找类，具体加载方式可见[ClassLoader基础](http://www.trinea.cn/android/java-loader-common-class/)。  
+`parent`父 ClassLoader，ClassLoader 采用双亲委托模式查找类，具体加载方式可见 [ClassLoader基础](http://www.trinea.cn/android/java-loader-common-class/)。  
 
 **(6) createAssetManager(String dexPath)**  
 创建 AssetManager，加载插件资源。  
@@ -224,22 +229,22 @@ onCreate 函数，会在代理 Activity onCreate 函数中被调用。
 `mProxyActivity`为代理 Activity，通过`attach(…)`函数绑定。  
 `that`与`mProxyActivity`等同，只是为了和`this`指针区分，表示真实的`Context`，这里真实指的是被代理情况下为代理 Activity，未被代理情况下等同于 this。  
 
-#####4.2.7 DLBasePluginService.java  
+#####4.2.8 DLBasePluginService.java  
 插件 Service 基类，插件中的 Service 要继承这个基类，主要作用是根据是否被代理，确定一些函数直接走父类逻辑还是代理 Service 或是空逻辑。  
 主要变量含义与`DLBasePluginActivity`类似，不重复介绍。  
 PS：截止目前这个类还是不完善的，至少和`DLBasePluginActivity`对比，还不支持非代理的情况
 
-#####4.2.7 DLIntent.java
+#####4.2.9 DLIntent.java
 继承自 Intent，封装了待启动组件的 PackageName 和 ClassName。  
 
-####4.2.9 SoLibManager.java
+####4.2.10 SoLibManager.java
 调用`SoLibManager`拷贝 so 库到 Native Library 目录。  
 
-主要函数：  
+**主要函数：**  
 **(1) copyPluginSoLib(Context context, String dexPath, String nativeLibDir)**  
 函数中以`ZipFile`形式加载插件，循环读取其中的文件，如果为`.so`结尾文件、符合当前平台 CPU 类型且尚未拷贝过最新版，则新建`Runnable`拷贝 so 文件。  
 
-####4.2.9 DLUtils.java
+####4.2.11 DLUtils.java
 这个类中大都是无用或是不该放在这里的函数，也许是大版本升级及维护人过多后对工具函数的维护不够所致。  
 
 ###5. 杂谈
