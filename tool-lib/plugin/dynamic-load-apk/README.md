@@ -2,11 +2,15 @@ DynamicLoadApk 源码解析
 ====================================
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 DynamicLoadApk 部分  
 > 项目地址：[DynamicLoadApk](https://github.com/singwhatiwanna/dynamic-load-apk)，分析的版本：[144571b](https://github.com/singwhatiwanna/dynamic-load-apk/commit/144571b51a6b42fd18b6e5ecee1142fcb8dc17e5 "Commit id is 144571b51a6b42fd18b6e5ecee1142fcb8dc17e5")，Demo 地址：[DynamicLoadApk Demo](https://github.com/android-cn/android-open-project-demo/tree/master/dynamic-load-apk-demo)    
-> 分析者：[FFish](https://github.com/FFish)，分析状态：完成，校对者：[Trinea](https://github.com/trinea)，校对状态：进行中   
+> 分析者：[FFish](https://github.com/FFish)，分析状态：完成，校对者：[Trinea](https://github.com/trinea)，校对状态：初审完成   
 
 ###1. 功能介绍  
 ####1.1 简介
-DynamicLoadApk 是一个开源的 Android 插件化框架。它提供了 3 种开发方式，让开发者在无需理解其工作原理的情况下快速的集成插件化功能。  
+DynamicLoadApk 是一个开源的 Android 插件化框架。  
+
+插件化的优点包括：(1) 模块解耦，(2) 动态升级，(3) 高效并行开发(编译速度更快) (4) 按需加载，内存占用更低等等。  
+
+它提供了 3 种开发方式，让开发者在无需理解其工作原理的情况下快速的集成插件化功能。  
 
 1. 宿主程序与插件完全独立 
 2. 宿主程序开放部分接口供插件与之通信 
@@ -280,16 +284,14 @@ Ant 打包需要修改 build.xml 中 dex target 引用到的 compileclasspath �
 ```
 
 #### 5.3 DynamicLoadApk 待完善的问题
-
-1. 还未支持广播;
-2. Base Plugin 中的 that 还未去掉，需要覆写 Activity 的相关方法；
-3. 插件和宿主资源 id 可能重复的问题没有解决，需要修改 aapt 中资源 id 的生成规则。
+(1) 还未支持广播;  
+(2) Base Plugin 中的 that 还未去掉，需要覆写 Activity 的相关方法；  
+(3) 插件和宿主资源 id 可能重复的问题没有解决，需要修改 aapt 中资源 id 的生成规则。  
 
 ####5.4 其他插件化方案
 除了 DynamicLoadApk 用代理的方式实现外，目前还有两种插件化方案：  
 (1). 用 Fragment 以及 schema 的方式实现。  
 (2). 利用字节码库动态生成一个插件类 A 继承自待启动插件 Activity，启动插件 A。这个插件 A 名称固定且已经在 Manifest 中注册。  
-具体可见：[Android 插件化](http://www.trinea.cn/android/android-plugin/)
+具体可见：[Android 插件化](http://www.trinea.cn/android/android-plugin/)  
 
-
-
+最后 H5 框架越来越多，也能解决插件化解决的自动升级这部分功能，硬件、网络也在改善，未来何如？  
