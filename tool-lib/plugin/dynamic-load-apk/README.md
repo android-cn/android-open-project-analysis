@@ -16,14 +16,14 @@ DynamicLoadApk 是一个 Android App 插件化开发的开源框架。它提供�
 
 ####1.2 核心概念
 **(1) 宿主：**主 App，可以加载插件，也称 Host。  
-**(2) 插件：**插件 App，被宿主加载的 App，也称 Plugin，可以使跟一般 App 一样的 Apk 文件。  
+**(2) 插件：**插件 App，被宿主加载的 App，也称 Plugin，可以是跟普通 App 一样的 Apk 文件。  
 **(3) 插件组件：**插件中的组件。  
 
 **(4) 代理组件：**在宿主的 Manifest 中注册，启动插件组件时真正被启动的组件。目前包括 DLProxyActivity(代理 Activity)、DLProxyFragmentActivity(代理 FragmentActivity)、DLProxyService(代理 Service)。  
 
 **(5) Base 组件：**插件组件的基类，目前包括 DLBasePluginActivity(插件 Activity 的基类)、DLBasePluginFragmentActivity(插件 FragmentActivity 的基类)、DLBasePluginService(插件 Service 的基类)。  
 
-DynamicLoadApk 原理的核心思想可以总结为两个字：代理。通过在 Manifest 中注册代理组件，当需要启动插件组件时首先启动一个代理组件，并通过这个代理组件来启动插件组件。相当于插件组件被包裹在代理组件当中，代理组件只是一个空壳，插件组件运行在代理组件之上。  
+DynamicLoadApk 原理的核心思想可以总结为两个字：代理。通过在 Manifest 中注册代理组件，当需要启动插件组件时首先启动一个代理组件，然后通过这个代理组件来构建、启动插件组件。  
 
 ###2. 总体设计
 ![总体设计图](image/overall-design.png)   
@@ -31,17 +31,17 @@ DynamicLoadApk 原理的核心思想可以总结为两个字：代理。通过�
 **(1) DLPluginManager**   
 插件管理模块，负责插件的加载、管理以及启动插件组件。  
 **(2) Proxy**   
-代理模块，包括代理 Activity (DLProxyActivity)、代理 FragmentActivity(DLProxyFragmentActivity)、代理 Service(DLProxyService)。      
-**(3) Proxy Impl**     
-与(2)中的Proxy不同的是这部分Proxy并不是一个组件，而是负责构建、加载插件组件的管理器。这些Proxy Impl通过反射得到插件组件，然后将插件与Proxy组件建立关联，最后调用插件组件的onCreate函数将插件启动起来。      
+代理模块，目前包括 DLProxyActivity(代理 Activity)、DLProxyFragmentActivity(代理 FragmentActivity)、DLProxyService(代理 Service)。      
+**(3) Proxy Impl**  
+与(2)中的 Proxy 不同的是，这部分并不是一个组件，而是负责构建、加载插件组件的管理器。这些 Proxy Impl 通过反射得到插件组件，然后将插件与 Proxy 组件建立关联，最后调用插件组件的 onCreate 函数进行启动。      
 **(4) Plugin**  
-插件组件的基类模块。  
+插件组件的基类模块，目前包括 DLBasePluginActivity(插件 Activity 的基类)、DLBasePluginFragmentActivity(插件 FragmentActivity 的基类)、DLBasePluginService(插件 Service 的基类)。   
 
 ###3. 流程图
 ![流程图](image/flow-chart.png)  
-上面是 DynamicLoadApk 的总体流程图。   
-(1) 首先通过 DLPluginManager 的 loadApk 函数加载插件，每次插件此步只会执行一次。  
-(2) 通过 DLPluginManager 的 startPluginActivity 等函数启动组件。  
+上面是调用插件 Activity 的流程图，其他组件流程类似。   
+(1) 首先通过 DLPluginManager 的 loadApk 函数加载插件，这步每个插件只需要执行一次。  
+(2) 通过 DLPluginManager 的 startPluginActivity 函数启动代理 Activity。  
 (3) 代理 Activity 启动过程中构建、启动插件 Activity 。  
 
 ###4. 详细设计 
