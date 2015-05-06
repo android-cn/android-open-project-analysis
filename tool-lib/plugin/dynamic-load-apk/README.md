@@ -18,8 +18,10 @@ DynamicLoadApk 是一个 Android App 插件化开发的开源框架。它提供�
 **(1) 宿主：**主 App，可以加载插件，也称 Host。  
 **(2) 插件：**插件 App，被宿主加载的 App，也称 Plugin，可以使跟一般 App 一样的 Apk 文件。  
 **(3) 插件组件：**插件中的组件。  
+
 **(4) 代理组件：**在宿主的 Manifest 中注册，启动插件组件时真正被启动的组件。目前包括 DLProxyActivity(代理 Activity)、DLProxyFragmentActivity(代理 FragmentActivity)、DLProxyService(代理 Service)。  
-(5) Base 组件：插件组件的基类，目前包括 DLBasePluginActivity(插件 Activity 的基类)、DLBasePluginFragmentActivity(插件 FragmentActivity 的基类)、DLBasePluginService(插件 Service 的基类)。  
+
+**(5) Base 组件：**插件组件的基类，目前包括 DLBasePluginActivity(插件 Activity 的基类)、DLBasePluginFragmentActivity(插件 FragmentActivity 的基类)、DLBasePluginService(插件 Service 的基类)。  
 
 DynamicLoadApk 原理的核心思想可以总结为两个字：代理。通过在 Manifest 中注册代理组件，当需要启动插件组件时启动相对应的代理组件，并在代理组件启动的过程中初始化插件组件。  
 
