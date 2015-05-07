@@ -286,7 +286,12 @@ Ant 打包需要修改 build.xml 中 dex target 引用到的 compileclasspath �
 #### 5.3 DynamicLoadApk 待完善的问题
 (1) 还未支持广播;  
 (2) Base Plugin 中的 that 还未去掉，需要覆写 Activity 的相关方法；  
-(3) 插件和宿主资源 id 可能重复的问题没有解决，需要修改 aapt 中资源 id 的生成规则。  
+(3) 插件和宿主资源 id 可能重复的问题没有解决，需要修改 aapt 中资源 id 的生成规则;    
+(4) 不支持自定义主题，不支持系统透明主题 ;     
+(5) 插件中的so处理有异常 ;           
+(6) 不支持静态Receiver;       
+(7) 不支持Provider;      
+(8) 插件不能直接用this;       
 
 ####5.4 其他插件化方案
 除了 DynamicLoadApk 用代理的方式实现外，目前还有两种插件化方案：  
