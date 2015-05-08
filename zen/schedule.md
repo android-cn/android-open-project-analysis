@@ -14,10 +14,10 @@
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
 [Ultra-Pull-To…](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh "Ultra-Pull-To-Refresh") | [grumoon](https://github.com/grumoon) | [文档](../view/other/android-ultra-pull-to-refresh) | [lightSky](https://github.com/lightSky) | Done | Done | Done | Done  | Done  | Done    
 [dynamic-loa…](https://github.com/singwhatiwanna/dynamic-load-apk "dynamic-load-apk") | [FFish](https://github.com/FFish) |[文档](../tool-lib/plugin/dynamic-load-apk) | [Trinea](https://github.com/Trinea) | Done | Done | Done | Done | Done | Done
-[base-adapter-helper](https://github.com/JoanZapata/base-adapter-helper) | [hongyang…](https://github.com/hongyangAndroid "hongyangAndroid")| [文档](../tool-lib/other/base-adapter-helper) | | Done | Done | Done | Done | Done | Done
+[base-adapter-helper](https://github.com/JoanZapata/base-adapter-helper) | [hongyang…](https://github.com/hongyangAndroid "hongyangAndroid")| [文档](../tool-lib/other/base-adapter-helper) | [zhengtao620](https://github.com/zhengtao620) | Done | Done | Done | Done | Done | Done
 [NineoldAnimations](https://github.com/JakeWharton/NineOldAndroids)| [Mr.Simple](https://github.com/bboyfeiyu) |[文档](../tool-lib/compatibility/nineoldanimations) | [lightSky](https://github.com/lightSky) | Done |Done |Done | Done|Done|Done
 [Side-Menu.Android](https://github.com/Yalantis/Side-Menu.Android)|[cpacm](https://github.com/cpacm) |[文档](../view/menu/side-menu.android) | | Done |Done |Done|Done|Pass|03/18  
-[Cling](https://github.com/kevinshine/cling) | [kevinshine](https://github.com/kevinshine) | [文档](../tool-lib/network/Cling) | | Done | Done | Done | Done | Done | Done  
+[Cling](https://github.com/kevinshine/cling) | [kevinshine](https://github.com/kevinshine) | [文档](../tool-lib/network/Cling) | [Trinea](https://github.com/Trinea) | Done | Done | Done | Done | Done | Done  
 [SlidingMenu](https://github.com/jfeinstein10/SlidingMenu) | [huxian99](https://github.com/huxian99) | [文档](../view/menu/sliding-menu) | | Done | Done | Done | Done | Done | Done |    
 [DiscreteSeekBar](https://github.com/AnderWeb/discreteSeekBar) | [Eason](https://github.com/wangeason) | [文档](../view/progress-bar/discrete-seek-bar) | | Done | Done | Done | Done | Done | 04/15 |    
 [PagerSlidingTab…](https://github.com/astuetz/PagerSlidingTabStrip "PagerSlidingTabStrip") | [ayyb1988](https://github.com/ayyb1988) | | |Done |03/12 |03/15 |03/22 |03/27 |03/27
@@ -28,7 +28,7 @@
 [CircularReveal](https://github.com/ozodrukh/CircularReveal) | [Toaker](https://github.com/Toaker) | | | Done | 4/7 | 4/15 | 4/25 | 5/5 | 5/10 |     
 [ORMLite](https://github.com/j256/ormlite-android) | [zhoutailiang](https://github.com/zhoutailiang) | |  | 3/25 | 4/2 | 4/23 | 5/7 | 5/21 | 6/1 |
 [ViewDragHelper](android/support/v4/widget/ViewDragHelper.java) | [雾雨](https://github.com/nyanpassu) | |  | 3/22 | 3/22 | 3/22 | 3/22 | 3/22 | 3/22
-[ButterKnife](https://github.com/JakeWharton/ButterKnife/) | [雾雨](https://github.com/nyanpassu) | | | 3/25 | 3/25 | 3/25 | 3/25 | 3/25 | 3/25
+[ButterKnife](https://github.com/JakeWharton/ButterKnife/) | [雾雨](https://github.com/nyanpassu) | | [Trinea](https://github.com/Trinea) | 3/25 | 3/25 | 3/25 | 3/25 | 3/25 | 3/25
 [fresco](https://github.com/facebook/fresco/) | [blackiedm](https://github.com/blackiedm) | [文档](../tool-lib/image-cache/fresco) | | Done | Done | 4/30 | 5/14 | 5/28 | 6/10
 
 ####2. 一期计划(已完成)
