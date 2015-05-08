@@ -403,10 +403,7 @@ ObjectAnimator.ofPropertyValuesHolder(myView, pvhX, pvyY).start();
 顾名思义，该类持有属性，相关属性值的操作以及属性的setter，getter方法的创建，属性值以Keyframe来承载，最终由KeyframeSet统一处理。
 
 
-### 2.2.8 KeyFrameSet
-根据Animator传入的值，为当前动画创建一个特定类型的KeyFrame集合。
-
-### 2.2.9 KeyFrame
+### 2.2.8 KeyFrame
 
 一个`keyframe`对象由一对 time / value的键值对组成，可以为动画定义某一特定时间的特定状态。  
 每个`keyframe`可以拥有自己的插值器，用于控制前一帧和当前帧的时间间隔间内的动画。  
@@ -414,7 +411,33 @@ ObjectAnimator.ofPropertyValuesHolder(myView, pvhX, pvyY).start();
 `Keyframe.ofFloat(0f,0f);`
 第一个参数为：要执行该帧动画的时间节点（elapsed time / duration）  
 第二个参数为属性值。  
-因此如果你想指定某一特定时间的特定状态，那么简单的使用Object`Animator`就满足不了你了，因为，`ObjectAnimator.ofInt(....)`类似的工厂方法，无法指定特定的时间点，通过ObjectAnimator所得到的时间点都是 1/valuesCount ,是固定值，源码：  
+因此如果你想指定某一特定时间的特定状态，那么简单的使用Object`Animator`就满足不了你了，因为，`ObjectAnimator.ofInt(....)`类似的工厂方法，无法指定特定的时间点的状态。
+
+**每个KeyFrame的Interpolator**  
+每个`KeyFrame`其实也有个`Interpolator`。如果没有设置，默认是线性的。之前为`Animator`设置的`Interpolator`是整个动画的，而系统允许你为每一`KeyFrame`的单独定义`Interpolator`，系统这样做的目的是允许你在某一个`keyFrame`做特殊的处理，也就是整体上是按照你的插值函数来计算，但是，如果你希望某个或某些`KeyFrame`会有不同的动画表现，那么你可以为这个`keyFrame`设置`Interpolator`。  
+
+**因此，Keyframe的定制性更高，你如果想精确控制某一个时间点的动画值及其运动规律，你可以自己创建特定的Keyframe**  
+
+**Keyframe使用**  
+为了实例化一个`keyframe`对象，你必须使用某一个工厂方法：ofInt(), ofFloat(), or ofObject() 去获取合适的`keyframe`类型，然后你调用`ofKeyframe`工厂方法去获取一个`PropertyValuesHolder`对象，一旦你拥有了该对象，你可以将PropertyValuesHolder作为参数获取一个`Animator`，如下：  
+```java
+Keyframe kf0 = Keyframe.ofFloat(0f, 0f);
+Keyframe kf1 = Keyframe.ofFloat(.5f, 360f);
+Keyframe kf2 = Keyframe.ofFloat(1f, 0f);
+PropertyValuesHolder pvhRotation = PropertyValuesHolder.ofKeyframe("rotation", kf0, kf1, kf2);//动画属性名，可变参数
+ObjectAnimator rotationAnim = ObjectAnimator.ofPropertyValuesHolder(target, pvhRotation)
+rotationAnim.setDuration(5000);
+```
+### 2.2.9 KeyFrameSet
+根据Animator传入的值，为当前动画创建一个特定类型的KeyFrame集合。  
+通常通过ObjectAnimator.ofFloat(...)进行赋值时，这些值其实是通过一个KeyFrameSet来维护的  
+比如：
+```java
+ObjectAnimator.ofFloat(target, "translateX", 50, 100, 200); 
+```
+调用者传入的values 为 50,100,200，则numKeyframs = 3，那么创建出相应的Keyframe为：
+Keyframe(0,50)，Keyframe(1/2,100)，Keyframe(1,200), 时间点 0，1/2，1 都是按比例划分的    
+
 ```java
     public static KeyframeSet ofFloat(float... values) {
         int numKeyframes = values.length;
@@ -432,21 +455,6 @@ ObjectAnimator.ofPropertyValuesHolder(myView, pvhX, pvyY).start();
     }
 ```
 
-**每个KeyFrame的Interpolator**  
-每个`KeyFrame`其实也有个`Interpolator`。如果没有设置，默认是线性的。之前为`Animator`设置的`Interpolator`是整个动画的，而系统允许你为每一`KeyFrame`的单独定义`Interpolator`，系统这样做的目的是允许你在某一个`keyFrame`做特殊的处理，也就是整体上是按照你的插值函数来计算，但是，如果你希望某个或某些`KeyFrame`会有不同的动画表现，那么你可以为这个`keyFrame`设置`Interpolator`。  
-
-**因此，Keyframe的定制性更高，你如果想精确控制某一个时间点的动画值及其运动规律，你可以自己创建特定的Keyframe**  
-
-**Keyframe使用**  
-为了实例化一个`keyframe`对象，你必须使用某一个工厂方法：ofInt(), ofFloat(), or ofObject() 去获取合适的`keyframe`类型，然后你调用`ofKeyframe`工厂方法去获取一个`PropertyValuesHolder`对象，一旦你拥有了该对象，你可以将PropertyValuesHolder作为参数获取一个`Animator`，如下：  
-```java
-Keyframe kf0 = Keyframe.ofFloat(0f, 0f);
-Keyframe kf1 = Keyframe.ofFloat(.5f, 360f);
-Keyframe kf2 = Keyframe.ofFloat(1f, 0f);
-PropertyValuesHolder pvhRotation = PropertyValuesHolder.ofKeyframe("rotation", kf0, kf1, kf2);//动画属性名，可变参数
-ObjectAnimator rotationAnim = ObjectAnimator.ofPropertyValuesHolder(target, pvhRotation)
-rotationAnim.setDuration(5000);
-```
 
 ## 2.3 在XML中声明属性动画
 
@@ -634,3 +642,4 @@ http://cogitolearning.co.uk/?p=1078
 http://www.2cto.com/kf/201306/222725.html  
 http://my.oschina.net/banxi/blog/135633  
 http://zhouyunan2010.iteye.com/blog/1972789  
+http://blog.csdn.net/guolin_blog/article/details/43816093
