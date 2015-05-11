@@ -383,7 +383,7 @@ public void retry(VolleyError error) throws VolleyError;
 
 ####4.2.20 DefaultRetryPolicy.java
 实现 RetryPolicy，Volley 默认的重试策略实现类。主要通过在 retry(…) 函数中判断重试次数是否达到上限确定是否继续重试。  
-其中`mCurrentTimeoutMs`变量表示已经重试次数。  
+其中`mCurrentRetryCount`变量表示已经重试次数。  
 `mBackoffMultiplier`表示每次重试之前的 timeout 该乘以的因子。  
 `mCurrentTimeoutMs`变量表示当前重试的 timeout 时间，会以`mBackoffMultiplier`作为因子累计前几次重试的 timeout。  
 
