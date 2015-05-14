@@ -2,29 +2,28 @@ Side Menu.Android 源码解析
 ====================================
 > 本文为 [Android 开源项目源码解析](https://github.com/aosp-exchange-group/android-open-project-analysis) 中 Side Menu.Android 部分  
 > 项目地址：[Side Menu.Android](https://github.com/Yalantis/Side-Menu.Android)，分析的版本：[2c23bff](https://github.com/Yalantis/Side-Menu.Android/commit/2c23bff1dbebb87b3a3291e3f7d629cc0d5efbfa)，Demo 地址：[side-menu-demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/side-menu-demo)    
-> 分析者：[cpacm](https://github.com/cpacm)，校对者：无， 校对状态：未进行  
+> 分析者：[cpacm](https://github.com/cpacm)，校对者：[lightSky](https://github.com/lightSky)， 校对状态：未完成 
 
 ##1. 功能介绍  
-一个提供不同选项的侧边菜单——`Side Menu`。
+一个交互的动画侧边菜单——`Side Menu`。
 
 ####1.1 特点
-提供了一个翻页动画——`Flip Animation`。  
-基于Android 5.0开发。  
-使用ToolBar控制菜单。  
+提供了一个翻页动画——`Flip Animation`。    
+
 
 ####1.2 要求
-**（1）**界面布局使用DrawerLayout为容器，当通过xml来布局的话，需要把DrawerLayout作为父容器，内容布局作为其第一个子节点，而菜单布局则紧随其后作为第二个子节点，这样做就能把内容展示区和菜单区分开来，之后只需要分别在这两个区域里设置内容即可。  
-**（2）**内容布局中，使用Toolbar并将其作为菜单界面的载体，通过Toolbar来控制菜单界面的打开和关闭。  
-**（3）**内容布局中的信息界面需要继承ScreenShotable接口（如demo中的ContentFragment），以便切换信息。  
-**（4）**主界面需要继承ViewAnimator.ViewAnimatorListener接口（如demo中的myActivity）。
+**（1）**主界面布局需要使用DrawerLayout为容器        
+**（2）**内容界面需要继承ScreenShotable接口（如demo中的ContentFragment），以便为Reveal效果提供Bitmap数据。  
+**（4）**主界面需要实现ViewAnimator.ViewAnimatorListener接口（如demo中的myActivity）。
  
 ##2. 流程图  
 ![流程图](images/side_menu.jpg "流程图")
 
-##3. 详细介绍  
-####3.1 类
-*（一）ViewAnimator类* `Side Menu 的管理类`  
-1、ViewAnimator的构造函数需要传入5个参数，分别为`作为主界面的ActionBarActivity`、`子按钮列表`、`继承ScreenShotable接口的信息界面`、`DrawerLayout`、`继承ViewAnimatorListener接口的主界面`。  
+##3. 详细设计  
+###3.1 核心类介绍
+####3.1.1 ViewAnimator SideMenu的管理类
+其构造函数需要传入5个参数，分别为`作为主界面的ActionBarActivity`、`子按钮列表`、`实现ScreenShotable接口的信息界面`、`DrawerLayout`、`实现ViewAnimatorListener接口的主界面`。 
+  
 ```java
 public ViewAnimator(ActionBarActivity activity,
                         List<T> items,
@@ -38,29 +37,70 @@ public ViewAnimator(ActionBarActivity activity,
         this.animatorListener = animatorListener;
     }
 ```
-2、showMenuContent()方法，打开菜单界面。  
-简单地将其分成几部分：（1）在菜单未完全打开前设置按钮为不可用同时调用了ViewAnimatorListener接口中的disableHomeButton()方法。清空原先存放按钮视图的列表。（2）根据传入的按钮个数生成相应个数的按钮View,并为每个按钮添加点击事件，当事件发生时调用
+`showMenuContent()`  
+打开菜单界面，简单地将其分成几部分：  
+（1）在菜单未完全打开前设置按钮为不可用，同时调用ViewAnimatorListener接口中的disableHomeButton()方法清空原先存放按钮视图的列表。  
+
+（2）根据传入的按钮个数生成相应个数的按钮View,并为每个按钮添加点击事件，当事件发生时回调onSwitch方法并关闭菜单列表。  
+
+（3）将其添加到存放按钮视图的列表中。调用AnimatorListener接口的`addViewToContainer(viewMenu)`方法（我们要在Activity中人为的将其添加到界面布局中）。在菜单打开动画未完成情况下，将其属性设为不可用。调用`animateView（）`方法使用FlipAnimation类来实现动画设置，Handler实现延时播放。  
+
+`onSwitch`
+
 ```java
 /**
  *参数分别为：选中的按钮，当前的信息界面，触摸点的Y坐标
  **/
 animatorListener.onSwitch(slideMenuItem, screenShotable, topPosition)
 ```
-方法并关闭菜单列表。（3）将其添加到存放按钮视图的列表中。调用AnimatorListener接口的`addViewToContainer(viewMenu)`方法（我们要在Activity中人为的将其添加到界面布局中）。在菜单打开动画未完成情况下，将其属性设为不可用。调用`animateView（）`方法使用FlipAnimation类来实现动画设置，Handler实现延时播放。  
-3、hideMenuContent()方法，关闭菜单界面。  
-为每个按钮视图调用`animateHideView()`方法来设置关闭的动画，并通过Handler进行延时播放。在动画结束的监听器中设置视图不可见，并但视图是最后一个按钮时调用
+当点击MenuItem切换ContentView的时候，调用onSwitch，从指定的ScreenShotable实现类身上获取通过takeScreenShot得到的Bitmap，然后交给CircularReveal确定Reveal效果的位图以及触发点的position，紧接着启动Reveal动画，最后切换底部内容界面ContentView，这里的ContentView为Fragment  
+
+
+`hideMenuContent()`  
+关闭菜单界面，为每个按钮视图调用`animateHideView()`方法来设置关闭的动画，并通过Handler进行延时播放。在动画结束的监听器中设置视图不可见，并但视图是最后一个按钮时调用  
+
 ```java
 animatorListener.enableHomeButton();//回调函数，使主界面的菜单键生效
 drawerLayout.closeDrawers();
 ```
-*（二）SlideMenuItem类* `选项按钮类`   
-一个按钮容器类，里面存放着两个变量。主要用来设置菜单按钮。
+
+`ViewAnimatorListener`  
+主界面需要实现的接口，有可能开发者的 其提供了
+
+`disableHomeButton`，`enableHomeButton`  
+ 在ViewAnimator中在维持SideMenu的状态时使用。你自己的控制器可以是任意的View，只需要去实现这两个接口即可
+
+`addViewToContainer`  
+允许开发者往自己定义的MenuLayout上添加MenuItem
+
+`onSwitch`  
+点击菜单切换视图时调用。主要用于实现切换效果的实现，这里实现的是Reveal效果，使用了一个第三方的开源库：CircularReveal，而该Reveal效果库需要一个bitmap，以及Reveal的触发点。
+
+
+```java
+ public interface ViewAnimatorListener {
+
+        public ScreenShotable onSwitch(Resourceble slideMenuItem, ScreenShotable screenShotable, int position);
+
+        public void disableHomeButton();
+
+        public void enableHomeButton();
+
+        public void addViewToContainer(View view);
+
+    }
+```
+
+####3.1.2 SlideMenuItem 选项按钮类
+一个按钮容器类，里面存放着两个变量，主要用来设置菜单按钮。
+
 ```java
     private String name;//名称
     private int imageRes;//图片id
 ```
-*（三）FlipAnimation类* `翻转动画`  
+####3.1.3 FlipAnimation 翻转动画
 一个翻转动画工具类，继承自Animation类。根据传入的参数来实现不同的翻转效果。
+
 ```java
  /**
   * 参数分别为：起始角度，终止角度，中心点的X坐标，中心点的Y坐标
@@ -69,24 +109,27 @@ drawerLayout.closeDrawers();
  ...
  }
 ```
-*（四）Resourceble接口* `选项接口`  
+####3.1.4 Resourceble 选项接口
 按钮选项必须继承该接口(如SlideMenuItem就继承了该接口)，用于存放资源。
+
 ```java
 public interface Resourceble {
     public int getImageRes();
     public String getName();
 }
 ```
-*（五）ScreenShotable接口* `用于信息变更的接口`   
-该接口包含两个方法：
+####3.1.1 ScreenShotable
+用于信息变更的接口,实现切换效果，显示内容的View需要去实现它，该接口包含两个方法：
+
 ```java
 public interface ScreenShotable {
     public void takeScreenShot();
     public Bitmap getBitmap();
 }
 ```
-1、takeScreenShot()方法是在按钮被点击时触发。  
-2、getBitmap()方法,获取当前显示的Bitmap。  
+1、takeScreenShot()方法是在按钮被点击时触发,从方法名可以看出该方法是为了对当前界面进行快照，该快照是为了Reaveal效果提供Bitmap。  
+2、getBitmap()方法,获取takeScreenShot为当前界面创建的Bitmap，用于Reveal效果。  
+
 
 ####3.2 类关系图
 ![类图](images/side_menu_class.jpg "类图")
