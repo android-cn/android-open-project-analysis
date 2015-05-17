@@ -146,7 +146,7 @@ public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header
 }
 > ```
 > 新的判断方式也比较简单明了。  
-> 当然以上给出的是针对通用 View 的判断方式。如果遇到特殊需求的View，或者自定义View。使用者还是要自己实现符合要求的判断
+> 当然以上给出的是针对通用 View 的判断方式。如果遇到特殊需求的 View ，或者自定义 View 。使用者还是要自己实现符合需求的判断。
 
 ####4.1.3 PtrUIHandler.java
 下拉刷新 UI 接口，对下拉刷新 UI 变化的抽象。一般情况下， Header 会实现此接口，处理下拉过程中的头部 UI 的变化。  
