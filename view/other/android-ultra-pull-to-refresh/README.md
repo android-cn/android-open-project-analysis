@@ -1,7 +1,7 @@
 android-Ultra-Pull-To-Refresh 源码解析
 ====================================
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 android-Ultra-Pull-To-Refresh 部分  
-> 项目地址：[android-Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh)，分析的版本：[508c632](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/commit/508c63266de51ad8c010ac9912f7592b2f2da8fc)，Demo 地址：[android-Ultra-Pull-To-Refresh Demo](https://github.com/android-cn/android-open-project-demo/tree/master/android-ultra-pull-to-refresh-demo)  
+> 项目地址：[android-Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh)，分析的版本：[508c632](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/tree/508c63266de51ad8c010ac9912f7592b2f2da8fc)，Demo 地址：[android-Ultra-Pull-To-Refresh Demo](https://github.com/android-cn/android-open-project-demo/tree/master/android-ultra-pull-to-refresh-demo)  
 > 分析者：[Grumoon](https://github.com/grumoon)，校对者：[lightSky](https://github.com/lightSky)，校对状态：未完成  
 
 ###1. 功能介绍  
@@ -17,7 +17,7 @@ UltraPTR 总体设计比较简单清晰。
 PtrHandler 代表下拉刷新的功能接口，包含刷新功能回调方法以及判断是否可以下拉的方法。用户实现此接口来进行数据刷新工作。   
 PtrUIHandler 代表下拉刷新的 UI 接口，包含准备下拉，下拉中，下拉完成，重置以及下拉过程中的位置变化等回调方法。通常情况下， Header 需要实现此接口，来处理下拉刷新过程中头部 UI 的变化。  
 整个项目围绕核心类 PtrFrameLayout 。 PtrFrameLayout 代表了一个下拉刷新的自定义控件。  
-PtrFrameLayout 继承自 ViewGroupli ，有且只能有两个子 View ，头部 Header 和内容 Content 。通常情况下 Header 会实现 PtrUIHandler 接口， Content 可以为任意的 View 。  
+PtrFrameLayout 继承自 ViewGroup ，有且只能有两个子 View ，头部 Header 和内容 Content 。通常情况下 Header 会实现 PtrUIHandler 接口， Content 可以为任意的 View 。  
 和所有的自定义控件一样， PtrFrameLayout 通过重写 onFinishInflate ， onMeasure ， onLayout 来确定控件大小和位置。通过重写 dispatchTouchEvent 来确定控件的下拉行为。  
 
 ###3. 流程图
@@ -116,6 +116,37 @@ if (viewGroup instanceof ScrollView || viewGroup instanceof AbsListView) {
 }
 ```
 如果 Content 是 AbsListView（ListView，GridView），通过 getScrollY() 获取的值一直是 0 ，所以这段代码的判断，无效。  
+
+> **注意：上述 bug ，在新版本 ([3a34b2e](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/tree/3a34b2e89f9dc4522569ce9340910621fd543828)) 中已经做出了修复。以下是最新版本的代码。**
+> ```java
+public static boolean canChildScrollUp(View view) {
+    if (android.os.Build.VERSION.SDK_INT < 14) {
+        if (view instanceof AbsListView) {
+            final AbsListView absListView = (AbsListView) view;
+            return absListView.getChildCount() > 0
+                    && (absListView.getFirstVisiblePosition() > 0 || absListView.getChildAt(0)
+                    .getTop() < absListView.getPaddingTop());
+        } else {
+            return view.getScrollY() > 0;
+        }
+    } else {
+        return view.canScrollVertically(-1);
+    }
+}
+> ```
+> ```java
+public static boolean checkContentCanBePulledDown(PtrFrameLayout frame, View content, View header) {
+    return !canChildScrollUp(content);
+}
+> ```
+```java
+@Override
+public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+    return checkContentCanBePulledDown(frame, content, header);
+}
+> ```
+> 新的判断方式也比较简单明了。  
+> 当然以上给出的是针对通用 View 的判断方式。如果遇到特殊需求的View，或者自定义View。使用者还是要自己实现符合要求的判断
 
 ####4.1.3 PtrUIHandler.java
 下拉刷新 UI 接口，对下拉刷新 UI 变化的抽象。一般情况下， Header 会实现此接口，处理下拉过程中的头部 UI 的变化。  
@@ -361,6 +392,12 @@ UltraPTR 的 Content 可以包含任意的 View 。这样的好处，就是整�
 **Evernote** ，下拉时 Content 不动， Header 有位置变化。  
 ![evernote-header](image/evernote-header.gif)  
 总结起来，就是希望更加抽象 Header 和 Content 在下拉过程中的行为变化。做到真正的 **Ultra**  
+> **注意：**在新版本 ([3a34b2e](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/tree/3a34b2e89f9dc4522569ce9340910621fd543828)) ，可以使用  
+> ```java
+> public void setPinContent(boolean pinContent)
+> ```
+> 将 Content 固定，这样下拉只有 Header 位置移动。  
+
 ####5.3关于加载更多
 UltraPTR 没有集成加载更多的功能。项目的 Issue 里面也有人提到希望加入这个功能。  
 [希望加入下拉加载········ #35](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/issues/35)  
