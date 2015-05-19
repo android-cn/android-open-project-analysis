@@ -14,14 +14,33 @@ DiscreteSeekBar实现了类似Material design风格的Discrete Slider。Discrete
 
 ##2. 详细设计
 
-###2.1 类关系图
+###2.1 总体设计
+
+这是一个材料设计的seekbar，其主要的几个类分别对应了这个seekbar的几个主要组件。
+
+ThumbDrawable -> seekBar没有被按下时，seekBar上的那个圆点；
+
+TrackRectDrawable -> seekBar的进度条，设置不同的宽度和颜色后，被用作背景和前景的显示；
+
+MarkerDrawable -> Thumb被按下时的显示状态的背景，这个类里面封装了动画打开和关闭，提供了颜色设置的接口；
+
+Marker -> 是个ViewGroup，包含一个TextView和一个MarkerDrawable。Thumb被按下时的显示状态, 增加了文字显示，宽度计算等，实现了文本设置的接口；
+
+PopupIndicator.Floater -> FrameLayout, 封装了一个Marker在里面，实现Marker的滑动；
+
+PopupIndicator -> 最终被集成到DiscreteSeekBar中的类，保证Floater始终和Thumb
+的x坐标相同；
+
+DiscreteSeekBar -> 集成了上述的组件的实例、OnProgressChangeListener接口、从xml中获取设置、提供api方法。总之就是让这个View看着像一个SeekBar；
+
+###2.2 类关系图
 
 
 ![classes](classes.gif)
 
-###2.2 类详细介绍
+###2.3 类详细介绍
 类及其主要函数功能介绍、核心功能流程图，流程图可使用 [Google Drawing](https://docs.google.com/drawings)、[Visio](http://products.office.com/en-us/visio/flowchart-software)、[StarUML](http://staruml.io/)。  
-####2.2.1 public abstract class StateDrawable extends Drawable
+####2.3.1 public abstract class StateDrawable extends Drawable
 A drawable that changes it's Paint color depending on the Drawable State
 
 根据状态切换Drawable的颜色
@@ -29,11 +48,11 @@ A drawable that changes it's Paint color depending on the Drawable State
 private boolean updateTint(int[] state) called by @Override setState(int[] stateSet)
 被子类调用，比较应该显示的颜色是否是当前颜色，若是，返回false； 若否，invalidate并返回true
 
-####2.2.2 public class AlmostRippleDrawable extends StateDrawable implements Animatable
+####2.3.2 public class AlmostRippleDrawable extends StateDrawable implements Animatable
 
 当API<21时，点击Thumb时，产生Ripple效果
 
-####2.2.3 public class MarkerDrawable extends StateDrawable implements Animatable
+####2.3.3 public class MarkerDrawable extends StateDrawable implements Animatable
 
 <li>此类功能
 
@@ -68,24 +87,24 @@ MarkerAnimationListener.onOpeningComplete
 
 根据设置的开始和结束颜色，还有动画完成度，调出当前颜色，注意：这里的factor和updateAnimation中的factor不一样，已经是计算结果了。
 
-####2.2.4 public class ThumbDrawable extends StateDrawable implements Animatable
+####2.3.4 public class ThumbDrawable extends StateDrawable implements Animatable
 
 seekBar上的圆形按钮，在按下以后调用animateToPtessed,100ms以后不会再绘制，直到再次调用animateToNormal，因为按下以后会绘制marker。 这里有个疑问为什么要在100ms以后，作者的解释是：This special delay is meant to help avoiding frame glitches while the Marker is added to the Window。 这100ms用来绘制Marker，避免同时绘制Thumb出现掉帧，感觉卡顿。
 
-####2.2.5 public class TrackRectDrawable extends StateDrawable
+####2.3.5 public class TrackRectDrawable extends StateDrawable
 绘制矩形，用来画ProgressBar和Track
 
-####2.2.6 public class TrackOvalDrawable extends StateDrawable
+####2.3.6 public class TrackOvalDrawable extends StateDrawable
 没有调用和实现，应该是作者准备用来做圆形seekBar的。
 
-####2.2.7 public class Marker extends ViewGroup implements MarkerDrawable.MarkerAnimationListener
+####2.3.7 public class Marker extends ViewGroup implements MarkerDrawable.MarkerAnimationListener
 <Li> public void resetSizes(String maxValue)
 
 这个方法根据seekbar的最大值来确定marker的宽度，如果有负数的时候会出现bug，如果改成最大和最小值中的最大位数就不会可以在显示整数的时候避免这个问题。
 
 <Li> public void animateOpen()
 
-在onAttachedToWindow()被调用，动画打开Marker。
+在onAttachedToWindow()被调用，动画打开Marker。同时PopupIndicator中的showIndicator()和invokePopup()都会调用该方法。
 
 <Li> public void animateClose()
 
@@ -99,7 +118,7 @@ seekBar上的圆形按钮，在按下以后调用animateToPtessed,100ms以后不
 
 这里实际是只实现了onOpeningComplete时，设置显示Marker上的文本。 然后让PopupIndicator.Floater来实现其余部分
 
-####2.2.8 private class Floater extends FrameLayout implements MarkerDrawable.MarkerAnimationListener
+####2.3.8 private class Floater extends FrameLayout implements MarkerDrawable.MarkerAnimationListener
 
 用来实现Marker的滑动
 
@@ -111,7 +130,7 @@ seekBar上的圆形按钮，在按下以后调用animateToPtessed,100ms以后不
 
 除了实现了DiscreteSeekBar中的mFloaterListener外，还在onClosingComplete中，把PopupIndicator中的Floater删除了
 
-####2.2.9 public class PopupIndicator
+####2.3.9 public class PopupIndicator
 
 manage Floater
 
@@ -133,7 +152,7 @@ DiscreteSeekBar通过这个方法设置监听
 
 <Li> public void showIndicator(View parent, Rect touchBounds)
 
-在指定位置显示出Indicator，Rect touchBounds为DiscreteSeekBar传入的Thumb的Bounds
+在指定位置显示出Indicator，Rect touchBounds为DiscreteSeekBar传入的Thumb的Bounds。在DiscreteSeekBar的showFloater()中调用。
 
 <Li> private WindowManager.LayoutParams createPopupLayout(IBinder token)
 <Li> private void updateLayoutParamsForPosiion(View anchor, WindowManager.LayoutParams p, int yOffset)
@@ -145,7 +164,7 @@ DiscreteSeekBar通过这个方法设置监听
 添加Floater并，动画打开Marker
 
 
-####2.2.10 public class DiscreteSeekBar extends View
+####2.3.10 public class DiscreteSeekBar extends View
 
 <Li> public interface OnProgressChangeListener
 
@@ -185,7 +204,7 @@ DiscreteSeekBar通过这个方法设置监听
 <Li> private void stopDragging() 
 <Li> private void updateDragging(MotionEvent ev)
 
-顾名思义，这个3个方法就是拖动Thumb的时候被调用的。 都在public boolean onKeyDown(int keyCode, KeyEvent event)被调用。
+顾名思义，这个3个方法就是拖动Thumb的时候被调用的。 都在public boolean onTouchEvent(MotionEvent event)被调用。
 
 <Li> private void updateThumbPos(int posX)
 
