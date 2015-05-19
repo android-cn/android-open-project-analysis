@@ -19,7 +19,7 @@
 [Side-Menu.Android](https://github.com/Yalantis/Side-Menu.Android)|[cpacm](https://github.com/cpacm) |[文档](../view/menu/side-menu.android) |[lightSky](https://github.com/lightSky) | Done |Done |Done|Done|Pass|03/18  
 [Cling](https://github.com/kevinshine/cling) | [kevinshine](https://github.com/kevinshine) | [文档](../tool-lib/network/Cling) | [Trinea](https://github.com/Trinea) | Done | Done | Done | Done | Done | Done  
 [SlidingMenu](https://github.com/jfeinstein10/SlidingMenu) | [huxian99](https://github.com/huxian99) | [文档](../view/menu/sliding-menu) | | Done | Done | Done | Done | Done | Done |    
-[DiscreteSeekBar](https://github.com/AnderWeb/discreteSeekBar) | [Eason](https://github.com/wangeason) | [文档](../view/progress-bar/discrete-seek-bar) | | Done | Done | Done | Done | Done | 04/15 |    
+[DiscreteSeekBar](https://github.com/AnderWeb/discreteSeekBar) | [Eason](https://github.com/wangeason) | [文档](../view/progress-bar/discrete-seek-bar) | [huxian99](https://github.com/huxian99) | Done | Done | Done | Done | Done | 04/15 |    
 [CalendarListview](https://github.com/traex/CalendarListview) | [Rogary](https://github.com/Rogary) | [文档](../view/list-view/calendar-list-view) | | Done | Done | Done | Done | Done | Done  
 [AndroidResideMenu](https://github.com/SpecialCyCi/AndroidResideMenu) | [dkmeteor](https://github.com/dkmeteor) | [文档](../view/menu/reside-menu) | | 03/04 | 03/10 | 03/16 | 03/22 | 03/28 | 03/31 | 
 [ViewDragHelper](android/support/v4/widget/ViewDragHelper.java) | [雾雨](https://github.com/nyanpassu) | |  | 3/22 | 3/22 | 3/22 | 3/22 | 3/22 | 3/22
