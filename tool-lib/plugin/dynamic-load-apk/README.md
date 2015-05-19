@@ -49,7 +49,7 @@ DynamicLoadApk 原理的核心思想可以总结为两个字：代理。通过�
 上面是调用插件 Activity 的流程图，其他组件调用流程类似。   
 (1) 首先通过 DLPluginManager 的 loadApk 函数加载插件，这步每个插件只需调用一次。  
 (2) 通过 DLPluginManager 的 startPluginActivity 函数启动代理 Activity。  
-(3) 代理 Activity 启动过程中构建、启动插件 Activity 。  
+(3) 代理 Activity 启动过程中构建、启动插件 Activity。  
 
 ###4. 详细设计 
 ####4.1 类关系图
@@ -284,19 +284,19 @@ Ant 打包需要修改 build.xml 中 dex target 引用到的 compileclasspath �
 ```
 
 #### 5.3 DynamicLoadApk 待完善的问题
-(1) 还未支持广播;  
+(1) 还未支持广播；  
 (2) Base Plugin 中的 that 还未去掉，需要覆写 Activity 的相关方法；  
-(3) 插件和宿主资源 id 可能重复的问题没有解决，需要修改 aapt 中资源 id 的生成规则;    
-(4) 不支持自定义主题，不支持系统透明主题 ;     
-(5) 插件中的so处理有异常 ;           
-(6) 不支持静态Receiver;       
-(7) 不支持Provider;      
-(8) 插件不能直接用this;       
+(3) 插件和宿主资源 id 可能重复的问题没有解决，需要修改 aapt 中资源 id 的生成规则；  
+(4) 不支持自定义主题，不支持系统透明主题；  
+(5) 插件中的 so 处理有异常；  
+(6) 不支持静态 Receiver；  
+(7) 不支持 Provider；  
+(8) 插件不能直接用 this；  
 
 ####5.4 其他插件化方案
 除了 DynamicLoadApk 用代理的方式实现外，目前还有两种插件化方案：  
-(1). 用 Fragment 以及 schema 的方式实现。  
-(2). 利用字节码库动态生成一个插件类 A 继承自待启动插件 Activity，启动插件 A。这个插件 A 名称固定且已经在 Manifest 中注册。  
+(1) 用 Fragment 以及 schema 的方式实现。  
+(2) 利用字节码库动态生成一个插件类 A 继承自待启动插件 Activity，启动插件 A。这个插件 A 名称固定且已经在 Manifest 中注册。  
 具体可见：[Android 插件化](http://www.trinea.cn/android/android-plugin/)  
 
 最后 H5 框架越来越多，也能解决插件化解决的自动升级这部分功能，硬件、网络也在改善，未来何如？  
