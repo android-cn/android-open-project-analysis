@@ -40,13 +40,13 @@ DiscreteSeekBar -> 集成了上述的组件的实例、OnProgressChangeListener�
 ```java
 //根据状态判断是否应该刷新当前的色彩
 private boolean updateTint(int[] state)
-//工厂方法，具体的子类实现具体真实的画法
+//抽象方法，具体的子类实现具体的画法
 abstract void doDraw(Canvas canvas, Paint paint);
 ```
 
 ####3.2.2 AlmostRippleDrawable  
 继承自抽象类StateDrawable，顾名思义，总是有Ripple效果。  
-通过一个mUpdater的Runnable对象，不断地做scale动画，来达到低版本的Ripple效果。  
+通过一个mUpdater的Runnable对象，不断地做drawCircle，来达到低版本的Ripple效果。  
 
 ####3.2.3 MarkerDrawable  
 ```java
@@ -113,7 +113,7 @@ public void setFloatOffset(int x)
 通过设置childview的Marker的左右偏移，来实现Floater的滑动，被PopupIndicator调用，实现Marker的滑动。
 
 <Li>MarkerAnimationListener的实现  
-除了实现了DiscreteSeekBar中的mFloaterListener外，还在onClosingComplete中，把PopupIndicator中的Floater删除了
+在onClosingComplete()中，把PopupIndicator中的Floater删除了。  
 
 ####3.2.9 PopupIndicator  
 用来管理Floater的指示器  
@@ -125,7 +125,7 @@ public void updateSizes(String maxValue)
 ```java
 private void measureFloater()
 ```  
-通过调用Floater的measure方法，设置其宽度为全屏，作者说这里有待改进
+通过调用Floater的measure方法，设置其宽度为full-width，作者说这里有待改进
 
 ```java
 public void setValue(CharSequence value)
@@ -149,6 +149,14 @@ private void invokePopup(WindowManager.LayoutParams p)
 添加Floater，动画打开Marker  
 
 ####3.2.10 DiscreteSeekBar  
+onTouchEvent事件主要调用了如下三个方法  
+```java
+private boolean startDragging(MotionEvent ev, boolean ignoreTrackIfInScrollContainer)
+private void updateDragging(MotionEvent ev)
+private void stopDragging()
+```  
+顾名思义，这3个方法主要就是为了`拖动Thumb`的。  
+
 ```java
 public interface OnProgressChangeListener
 ```  
@@ -169,7 +177,7 @@ public static abstract class NumericTransformer {
 ```  
 其中抽象方法public abstract int transform(int value)根据DiscreteSeekBar的数值value，返回要在Marker中显示的数值，而且这个返回的数值会被设置的正则Formatter转换，默认的Formatter是DEFAULT_FORMATTER = "%d"，这个Formatter可以通过setIndicatorFormatter方法或者xml设置
 
-另外两个方法可以设置Marker中显示的为根据value取得的字符，并且这个字符不会被Formatter转换
+useStringTransform()方法默认返回false，调用transform(int value)方法根据Formatter转换，如果return true，则会调用transformToString(int value)方法，表示这个字符不会被Formatter转换。  
 
 ```java
 public void setNumericTransformer
@@ -203,16 +211,9 @@ private void updateFromDrawableState()
 根据Drawable的状态来设置不同drawable的动画。这个方法被onLayout和drawableStateChanged调用。  
 
 ```java
-private boolean startDragging(MotionEvent ev, boolean ignoreTrackIfInScrollContainer)
-private void stopDragging() 
-private void updateDragging(MotionEvent ev)
-```  
-顾名思义，这个3个方法就是拖动Thumb的时候被调用的。都在onTouchEvent被调用。  
-
-```java
 private void updateThumbPos(int posX)
 ```  
-根据滑动的拖动的位置绘制进度条（mScruber）和Thumb
+根据滑动的拖动的位置绘制进度条（mScruber）和mThumb  
 
 ###4. 杂谈
 1.  Marker的宽度的设定太死板，当设定的min值得长度大于max值得时候min值就没法完整显示了。
