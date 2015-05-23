@@ -10,7 +10,11 @@ ${PagerSlidingTabStrip} 源码解析
 
 
 ###1. 总体设计
-PagerSlidingTabStrip 滑动viewpager时tab联动的控件。可以设置tab的类型为textview还是icon。对于textview可设置字库属性。通过提供方法如滑动指示器 下划线 tab风格线 tab权重等达到自定义的效果。
+pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的OnPageChangeListener。
+但是viewpager注册的listener不是自身的OnPageChangeListener，而是pagerSlidingTabStrip内部类PageListener。
+通过PageListener实现对对viewpager和tab的封装。从而实现滑动联动效果。
+可以设置tab的类型为textview还是icon。对于textview可设置字库属性。
+通过提供方法如滑动指示器 下划线 tab风格线 tab权重等达到自定义的效果。
 
 ###2. 流程图
 ![](images/lct.jpg)
