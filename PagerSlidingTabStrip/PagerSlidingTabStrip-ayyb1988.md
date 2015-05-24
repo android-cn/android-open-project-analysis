@@ -1,12 +1,20 @@
-${项目名} 源码解析
+${PagerSlidingTabStrip} 源码解析
 ====================================
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 ${PagerSlidingTabStrip} 部分
- 项目地址：[${PagerSlidingTabStrip}](${https://github.com/astuetz/PagerSlidingTabStrip})，分析的版本：[1.0.1](https://github.com/astuetz/PagerSlidingTabStrip)，Demo 地址：[PagerSlidingTabStrip Demo](https://github.com/ayyb1988/android-open-project-demo/tree/master/pager-sliding-tab-strip-demo-ayyb1988})
- 分析者：[ayyb1988](https://github.com/ayyb1988)，分析状态：已完成，校对者：[]()，校对状态：未开始
+
+项目地址：[${PagerSlidingTabStrip}](${https://github.com/astuetz/PagerSlidingTabStrip})，分析的版本：[1.0.1](https://github.com/astuetz/PagerSlidingTabStrip)，Demo 地址：[PagerSlidingTabStrip Demo](https://github.com/ayyb1988/android-open-project-demo/tree/master/pager-sliding-tab-strip-demo-ayyb1988})
+ 
+ 分析者：[ayyb1988](https://github.com/ayyb1988)，分析状态：已完成
+ 
+ 校对者：[]()，校对状态：未开始
 
 
 ###1. 总体设计
-PagerSlidingTabStrip 滑动viewpager时tab联动的控件。可以设置tab的类型为textview还是icon。对于textview可设置字库属性。通过提供方法如滑动指示器 下划线 tab风格线 tab权重等达到自定义的效果。
+pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的OnPageChangeListener。
+但是viewpager注册的listener不是自身的OnPageChangeListener，而是pagerSlidingTabStrip内部类PageListener。
+通过PageListener实现对对viewpager和tab的封装。从而实现滑动联动效果。
+可以设置tab的类型为textview还是icon。对于textview可设置字库属性。
+通过提供方法如滑动指示器 下划线 tab风格线 tab权重等达到自定义的效果。
 
 ###2. 流程图
 ![](images/lct.jpg)
