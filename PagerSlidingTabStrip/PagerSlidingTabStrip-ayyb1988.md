@@ -17,7 +17,7 @@ pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的OnP
 通过提供方法如滑动指示器 下划线 tab风格线 tab权重等达到自定义的效果。
 
 ###2. 流程图
-![](images/lct.jpg)
+![](images/lct1.jpg)
 
 ###3. 功能介绍
 ####3.1 特性介绍
