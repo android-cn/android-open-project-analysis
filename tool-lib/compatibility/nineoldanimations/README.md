@@ -10,24 +10,45 @@ NineOldAnimations 源码解析
    
    ![NineOldAndroids](./image/screens.png)      
    
+####1.1 系统属性动画与NOA简单比较  
+NineOldAndroids提供了和系统属性一样的动画功能。看源码你可以发现，其实NOA的架构实现和系统属性动画实现架构其实是一样的。只是兼容的那一部分采用了Matrix实现了各种动画效果，中间多了一些辅助类，比如 PreHoneycombCompat，AnimatorProxy，ViewHelper，另外某些类对于兼容有些改动，其它的类几乎和系统属性动画部分是一样的。
+
+####1.2 实现原理
+在[属性动画基础](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/tech/anim.md)中已经提到：ValueAnimator的缺点是需要通过实现AnimatorUpdateListener自己手动去更新属性值，它的子类ObjectAnimator为用户实现了自动更新动画，但是对于自定义的属性，需要提供标准JavaBean的setter和getter方法，以便获取和更新属性值。NOA也是遵循了这样的实现思路，对于3.0之前的系统来说，属性动画中所提供的属性都是新的，在实现的时候也就都属于自定义的。NOA在PreHoneycombCompat中定义了这些属性，并在get和setValue中提供了标准的setter和getter方法用于设置和获取属性值，这里的setter和getter其实是直接调用AnimatorProxy类的方法。
 
 ###2. 总体设计
 ![整体设计](./image/arch.jpg)     
-   以上是NineoldAnimations的整体设计图,Animator通过PropertyValuesHolder来更新对象的目标属性。如果用户没有设置目标属性的Property对象,那么会通过反射的形式调用目标属性的setter方法来更新属性值;否则则通过Property的set方法来设置属性值。这个属性值则通过KeyFrameSet的计算得到,而KeyFrameSet又是通过时间插值器和类型估值器来计算。在动画执行过程中不断地计算当前时刻目标属性的值,然后更新属性值来达到动画效果。       
+   以上是NineoldAnimations的整体设计图,其实就是系统属性动画的整体设计。Animator通过PropertyValuesHolder来更新对象的目标属性。如果用户没有设置目标属性的Property对象,那么会通过反射的形式调用目标属性的setter方法来更新属性值;否则则通过Property的set方法来设置属性值。这个属性值则通过KeyFrameSet的计算得到,而KeyFrameSet又是通过时间插值器TimeInterpolator和类型估值器TypeEvaluator来计算。在动画执行过程中不断地计算当前时刻目标属性的值,然后更新属性值来达到动画效果。       
    
    
 ###2.1 类详细介绍
 
 在进行下一步的分析之前，我们先来了解一下NineOldAndroids中一些核心的类以及它们的作用。    
+
 *    **ValueAnimator** :  该类是Animator的子类,实现了动画的整个处理逻辑,也是NineOldAndroids最为核心的类；     
-*    **ObjectAnimator**  :  对象属性动画的操作类，继承自ValueAnimator,通过该类使用动画的形式操作对象的属性；                  
-*    **TimeInterpolator** : 时间插值器,它的作用是根据时间流逝的百分比来计算出当前属性值改变的百分比，系统预置的有LinearInterpolator（线性插值器：匀速动画）、AccelerateDecelerateInterpolator（加速减速插值器：动画两头慢中间快）和DecelerateInterpolator（减速插值器：动画越来越慢）等；     
-*    **TypeEvaluator** :  TypeEvaluator的中文翻译为类型估值算法，它的作用是根据当前属性改变的百分比来计算改变后的属性值，系统预置的有IntEvaluator（针对整型属性）、FloatEvaluator（针对浮点型属性）和ArgbEvaluator（针对Color属性）；     
-*    **Property** ： 属性对象,主要是定义了属性的set和get方法；
-*    **PropertyValuesHolder** ： PropertyValuesHolder是持有目标属性Property、setter和getter方法、以及关键帧集合的类。
-*    **KeyframeSet** ： 存储一个动画的关键帧集合;
-*    **AnimationProxy** ： 在API 11以下使用View的属性动画的辅助类。
- 
+
+*    **ObjectAnimator**  :  对象属性动画的操作类，继承自ValueAnimator,通过该类使用动画的形式操作对象的属性；    
+              
+*    **TimeInterpolator** : 时间插值器,它的作用是根据时间流逝的百分比来计算出当前属性值改变的百分比，系统预置的有LinearInterpolator（线性插值器：匀速动画）、AccelerateDecelerateInterpolator（加速减速插值器：动画两头慢中间快）和DecelerateInterpolator（减速插值器：动画越来越慢）等；   
+  
+*    **TypeEvaluator** :  TypeEvaluator的中文翻译为类型估值算法，它的作用是根据当前属性改变的百分比来计算改变后的属性值，系统预置的有IntEvaluator（针对整型属性）、FloatEvaluator（针对浮点型属性）和ArgbEvaluator（针对Color属性）；        
+
+*    **Property** ： 属性对象,主要是定义了属性的set和get方法；  
+
+*    **PropertyValuesHolder** ： PropertyValuesHolder是持有目标属性Property、setter和getter方法、以及KeyFrameSet的类；     
+
+*    **KeyFrame** ： 一个keyframe对象由一对 time / value的键值对组成，可以为动画定义某一特定时间的特定状态，Animator传入的一个个参数映射为一个个keyframe，存储相应的动画的触发时间和属性值；  
+
+*    **KeyFrameSet** ： 存储一个动画的关键帧集合;  
+
+*    **AnimationProxy** ： 兼容属性动画的最终实现类，每一个应用属性的方法，都会有以下两个步骤：prepareForUpdate(); invalidateAfterUpdate();  而动画的平移和旋转是通过Matrix实现的；  
+
+*    **PreHoneycombCompat** 创建了3.0属性动画中的所有属性，并提供了setter和getter方法获取和更新属性值；  
+
+*    **ViewHelper** ： 设置各种动画值的帮助类,可以简单的设置并应用动画值。内部先做是否需要代理的判断，然后调用不同的实现，NOA的具体实现其实在AnimatorProxy中完成的；  
+
+核心类更详细多介绍，请参考[公共技术点动画基础](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/tech/anim.md)部分
+
 ### 2.2 基本使用 
 **示例1:**      
  改变一个对象（myObject）的 translationY属性，让其沿着Y轴向上平移一段距离：它的高度，该动画在默认时间内完成，动画的完成时间是可以定义的，想要更灵活的效果我们还可以定义插值器和估值算法，但是一般来说我们不需要自定义，系统已经预置了一些，能够满足常用的动画。 
@@ -75,6 +96,8 @@ Button myButton = (Button)findViewById(R.id.myButton);
 animate(myButton).setDuration(2000).rotationYBy(720).x(100).y(100);    
 ```   
 
+更多使用可参考lightSky的一篇文章[PropertyAnim 实际应用](http://www.lightskystreet.com/2014/12/10/propertyview-anim-practice/),介绍了一些基本使用以及GitHub上使用了NOA的动画开源库
+
 
 ###3. 流程图
 
@@ -89,6 +112,7 @@ animate(myButton).setDuration(2000).rotationYBy(720).x(100).y(100);
 ###4. 详细设计
 
 ![详细设计](./uml/nineold-animations_uml.jpg)  
+上图左侧其实和系统属性动画的结构是一样的，右侧的AnimatorProxy和ViewHelper是NOA中特有的辅助类。
 
 #### 4.1 核心原理分析
 
@@ -184,7 +208,7 @@ ObjectAnimator是ValueAnimator的子类,ObjectAnimator负责的是属性动画,�
             
 ```     
     
- 
+ `ValueAnimator`和`ObjectAnimator`都可以完成属性动画，但它们之间的区别和优劣可以参考[公共技术点动画基础](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/tech/anim.md)的相关部分
  
 ##### 4.1.3  KeyFrameSet.java 
    关键帧集合类在动画运行时会根据流逝的时间因子 ( fraction )和类型估值器来计算当前时间目标属性的最新值,然后将这个值通过反射或者Property的set方法设置给目标对象。下面是获取当前属性值的计算函数。     

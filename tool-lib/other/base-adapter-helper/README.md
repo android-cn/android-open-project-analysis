@@ -6,7 +6,7 @@ base-adapter-helper 源码分析
 
 ###1. 功能介绍  
 ####1.1. base-adapter-helper  
-base-adapter-helper 是对我们传统的BaseAdapter的ViewHolder的模式的一个抽象。主要功能就是简化我们在书写AbsListView，例如ListView,GridView的Adapter的代码。
+base-adapter-helper 是对我们传统的BaseAdapter的ViewHolder的模式的一个封装。主要功能就是简化我们在书写AbsListView，例如ListView,GridView的Adapter的代码。
 
 ####1.2 基本使用
 ```java
@@ -17,27 +17,28 @@ base-adapter-helper 是对我们传统的BaseAdapter的ViewHolder的模式的一
 		@Override
 		protected void convert(BaseAdapterHelper helper, Bean item)
 		{
-			helper.setText(R.id.tv_title, item.getTitle());
-			helper.setText(R.id.tv_describe, item.getDesc());
-			helper.setText(R.id.tv_phone, item.getPhone());
-			helper.setText(R.id.tv_time, item.getTime());
-			// // helper.getView(R.id.tv_title).setOnClickListener(l)
+			helper.setText(R.id.tv_title, item.getTitle())
+                 .setImageUrl(R.id.id_icon, item.getUrl())
+			     .setText(R.id.tv_describe, item.getDesc())
+			     .setText(R.id.tv_phone, item.getPhone())
+			     .setText(R.id.tv_time, item.getTime());
 		}
 	});
 ```
 
 ####1.3 特点
-1. 提供QucikAdapter，极大简化我们的代码。
+1. 提供QucikAdapter，省去写类似getCount()等样板代码，只需关注Model到View的显示。
 2. BaseAdapterHelper中封装了大量用于为View操作的辅助方法，例如从网络加载图片：
 `helper.setImageUrl(R.id.iv_photo, item.getPhotoUrl());`
 
 ###2. 总体设计
-####2.1 总体设计图  
-#####2.1.1 ViewHolder Pattern
+由于base-adapter-helper本质上仍然是ViewHolder Pattern，下面贴出base-adapter-helper的总体设计图和ViewHolder Pattern的设计图，通过两图的比较，可以看出base-adapter-helper对传统的`BaseAdapter`进行了初步的实现（`QuickAdapter`），并且仅公布出`convert()`方法，在`convert()`中可以拿到`BaseAdapterHelper`,`BaseAdapterHelper`就相当于`ViewHolder`，但其内部提供了大量的辅助方法，用于设置View上的数据，甚至是事件等。
+
+##### base-adapter-helpr
+![base-adapter-helpr设计图](image/base-adapter-helpr.png)  
+##### ViewHolder Pattern
 ![ViewHolder Pattern](image/view_holder_pattern.png)  
-#####2.1.2 总体设计图
-![总体设计图](image/base-adapter-helpr.png)  
-由于base-adapter-helper本质上仍然是ViewHolder Pattern，上面贴出base-adapter-helper的总体设计图和ViewHolder Pattern的设计图，通过两图的比较，可以看出base-adapter-helper对传统的`BaseAdapter`进行了初步的实现（`QuickAdapter`），并且仅公布出`convert()`方法，在`convert()`中可以拿到`BaseAdapterHelper`,`BaseAdapterHelper`就相当于`ViewHolder`，但其内部提供了大量的辅助方法，用于设置View上的数据，甚至是事件等。
+
 
 
 ###3. 详细设计
@@ -69,10 +70,11 @@ base-adapter-helper 是对我们传统的BaseAdapter的ViewHolder的模式的一
         this.layoutResId = layoutResId;
     }
 ```
-因为我们的Bean可能是多变的，所以传入的数据为List<T>。
+Adapter的必须元素ItemView通过layoutResId指定，展示数据通过data指定。
+
 #####(2).BaseAdapter中需要实现的方法
 ```java
- @Override
+    @Override
     public int getCount() {
         int extra = displayIndeterminateProgress ? 1 : 0;
         return data.size() + extra;
@@ -137,7 +139,7 @@ base-adapter-helper 是对我们传统的BaseAdapter的ViewHolder的模式的一
         displayIndeterminateProgress = display;
         notifyDataSetChanged();
     }
- public void add(T elem) {
+    public void add(T elem) {
         data.add(elem);
         notifyDataSetChanged();
     }
@@ -185,9 +187,9 @@ base-adapter-helper 是对我们传统的BaseAdapter的ViewHolder的模式的一
 方法基本分为两类，一类是BaseAdapter中需要实现的方法；另一类用于操作我们的data。
 重点看以下几个点：
 
-1.	重写了`getViewTypeCount`和`getItemViewType`，这里type为2，主要是为了在AbsListView最后显示一个进度条。通过`getCount`，`getItemViewType`，以及getView就可以明确的看出。这里也暴露了一个弊端，无法作为多个Item样式的布局。
-2.	实现了getView方法，而对外公布了`convert(helper, item)`。convert的参数一个是`BaseAdapterHelper`和`Bean`，恰好`BaseAdapterHelper`中封装了各种为View赋值的方法，值肯定在`Bean`中取，所以公布这个方法还是极其方便的。
-3.	`convert(helper, item)`这个helper为`BaseAdapterHelper`类型，通过`getAdapterHelper`提供，这里可以用于扩展BaseAdapterHelper子类。关于`getAdapterHelper`的实现见`QuickAdapter`。
+1.	重写了`getViewTypeCount`和`getItemViewType`，这里type为2，主要是为了在AbsListView最后显示一个进度条。通过`getCount`，`getItemViewType`，以及getView就可以明确的看出。这里也暴露了一个弊端，无法支持多种Item样式的布局。
+2.	实现了getView方法，而对外公布了`convert(helper, item)`。convert的参数是`BaseAdapterHelper`和`Bean`，通过`BaseAdapterHelper`封装的View赋值方法，将`Bean`中的数据赋值给ItemView，所以公布这个方法还是极其方便的。
+3.	`convert(helper, item)`这个helper为`BaseAdapterHelper`类型，通过`getAdapterHelper`提供，子类可以通过该方法提供扩展的BaseAdapterHelper。关于`getAdapterHelper`的实现见`QuickAdapter`。
 
 ####3.2.2 QucikAdapter.java 
 这个类中没什么代码，主要用于提供一个快速使用的Adapter。一般情况下直接用此类作为Adapter即可，但是如果你扩展了`BaseAdapterHelper`，可能就需要自己去继承`BaseAdapterHelper`实现自己的Adapter。所以该类，对于`getAdapterHelper`直接返回了`BaseAdapterHelper`。

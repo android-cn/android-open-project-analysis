@@ -20,11 +20,11 @@ Volley 是 Google 推出的 Android 异步网络请求框架和图片加载框�
 (4). 提供简便的图片加载工具。  
 
 ###2. 总体设计
-####2.1. 总体设计图  
+####2.1 总体设计图  
 ![总体设计图](image/design.png)  
 上面是 Volley 的总体设计图，主要是通过两种`Dispatch Thread`不断从`RequestQueue`中取出请求，根据是否已缓存调用`Cache`或`Network`这两类数据获取接口之一，从内存缓存或是服务器取得请求的数据，然后交由`ResponseDelivery`去做结果分发及回调处理。  
 
-####2.2. Volley 中的概念
+####2.2 Volley 中的概念
 简单介绍一些概念，在`详细设计`中会仔细介绍。  
 Volley 的调用比较简单，通过 newRequestQueue(…) 函数新建并启动一个请求队列`RequestQueue`后，只需要往这个`RequestQueue`不断 add Request 即可。  
 
@@ -383,7 +383,7 @@ public void retry(VolleyError error) throws VolleyError;
 
 ####4.2.20 DefaultRetryPolicy.java
 实现 RetryPolicy，Volley 默认的重试策略实现类。主要通过在 retry(…) 函数中判断重试次数是否达到上限确定是否继续重试。  
-其中`mCurrentTimeoutMs`变量表示已经重试次数。  
+其中`mCurrentRetryCount`变量表示已经重试次数。  
 `mBackoffMultiplier`表示每次重试之前的 timeout 该乘以的因子。  
 `mCurrentTimeoutMs`变量表示当前重试的 timeout 时间，会以`mBackoffMultiplier`作为因子累计前几次重试的 timeout。  
 
