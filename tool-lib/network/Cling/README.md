@@ -13,8 +13,30 @@ UPnP的实现类库有很多，如 CyberGarage，Intel UPnP stack，在 [http://
 - Cling，基于Java开发，也是后续要介绍的，市面上很多支持DLNA功能的App都是使用的此库，如BubbleUPnP。  
 
 ####1.2 UPnP介绍
-官方解释为：UPnP 是各种各样的智能设备、无线设备和个人电脑等实现遍布全球的对等网络连接（P2P）的结构。
+官方解释为：UPnP是各种各样的智能设备、无线设备和个人电脑等实现遍布全球的对等网络连接（P2P）的结构。
 UPnP实际使用场景多用于小范围对等网络内（连接至同一路由器的多个设备）之间的相互发现、控制。如使用手机控制电视盒子的音频，视频播放等。  
+
+UPnP 的工作过程大概分为 6 个步骤：  
+(0) 寻址(Addressing)  
+开始会给所有设备或者控制点分配一个分配一个 IP。对于新设备首次与网络建立连接时也会有这个寻址过程。  
+ 
+(1) 发现(Discovery)  
+这步是 UPnP 真正工作的第一步。  
+当一个设备被加入到网络中时，UPnP 发现协议允许它向控制点介绍自己的功能。  
+当一个控制点被加入到网络时，UPnP 发现协议允许它搜寻这个网络内它感兴趣的设备。  
+ 
+(2) 描述(Description)  
+控制点通过(1) 发现(Discovery)过程中设备提供的指向设备详细信息的链接，获取设备的详细信息。  
+ 
+(3) 控制(Control)  
+控制点通过描述过程对设备的了解，控制点可以发送控制信息控制设备，设备在执行完命令后会给与控制点一个反馈。  
+ 
+(4) 事件(Eventing)  
+控制点可以监听设备的状态，这样设备的状态或信息发生了变化，只要产生一个事件广播出去，控制点即可进行响应，类似一般的订阅者模式。  
+ 
+(5) 展现(Presentation)  
+控制点可以从设备获取一个 HTML 页面，用于控制设备或展现设备信息，是对上面(3) 控制和(4) 事件过程的一个补充。  
+更详细的介绍可以参考：[UPnP 简介、优点及工作几大步骤介绍](http://www.trinea.cn/other/upnp-desc-advantage-process/)  
 
 ####1.3	Cling基本使用
 Cling库包括两个模块：  
@@ -23,15 +45,14 @@ Cling库包括两个模块：
 - Cling Support
 顾名思义该包为Cling中一些功能的扩展，如：avtransport，lastchange等。  
 
-下面就以Android平台创建UPnP服务并调用相关的控制方法介绍Cling的基本使用。
+下面就以Android平台创建UPnP服务并调用相关的控制方法介绍Cling的基本使用。  
 (1) 定义自己的UpnpService类，继承自AndroidUpnpServiceImpl  
-(2) 创建该Service  
+(2) 启动该Service  
 (3) 从UpnpService中获取ControlPoint，并搜索设备  
 ```
-UpnpService upnpService；
-//搜索注册在多播地址的所有设备，也可根据需要使用不同条件搜索
 upnpService.getControlPoint().search(new STAllHeader());
 ```
+搜索注册在多播地址的所有设备，也可根据需要使用不同条件搜索。  
 
 (4) 获取所有类型为MediaRenderer的设备  
 ```
@@ -41,9 +62,10 @@ upnpService.getRegistry().getDevices(new UDADeviceType("MediaRenderer"));
 (5) 向Device发送指令  
 从查找到的结果中获取一个Device,并向其发送Play指令  
 ```
-Device device;
-//Check selected device
-if (device == null) return;
+Device device = SystemManager.getInstance().getSelectedDevice();
+if (device == null) {
+    return;
+}
 
 Service avtService = device.findService(new UDAServiceType("AVTransport"));
 if (avtService != null) {
@@ -72,14 +94,15 @@ Cling作为UPnP协议栈，其主旨即是在设备的发现，控制等过程�
 ###2.2 使用场景
 以一个简单的设备使用场景为例：  
 
-> 用户将手机A中的媒体内容播放到电视B上,前提：A、B在同一个局域网中。
+> 用户将手机A中的媒体内容播放到电视B上，前提：A、B在同一个局域网中。
 - A加入到多播组中，建立MulticastSocket监听多播信息
 - A向多播发出M-SEARCH报文
 - B获取多播的报文，判断是否符合条件，若符合向多播地址回应OK报文，报文中包含description URL
 - A监听多播获取到相关报文，并通过URL获得设备描述信息
 - A通过AVTransport Service将媒体内容推送到B并播放
 
-> 在整个过程中A通过Cling既充当了DMC（Digital Media Controller）又作为DMS（Digital Media Server），而B作为DMR(Digital Media Renderer)播放媒体内容。
+在整个过程中A通过Cling既充当了DMC（Digital Media Controller）又作为DMS（Digital Media Server），而B作为DMR(Digital Media Renderer)播放媒体内容。  
+关于 DMS、DMC、DMR 是指对电子设备的分类，具体可见：[DLNA 简介 设备分类 场景举例 协议栈层次](http://www.trinea.cn/other/dlna-desc-classes-architecture/)  
 
 ###3 流程图
 ####3.1 设备发现及控制流程
@@ -93,7 +116,7 @@ Cling作为UPnP协议栈，其主旨即是在设备的发现，控制等过程�
 ![overview](images/api_overview.png)
 
 ####4.2 类功能详细介绍
-由类图可知，Cling的一切都是从UpnpService开始的，其中包含了ControlPoint,ProtocolFactory,Registry,Router四个核心模块，以及一个配置信息类UpnpServiceConfiguration
+由类图可知，Cling的一切都是从UpnpService开始的，其中包含了ControlPoint，ProtocolFactory，Registry，Router四个核心模块，以及一个配置信息类UpnpServiceConfiguration
 
 ####4.2.1 ControlPoint
 异步执行搜索，设备控制订阅等指令,此接口定义了查找设备，向设备发送指令，订阅设备变更，其实现类只有一个为ControlPointImpl.
@@ -277,4 +300,4 @@ public StreamServer createStreamServer(NetworkAddressFactory networkAddressFacto
 用来主动获取远端内容，并返回RemoteService加入到Registry中。  
 
 ###5 结语
-Cling作为一款优秀的开源UPnP协议栈从之前的1.x版本发展到现在的2.x在稳定性易扩展等方面有着显著的提升，由于对Android平台有着较好的支持如BubbleUPnP等越来越多的产品使用Cling作为解决方案。当然它本身也还存在着如Router切换WIFI时注册设备清除失败等问题，但瑕不掩瑜本着学习的态度还是可以从中受益良多。  
+Cling作为一款优秀的开源UPnP协议栈实现，从之前的1.x版本发展到现在的2.x，在稳定性易扩展等方面有着显著的提升，由于对Android平台有着较好的支持，越来越多的产品使用Cling作为解决方案，如BubbleUPnP等。当然它本身也还存在着如Router切换WIFI时注册设备清除失败等问题，但瑕不掩瑜，本着学习的态度还是可以从中受益良多。  
