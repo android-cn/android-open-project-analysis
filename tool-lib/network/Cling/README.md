@@ -116,114 +116,103 @@ Cling作为UPnP协议栈，其主旨即是在设备的发现，控制等过程�
 ![overview](images/api_overview.png)
 
 ####4.2 类功能详细介绍
-由类图可知，Cling的一切都是从UpnpService开始的，其中包含了ControlPoint，ProtocolFactory，Registry，Router四个核心模块，以及一个配置信息类UpnpServiceConfiguration
+由类图可知，Cling的一切都是从UpnpService开始的，其中包含了ControlPoint，ProtocolFactory，Registry，Router四个核心模块，以及一个配置信息类UpnpServiceConfiguration。  
 
 ####4.2.1 ControlPoint
-异步执行搜索，设备控制订阅等指令,此接口定义了查找设备，向设备发送指令，订阅设备变更，其实现类只有一个为ControlPointImpl.
+控制点的接口，主要功能是异步执行搜索，设备控制订阅等指令。  
+此接口定义了查找设备，向设备发送指令，订阅设备变更，其实现类只有一个为ControlPointImpl.
 
 **(1) 查找**  
-根据UpnpHeader查询指定的设备,UpnpHeader为抽象类其中定义了枚举类型的Type以及泛型value,查询时常用的实现类有:DeviceTypeHeader，UDNHeader等，可根据设备类型、UDN、服务类型等多种方式。  
 ```
 public void search(UpnpHeader searchType, int mxSeconds);
-```
+```  
+第一个参数`UpnpHeader`表示查询条件，第二个参数表示最大超时时间，以秒为单位。  
+UpnpHeader是一个抽象类，其中定义了包含每个过程请求中的 Header 信息的枚举类型`Type`以及泛型value，查询时常用的实现类有：DeviceTypeHeader，UDNHeader等，可根据设备类型、UDN、服务类型等多种方式。  
+
 
 **(2) 执行控制指令**  
-将ActionCallback放入DefaultUpnpServiceConfiguration中定义的线程池ClingExecutor并执行，执行完毕回调ActionCallback中定义的success或failure函数。  
 ```
-public Future execute(ActionCallback callback) {
-        callback.setControlPoint(this);
-        ExecutorService executor = getConfiguration().getSyncProtocolExecutorService();
-        return executor.submit(callback);
-    }
+public Future execute(ActionCallback callback)
+```  
+将ActionCallback放入DefaultUpnpServiceConfiguration中定义的线程池ClingExecutor执行，执行完毕回调ActionCallback中定义的success或failure函数。  
+ActionCallback是命令执行的回调接口，在其 run 方法内会根据是本地命令还是远程命令进行执行，执行结束后回调成功或失败接口。  
+
+**(3) 执行事件订阅指令**  
 ```
+public void execute(SubscriptionCallback callback)
+``` 
+将SubscriptionCallback放入DefaultUpnpServiceConfiguration中定义的线程池ClingExecutor执行，执行完毕回调ActionCallback中定义的established、failed、ended等函数。   
 
 ####4.2.2 ProtocolFactory
-协议处理工厂类使用Simple Factory Pattern封装协议内容的处理，具体实现为ProtocolFactoryImpl,分为接收报文处理和创建发送报文两部分。  
-在该类中UDP包通过createReceivingAsync方法对传递来的IncomingDatagramMessage进行处理。  
-如NOTIFY--ReceivingNotification，MSEARCH--ReceivingSearch。TCP包通过createReceivingSync进行分发处理，并通过ReceivingSync的子类进行处理，子类中调用executeSync方法等待并返回response。  
+UPnP 协议的工厂类，用于根据收到的 UPnP 协议或是本地设备的 meta 信息，创建一个可执行的协议。  
+使用简单工厂模式封装协议内容的处理，实现类为ProtocolFactoryImpl，主要根据接收报文和发送报文两大类创建不同协议。  
+在该类中UDP包通过createReceivingAsync方法对传递来的IncomingDatagramMessage进行处理，如NOTIFY--ReceivingNotification，MSEARCH--ReceivingSearch。  
+TCP包通过createReceivingSync进行分发处理，并通过ReceivingSync的子类进行处理，子类中调用executeSync方法等待并返回response。  
 
 **(1) 处理接收到的报文**  
-IncomingDatagramMessage封装了UDP包的信息，在createReceivingAsync中分发到对应的处理方法中并创建处理对象，如NOTIFY--ReceivingNotification，MSEARCH--ReceivingSearch。  
 ```
-public ReceivingAsync createReceivingAsync(IncomingDatagramMessage message){
-	if (message.getOperation() instanceof UpnpRequest) {
-            IncomingDatagramMessage<UpnpRequest> incomingRequest = message;
+public ReceivingAsync createReceivingAsync(IncomingDatagramMessage message)
+```
+IncomingDatagramMessage封装了UDP包的信息，在createReceivingAsync中根据消息的操作类型及方法创建不同的ReceivingAsync子类对象，ReceivingAsync子类通过重写execute方法定义具体实现。如请求的NOTIFY信息创建ReceivingNotification，请求的MSEARCH创建ReceivingSearch。  
 
-            switch (incomingRequest.getOperation().getMethod()) {
-                case NOTIFY:
-                    return isByeBye(incomingRequest) || isSupportedServiceAdvertisement(incomingRequest)
-                        ? createReceivingNotification(incomingRequest) : null;
-                case MSEARCH:
-                    return createReceivingSearch(incomingRequest);
-            }
+```
+public ReceivingSync createReceivingSync(StreamRequestMessage message)
+```
+StreamRequestMessage封装TCP报文，在createReceivingSync中根据消息的操作类型方法及UPnP服务NameSpace等的配置创建不同的ReceivingSync的子类对象，ReceivingSync子类通过重写executeSync方法定义具体实现。  
 
-        } else if (message.getOperation() instanceof UpnpResponse) {
-            IncomingDatagramMessage<UpnpResponse> incomingResponse = message;
-
-            return isSupportedServiceAdvertisement(incomingResponse)
-                ? createReceivingSearchResponse(incomingResponse) : null;
-        }
-}
-```
-StreamRequestMessage封装TCP报文，通过createReceivingSync分发处理，ReceivingSync子类中重写executeSync方法定义具体实现。  
-```
-public ReceivingSync createReceivingSync(StreamRequestMessage message){
-	if (message.getOperation().getMethod().equals(UpnpRequest.Method.GET)) {
-            return createReceivingRetrieval(message);
-        } else if (getUpnpService().getConfiguration().getNamespace().isControlPath(message.getUri())) {
-            if (message.getOperation().getMethod().equals(UpnpRequest.Method.POST))
-                return createReceivingAction(message);
-        } else if (getUpnpService().getConfiguration().getNamespace().isEventSubscriptionPath(message.getUri())) {
-            if (message.getOperation().getMethod().equals(UpnpRequest.Method.SUBSCRIBE)) {
-                return createReceivingSubscribe(message);
-            } else if (message.getOperation().getMethod().equals(UpnpRequest.Method.UNSUBSCRIBE)) {
-                return createReceivingUnsubscribe(message);
-            }
-        }
-       ........
-}
-```
 **(2) 组装发送的报文**  
-有若干功能类似的方法，如：  
-向组播发送ssdp:alive告知设备存活  
+有若干功能类似的方法，返回不同的SendingAsync子类对象，通过重写executeSync方法定义具体实现。如：  
+a. 向组播发送ssdp:alive告知设备存活  
 ```
 public SendingNotificationAlive createSendingNotificationAlive(LocalDevice localDevice)
 ```
-生产SendingSearch实例的工厂方法，SendingSearch中定义了查询条件以及请求超时时间，并Override了execute(),在线程启动后创建OutgoingSearchRequest对象并通过Router发送。  
+b. 生产SendingSearch实例的工厂方法，SendingSearch中定义了查询条件以及请求超时时间，在重写的execute函数中，在线程启动后创建OutgoingSearchRequest对象并通过Router发送。  
 ```
 public SendingSearch createSendingSearch(UpnpHeader searchTarget, int mxSeconds)
 ```
 
 ####4.2.3 Registry
-协议栈的核心，实现类为RegistryImpl,可把其看做一个注册表，当发现新设备时将其加入Registry，当该设备失效后从Registry中移除,设备的订阅信息也在此维护。  
-该类中通过下列类对注册内容以及订阅内容等进行处理:  
+设备资源管理器，用于设备、资源、订阅消息的管理，包括添加、更新、移除、查询。可将新设备时加入Registry中，在设备失效后从Registry中移除。目前实现类为RegistryImpl。  
+关联类包括：  
 - RegistryListener
-注册表监听类，定义为一组监听器，Set<RegistryListener> registryListeners。
-实现类为DefaultRegistryListener，监听Device的add，remove动作。
+设备状态监听类，包含本地/远程设备的发现、添加、更新、移除等回调函数。可通过  
+```
+addListener(RegistryListener listener)
+```
+添加，保存在`RegistryListener`的Set\<RegistryListener\> registryListener参数内。  
+实现类有空实现的DefaultRegistryListener以及通过注入属性实现的RegistryListenerAdapter。  
 
-- Resource
-资源的父类。该类中定义资源的URI，model等属性。
+- Resource  
+资源的父类。该类中定义资源的URI，model等属性。  
 
-- ExpirationDetails
-每个RegistryItem对象都有自己的ExpirationDetails，ExpirationDetails通过构造函数传递的maxAgeSeconds记录最大超时时间，在每次maintain时判断该RegistryItem是否过期。
+- RegistryItem  
+KV形式的数据项，在 RegistryImpl 中用于包装设备、资源、订阅消息等。  
 
-- RegistryMaintainer
-用来每隔1000ms调用一次registry.maintain()方法，该方法执行的操作有：
+- RegistryItems  
+`RegistryImpl`中设备、资源集合的父类，定义了对元素的增删查改等操作。  
+包含`deviceItems`和`subscriptionItems`两个属性，分别表示设备集合和订阅消息集合，集合元素为`RegistryItem`。  
+子类有`LocalItems`和`RemoteItems`分别表示本地设备和远程设备集合。  
+
+- LocalItems  
+继承自RegistryItems，key 为 LocalDevice, value 为 LocalGENASubscription。存储本地设备及其订阅消息。  
+
+- RemoteItems  
+继承自RegistryItems，key 为 RemoteDevice, value 为 RemoteGENASubscription。存储远程设备及其订阅消息。  
+
+- ExpirationDetails  
+为RegistryItem的属性，记录上次刷新和最大超时时间，从而判断对象是否过期。  
+
+- RegistryMaintainer  
+资源管理器中元素有效期的定期维护，每隔1000ms调用一次registry.maintain()方法，该方法执行的操作有：  
 (1) 判断过期的item，并从resourceItems中移除；  
-(2) 遍历resourceItems，并对其中的每个Resource调用其maintain()方法；  
+(2) 遍历resourceItems，对其中的每个Resource调用其maintain()方法；  
 (3) remoteItems.maintain()对remote进行维护；  
 (4) localItems.maintain()对local进行维护；  
 (5) runPendingExecutions执行异步任务。  
 
-- RemoteItems
-包含deviceItems集合，定义了对RemoteDevice的增删查改等操作。  
-保存search后的RemoteDevice集合。
-
-- LocalItems
-继承自RegistryItems，包含了对LocalDevice的操作。
-
 ####4.2.4 Router
-Router为数据收发处理的核心类，实现类为RouterImpl。在其中通过重入读写锁控制设备的启用和禁用，并  
+数据传输层接口，负责接收和发送 UPnP 和 UDP 消息，或者将接收到的数据流广播给局域网内的其他设备。  
+目前实现类为 RouterImpl 和 MockRouter，其中 MockRouter 仅用来作为测试时的 Mock 接口，RouterImpl 作为默认的数据传输层实现。  
 **(1) 并发控制**  
 使用可重入读写锁ReentrantReadWriteLock实现设备并发读写的控制  
 ```
