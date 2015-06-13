@@ -22,8 +22,8 @@ UPnP 的工作过程大概分为 6 个步骤：
  
 (1) 发现(Discovery)  
 这步是 UPnP 真正工作的第一步。  
-当一个设备被加入到网络中时，UPnP 发现协议允许它向控制点介绍自己的功能。  
-当一个控制点被加入到网络时，UPnP 发现协议允许它搜寻这个网络内它感兴趣的设备。  
+当一个`设备`被加入到网络中时，UPnP 发现协议允许它向控制点介绍自己的功能。  
+当一个`控制点`被加入到网络时，UPnP 发现协议允许它搜寻这个网络内它感兴趣的设备。  
  
 (2) 描述(Description)  
 控制点通过`(1)发现`过程中设备提供的指向设备详细信息的链接，获取设备的详细信息。  
@@ -40,9 +40,9 @@ UPnP 的工作过程大概分为 6 个步骤：
 
 ####1.3	Cling 基本使用
 Cling 库包括两个模块：  
-- Cling Core
+- Cling Core  
 核心类库，基于 UDA1.0，实现了定义服务，设备发现，通过 ControlPoint 发送指令等 UPnP 的基本功能。  
-- Cling Support
+- Cling Support  
 顾名思义该包为 Cling 中一些功能的扩展，如：avtransport，lastchange 等。  
 
 下面就以 Android 平台创建 UPnP 服务并调用相关的控制方法介绍 Cling 的基本使用。  
@@ -237,7 +237,7 @@ send(StreamRequestMessage msg) 通过StreamClient发送TCP包。
 send(OutgoingDatagramMessage msg) 向所有 datagramIO 发送 UDP 包。  
 broadcast(byte[] bytes) 向所有 datagramIO 广播发送数据。  
 
-####4.2.13 StreamClient**  
+####4.2.13 StreamClient
 StreamClient 具体实现类为 AbstractStreamClient 以及其子类 StreamClientImpl。  
 在 Android 系统下使用的 Jetty 实现。在该类中具体的 http 协议处理由 HttpClient 实现，核心方法 sendRequest 用于创建请求并获取返回 response，请求及返回值通过 HttpContentExchange 封装，每一个 StreamRequestMessage 及其对应的 HttpContentExchange 通过 createCallable 方法封装为 Callable 对象，并将其压入 DefaultUpnpServiceConfiguration 中的 defaultExecutorService。在 call() 中调用 client.send(exchange) 发送 request 并获取 response。  
 
