@@ -33,7 +33,7 @@ UPnP 的工作过程大概分为 6 个步骤：
  
 (4) 事件(Eventing)  
 控制点可以监听设备的状态，这样设备的状态或信息发生了变化，只要产生一个事件广播出去，控制点即可进行响应，类似一般的订阅者模式。  
- 
+
 (5) 展现(Presentation)  
 控制点可以从设备获取一个 HTML 页面，用于控制设备或展现设备信息，是对上面(3) 控制和(4) 事件过程的一个补充。  
 更详细的介绍可以参考：[UPnP 简介、优点及工作几大步骤介绍](http://www.trinea.cn/other/upnp-desc-advantage-process/)  
@@ -173,8 +173,9 @@ public SendingSearch createSendingSearch(UpnpHeader searchTarget, int mxSeconds)
 
 ####4.2.3 Registry
 设备资源管理器，用于设备、资源、订阅消息的管理，包括添加、更新、移除、查询。可将新设备时加入Registry中，在设备失效后从Registry中移除。目前实现类为RegistryImpl。  
-关联类包括：  
-- RegistryListener
+关联类包括：RegistryListener、Resource、RegistryItem、RegistryItems、LocalItems、RemoteItems、ExpirationDetails、RegistryMaintainer。  
+
+####4.2.4 RegistryListener
 设备状态监听类，包含本地/远程设备的发现、添加、更新、移除等回调函数。可通过  
 ```
 addListener(RegistryListener listener)
@@ -182,27 +183,27 @@ addListener(RegistryListener listener)
 添加，保存在`RegistryListener`的Set\<RegistryListener\> registryListener参数内。  
 实现类有空实现的DefaultRegistryListener以及通过注入属性实现的RegistryListenerAdapter。  
 
-- Resource  
+####4.2.5 Resource  
 资源的父类。该类中定义资源的URI，model等属性。  
 
-- RegistryItem  
+####4.2.6 RegistryItem  
 KV形式的数据项，在 RegistryImpl 中用于包装设备、资源、订阅消息等。  
 
-- RegistryItems  
+####4.2.7 RegistryItems  
 `RegistryImpl`中设备、资源集合的父类，定义了对元素的增删查改等操作。  
 包含`deviceItems`和`subscriptionItems`两个属性，分别表示设备集合和订阅消息集合，集合元素为`RegistryItem`。  
 子类有`LocalItems`和`RemoteItems`分别表示本地设备和远程设备集合。  
 
-- LocalItems  
+####4.2.8 LocalItems  
 继承自RegistryItems，key 为 LocalDevice, value 为 LocalGENASubscription。存储本地设备及其订阅消息。  
 
-- RemoteItems  
+####4.2.9 RemoteItems  
 继承自RegistryItems，key 为 RemoteDevice, value 为 RemoteGENASubscription。存储远程设备及其订阅消息。  
 
-- ExpirationDetails  
+####4.2.10 ExpirationDetails  
 为RegistryItem的属性，记录上次刷新和最大超时时间，从而判断对象是否过期。  
 
-- RegistryMaintainer  
+####4.2.11 RegistryMaintainer  
 资源管理器中元素有效期的定期维护，每隔1000ms调用一次registry.maintain()方法，该方法执行的操作有：  
 (1) 判断过期的item，并从resourceItems中移除；  
 (2) 遍历resourceItems，对其中的每个Resource调用其maintain()方法；  
@@ -210,64 +211,37 @@ KV形式的数据项，在 RegistryImpl 中用于包装设备、资源、订阅�
 (4) localItems.maintain()对local进行维护；  
 (5) runPendingExecutions执行异步任务。  
 
-####4.2.4 Router
+####4.2.12 Router
 数据传输层接口，负责接收和发送 UPnP 和 UDP 消息，或者将接收到的数据流广播给局域网内的其他设备。  
 目前实现类为 RouterImpl 和 MockRouter，其中 MockRouter 仅用来作为测试时的 Mock 接口，RouterImpl 作为默认的数据传输层实现。  
-**(1) 并发控制**  
-使用可重入读写锁ReentrantReadWriteLock实现设备并发读写的控制  
-```
-protected volatile boolean enabled;
-protected ReentrantReadWriteLock routerLock = new ReentrantReadWriteLock(true);
-protected Lock readLock = routerLock.readLock();
-protected Lock writeLock = routerLock.writeLock();
+**(1) enable()**  
+启动。  
+得到配置中的`NetworkAddressFactory`，其目前实现为`NetworkAddressFactoryImpl`，调用`startInterfaceBasedTransports()`为`NetworkAddressFactory`的每个网络接口绑定一个多播接收器`MulticastReceiver`，用来监听多播地址，并处理获取到的数据。KV 形式存储在`multicastReceivers`中；  
+调用`startAddressBasedTransports`为`NetworkAddressFactory`的每个地址绑定一个`StreamServer`和`DatagramIO`，监听并进行数据处理。KV 形式存储在`streamServers`中。  
+创建一个`StreamClient`用于发送 TCP 消息。  
 
-//writeLock只在enable()和disable()函数尝试获取并禁止其他线程访问，完成操作后释放unlock(writeLock)
-public boolean enable() throws RouterException {
-        lock(writeLock);
-        try {
-            if (!enabled) {
-                .....
-            }
-            return false;
-        } finally {
-            unlock(writeLock);
-        }
-    }
+**(2) disable()**  
+停止。  
+停止`StreamClient`，停止`streamServers`中每个`StreamServer`，停止`multicastReceivers`中每个`MulticastReceiver`，停止`datagramIOs`中每个`DatagramIO`。  
 
-//多个线程可同时获取读锁lock(readLock)并发处理内容
-public void send(OutgoingDatagramMessage msg) throws RouterException {
-        lock(readLock);
-        try {
-            if (enabled) {
-                for (DatagramIO datagramIO : datagramIOs.values()) {
-                    datagramIO.send(msg);
-                }
-            } else {
-                log.fine("Router disabled, not sending datagram: " + msg);
-            }
-        } finally {
-            unlock(readLock);
-        }
-    }
-```
+通过可重入锁写锁控制启动和停止的并发。  
 
-**(2) 获取网络信息**  
-NetworkAddressFactory的实现类NetworkAddressFactoryImpl提供网络相关内容，如NetworkAddress，interface等。  
+**(3) getActiveStreamServers(InetAddress preferredAddress)**  
+根据 preferredAddress 得到活跃的 StreamServer，如果 preferredAddress 对应的 StreamServer 存在且活跃则返回，否则返回当前所有活跃的 StreamServer。  
 
-**(3) 初始化**  
-startAddressBasedTransports函数，将绑定到router上的ip及端口都以StreamServer的方式进行监听。每一个StreamServer对应一个DatagramIO，进行数据处理。  
+**(4) received(IncomingDatagramMessage msg)**  
+根据消息类型得到协议并执行。  
 
-startInterfaceBasedTransports函数，对应每个NetworkInterface创建对应的MulticastReceiver，用来监听多播地址，并处理获取到的数据。  
-
-**(4) 发送数据**  
+**(5) 发送数据**  
 send(StreamRequestMessage msg) 通过StreamClient发送TCP包。  
-send(OutgoingDatagramMessage msg) 通过datagramIO发送多播的UDP包。
+send(OutgoingDatagramMessage msg) 向所有 datagramIO 发送 UDP 包。  
+broadcast(byte[] bytes) 向所有 datagramIO 广播发送数据。  
 
-**(5) StreamClient**  
+####4.2.13 StreamClient**  
 StreamClient具体实现类为AbstractStreamClient以及其子类StreamClientImpl。  
 在Android系统下使用的Jetty实现。在该类中具体的http协议处理由HttpClient实现，核心方法sendRequest用于创建请求并获取返回response，请求及返回值通过HttpContentExchange封装，每一个StreamRequestMessage及其对应的HttpContentExchange通过createCallable方法封装为Callable对象，并将其压入DefaultUpnpServiceConfiguration中的defaultExecutorService。在call()中调用client.send(exchange)发送request并获取response。  
 
-**(6) StreamServer**  
+####4.2.14 StreamServer
 StreamServer用来接收HTTP请求并进行处理。在AndroidUpnpServiceConfiguration中进行初始化：  
 ```
 public StreamServer createStreamServer(NetworkAddressFactory networkAddressFactory) {
@@ -282,11 +256,11 @@ public StreamServer createStreamServer(NetworkAddressFactory networkAddressFacto
 ```
 本质上是由Jetty实现的servlet容器。从HttpServletRequest中获取数据流并传递给Router的received(UpnpStream stream)进行处理。JettyServletContainer使用了单例模式，其中定义Server的具体实现，并使用synchronized同步Server属性变更操作。  
 
-**(7) ReceivingNotification**  
+####4.2.15 ReceivingNotification
 处理接收到的notification消息。如ALIVE，BYEBYE。当接收到ALIVE消息后，会在后台启动一个线程执行RetrieveRemoteDescriptors获取该设备的信息。  
 
-**(8) RetrieveRemoteDescriptors**  
-用来主动获取远端内容，并返回RemoteService加入到Registry中。  
+####4.2.16 RetrieveRemoteDescriptors
+用来主动获取远端介绍详情，并返回RemoteService加入到Registry中。  
 
 ###5 结语
 Cling作为一款优秀的开源UPnP协议栈实现，从之前的1.x版本发展到现在的2.x，在稳定性易扩展等方面有着显著的提升，由于对Android平台有着较好的支持，越来越多的产品使用Cling作为解决方案，如BubbleUPnP等。当然它本身也还存在着如Router切换WIFI时注册设备清除失败等问题，但瑕不掩瑜，本着学习的态度还是可以从中受益良多。  
