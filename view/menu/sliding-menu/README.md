@@ -2,7 +2,7 @@ SlidingMenu 源码解析
 ====================================
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 SlidingMenu 部分  
 > 项目地址：[SlidingMenu](https://github.com/jfeinstein10/SlidingMenu)，分析的版本：[4254fec](https://github.com/jfeinstein10/SlidingMenu/commit/4254feca3ece9397cd501921ee733f19ea0fdad8)，Demo 地址：[SlidingMenu Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/sliding-menu-demo)  
-> 分析者：[huxian99](https://github.com/huxian99)，校对者： 校对状态：未开始  
+> 分析者：[huxian99](https://github.com/huxian99)，分析状态：完成，校对者：[Trinea](https://github.com/trinea)，校对状态：进行中  
 
 ##1. 功能介绍  
 现在主流app的导航栏一般有两种，一种是主界面上面3－4个tab下面搭配ViewPager+Fragment，另一种就是侧边栏，如果主导航超过3个tab时，建议使用侧边栏作为app的主导航。  
