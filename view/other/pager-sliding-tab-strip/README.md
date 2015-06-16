@@ -1,8 +1,8 @@
-${PagerSlidingTabStrip} 源码解析
-====================================
-> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 ${PagerSlidingTabStrip} 部分
+PagerSlidingTabStrip 源码解析
+=====
+> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 PagerSlidingTabStrip 部分
 
-项目地址：[${PagerSlidingTabStrip}](${https://github.com/astuetz/PagerSlidingTabStrip})，分析的版本：[1.0.1](https://github.com/astuetz/PagerSlidingTabStrip)，Demo 地址：[PagerSlidingTabStrip Demo](https://github.com/ayyb1988/android-open-project-demo/tree/master/pager-sliding-tab-strip-demo-ayyb1988})
+项目地址：[PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip)，分析的版本：[1.0.1](https://github.com/astuetz/PagerSlidingTabStrip)，Demo 地址：[PagerSlidingTabStrip Demo](https://github.com/ayyb1988/android-open-project-demo/tree/master/pager-sliding-tab-strip-demo-ayyb1988})
  
  分析者：[ayyb1988](https://github.com/ayyb1988)，分析状态：已完成
  
@@ -52,9 +52,10 @@ pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的OnP
 ```
 
 #####3.2.4 如果你的view pager使用到OnPageChangeListener。你应该通过这个PagerSlidingTabStrip控件设置而不是Viewpager。如下：
-
+```
      // continued from above
      tabs.setOnPageChangeListener(mPageChangeListener);
+```
 ####3.3 用户定制
  根据你的需要修改下面的值
 * pstsIndicatorColor 滑动指示器的颜色
@@ -78,81 +79,81 @@ pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的OnP
 pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的 OnPageChangeListener。但是viewpager注册的listener不是自身的OnPageChangeListener，而是pagerSlidingTabStrip内部类PageListener。通过PageListener实现对对viewpager和tab的封装。从而实现滑动联动效果。下面结合代码详细说明
 ```
  private class PageListener implements OnPageChangeListener {
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-			//当前view的位置也即tab的位置
-            currentPosition = position;
-            //当前view滑动的距离 。其中currentPositionOffset 为float，介于0~1 代表相对于tab宽偏移的比例
-            currentPositionOffset = positionOffset;
-            //根据上面得到的view的位置和偏移位置，来同步tab的位置和偏移距离。
-            scrollToChild(position, (int) (positionOffset * tabsContainer.getChildAt(position).getWidth()));
+	
+	@Override
+	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+	
+	    //当前view的位置也即tab的位置
+	    currentPosition = position;
+	    //当前view滑动的距离 。其中currentPositionOffset 为float，介于0~1 代表相对于tab宽偏移的比例
+	    currentPositionOffset = positionOffset;
+	    //根据上面得到的view的位置和偏移位置，来同步tab的位置和偏移距离。
+	    scrollToChild(position, (int) (positionOffset * tabsContainer.getChildAt(position).getWidth()));
 			//重绘view，实现tab滑动的效果。
-            invalidate();
+	    invalidate();
 			//下面的delegatePageListener就是我们设置的viewpager.setOnPageChangeListener.而现在把它封装在整个pagerSlidingTabStrip中，实现viewpager滑动的效果。
-            if (delegatePageListener != null) {
-                delegatePageListener.onPageScrolled(position, positionOffset, positionOffsetPixels);
-            }
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-        	//滑动结束。positionOffset归零
-            if (state == ViewPager.SCROLL_STATE_IDLE) {
-                scrollToChild(pager.getCurrentItem(), 0);
-            }
-            //调用viewpager.setOnPageChangeListener
-            if (delegatePageListener != null) {
-                delegatePageListener.onPageScrollStateChanged(state);
-            }
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-        //调用viewpager.setOnPageChangeListener
-            if (delegatePageListener != null) {
-                delegatePageListener.onPageSelected(position);
-            }
-        }
-
-    }
+	    if (delegatePageListener != null) {
+	        delegatePageListener.onPageScrolled(position, positionOffset, positionOffsetPixels);
+	    }
+	}
+	
+	@Override
+	public void onPageScrollStateChanged(int state) {
+		//滑动结束。positionOffset归零
+	    if (state == ViewPager.SCROLL_STATE_IDLE) {
+	        scrollToChild(pager.getCurrentItem(), 0);
+	    }
+	    //调用viewpager.setOnPageChangeListener
+	    if (delegatePageListener != null) {
+	        delegatePageListener.onPageScrollStateChanged(state);
+	    }
+	}
+	
+	@Override
+	public void onPageSelected(int position) {
+	//调用viewpager.setOnPageChangeListener
+	    if (delegatePageListener != null) {
+	        delegatePageListener.onPageSelected(position);
+	    }
+	}
+	
+}
 ```
 
 scrollToChild，tab的滑动位置 实现如下：
 ```
-    private void scrollToChild(int position, int offset) {
+private void scrollToChild(int position, int offset) {
 
-        if (tabCount == 0) {
-            return;
-        }
+	if (tabCount == 0) {
+	    return;
+	}
+	
+	int newScrollX = tabsContainer.getChildAt(position).getLeft() + offset;
+	
+	if (position > 0 || offset > 0) {
+	    newScrollX -= scrollOffset;
+	}
+	
+	//滑动到的位置。
+	if (newScrollX != lastScrollX) {
+	    lastScrollX = newScrollX;
+	    scrollTo(newScrollX, 0);
+	}
 
-        int newScrollX = tabsContainer.getChildAt(position).getLeft() + offset;
+}
+```
 
-        if (position > 0 || offset > 0) {
-            newScrollX -= scrollOffset;
-        }
+接下来说下 **addTextTab**   **addIconTab**。即tab是text还是icon。如果是icon的话，通过viewpager的adapter实现接口IconTabProvider。来确定icontab。
+```
+for (int i = 0; i < tabCount; i++) {
 
-		//滑动到的位置。
-        if (newScrollX != lastScrollX) {
-            lastScrollX = newScrollX;
-            scrollTo(newScrollX, 0);
-        }
-
+    if (pager.getAdapter() instanceof IconTabProvider) {
+        addIconTab(i, ((IconTabProvider) pager.getAdapter()).getPageIconResId(i));
+    } else {
+        addTextTab(i, pager.getAdapter().getPageTitle(i).toString());
     }
-```
 
-接下来说下 **addTextTab**   **addIconTab**66。即tab是text还是icon。如果是icon的话，通过viewpager的adapter实现接口IconTabProvider。来确定icontab。
-```
-        for (int i = 0; i < tabCount; i++) {
-
-            if (pager.getAdapter() instanceof IconTabProvider) {
-                addIconTab(i, ((IconTabProvider) pager.getAdapter()).getPageIconResId(i));
-            } else {
-                addTextTab(i, pager.getAdapter().getPageTitle(i).toString());
-            }
-
-        }
+}
 ```
 
 ####4.3 View绘制机制
