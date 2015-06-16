@@ -32,7 +32,8 @@ mListView.setAdapter(mAdapter = new QuickAdapter<Bean>(MainActivity.this, R.layo
 (1) 与 Picasso 耦合，想替换为其他图片缓存需要修改源码。  
 可通过接口方式，供三方根据自己的图片缓存库实现图片获取，或者直接去掉`helper.setImageUrl(…)`函数。  
 
-(2) 与内部添加的进度条偶尔，导致不支持多种类型布局，在本文最后给出不改动进度条的解决方法。更好的实现方式应该是通过接口方式暴露，供三方自己设置。  
+(2) 与内部添加的进度条偶尔，导致不支持多种类型布局  
+在本文最后给出不改动进度条的解决方法。更好的实现方式应该是通过接口方式暴露，供三方自己设置。  
 
 (3) 目前的方案也不支持`HeaderViewListAdapter`。  
 总体来说这个库比较简单，实现也有待改进。 
@@ -107,9 +108,9 @@ public View getView(int position, View convertView, ViewGroup parent) {
 }
 ```
 上面列出了 BaseQucikAdapter 中已经实现的主要方法，跟一般 BaseAdapter 类似，我们重点看以下几个点：  
-1. 重写了`getViewTypeCount()`和`getItemViewType()`，这里 type 为 2，通过`getView(…)`可以看出，主要是为了在 AbsListView 最后显示一个进度条，这里也暴露了一个弊端，无法支持多种 Item 样式的布局；  
+a. 重写了`getViewTypeCount()`和`getItemViewType()`，这里 type 为 2，通过`getView(…)`可以看出，主要是为了在 AbsListView 最后显示一个进度条，这里也暴露了一个弊端，无法支持多种 Item 样式的布局；  
 
-2. `getView(…)`方法的实现中首先通过抽象函数`getAdapterHelper(…)` 得到 BaseAdapterHelper 及 item，然后通过抽象函数`convert(…)`实现 View 和 数据的绑定。  
+b. `getView(…)`方法的实现中首先通过抽象函数`getAdapterHelper(…)` 得到 BaseAdapterHelper 及 item，然后通过抽象函数`convert(…)`实现 View 和 数据的绑定。  
 
 这样`BaseQucikAdapter`子类只需要实现抽象函数`getAdapterHelper(…)`和`convert(…)`即可。  
 
@@ -182,8 +183,8 @@ static BaseAdapterHelper get(Context context, View convertView, ViewGroup parent
 在`QuickAdapter`中，通过上面的 5 个参数的静态函数`get(…)`得到`BaseAdapterHelper`的实例。4 个参数的`get(…)`方法，只是将 position 默认传入了 -1，即不关注 postion 方法。  
 
 这里可以对比下我们平时在`getView`中编写的 ViewHolder 模式的代码。在一般的 ViewHolder 模式中，先判断`convertView`是否为空：  
-1. 如果是，则通过`LayoutInflater` inflate 一个布局文件，然后新建 ViewHolder 存储布局中各个子 View，通过 tag 绑定该 ViewHolder 到`convertView`，返回我们的`convertView`；  
-2. 否则直接得到 tag 中的 ViewHolder。  
+a. 如果是，则通过`LayoutInflater` inflate 一个布局文件，然后新建 ViewHolder 存储布局中各个子 View，通过 tag 绑定该 ViewHolder 到`convertView`，返回我们的`convertView`；  
+b. 否则直接得到 tag 中的 ViewHolder。  
 
 结合`BaseQuickAdapter`的`getView(…)`代码，看下 base-adapter-helper 的实现。  
 ```java
@@ -286,7 +287,8 @@ public BaseAdapterHelper setOnLongClickListener(int viewId, View.OnLongClickList
 (1) 与 Picasso 耦合，想替换为其他图片缓存需要修改源码  
 可通过新增接口方式，供三方自己根据自己的图片缓存库实现图片获取，或者直接去掉`helper.setImageUrl(…)`函数。  
 
-(2) 与内部添加的进度条耦合，导致不支持多种类型布局，在下面给出不改动进度条的解决方法。更好的实现方式应该是通过接口方式暴露，供三方自己设置。  
+(2) 与内部添加的进度条耦合，导致不支持多种类型布局  
+在下面给出不改动进度条的解决方法。更好的实现方式应该是通过接口方式暴露，供三方自己设置。  
 
 总体来说这个库比较简单，实现也有待改进。 
 
