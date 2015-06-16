@@ -2,11 +2,11 @@ BaseAdapterHelper 源码分析
 ====================================
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 BaseAdapterHelper 部分  
 > 项目地址：[BaseAdapterHelper](https://github.com/JoanZapata/base-adapter-helper)，分析的版本：[e65d7d8](https://github.com/JoanZapata/base-adapter-helper/commit/e65d7d83c5f5181feb189e5ff4f5cc5835eaadfe "Commit id is e65d7d83c5f5181feb189e5ff4f5cc5835eaadfe")，Demo 地址：[base-adapter-helper Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/base-adapter-helper-demo)     
-> 分析者：[hongyangAndroid](https://github.com/hongyangAndroid)，分析状态：完成，校对者：[zhengtao620](https://github.com/zhengtao620)，校对状态：完成   
+> 分析者：[hongyangAndroid](https://github.com/hongyangAndroid)，分析状态：完成，校对者：[zhengtao620](https://github.com/zhengtao620)、[Trinea](https://github.com/trinea)，校对状态：完成   
 
 ###1. 功能介绍  
 ####1.1. base-adapter-helper  
-base-adapter-helper 是对传统的 BaseAdapter 的 ViewHolder 的模式的一个封装。主要功能就是简化我们在书写 AbsListView 的 Adapter 的代码，如 ListView，GridView。  
+base-adapter-helper 是对传统 BaseAdapter ViewHolder 模式的一个封装。主要功能就是简化我们书写 AbsListView 的 Adapter 的代码，如 ListView，GridView。  
 
 ####1.2 基本使用
 ```java
@@ -24,16 +24,21 @@ mListView.setAdapter(mAdapter = new QuickAdapter<Bean>(MainActivity.this, R.layo
 ```
 
 ####1.3 优点
-(1) 提供 QucikAdapter，省去写类似 getCount() 等样板代码，只需关注 Model 到 View 的显示。  
-(2) BaseAdapterHelper 中封装了大量用于为 View 操作的辅助方法，例如从网络加载图片：
+(1) 提供 QucikAdapter，省去类似 getCount() 等抽象函数的书写，只需关注 Model 到 View 的显示。  
+(2) BaseAdapterHelper 中封装了大量用于为 View 操作的辅助方法，例如从网络加载图片：  
 `helper.setImageUrl(R.id.iv_photo, item.getPhotoUrl());`  
 
 ####1.4 缺点
-(1) 与 Picasso 耦合，想替换为其他图片缓存需要修改源码。可通过接口方式，供三方自己根据特性实现图片获取，或者直接去掉`helper.setImageUrl(…)`函数。  
-(2) 不支持多种类型布局，这个在本文最后有给出解决方法。  
+(1) 与 Picasso 耦合，想替换为其他图片缓存需要修改源码。  
+可通过接口方式，供三方自己根据自己的图片缓存库实现图片获取，或者直接去掉`helper.setImageUrl(…)`函数。  
+
+(2) 与内部添加的进度条偶尔，导致不支持多种类型布局，在本文最后给出不改动进度条的解决方法，更好的实现方式应该是通过接口方式暴露，供三方自己设置。  
+
+(3) 目前的方案也不支持`HeaderViewListAdapter`。  
+总体来说这个库比较简单，实现也有待改进。 
 
 ###2. 总体设计
-由于 base-adapter-helper 本质上仍然是 ViewHolder Pattern，下面贴出 base-adapter-helper 的总体设计图和 ViewHolder Pattern 的设计图，通过两图的比较，可以看出 base-adapter-helper 对传统的`BaseAdapter`进行了初步的实现（`QuickAdapter`），并且仅公布出`convert()`方法，在`convert()`中可以拿到`BaseAdapterHelper`,`BaseAdapterHelper`就相当于`ViewHolder`，但其内部提供了大量的辅助方法，用于设置 View 上的数据，甚至是事件等。
+由于 base-adapter-helper 本质上仍然是 ViewHolder Pattern，下面贴出 base-adapter-helper 的总体设计图和 ViewHolder Pattern 的设计图，通过两图的比较，可以看出 base-adapter-helper 对传统的`BaseAdapter`进行了初步的实现（`QuickAdapter`），并且仅需实现`convert()`方法，在`convert()`中可以拿到`BaseAdapterHelper`,`BaseAdapterHelper`就相当于`ViewHolder`，但其内部提供了大量的辅助方法，用于设置 View 上的数据及事件等。
 
 ##### base-adapter-helpr
 ![base-adapter-helpr 设计图](image/base-adapter-helpr.png)  
@@ -43,51 +48,40 @@ mListView.setAdapter(mAdapter = new QuickAdapter<Bean>(MainActivity.this, R.layo
 ###3. 详细设计
 ####3.1 类关系图
 ![类关系图](image/base-adapter-helper-ClassDiagram.jpg)  
-这是 base-adapter-helper 框架的主要类关系图    
+这是 base-adapter-helper 库的主要类关系图    
 
-1. 在 BaseQucikAdapter 中实现了 BaseAdapter 中通用的抽象方法
-2. BaseQuickAdapter 中两个泛型，一个 T 是针对数据，一个 H 是针对 BaseAdapterHelper
-3. QucikAdapter 继承自 BaseQuickAdapter，并且传入 BaseAdapterHelper 作为 H 泛型
-4. EnhancedQuickAdapter 主要为 convert 方法，添加一个 itemChanged 参数，用于区分 dataset changed / dataset invalidated
-5. BaseAdapterHelper 中封装了常用 View 的赋值，以及事件监听的方法，方便操作。并且赋值方法都有采用链式编程，更加方便书写。
-6. 扩展 BaseAdapterHelper 可以继承 BaseAdapterHelper，编写 Adapter 时继承 BaseQuickAdapter,传入自定义的类作为 H 泛型。 
+(1) 在 BaseQucikAdapter 中实现了 BaseAdapter 中通用的抽象方法；
+(2) BaseQuickAdapter 中两个泛型，其中 T 表示数据实体类(Bean)类型，H 表示 BaseAdapterHelper 子类，继承自 BaseAdapterHelper 添加一些其他的工具函数；  
+(3) QucikAdapter 继承自 BaseQuickAdapter，并且传入 BaseAdapterHelper 作为 H 泛型；  
+(4) EnhancedQuickAdapter 主要为 convert() 方法添加一个 itemChanged 参数，表示 item 对应数据是否发生变化；  
+(5) BaseAdapterHelper 为用于获取 View 并进行内容、事件设置等相关操作的辅助类。并且多数用于设置的方法都采用链式编程，方便书写；  
+(6) 可以根据自己需要继承 BaseAdapterHelper 来扩展，做为 BaseQuickAdapter 子类的 H 泛型。  
 
 ###3.2 核心类源码分析
 ####3.2.1 BaseQucikAdapter.java 
-该类继承自 BaseAdapter，完成 BaseAdapter 中部分通用抽象方法的编写，类似`ArrayAdapter`.
-该类声明了两个泛型，一个是我们的 Bean（T），一个是`BaseAdapterHelper(H)`主要用于扩展`BaseAdapterHelper`时使用。
+该类继承自 BaseAdapter，完成 BaseAdapter 中部分通用抽象方法的实现，类似`ArrayAdapter`。  
+该类声明了两个泛型，其中 T 表示数据实体类(Bean)类型，H 表示 BaseAdapterHelper 子类，主要在扩展`BaseAdapterHelper`时使用。  
 
-#####(1).构造方法 
+#####(1) 构造方法 
 ```java
-
     public BaseQuickAdapter(Context context, int layoutResId) {
         this(context, layoutResId, null);
     }
+
     public BaseQuickAdapter(Context context, int layoutResId, List<T> data) {
         this.data = data == null ? new ArrayList<T>() : new ArrayList<T>(data);
         this.context = context;
         this.layoutResId = layoutResId;
     }
 ```
-Adapter 的必须元素 ItemView 通过 layoutResId 指定，展示数据通过 data 指定。
+Adapter 的必须元素 ItemView 的布局文件通过 layoutResId 指定，待展示数据通过 data 指定。  
 
-#####(2).BaseAdapter 中需要实现的方法
+#####(2) 已经实现的主要方法
 ```java
     @Override
     public int getCount() {
         int extra = displayIndeterminateProgress ? 1 : 0;
         return data.size() + extra;
-    }
-
-    @Override
-    public T getItem(int position) {
-        if (position >= data.size()) return null;
-        return data.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
     }
 
     @Override
@@ -98,11 +92,6 @@ Adapter 的必须元素 ItemView 通过 layoutResId 指定，展示数据通过 
     @Override
     public int getItemViewType(int position) {
         return position >= data.size() ? 1 : 0;
-    }
-
- 	@Override
-    public boolean isEnabled(int position) {
-        return position < data.size();
     }
 
     @Override
@@ -117,90 +106,36 @@ Adapter 的必须元素 ItemView 通过 layoutResId 指定，展示数据通过 
 
         return createIndeterminateProgressView(convertView, parent);
     }
+```
+上面列出了 BaseQucikAdapter 中已经实现的主要方法，跟一般 BaseAdapter 类似，我们重点看以下几个点：
+1. 重写了`getViewTypeCount`和`getItemViewType`，这里 type 为 2，通过`getView`可以看出，主要是为了在 AbsListView 最后显示一个进度条，这里也暴露了一个弊端，无法支持多种 Item 样式的布局；  
+2. getView 方法的实现中首先通过抽象函数`getAdapterHelper(…)` 得到 BaseAdapterHelper 及 item，然后通过抽象函数`convert(…)`实现 View 和 数据的绑定。  
+这样`BaseQucikAdapter`子类只需要实现抽象函数`getAdapterHelper(…)`和`convert(…)`即可。  
 
+#####(3) 待实现的抽象方法
+```java
     protected abstract void convert(H helper, T item);
 
     protected abstract H getAdapterHelper(int position, View convertView, ViewGroup parent);
-
-    private View createIndeterminateProgressView(View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            FrameLayout container = new FrameLayout(context);
-            container.setForegroundGravity(Gravity.CENTER);
-            ProgressBar progress = new ProgressBar(context);
-            container.addView(progress);
-            convertView = container;
-        }
-        return convertView;
-    }
-
- 	public void showIndeterminateProgress(boolean display) {
-        if (display == displayIndeterminateProgress) return;
-        displayIndeterminateProgress = display;
-        notifyDataSetChanged();
-    }
-    public void add(T elem) {
-        data.add(elem);
-        notifyDataSetChanged();
-    }
-
-    public void addAll(List<T> elem) {
-        data.addAll(elem);
-        notifyDataSetChanged();
-    }
-
-    public void set(T oldElem, T newElem) {
-        set(data.indexOf(oldElem), newElem);
-    }
-
-    public void set(int index, T elem) {
-        data.set(index, elem);
-        notifyDataSetChanged();
-    }
-
-    public void remove(T elem) {
-        data.remove(elem);
-        notifyDataSetChanged();
-    }
-
-    public void remove(int index) {
-        data.remove(index);
-        notifyDataSetChanged();
-    }
-
-    public void replaceAll(List<T> elem) {
-        data.clear();
-        data.addAll(elem);
-        notifyDataSetChanged();
-    }
-
-    public boolean contains(T elem) {
-        return data.contains(elem);
-    }
-
-    /** Clear data list */
-    public void clear() {
-        data.clear();
-        notifyDataSetChanged();
-    }
 ```
-方法基本分为两类，一类是 BaseAdapter 中需要实现的方法；另一类用于操作我们的 data。
-重点看以下几个点：
+1. convert(H helper, T item)  
+通过`helper`将 View 和 数据绑定。  
+`helper`参数表示 BaseQuickAdapter 或其子类，用于获取 View 并进行内容、事件设置等相关操作，由`getAdapterHelper(…)`函数返回提供。`item`表示对应的数据。  
 
-1. 重写了`getViewTypeCount`和`getItemViewType`，这里 type 为 2，主要是为了在 AbsListView 最后显示一个进度条。通过`getCount`，`getItemViewType`，以及 getView 就可以明确的看出。这里也暴露了一个弊端，无法支持多种 Item 样式的布局。
-2. 实现了 getView 方法，而对外公布了`convert(helper, item)`。convert 的参数是`BaseAdapterHelper`和`Bean`，通过`BaseAdapterHelper`封装的 View 赋值方法，将`Bean`中的数据赋值给 ItemView，所以公布这个方法还是极其方便的。
-3. `convert(helper, item)`这个 helper 为`BaseAdapterHelper`类型，通过`getAdapterHelper`提供，子类可以通过该方法提供扩展的 BaseAdapterHelper。关于`getAdapterHelper`的实现见`QuickAdapter`。
+2. getAdapterHelper(int position, View convertView, ViewGroup parent)  
+返回 BaseQuickAdapter 或其子类，绑定 item，然后传递给上面的`convert(…)`函数。  
+关于`getAdapterHelper(…)`的实现见下面`QuickAdapter`的介绍。  
 
 ####3.2.2 QucikAdapter.java 
-这个类中没什么代码，主要用于提供一个快速使用的 Adapter。一般情况下直接用此类作为 Adapter 即可，但是如果你扩展了`BaseAdapterHelper`，可能就需要自己去继承`BaseAdapterHelper`实现自己的 Adapter。所以该类，对于`getAdapterHelper`直接返回了`BaseAdapterHelper`。
-```java
- protected BaseAdapterHelper getAdapterHelper(int position, View convertView, ViewGroup parent) {
-        return BaseAdapterHelper.get(context, convertView, parent, layoutResId, position);
-    }
-```
+这个类继承自`BaseQuickAdapter`，没什么代码，主要用于提供一个可快速使用的 Adapter。  
+
+对于`getAdapterHelper(…)`函数直接返回了`BaseAdapterHelper`，一般情况下直接用此类作为 Adapter 即可，如`1.2 基本使用`的示例。  
+但如果你扩展了`BaseAdapterHelper`，就需要自己去继承`BaseAdapterHelper`，重写`getAdapterHelper(…)`函数，实现自己的 Adapter。  
+
 ####3.2.3 EnhancedQuickAdapter.java 
-这个类仅仅是为 convert 方法添加了一个参数`itemChanged`用于区分 dataset changed / dataset invalidated。
+继承自`QuickAdapter`，仅仅是为`convert(…)`添加了一个参数`itemChanged`，表示 item 对应数据是否发生变化。  
 ```java
- @Override
+    @Override
     protected final void convert(BaseAdapterHelper helper, T item) {
         boolean itemChanged = helper.associatedObject == null || !helper.associatedObject.equals(item);
         helper.associatedObject = item;
@@ -210,16 +145,16 @@ Adapter 的必须元素 ItemView 通过 layoutResId 指定，展示数据通过 
     protected abstract void convert(BaseAdapterHelper helper, T item, boolean itemChanged);
 ```
 
-可以看到它的实现是通过 helper.associatedObject 的`equals()`方法，associatedObject 的即我们的 bean。在`BaseQuickAdapter`可以看到其赋值的代码。
+可以看到它的实现是通过`helper.associatedObject`的`equals()`方法判断数据是否发生变化，associatedObject 的即我们的 bean。在`BaseQuickAdapter.get(…)`可以看到其赋值的代码。  
 
 ####3.2.4 BaseAdapterHelper.java 
 可用于获取 View 并进行内容设置等相关操作的辅助类，该类的功能有：  
-1. 充当了 ViewHolder 角色，KV 形式保存 convertView 中子 View 的 id 及其引用，方便查找。和 convertView 通过 tag 关联；
+1. 充当了 ViewHolder 角色，KV 形式保存 convertView 中子 View 的 id 及其引用，方便查找。和 convertView 通过 tag 关联；  
 2. 提供了一堆辅助方法，用于为子 View 设置内容、样式、事件等。  
 
-#####(1).构造相关方法 
+#####(1) 构造相关方法 
 ```java
-protected BaseAdapterHelper(Context context, ViewGroup parent, int layoutId, int position) {
+    protected BaseAdapterHelper(Context context, ViewGroup parent, int layoutId, int position) {
         this.context = context;
         this.position = position;
         this.views = new SparseArray<View>();
@@ -228,13 +163,6 @@ protected BaseAdapterHelper(Context context, ViewGroup parent, int layoutId, int
         convertView.setTag(this);
     }
 
-    /**
-     * This method is the only entry point to get a BaseAdapterHelper.
-     * @param context     The current context.
-     * @param convertView The convertView arg passed to the getView() method.
-     * @param parent      The parent arg passed to the getView() method.
-     * @return A BaseAdapterHelper instance.
-     */
     public static BaseAdapterHelper get(Context context, View convertView, ViewGroup parent, int layoutId) {
         return get(context, convertView, parent, layoutId, -1);
     }
@@ -251,15 +179,32 @@ protected BaseAdapterHelper(Context context, ViewGroup parent, int layoutId, int
         return existingHelper;
     }
 ```
-在`QuickAdapter`中，通过上面的 5 个参数的`get`得到`BaseAdapterHelper`的实例（4 个参数的 get 方法，只是将 position 默认传入了-1，即不关注 postion 方法）。这里可以回想下，我们平时在`getView`中编写的 ViewHolder 模式的代码。
-
-1. 首先如果`convertView==null`，我们需要去通过`LayoutInflater`去 inflate 一个布局文件，返回我们的`convertView`。看上面的构造方法，的确是 inflate 了一个布局作为我们的`convertView`，并且完成对 context,postion 的赋值，由于我们这里并不会为每个 Item 的布局去编写 ViewHolder，该类充当了一个万能的 ViewHolder 的角色，所以存储`convertView`子 View 的引用，使用了`SparseArray<View>`，最后将`convertView`与`BaseAdapterHelper`通过`tag`关联。
-2. 如果`convertView!=null`，直接通过`tag`获取到我们关联的`BaseAdapterHelper`，更新 position 后返回。
-
-#####(2).几个重要的方法 
-一般情况下，我们在`Adapter`的`convert`方法中拿到`BaseAdapterHelper`是通过`getView(int viewId)`拿到该`View`，然后进行赋值，使用如下代码：
+在`QuickAdapter`中，通过上面的 5 个参数的静态函数`get(…)`得到`BaseAdapterHelper`的实例。4 个参数的`get(…)`方法，只是将 position 默认传入了 -1，即不关注 postion 方法。  
+这里可以对比下我们平时在`getView`中编写的 ViewHolder 模式的代码。在一般的 ViewHolder 模式中，先判断`convertView`是否为空：  
+1. 如果是，则通过`LayoutInflater` inflate 一个布局文件，然后新建 ViewHolder 存储布局中各个子元素，通过 tag 绑定该 ViewHolder 到`convertView`，返回我们的`convertView`；
+2. 否则直接得到 tag 中的 ViewHolder。  
+结合`BaseQuickAdapter`的`getView(…)`代码，看下这里的实现。  
 ```java
- public <T extends View> T getView(int viewId) {
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (getItemViewType(position) == 0) {
+            final H helper = getAdapterHelper(position, convertView, parent);
+            T item = getItem(position);
+            helper.setAssociatedObject(item);
+            convert(helper, item);
+            return helper.getView();
+        }
+
+        return createIndeterminateProgressView(convertView, parent);
+    }
+```
+先利用`getAdapterHelper(…)`得到`BaseAdapterHelper`或其子类，对于`QuickAdapter`而言，这个函数直接调用上面`BaseAdapterHelper`的`get(…)`函数，我们可以看到同样是先判断`convertView`是否为空，以确定是否需要新建`BaseAdapterHelper`，否则从 tag 中获取更新 position 后重用。  
+在构造方法中 inflate 了一个布局作为`convertView`，并且保存 context 及 postion。将`convertView`与`BaseAdapterHelper`通过`tag`关联。  
+
+#####(2) 几个重要的方法 
+一般情况下，在我们重写`BaseQuickAdapter`的`convert(…)`时，需要得到 View，这时我们可以通过其入参`BaseAdapterHelper`的`getView(int viewId)`得到该`View`，代码如下：
+```java
+    public <T extends View> T getView(int viewId) {
         return retrieveView(viewId);
     }
 
@@ -273,166 +218,52 @@ protected BaseAdapterHelper(Context context, ViewGroup parent, int layoutId, int
         return (T) view;
     }
 ```
-通过 viewId 去我们的 views 中进行寻找，找到则返回，找不到则添加并返回。每个`convertView`对应于一个`BaseAdapterHelper`，每个`BaseAdapterHelper`中包含一个`views`，`views`中保持`convertView`的子 View 的引用。
+通过 viewId 去 views 中进行寻找，找到则返回，找不到则添加并返回。views 是一个 SparseArray<View>，key
+为 view id，value 为 view，缓存已经查找到的子 view。  
+每个`convertView`与一个`BaseAdapterHelper`绑定，每个`BaseAdapterHelper`中包含一个`views`属性，`views`中存储`convertView`的子 View 的引用。  
 
-#####(3).辅助方法
-一般情况下，通过`getView(int viewId)`拿到该`View`，然后进行赋值就可以了。但是此框架考虑：既然是拿到 View 然后赋值，不如我提供一些赋值的辅助方法。于是产生了一堆类似`setText(int viewId, String value)`的代码，内部首先通过 viewId 找到该 View，转为`TextView`然后调用`setText(value)`。具体代码如下：
-
+#####(3) 辅助方法
+一般情况下，通过`getView(int viewId)`拿到该`View`，然后进行赋值就可以了。但是此库考虑：既然是拿到 View 然后赋值，不如直接提供一些赋值的辅助方法。于是产生了一堆类似`setText(int viewId, String value)`的代码，内部首先通过 viewId 找到该 View，转为`TextView`然后调用`setText(value)`。部分代码如下：  
 ```java
-public BaseAdapterHelper setText(int viewId, String value) {
+    public BaseAdapterHelper setText(int viewId, String value) {
         TextView view = retrieveView(viewId);
         view.setText(value);
         return this;
     }
 
-    public BaseAdapterHelper setImageResource(int viewId, int imageResId) {
-        ImageView view = retrieveView(viewId);
-        view.setImageResource(imageResId);
-        return this;
-    }
+    public BaseAdapterHelper setImageResource(int viewId, int imageResId) {…}
 
-    public BaseAdapterHelper setBackgroundColor(int viewId, int color) {
-        View view = retrieveView(viewId);
-        view.setBackgroundColor(color);
-        return this;
-    }
+    public BaseAdapterHelper setBackgroundRes(int viewId, int backgroundRes) {…}
 
-    public BaseAdapterHelper setBackgroundRes(int viewId, int backgroundRes) {
-        View view = retrieveView(viewId);
-        view.setBackgroundResource(backgroundRes);
-        return this;
-    }
+    public BaseAdapterHelper setTextColorRes(int viewId, int textColorRes) {…}
 
-    public BaseAdapterHelper setTextColor(int viewId, int textColor) {
-        TextView view = retrieveView(viewId);
-        view.setTextColor(textColor);
-        return this;
-    }
+    public BaseAdapterHelper setImageDrawable(int viewId, Drawable drawable) {…}
 
-    public BaseAdapterHelper setTextColorRes(int viewId, int textColorRes) {
-        TextView view = retrieveView(viewId);
-        view.setTextColor(context.getResources().getColor(textColorRes));
-        return this;
-    }
+    public BaseAdapterHelper setImageUrl(int viewId, String imageUrl) {…}
 
-    public BaseAdapterHelper setImageDrawable(int viewId, Drawable drawable) {
-        ImageView view = retrieveView(viewId);
-        view.setImageDrawable(drawable);
-        return this;
-    }
-
-    public BaseAdapterHelper setImageUrl(int viewId, String imageUrl) {
-        ImageView view = retrieveView(viewId);
-        Picasso.with(context).load(imageUrl).into(view);
-        return this;
-    }
-
-    public BaseAdapterHelper setImageBuilder(int viewId, RequestCreator requestBuilder) {
-        ImageView view = retrieveView(viewId);
-        requestBuilder.into(view);
-        return this;
-    }
-
-    public BaseAdapterHelper setImageBitmap(int viewId, Bitmap bitmap) {
-        ImageView view = retrieveView(viewId);
-        view.setImageBitmap(bitmap);
-        return this;
-    }
+    public BaseAdapterHelper setImageBitmap(int viewId, Bitmap bitmap) {…}
 
     @SuppressLint("NewApi")
-	public BaseAdapterHelper setAlpha(int viewId, float value) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            retrieveView(viewId).setAlpha(value);
-        } else {
-            // Pre-honeycomb hack to set Alpha value
-            AlphaAnimation alpha = new AlphaAnimation(value, value);
-            alpha.setDuration(0);
-            alpha.setFillAfter(true);
-            retrieveView(viewId).startAnimation(alpha);
-        }
-        return this;
-    }
+	public BaseAdapterHelper setAlpha(int viewId, float value) {…}
 
-    public BaseAdapterHelper setVisible(int viewId, boolean visible) {
-        View view = retrieveView(viewId);
-        view.setVisibility(visible ? View.VISIBLE : View.GONE);
-        return this;
-    }
+    public BaseAdapterHelper setVisible(int viewId, boolean visible) {…}
 
-    public BaseAdapterHelper linkify(int viewId) {
-        TextView view = retrieveView(viewId);
-        Linkify.addLinks(view, Linkify.ALL);
-        return this;
-    }
+    public BaseAdapterHelper linkify(int viewId) {…}
 
-    public BaseAdapterHelper setTypeface(Typeface typeface, int... viewIds) {
-        for (int viewId : viewIds) {
-            TextView view = retrieveView(viewId);
-            view.setTypeface(typeface);
-            view.setPaintFlags(view.getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG);
-        }
-        return this;
-    }
+    public BaseAdapterHelper setProgress(int viewId, int progress, int max) {…}
 
-    public BaseAdapterHelper setProgress(int viewId, int progress) {
-        ProgressBar view = retrieveView(viewId);
-        view.setProgress(progress);
-        return this;
-    }
-
-    public BaseAdapterHelper setProgress(int viewId, int progress, int max) {
-        ProgressBar view = retrieveView(viewId);
-        view.setMax(max);
-        view.setProgress(progress);
-        return this;
-    }
-
-    public BaseAdapterHelper setMax(int viewId, int max) {
-        ProgressBar view = retrieveView(viewId);
-        view.setMax(max);
-        return this;
-    }
-
-    public BaseAdapterHelper setRating(int viewId, float rating) {
-        RatingBar view = retrieveView(viewId);
-        view.setRating(rating);
-        return this;
-    }
-   
-    public BaseAdapterHelper setRating(int viewId, float rating, int max) {
-        RatingBar view = retrieveView(viewId);
-        view.setMax(max);
-        view.setRating(rating);
-        return this;
-    }
+    public BaseAdapterHelper setRating(int viewId, float rating, int max) {…}
  
-    public BaseAdapterHelper setTag(int viewId, Object tag) {
-        View view = retrieveView(viewId);
-        view.setTag(tag);
-        return this;
-    }
- 
-    public BaseAdapterHelper setTag(int viewId, int key, Object tag) {
-        View view = retrieveView(viewId);
-        view.setTag(key, tag);
-        return this;
-    }
+    public BaseAdapterHelper setTag(int viewId, int key, Object tag) {…}
 
-    public BaseAdapterHelper setChecked(int viewId, boolean checked) {
-        Checkable view = (Checkable) retrieveView(viewId);
-        view.setChecked(checked);
-        return this;
-    }
+    public BaseAdapterHelper setChecked(int viewId, boolean checked) {…}
 
-    
-    public BaseAdapterHelper setAdapter(int viewId, Adapter adapter) {
-        AdapterView view = retrieveView(viewId);
-        view.setAdapter(adapter);
-        return this;
-    }
+    public BaseAdapterHelper setAdapter(int viewId, Adapter adapter) {…}
+    ……
 ```
-都是根据 viewId 找到 View，然后为 View 赋值的代码。这里只要注意下：`setImageUrl(int viewId, String imageUrl)` 这个方法，默认是通过`Picasso`去加载图片的，当然你可以更改成你项目中使用的图片加载框架 Volley，UIL 等。
-上述代码基本都是为 View 赋值的代码，有时候我们需要在`getView`中为子 View 去设置一个事件监听，于是有了下面几个方法：
+都是根据 viewId 找到 View，然后为 View 赋值的代码。  
+这里只要注意下：`setImageUrl(int viewId, String imageUrl)` 这个方法，默认是通过`Picasso`去加载图片的，当然你可以更改成你项目中使用的图片加载框架 Volley，UIL 等，如果不希望继续耦合，可参考`1.4 缺点`的建议改法。   
+也可以子 View 去设置一个事件监听，部分代码如下：  
 ```java
     public BaseAdapterHelper setOnClickListener(int viewId, View.OnClickListener listener) {
         View view = retrieveView(viewId);
@@ -440,103 +271,86 @@ public BaseAdapterHelper setText(int viewId, String value) {
         return this;
     }
 
-    public BaseAdapterHelper setOnTouchListener(int viewId, View.OnTouchListener listener) {
-        View view = retrieveView(viewId);
-        view.setOnTouchListener(listener);
-        return this;
-    }
+    public BaseAdapterHelper setOnTouchListener(int viewId, View.OnTouchListener listener) {…}
 
-    public BaseAdapterHelper setOnLongClickListener(int viewId, View.OnLongClickListener listener) {
-        View view = retrieveView(viewId);
-        view.setOnLongClickListener(listener);
-        return this;
-    }
-
+    public BaseAdapterHelper setOnLongClickListener(int viewId, View.OnLongClickListener listener) {…}
 ```
-当然了，这里仅仅几个常用的方法，如果有些控件的方法这里没有封装，你就需要通过`BaseAdapterHelper.getView(viewId)`拿到控件，然后去设置事件。
+这里仅仅几个常用的方法，如果有些控件的方法这里没有封装，可以通过`BaseAdapterHelper.getView(viewId)`得到控件去操作，或者继承`BaseAdapterHelper`实现自己的`BaseAdapterHelper`。  
 
+###4. 杂谈
+####4.1 耦合严重
+(1) 与 Picasso 耦合，想替换为其他图片缓存需要修改源码。  
+可通过接口方式，供三方自己根据自己的图片缓存库实现图片获取，或者直接去掉`helper.setImageUrl(…)`函数。  
 
-###4. 扩展多种 Item 布局
-通过上面的分析，可以看出 base-adapter-helper 并不支持多种布局 Item 的情况，虽然大多数情况下一个种样式即可，但是要是让我用着这么简单的方式写 Adapter，忽然来个多种布局 Item 的 ListView 又要 按传统的方式去写，这反差就太大了。下面我们介绍，在本框架的基础上添加多布局 Item 的支持。
+(2) 与内部添加的进度条偶尔，导致不支持多种类型布局，在下面给出不改动进度条的解决方法，更好的实现方式应该是通过接口方式暴露，供三方自己设置。  
 
-#####(1).分析
-对于多种布局的 Item，大家都清楚，需要去复写`BaseAdapter`的`getViewTypeCount()`和`getItemViewType()`。并且需要在`getView()`里面进行判断以及选取布局文件，不同的布局也需要采用不同的`ViewHolder`。
-那么，我们在构造`QucikAdapter`的时候，想办法去设置`getViewTypeCount()`和`getItemViewType()`的值，那么我们可以抽象出一个接口，提供几个方法，如果需要使用多种 Item 布局的时候，将其传入。
+总体来说这个库比较简单，实现也有待改进。 
 
-#####(2).扩展
+####4.2 目前的方案也不支持`HeaderViewListAdapter`
 
-* `MultiItemTypeSupport`
+####4.3 扩展多种 Item 布局
+通过`3.2.1 BaseQucikAdapter.java`的分析，可以看出 base-adapter-helper 并不支持多种布局 Item 的情况，虽然大多数情况下一个种样式即可，但是要是让我用这么简单的方式写 Adapter，忽然来个多种布局 Item 的 ListView 又要 按传统的方式去写，这反差就太大了。下面我们介绍，如何在本库的基础上添加多布局 Item 的支持。
+
+#####(1) 分析
+对于多种布局的 Item，大家都清楚，需要去复写`BaseAdapter`的`getViewTypeCount()`和`getItemViewType()`。并且需要在`getView()`里面进行判断并选取不同布局文件，不同的布局也需要采用不同的`ViewHolder`。  
+我们可以在构造`QucikAdapter`时，去设置`getViewTypeCount()`和`getItemViewType()`的值，进一步将其抽象为一个接口，提供几个方法，如果需要使用多种 Item 布局，进行设置即可。  
+
+#####(2)扩展
+
+* 添加接口 `MultiItemTypeSupport`
 ```java
-public interface MultiItemTypeSupport<T>
-{
-	int getLayoutId(int position , T t);
+public interface MultiItemTypeSupport<T> {
+
+	int getLayoutId(int position, T t);
 	
 	int getViewTypeCount();
 	
-	int getItemViewType(int postion,T t );
+	int getItemViewType(int postion, T t);
 }
 ```
 
-* 分别在`QuickAdapter`和`BaseQuickAdapter`中添加新的构造方法
+* 分别在`QuickAdapter`和`BaseQuickAdapter`中添加新的构造函数
 
-`BaseQuickAdapter`
-
+`BaseQuickAdapter`新增构造函数如下：  
 ```java
-	protected MultiItemTypeSupport<T> mMultiItemSupport;
+	protected MultiItemTypeSupport<T> multiItemSupport;
 
 	public BaseQuickAdapter(Context context, ArrayList<T> data,
-			MultiItemTypeSupport<T> multiItemSupport)
-	{
-		this.mMultiItemSupport = multiItemSupport;
+			MultiItemTypeSupport<T> multiItemSupport) {
+		this.multiItemSupport = multiItemSupport;
 		this.data = data == null ? new ArrayList<T>() : new ArrayList<T>(data);
 		this.context = context;
 	}
 
 ```
 
-`QuickAdapter`
-
+`QuickAdapter` 新增构造函数如下：  
 ```java
-public QuickAdapter(Context context, ArrayList<T> data,
-			MultiItemTypeSupport<T> multiItemSupport)
-	{
+    public QuickAdapter(Context context, ArrayList<T> data,
+			MultiItemTypeSupport<T> multiItemSupport) {
 		super(context, data, multiItemSupport);
 	}
 ```
+
 同时肯定需要改写`BaseQuickAdapter`的`getViewTypeCount()`和`getItemViewType()`以及`getView()`。
 ```java
-@Override
-	public int getViewTypeCount()
-	{
-		if (mMultiItemSupport != null)
-			return mMultiItemSupport.getViewTypeCount() + 1;
-		return 2;
+    @Override
+	public int getViewTypeCount() {
+		return multiItemSupport != null ? (mMultiItemSupport.getViewTypeCount() + 1) : 2);
 	}
 
 	@Override
-	public int getItemViewType(int position)
-	{
-		if (displayIndeterminateProgress)
-		{
-			if (mMultiItemSupport != null)
-				return position >= data.size() ? 0 : mMultiItemSupport
-						.getItemViewType(position, data.get(position));
-		} else
-		{
-			if (mMultiItemSupport != null)
-				return mMultiItemSupport.getItemViewType(position,
-						data.get(position));
-		}
-
-		return position >= data.size() ? 0 : 1;
-
+	public int getItemViewType(int position) {
+        if (position >= data.size()) {
+            return 0;
+        }
+        return (mMultiItemSupport != null) ? 
+            mMultiItemSupport.getItemViewType(position, data.get(position)) : 1;
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent)
-	{
-		if (getItemViewType(position) == 0)
-		{
+	public View getView(int position, View convertView, ViewGroup parent) {
+		if (getItemViewType(position) == 0) {
 			return createIndeterminateProgressView(convertView, parent);
 		}
 		final H helper = getAdapterHelper(position, convertView, parent);
@@ -544,52 +358,45 @@ public QuickAdapter(Context context, ArrayList<T> data,
 		helper.setAssociatedObject(item);
 		convert(helper, item);
 		return helper.getView();
-
 	}
 ```
 为了保留其原本提供的添加滚动条的功能，我们在其基础上进行修改。
 
-* 改写`BaseAdapterHelper`的构造方法，因为我们不同的布局，肯定要对于不同的`ViewHolder`，这里`BaseAdapterHelper`其实就扮演了`ViewHolder`的角色。我们的`BaseAdapterHelper`是在`QuickAdapter`的`getAdapterHelper`中构造的，修改后代码：
+* 改写`BaseAdapterHelper`的构造方法  
+因为我们不同的布局，肯定要对应不同的`ViewHolder`，这里`BaseAdapterHelper`其实就扮演了`ViewHolder`的角色。我们的`BaseAdapterHelper`是在`QuickAdapter`的`getAdapterHelper`中构造的，修改后代码：
 
-`QuickAdapter`
-
+`QuickAdapter`  
 ```java
-protected BaseAdapterHelper getAdapterHelper(int position,
-			View convertView, ViewGroup parent)
-	{
+    protected BaseAdapterHelper getAdapterHelper(int position,
+			View convertView, ViewGroup parent) {
 
-		if (mMultiItemSupport != null)
-		{
+		if (mMultiItemSupport != null){
 			return get(
 					context,
 					convertView,
 					parent,
 					mMultiItemSupport.getLayoutId(position, data.get(position)),
 					position);
-		} else
-		{
+		} else {
 			return get(context, convertView, parent, layoutResId, position);
 		}
 	}
 ``` 
 
-`BaseAdapterHelper`的`get`方法也需要修改。
+`BaseAdapterHelper`的`get`方法也需要修改。  
 ```java
-/** This method is package private and should only be used by QuickAdapter. */
+    /** This method is package private and should only be used by QuickAdapter. */
 	static BaseAdapterHelper get(Context context, View convertView,
-			ViewGroup parent, int layoutId, int position)
-	{
-		if (convertView == null)
-		{
+			ViewGroup parent, int layoutId, int position) {
+		if (convertView == null) {
 			return new BaseAdapterHelper(context, parent, layoutId, position);
 		}
 
 		// Retrieve the existing helper and update its position
-		BaseAdapterHelper existingHelper = (BaseAdapterHelper) convertView
+		BaseAdapterHelper existingHelper = (BaseAdapterHelper)convertView
 				.getTag();
 
-		if (existingHelper.layoutId != layoutId)
-		{
+		if (existingHelper.layoutId != layoutId) {
 			return new BaseAdapterHelper(context, parent, layoutId, position);
 		}
 
@@ -597,75 +404,56 @@ protected BaseAdapterHelper getAdapterHelper(int position,
 		return existingHelper;
 	}
 ```
-我们在 helper 中存储了当前的 layoutId，如果 layoutId 不一致，则重新创建。
+我们在 helper 中存储了当前的 layoutId，如果 layoutId 不一致，则重新创建。  
 
-#####(3).测试
+#####(3) 测试
 下面展示核心代码
 ```java
-mListView = (ListView) findViewById(R.id.id_lv_main);
+    mListView = (ListView) findViewById(R.id.id_lv_main);
 		
-		MultiItemTypeSupport<ChatMessage> multiItemTypeSupport = new MultiItemTypeSupport<ChatMessage>()
-		{
-			@Override
-			public int getLayoutId(int position, ChatMessage msg)
-			{
-				if (msg.isComMeg())
-				{
-					return R.layout.main_chat_from_msg;
-				}
-				return R.layout.main_chat_send_msg;
+	MultiItemTypeSupport<ChatMessage> multiItemTypeSupport = new MultiItemTypeSupport<ChatMessage>() {
+		@Override
+		public int getLayoutId(int position, ChatMessage msg) {
+			return msg.isComMeg() ? R.layout.main_chat_from_msg : R.layout.main_chat_send_msg;
+		}
+
+		@Override
+		public int getViewTypeCount() {
+			return 2;
+		}
+
+		@Override
+		public int getItemViewType(int postion, ChatMessage msg) {
+			return msg.isComMeg() ? ChatMessage.RECIEVE_MSG : ChatMessage.SEND_MSG;
+		}
+	};
+
+	initDatas();
+
+	mAdapter = new QuickAdapter<ChatMessage>(ChatActivity.this, mDatas,
+			multiItemTypeSupport) {
+		@Override
+		protected void convert(BaseAdapterHelper helper, ChatMessage item) {
+			switch (helper.layoutId) {
+    			case R.layout.main_chat_from_msg:
+    				helper.setText(R.id.chat_from_content, item.getContent());
+    				helper.setText(R.id.chat_from_name, item.getName());
+    				helper.setImageResource(R.id.chat_from_icon, item.getIcon());
+    				break;
+    			case R.layout.main_chat_send_msg:
+    				helper.setText(R.id.chat_send_content, item.getContent());
+    				helper.setText(R.id.chat_send_name, item.getName());
+    				helper.setImageResource(R.id.chat_send_icon, item.getIcon());
+    				break;
 			}
-
-			@Override
-			public int getViewTypeCount()
-			{
-				return 2;
-			}
-
-			@Override
-			public int getItemViewType(int postion, ChatMessage msg)
-			{
-				if (msg.isComMeg())
-				{
-					return ChatMessage.RECIEVE_MSG;
-				}
-				return ChatMessage.SEND_MSG;
-			}
-		};
-
-		initDatas();
-
+		}
+	};
 		
-		mAdapter = new QuickAdapter<ChatMessage>(ChatActivity.this, mDatas,
-				multiItemTypeSupport)
-		{
-			@Override
-			protected void convert(BaseAdapterHelper helper, ChatMessage item)
-			{
-				switch (helper.layoutId)
-				{
-				case R.layout.main_chat_from_msg:
-					helper.setText(R.id.chat_from_content, item.getContent());
-					helper.setText(R.id.chat_from_name, item.getName());
-					helper.setImageResource(R.id.chat_from_icon, item.getIcon());
-					break;
-				case R.layout.main_chat_send_msg:
-					helper.setText(R.id.chat_send_content, item.getContent());
-					helper.setText(R.id.chat_send_name, item.getName());
-					helper.setImageResource(R.id.chat_send_icon, item.getIcon());
-					break;
-				}
-
-			}
-		};
-//		mAdapter.showIndeterminateProgress(true);
-		
-		mListView.setAdapter(mAdapter);
+	mListView.setAdapter(mAdapter);
 ```
-当遇到多种布局 Item 的时候，首先构造一个`MultiItemTypeSupport`接口对象，然后记得在`convert`中根据 layoutId，分别进行赋值，因为不同的布局，控件可能不同，id 也可能不同。
+当遇到多种布局 Item 的时候，首先构造一个`MultiItemTypeSupport`接口对象，然后在`convert`中根据 layoutId，获取不同的布局进行设置。  
 
-贴张效果图
+贴张效果图：  
+![](image/snapshot.png)  
 
-<img src="image/snapshot.png" width = "320px"  />
-
-添加多 Item 布局后的地址：[github](https://github.com/hongyangAndroid/base-adapter-helper)
+添加多 Item 布局后的地址：[github](https://github.com/hongyangAndroid/base-adapter-helper)  
