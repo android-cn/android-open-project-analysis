@@ -27,7 +27,7 @@
 [ViewDragHelper](android/support/v4/widget/ViewDragHelper.java) | [雾雨](https://github.com/nyanpassu) | |  | 3/22 | 3/22 | 3/22 | 3/22 | 3/22 | 3/22
 [ButterKnife](https://github.com/JakeWharton/ButterKnife/) | [雾雨](https://github.com/nyanpassu) | | [Trinea](https://github.com/Trinea) | 3/25 | 3/25 | 3/25 | 3/25 | 3/25 | 3/25
 [fresco](https://github.com/facebook/fresco/) | [blackiedm](https://github.com/blackiedm) | [文档](../tool-lib/image-cache/fresco) | | Done | Done | 4/30 | 5/14 | 5/28 | 6/10
-[PagerSlidingTab…](https://github.com/astuetz/PagerSlidingTabStrip "PagerSlidingTabStrip") | [ayyb1988](https://github.com/ayyb1988) | [文档](https://github.com/ayyb1988/android-open-project-analysis/blob/master/PagerSlidingTabStrip/PagerSlidingTabStrip-ayyb1988.md) | |Done |Done  |Done  |Done  |Done  |Done 
+[PagerSlidingTab…](https://github.com/astuetz/PagerSlidingTabStrip "PagerSlidingTabStrip") | [ayyb1988](https://github.com/ayyb1988) | [文档](../view/other/pager-sliding-tab-strip) | |Done |Done  |Done  |Done  |Done  |Done 
 [ActiveAndroid](https://github.com/pardom/ActiveAndroid) | [ouyang…](https://github.com/ouyangxiangshao "ouyangxiangshao") | | | Done | 03/11 | 03/18 | 03/25 | 04/02 | 04/09
 [PullToZoomIn…](https://github.com/matrixxun/PullToZoomInListView "PullToZoomInListView") | [zTimC](https://github.com/Yom9c) | | | Done | 2/20 | 03/01 | 03/8 | 03/15 |3/19|
 [CircularReveal](https://github.com/ozodrukh/CircularReveal) | [Toaker](https://github.com/Toaker) | | | Done | 4/7 | 4/15 | 4/25 | 5/5 | 5/10 |     
