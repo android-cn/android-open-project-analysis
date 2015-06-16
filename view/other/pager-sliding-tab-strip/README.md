@@ -2,7 +2,7 @@ PagerSlidingTabStrip 源码解析
 =====
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 PagerSlidingTabStrip 部分
 
-项目地址：[PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip)，分析的版本：[1.0.1](https://github.com/astuetz/PagerSlidingTabStrip)，Demo 地址：[PagerSlidingTabStrip Demo](https://github.com/ayyb1988/android-open-project-demo/tree/master/pager-sliding-tab-strip-demo-ayyb1988})
+项目地址：[PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip)，分析的版本：[1.0.1](https://github.com/astuetz/PagerSlidingTabStrip/tree/v1.0.1)，Demo 地址：[PagerSlidingTabStrip Demo](https://github.com/ayyb1988/android-open-project-demo/tree/master/pager-sliding-tab-strip-demo-ayyb1988})
  
  分析者：[ayyb1988](https://github.com/ayyb1988)，分析状态：已完成
  
@@ -10,9 +10,9 @@ PagerSlidingTabStrip 源码解析
 
 
 ###1. 总体设计
-pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的OnPageChangeListener。
-但是viewpager注册的listener不是自身的OnPageChangeListener，而是pagerSlidingTabStrip内部类PageListener。
-通过PageListener实现对对viewpager和tab的封装。从而实现滑动联动效果。
+pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的`OnPageChangeListener`。
+但是viewpager注册的listener不是自身的`OnPageChangeListener`，而是pagerSlidingTabStrip内部类`PageListener`。
+通过`PageListener`实现对对viewpager和tab的封装。从而实现滑动联动效果。
 可以设置tab的类型为textview还是icon。对于textview可设置字库属性。
 通过提供方法如滑动指示器 下划线 tab风格线 tab权重等达到自定义的效果。
 
@@ -29,10 +29,12 @@ pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的OnP
 
 ####3.2 集成及使用指南
 #####3.2.1
-    在 gradle 中
-    dependencies {
-        compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
-    }
+在 gradle 中
+```
+dependencies {
+    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
+}
+    ```
 #####3.2.2 在layout布局文件中引入PagerSlidingTabStrip，通常布局在viewpager上面。如下：
 ```
 <com.astuetz.PagerSlidingTabStrip
@@ -76,7 +78,7 @@ pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的OnP
 ![111](images/PagerSlidingTabStrip.jpg)
 
 #### 4.2 核心方法及功能介绍
-pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的 OnPageChangeListener。但是viewpager注册的listener不是自身的OnPageChangeListener，而是pagerSlidingTabStrip内部类PageListener。通过PageListener实现对对viewpager和tab的封装。从而实现滑动联动效果。下面结合代码详细说明
+pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的 OnPageChangeListener。但是viewpager注册的listener不是自身的`OnPageChangeListener`，而是pagerSlidingTabStrip内部类`PageListener`。通过PageListener实现对对viewpager和tab的封装。从而实现滑动联动效果。下面结合代码详细说明
 ```
  private class PageListener implements OnPageChangeListener {
 	
@@ -143,7 +145,7 @@ private void scrollToChild(int position, int offset) {
 }
 ```
 
-接下来说下 **addTextTab**   **addIconTab**。即tab是text还是icon。如果是icon的话，通过viewpager的adapter实现接口IconTabProvider。来确定icontab。
+接下来说下 **addTextTab**   **addIconTab**。即tab是text还是icon。如果是icon的话，通过viewpager的adapter实现接口`IconTabProvider`。来确定icontab。
 ```
 for (int i = 0; i < tabCount; i++) {
 
