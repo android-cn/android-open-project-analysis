@@ -2,7 +2,7 @@ PagerSlidingTabStrip 源码解析
 =====
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 PagerSlidingTabStrip 部分
 
-项目地址：[PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip)，分析的版本：[1.0.1](https://github.com/astuetz/PagerSlidingTabStrip/tree/v1.0.1)，Demo 地址：[PagerSlidingTabStrip Demo](https://github.com/ayyb1988/android-open-project-demo/tree/master/pager-sliding-tab-strip-demo-ayyb1988})
+项目地址：[PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip)，分析的版本：[1.0.1](https://github.com/astuetz/PagerSlidingTabStrip/tree/v1.0.1)，Demo 地址：[PagerSlidingTabStrip Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/pager-sliding-tab-strip-demo-ayyb1988)
  
  分析者：[ayyb1988](https://github.com/ayyb1988)，分析状态：已完成
  
