@@ -1,7 +1,7 @@
 BaseAdapterHelper 源码分析
 ====================================
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 BaseAdapterHelper 部分  
-> 项目地址：[BaseAdapterHelper](https://github.com/JoanZapata/base-adapter-helper)，分析的版本：[e65d7d8](https://github.com/JoanZapata/base-adapter-helper/commit/e65d7d83c5f5181feb189e5ff4f5cc5835eaadfe "Commit id is e65d7d83c5f5181feb189e5ff4f5cc5835eaadfe")，Demo 地址：[base-adapter-helper Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/base-adapter-helper-demo)     
+> 项目地址：[BaseAdapterHelper](https://github.com/JoanZapata/base-adapter-helper)，分析的版本：[71b7ae2](https://github.com/JoanZapata/base-adapter-helper/commit/71b7ae2414f01dc4d43429586196e9e9735c77aa "Commit id is 71b7ae2414f01dc4d43429586196e9e9735c77aa")，Demo 地址：[base-adapter-helper Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/base-adapter-helper-demo)     
 > 分析者：[hongyangAndroid](https://github.com/hongyangAndroid)，分析状态：完成，校对者：[zhengtao620](https://github.com/zhengtao620)、[Trinea](https://github.com/trinea)，校对状态：完成   
 
 ###1. 功能介绍  
@@ -181,7 +181,7 @@ Adapter 的必须元素 ItemView 的布局文件通过 layoutResId 指定，待�
 ```
 在`QuickAdapter`中，通过上面的 5 个参数的静态函数`get(…)`得到`BaseAdapterHelper`的实例。4 个参数的`get(…)`方法，只是将 position 默认传入了 -1，即不关注 postion 方法。  
 这里可以对比下我们平时在`getView`中编写的 ViewHolder 模式的代码。在一般的 ViewHolder 模式中，先判断`convertView`是否为空：  
-1. 如果是，则通过`LayoutInflater` inflate 一个布局文件，然后新建 ViewHolder 存储布局中各个子元素，通过 tag 绑定该 ViewHolder 到`convertView`，返回我们的`convertView`；
+1. 如果是，则通过`LayoutInflater` inflate 一个布局文件，然后新建 ViewHolder 存储布局中各个子元素，通过 tag 绑定该 ViewHolder 到`convertView`，返回我们的`convertView`；  
 2. 否则直接得到 tag 中的 ViewHolder。  
 结合`BaseQuickAdapter`的`getView(…)`代码，看下这里的实现。  
 ```java
