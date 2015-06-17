@@ -3,7 +3,7 @@ PagerSlidingTabStrip 源码解析
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 PagerSlidingTabStrip 部分
 
 项目地址：[PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip)，分析的版本：[1.0.1](https://github.com/astuetz/PagerSlidingTabStrip/tree/v1.0.1)，Demo 地址：[PagerSlidingTabStrip Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/pager-sliding-tab-strip-demo-ayyb1988)
- 
+
  分析者：[ayyb1988](https://github.com/ayyb1988)，分析状态：已完成
  
  校对者：[]()，校对状态：未开始
@@ -30,20 +30,21 @@ pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的`On
 ####3.2 集成及使用指南
 #####3.2.1
 在 gradle 中
-```
+```java
 dependencies {
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
 }
-    ```
-#####3.2.2 在layout布局文件中引入PagerSlidingTabStrip，通常布局在viewpager上面。如下：
 ```
+    
+#####3.2.2 在layout布局文件中引入PagerSlidingTabStrip，通常布局在viewpager上面。如下：
+```java
 <com.astuetz.PagerSlidingTabStrip
     android:id="@+id/tabs"
     android:layout_width="match_parent"
     android:layout_height="48dip" />
 ```
 #####3.2.3 在oncreate方法中（或Fragment的onCreateView）中，绑定PagerSlidingTabStrip到Viewpager
- ```
+```java
  // 初始化ViewPager和Adapter
  ViewPager pager = (ViewPager) findViewById(R.id.pager);
  pager.setAdapter(new TestAdapter(getSupportFragmentManager()));
@@ -54,23 +55,23 @@ dependencies {
 ```
 
 #####3.2.4 如果你的view pager使用到OnPageChangeListener。你应该通过这个PagerSlidingTabStrip控件设置而不是Viewpager。如下：
-```
+```java
      // continued from above
      tabs.setOnPageChangeListener(mPageChangeListener);
 ```
 ####3.3 用户定制
  根据你的需要修改下面的值
-* pstsIndicatorColor 滑动指示器的颜色
-* pstsUnderlineColor 整个view【PagerSlidingTabStrip】下划线的颜色
-* pstsDividerColor tabs之间分割线的颜色
-* pstsIndicatorHeight 滑动指示器的高度
-* pstsUnderlineHeight 整个View【PagerSlidingTabStrip】下滑线的高度
-* pstsDivviderPadding 分割线上部、下部的内间距
-* pstsTabPaddingLeftRight 每个tab左右内间距
-* pstsScrollOffset 选中tab的滑动的距离
-* pstsTabBackground 每个tab的背景图片，使用StateListDrawable
-* pstsShouldExpand 如果设置为true，每个tab的宽度拥有相同的权重
-* pstsTextAllCaps 如果设置为true，所有的tab字体转为大写
+* `pstsIndicatorColor` 滑动指示器的颜色
+* `pstsUnderlineColor` 整个view【PagerSlidingTabStrip】下划线的颜色
+* `pstsDividerColor` tabs之间分割线的颜色
+* `pstsIndicatorHeight` 滑动指示器的高度
+* `pstsUnderlineHeight` 整个View【PagerSlidingTabStrip】下滑线的高度
+* `pstsDivviderPadding` 分割线上部、下部的内间距
+* `pstsTabPaddingLeftRight` 每个tab左右内间距
+* `pstsScrollOffset` 选中tab的滑动的距离
+* `pstsTabBackground` 每个tab的背景图片，使用StateListDrawable
+* `pstsShouldExpand` 如果设置为true，每个tab的宽度拥有相同的权重
+* `pstsTextAllCaps` 如果设置为true，所有的tab字体转为大写
 
 
 ###4. 详细设计
@@ -79,7 +80,7 @@ dependencies {
 
 #### 4.2 核心方法及功能介绍
 pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的 OnPageChangeListener。但是viewpager注册的listener不是自身的`OnPageChangeListener`，而是pagerSlidingTabStrip内部类`PageListener`。通过PageListener实现对对viewpager和tab的封装。从而实现滑动联动效果。下面结合代码详细说明
-```
+```java
  private class PageListener implements OnPageChangeListener {
 	
 	@Override
@@ -123,7 +124,7 @@ pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的 On
 ```
 
 scrollToChild，tab的滑动位置 实现如下：
-```
+```java
 private void scrollToChild(int position, int offset) {
 
 	if (tabCount == 0) {
@@ -146,7 +147,7 @@ private void scrollToChild(int position, int offset) {
 ```
 
 接下来说下 **addTextTab**   **addIconTab**。即tab是text还是icon。如果是icon的话，通过viewpager的adapter实现接口`IconTabProvider`。来确定icontab。
-```
+```java
 for (int i = 0; i < tabCount; i++) {
 
     if (pager.getAdapter() instanceof IconTabProvider) {
@@ -163,7 +164,7 @@ for (int i = 0; i < tabCount; i++) {
 
 在pagerSlidingTabStrip中重写了onDraw函数
 **绘画滑动指示器; 绘画整个tabs下划线; 绘画tab之间间隔线。**代码如下
-```
+```java
  // draw indicator line
 
         rectPaint.setColor(indicatorColor);
@@ -199,21 +200,14 @@ for (int i = 0; i < tabCount; i++) {
             canvas.drawLine(tab.getRight(), dividerPadding, tab.getRight(), height - dividerPadding, dividerPaint);
         }
 ```
-
-
-
-
-
-
-
+### 
 ###5. 杂谈
 该库有很好的自定义性和扩展性。比如修改滑动指示器为一张图片【目前为设定颜色值和高度来决定】
 
+###6.参考文献
 
-
-
-###参考文献
 [ViewPagerindicator 源码解析](https://github.com/android-cn/android-open-project-analysis/tree/master/view-pager-indicator)
+
 ####View的绘制：
 1. [How Android Draws Views](http://developer.android.com/guide/topics/ui/how-android-draws.html)
 2. [View 绘制流程](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/tech/viewdrawflow.md)
