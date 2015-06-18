@@ -6,7 +6,7 @@ PagerSlidingTabStrip 源码解析
 
  分析者：[ayyb1988](https://github.com/ayyb1988)，分析状态：已完成
  
- 校对者：[]()，校对状态：未开始
+ 校对者：[Trinea](https://github.com/Trinea)，校对状态：校对中
 
 
 ###1. 总体设计
