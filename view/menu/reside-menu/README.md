@@ -36,7 +36,7 @@ View Tree：
 ![Scale Animation](./image/Scale.png)
 
 注意,缩放的中心点在屏幕外.
-	
+    
 ###3. 事件分发流程图
 
 ![dispatchTouchEvent](./image/dispatchTouchEvent.png)
@@ -264,4 +264,9 @@ attachToActivity执行后
 请结合事件分发流程图一起理解这部分.
 
 ###5. 杂谈
-TODO 如果Folder-ResideMenu能完成，就补充到这里来。
+在分析`ResideMenu`的过程中，我也尝试自己写了一个ResideMenu的效果扩展来印证分析过程中的一些结论：
+![Folder-ResideMenu](https://raw.githubusercontent.com/dkmeteor/Folder-ResideMenu/master/screenshot.png)
+
+感兴趣的可以参考[Folder-ResideMenu](https://github.com/dkmeteor/Folder-ResideMenu)
+
+分析轮子,然后造轮子.
