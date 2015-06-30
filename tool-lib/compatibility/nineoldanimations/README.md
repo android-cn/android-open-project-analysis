@@ -14,7 +14,7 @@ NineOldAnimations 源码解析
 NineOldAndroids 提供了和系统属性一样的动画功能。看源码你可以发现，其实 NOA 的架构实现和系统属性动画实现架构其实是一样的。只是兼容的那一部分采用了 Matrix 实现了各种动画效果，中间多了一些辅助类，比如 PreHoneycombCompat，AnimatorProxy，ViewHelper，另外某些类对于兼容有些改动，其它的类几乎和系统属性动画部分是一样的。
 
 ####1.2 实现原理
-在[属性动画基础](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/tech/anim.md)中已经提到：ValueAnimator 的缺点是需要通过实现 AnimatorUpdateListener 自己手动去更新属性值，它的子类 ObjectAnimator 为用户实现了自动更新动画，但是对于自定义的属性，需要提供标准 JavaBean 的 setter 和 getter 方法，以便获取和更新属性值。NOA也是遵循了这样的实现思路，对于3.0之前的系统来说，属性动画中所提供的属性都是新的，在实现的时候也就都属于自定义的。NOA 在 PreHoneycombCompat 中定义了这些属性，并在 get 和 setValue 中提供了标准的 setter 和 getter 方法用于设置和获取属性值，这里的 setter 和 getter 其实是直接调用 AnimatorProxy 类的方法。
+在[属性动画基础](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/tech/anim.md)中已经提到：ValueAnimator 的缺点是需要通过实现 AnimatorUpdateListener 自己手动去更新属性值，它的子类 ObjectAnimator 为用户实现了自动更新动画，但是对于自定义的属性，需要提供标准 JavaBean 的 setter 和 getter 方法，以便获取和更新属性值。NOA 也是遵循了这样的实现思路，对于 3.0 之前的系统来说，属性动画中所提供的属性都是新的，在实现的时候也就都属于自定义的。NOA 在 PreHoneycombCompat 中定义了这些属性，并在 get 和 setValue 中提供了标准的 setter 和 getter 方法用于设置和获取属性值，这里的 setter 和 getter 其实是直接调用 AnimatorProxy 类的方法。
 
 ###2. 总体设计
 ![整体设计](./image/arch.jpg)     
@@ -35,7 +35,7 @@ NineOldAndroids 提供了和系统属性一样的动画功能。看源码你可�
 
 *    **Property** ： 属性对象,主要是定义了属性的 set 和 get 方法；  
 
-*    **PropertyValuesHolder** ： PropertyValuesHolder 是持有目标属性 Property、setter 和 getter 方法、以及 KeyFrameSet 的类；     
+*    **PropertyValuesHolder** ： PropertyValuesHolder 是持有目标属性 Property、 setter 和 getter 方法、以及 KeyFrameSet 的类；     
 
 *    **KeyFrame** ： 一个 keyframe 对象由一对 time / value 的键值对组成，可以为动画定义某一特定时间的特定状态，Animator 传入的一个个参数映射为一个个 keyframe，存储相应的动画的触发时间和属性值；  
 
@@ -58,7 +58,7 @@ ObjectAnimator.ofFloat(myObject, "translationY", -myObject.getHeight()).start();
 ```     
 
 **示例2:**        
-改变一个对象的背景色属性，典型的情形是改变 View 的背景色，下面的动画可以让背景色在3秒内实现从 0xFFFF8080 到 0xFF8080FF 的渐变，并且动画会无限循环而且会有反转的效果。  
+改变一个对象的背景色属性，典型的情形是改变 View 的背景色，下面的动画可以让背景色在 3 秒内实现从 0xFFFF8080 到 0xFF8080FF 的渐变，并且动画会无限循环而且会有反转的效果。  
 
 ```java
 ValueAnimator colorAnim = ObjectAnimator.ofInt(this, "backgroundColor", /*Red*/0xFFFF8080, /*Blue*/0xFF8080FF);  
@@ -105,7 +105,7 @@ animate(myButton).setDuration(2000).rotationYBy(720).x(100).y(100);
 ![流程图](./image/value_anim_flow.jpg)   
 
 
-#### 3.2 View 的ObjectAnimator 流程图
+#### 3.2 View 的 ObjectAnimator 流程图
 ![View的属性动画流程图](./image/view_obj_anim_flow.jpg)
 
 
@@ -272,14 +272,14 @@ ObjectAnimator 是 ValueAnimator 的子类, ObjectAnimator 负责的是属性动
 
  
 ##### 4.1.4 PropertyValuesHolder.java
-   PropertyValuesHolder 是持有目标属性 Property、setter 和 getter 方法、以及关键帧集合的类。如果没有属性的 mProperty 不为空,比如用户使用了内置的 Property 或者自定义实现了 Property,并且设置给了动画类,那么在更新动画时则会使用 Property 对象的 set 方法来更新属性值。否则在初始化时 PropertyValuesHolder 会拼装属性的 setter 和 getter 函数 ( 注意这里的setter和上面说的 Property 对象的 set 方法是两码事 ) ,然后检测目标对象中是否含有这些方法,如果含有则获取 setter 和 getter。 
+   PropertyValuesHolder 是持有目标属性 Property、 setter 和 getter 方法、以及关键帧集合的类。如果没有属性的 mProperty 不为空,比如用户使用了内置的 Property 或者自定义实现了 Property,并且设置给了动画类,那么在更新动画时则会使用 Property 对象的 set 方法来更新属性值。否则在初始化时 PropertyValuesHolder 会拼装属性的 setter 和 getter 函数 ( 注意这里的setter和上面说的 Property 对象的 set 方法是两码事 ) ,然后检测目标对象中是否含有这些方法,如果含有则获取 setter 和 getter。 
    
 ```java
     void setupSetter(Class targetClass) {
         mSetter = setupSetterOrGetter(targetClass, sSetterPropertyMap, "set", mValueType);
     }
     
-	// 通过KeyFrameSet计算属性值
+	// 通过 KeyFrameSet 计算属性值
     void calculateValue(float fraction) {
         mAnimatedValue = mKeyframeSet.getValue(fraction);
     }
@@ -288,10 +288,10 @@ ObjectAnimator 是 ValueAnimator 的子类, ObjectAnimator 负责的是属性动
     
     void setAnimatedValue(Object target) {
         if (mProperty != null) {
-        	// 获取新值,并且通过Property的set方法更新值
+        	// 获取新值,并且通过 Property 的 set 方法更新值
             mProperty.set(target, getAnimatedValue());
         }
-        // 如果没有设置Property,那么通过属性的setter来反射调用更新
+        // 如果没有设置 Property,那么通过属性的 setter 来反射调用更新
         if (mSetter != null) {
             try {
                 mTmpValueArray[0] = getAnimatedValue();
