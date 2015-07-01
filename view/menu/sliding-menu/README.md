@@ -4,24 +4,24 @@ SlidingMenu 源码解析
 > 项目地址：[SlidingMenu](https://github.com/jfeinstein10/SlidingMenu)，分析的版本：[4254fec](https://github.com/jfeinstein10/SlidingMenu/commit/4254feca3ece9397cd501921ee733f19ea0fdad8)，Demo 地址：[SlidingMenu Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/sliding-menu-demo)  
 > 分析者：[huxian99](https://github.com/huxian99)，分析状态：完成，校对者：[Trinea](https://github.com/trinea)，校对状态：进行中  
 
-##1. 功能介绍  
-现在主流 app 的导航栏一般有两种，一种是主界面上面 3－4 个 tab 下面搭配 ViewPager+Fragment，另一种就是侧边栏，如果主导航超过 3 个 tab 时，建议使用侧边栏作为 app 的主导航。  
-SlidingMenu 是一个强大的侧边栏导航框架，并且已经被一些比较牛的 app 使用，主要特点如下：  
-(1).侧边栏可以是一个 Fragment，包含任何 View  
-(2).使用简单方便，支持左滑和右滑等  
-(3).自定义侧边栏显示动画  
+###1. 功能介绍  
+现在主流 App 的导航栏一般有两种，一种是主界面上面 3－4 个 Tab 下面搭配 ViewPager + Fragment，另一种就是侧边栏，如果主导航超过 3 个 Tab 时，建议使用侧边栏作为 App 的主导航。  
+SlidingMenu 是一个强大的侧边栏导航框架，并且已经被一些比较牛的 App 使用，主要特点如下：  
+(1) 侧边栏可以是一个 Fragment，包含任何 View  
+(2) 使用简单方便，支持左滑和右滑等  
+(3) 自定义侧边栏显示动画  
 
-##2. 总体设计  
-SlidingMenu 总体由三个主要的类组成  
-SlidingMenu 继承自 RelativeLayout，对外暴露 API 给用户，同时在添加 CustomViewAbove 和 CustomViewBehind  
-CustomViewAbove 继承自 ViewGroup，主要用来处理`触摸屏事件`  
-CustomViewBehind 继承自 ViewGroup，主要用来`配置参数`，`显示侧边栏的 menu 部分`  
+###2. 总体设计  
+SlidingMenu 总体由三个主要的类组成。  
+(1) SlidingMenu 继承自 RelativeLayout，对外暴露 API 给用户，同时在添加 CustomViewAbove 和 CustomViewBehind  
+(2) CustomViewAbove 继承自 ViewGroup，主要用来处理`触摸屏事件`  
+(3) CustomViewBehind 继承自 ViewGroup，主要用来`配置参数`，`显示侧边栏的 Menu 部分`  
 
 ##3. 流程图  
 请参考 `4.2.2 CustomViewAbove 事件处理流程图`  
 
-##4. 详细设计  
-###4.1 类关系图  
+###4. 详细设计  
+####4.1 类关系图  
 ![alt tex](./image/SlidingMenu.png)  
 ###4.2 核心类功能介绍  
 ####4.2.1 SlidingMenu.java  
@@ -119,7 +119,7 @@ public void drawShadow(View content, Canvas canvas)
 // 根据 openPercent 画 fade in/out 效果  
 public void drawFade(View content, Canvas canvas, float openPercent)  
 
-##5. 杂谈
+###5. 杂谈
 关于 selector drawable 存在的一些不理解
 SlidingMenu 暴露几个关于 selector drawable 的 API 给用户, CustomViewBehind 的 drawSelector 方法具体实现如下：  
 ```java
