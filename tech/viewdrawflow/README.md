@@ -6,10 +6,10 @@ View 绘制流程
 #### View 绘制机制  
 #####1. View 树的绘图流程
 当 Activity 接收到焦点的时候，它会被请求绘制布局,该请求由Android framework 处理.绘制是从根节点开始，对布局树进行 measure 和 draw 。整个 View 树的绘图流程在`ViewRoot.java`类的`performTraversals()`函数展开，该函数所做 的工作可简单概况为是否需要重新计算视图大小(measure)、是否需要重新安置视图的位置(layout)、以及是否需要重绘(draw)，流程图如下：  
-![viewdrawflow img](image/viewdrawflow/view_mechanism_flow.png)  
+![viewdrawflow img](image/view_mechanism_flow.png)  
 
 **View 绘制流程函数调用链**  
-![view_draw_method_chain img](image/viewdrawflow/view_draw_method_chain.png)  
+![view_draw_method_chain img](image/view_draw_method_chain.png)  
 图片来自 https://plus.google.com/+ArpitMathur/posts/cT1EuBbxEgN  
 需要说明的是，用户主动调用request，只会出发 measure 和 layout 过程，而不会执行 draw 过程
 
@@ -18,7 +18,7 @@ View 绘制流程
 **measure 和 layout**  
 
 从整体上来看 Measure 和 Layout 两个步骤的执行：
-![MeasureLayout img](image/viewdrawflow/measure_layout.png)  
+![MeasureLayout img](image/measure_layout.png)  
 树的遍历是有序的，由父视图到子视图，每一个 ViewGroup 负责测绘它所有的子视图，而最底层的 View 会负责测绘自身。  
 
 **具体分析**  
@@ -64,7 +64,7 @@ MeasureSpecs
 
 下面我们取 ViewGroup 的 `measureChildren（int widthMeasureSpec, int heightMeasureSpec)` 方法对复合 View 的 Measure 流程做一个分析：
 MeasureChild 的方法调用流程图：  
-![MeasureLayout img](image/viewdrawflow/measurechildflow.png)    
+![MeasureLayout img](image/measurechildflow.png)    
 
 **源码分析**
 ```java
@@ -209,7 +209,7 @@ View的`onDraw（Canvas）`默认是空实现，自定义绘制过程需要复�
 
 
 绘制流程图  
-![MeasureLayout img](image/viewdrawflow/draw_method_flow.png)    
+![MeasureLayout img](image/draw_method_flow.png)    
 
 **- View.draw(Canvas) 源码分析**  
 ```java

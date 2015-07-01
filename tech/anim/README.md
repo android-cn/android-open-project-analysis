@@ -10,7 +10,7 @@ Android 动画基础
 
 主要有4中：缩放、平移、渐变、旋转
 
-![tween相关类继承关系](./image/anim/tweenhirachy.png)  
+![tween相关类继承关系](./image/tweenhirachy.png)  
 
 文件位置: res/anim/filename.xml  
 编译资源的数据类型：an Animation  
@@ -134,7 +134,7 @@ image.startAnimation(hyperspaceJump);
 用于修改一个动画过程中的速率，可以定义各种各样的非线性变化函数，比如加速、减速等  
 在Android中所有的插值器都是Interpolator 的子类，通过 android:interpolator   属性你可以引用不同的插值器。下面是几种插值器:    
 
-![插值器](./image/anim/interpolators.png) 
+![插值器](./image/interpolators.png) 
 
 你可以通过下面的方式使用它们  
 
@@ -269,7 +269,7 @@ Property Animation动画有两个步聚：
 
 ###2.1.1 计算属性值
 
-![属性值计算](./image/anim/valuecaculate.png)
+![属性值计算](./image/valuecaculate.png)
 
 **过程一：计算已完成动画分数 elapsed fraction**
 为了执行一个动画，你需要创建一个ValueAnimator，并且指定目标对象属性的开始、结束值和持续时间。在调用start后的整个动画过程中， ValueAnimator会根据已经完成的动画时间计算得到一个0到1之间的分数，代表该动画的已完成动画百分比。0表示0%，1表示100%。
@@ -283,7 +283,7 @@ Property Animation动画有两个步聚：
 
 ## 2.2 核心类
 
-![属性动画类继承关系](./image/anim/propertyanimhirachy.png) 
+![属性动画类继承关系](./image/propertyanimhirachy.png) 
 
 ###2.2.1 Interpolators
 
