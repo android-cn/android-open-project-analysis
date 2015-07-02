@@ -12,7 +12,7 @@ pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的`On
 通过提供方法如滑动指示器 下划线 tab风格线 tab权重等达到自定义的效果。
 
 ###2. 流程图
-![](images/lct1.jpg)
+![](image/lct1.jpg)
 
 ###3. 功能介绍
 ####3.1 特性介绍
@@ -71,7 +71,7 @@ dependencies {
 
 ###4. 详细设计
 ####4.1 类详细介绍
-![111](images/PagerSlidingTabStrip.jpg)
+![111](image/PagerSlidingTabStrip.jpg)
 
 #### 4.2 核心方法及功能介绍
 pagerSlidingTabStrip实现联动效果的原理是，它引用了ViewPager的 OnPageChangeListener。但是viewpager注册的listener不是自身的`OnPageChangeListener`，而是pagerSlidingTabStrip内部类`PageListener`。通过PageListener实现对对viewpager和tab的封装。从而实现滑动联动效果。下面结合代码详细说明
