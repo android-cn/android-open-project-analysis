@@ -178,13 +178,13 @@ protected void onActivityResult(int requestCode, int resultCode,
 **图形摘要并加密**
 
 * public static String patternToSha1(List<LockPatternView.Cell> pattern)  
-调用`List<LockPatternView.Cell> pattern`把pattern list进行信息摘要，然后使用SHA-1算法加密，返回加密的摘要。
+调用`List<LockPatternView.Cell> pattern`把 pattern list 进行信息摘要，然后使用 SHA-1 算法加密，返回加密的摘要。
 * public static String patternToString(List<LockPatternView.Cell> pattern)  
-把pattern list进行信息摘要，从左上角起编号为00，至右下角止编号为08，按照list中点的顺序生成编号序列，返回序列。
+把 pattern list 进行信息摘要，从左上角起编号为 00，至右下角止编号为 08，按照 list 中点的顺序生成编号序列，返回序列。
 
 ####5. 安全性分析
 
-android-lockpattern默认的加密存储流程与Android系统的图形解锁是一致的，以Android系统为例来破解图形锁。
+android-lockpattern 默认的加密存储流程与 Android 系统的图形解锁是一致的，以 Android 系统为例来破解图形锁。
 
 #####5.1 加密存储过程
 
@@ -193,7 +193,7 @@ android-lockpattern默认的加密存储流程与Android系统的图形解锁是
 #####5.2 破解思路
 
 * 图案总数固定：至少四个点、最多九个点、无重复点
-* 加密较弱：单次SHA-1
+* 加密较弱：单次 SHA-1
 * 最快的方法：暴力猜解
 
 #####5.3 实战
@@ -204,7 +204,7 @@ android-lockpattern默认的加密存储流程与Android系统的图形解锁是
 adb pull /data/system/gesture.key gesture.key
 `
 
-参考`4.2.3`中的图形摘要规则，然后我写了一个python脚本，生成了9个点所有组合的摘要字符串，同时再生成对应的SHA-1 HEX，这个字典也就57m。
+参考`4.2.3`中的图形摘要规则，然后我写了一个 python 脚本，生成了 9 个点所有组合的摘要字符串，同时再生成对应的 SHA-1 HEX，这个字典也就 57m。
 
 ![Compare Pattern](image/password.jpg) 
 
