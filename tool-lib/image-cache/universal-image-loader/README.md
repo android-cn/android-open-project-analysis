@@ -98,7 +98,7 @@ imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
 
 ###3. 流程图
 ![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/uil-flow.png)  
-上图为图片加载及显示流程图，在uil库中给出，这里用中文重新画出。  
+上图为图片加载及显示流程图，在 uil 库中给出，这里用中文重新画出。  
 
 ###4. 详细设计
 ####4.1 类关系图
@@ -309,7 +309,7 @@ public InputStream getStream(String imageUri, Object extra) throws IOException {
 创建一个 Disk Cache。如果 diskCacheSize 或者 diskCacheFileCount 大于 0，返回一个`LruDiskCache`，否则返回无大小限制的`UnlimitedDiskCache`。  
 #####(5). createMemoryCache(Context context, int memoryCacheSize)
 创建一个 Memory Cache。返回一个`LruMemoryCache`，若 memoryCacheSize 为 0，则设置该内存缓存的最大字节数为 App 最大可用内存的 1/8。  
-这里 App 的最大可用内存也支持系统在 Honeycomb之后(ApiLevel >= 11) application 中`android:largeHeap="true"`的设置。  
+这里 App 的最大可用内存也支持系统在 Honeycomb 之后(ApiLevel >= 11) application 中`android:largeHeap="true"`的设置。  
 #####(6). createImageDownloader(Context context)
 创建图片下载器，返回一个`BaseImageDownloader`。  
 #####(7). createImageDecoder(boolean loggingEnabled)
@@ -345,7 +345,7 @@ PS：重命名线程是个很好的习惯，它的一大作用就是方便问题
 构造函数。  
 `view`表示需要显示图片的对象。  
 `checkActualViewSize`表示通过`getWidth()`和`getHeight()`获取图片宽高时返回真实的宽和高，还是`LayoutParams`的宽高，true 表示返回真实宽和高。  
-如果为`true`会导致一个问题，`View`在还没有初始化完成时加载图片，这时它的真实宽高为0，会取它`LayoutParams`的宽高，而图片缓存的 key 与这个宽高有关，所以当`View`初始化完成再次需要加载该图片时，`getWidth()`和`getHeight()`返回的宽高都已经变化，缓存 key 不一样，从而导致缓存命中失败会再次从网络下载一次图片。可通过`ImageLoaderConfiguration.Builder.denyCacheImageMultipleSizesInMemory()`设置不允许内存缓存缓存一张图片的多个尺寸。  
+如果为`true`会导致一个问题，`View`在还没有初始化完成时加载图片，这时它的真实宽高为 0，会取它`LayoutParams`的宽高，而图片缓存的 key 与这个宽高有关，所以当`View`初始化完成再次需要加载该图片时，`getWidth()`和`getHeight()`返回的宽高都已经变化，缓存 key 不一样，从而导致缓存命中失败会再次从网络下载一次图片。可通过`ImageLoaderConfiguration.Builder.denyCacheImageMultipleSizesInMemory()`设置不允许内存缓存缓存一张图片的多个尺寸。  
 
 #####(2). setImageDrawable(Drawable drawable)
 如果当前操作在主线程并且 View 没有被回收，则调用抽象函数`setImageDrawableInto(Drawable drawable, View view)`去向`View`设置图片。  
@@ -355,8 +355,8 @@ PS：重命名线程是个很好的习惯，它的一大作用就是方便问题
 
 #####4.2.11 ImageViewAware.java  
 封装 Android ImageView 来显示图片的`ImageAware`，继承了`ViewAware`，利用`Reference`来 Warp View 防止内存泄露。  
-如果`getWidth()`函数小于等于0，会利用反射获取`mMaxWidth`的值作为宽。  
-如果`getHeight()`函数小于等于0，会利用反射获取`mMaxHeight`的值作为高。  
+如果`getWidth()`函数小于等于 0，会利用反射获取`mMaxWidth`的值作为宽。  
+如果`getHeight()`函数小于等于 0，会利用反射获取`mMaxHeight`的值作为高。  
 
 #####4.2.12 NonViewAware.java  
 仅包含处理图片相关信息却没有需要显示图片的 View 的`ImageAware`，实现了`ImageAware`接口。常用于加载图片后调用回调接口而不是显示的情况。  
@@ -502,7 +502,7 @@ if (bitmap == null || bitmap.getWidth() <= 0 || bitmap.getHeight() <= 0) {
 }
 ```
 首先根据 uri 看看磁盘中是不是已经缓存了这个文件，如果已经缓存，调用 decodeImage 函数，将图片文件 decode 成 bitmap 对象；
-如果 bitmap 不合法或缓存文件不存在，判断是否需要缓存在磁盘，需要则调用`tryCacheImageOnDisk()`函数去下载并缓存图片到本地磁盘，再通过`decodeImage(imageUri)`函数将图片文件decode成bitmap对象，否则直接通过`decodeImage(imageUriForDecoding)`下载图片并解析。  
+如果 bitmap 不合法或缓存文件不存在，判断是否需要缓存在磁盘，需要则调用`tryCacheImageOnDisk()`函数去下载并缓存图片到本地磁盘，再通过`decodeImage(imageUri)`函数将图片文件 decode 成 bitmap 对象，否则直接通过`decodeImage(imageUriForDecoding)`下载图片并解析。  
 
 #####(3) tryCacheImageOnDisk()
 下载图片并存储在磁盘内，根据磁盘缓存图片最长宽高的配置处理图片。  
@@ -903,11 +903,11 @@ Log 工具类。
 UIL 的内存缓存默认使用了 LRU 算法。
 LRU: Least Recently Used 近期最少使用算法, 选用了基于链表结构的 LinkedHashMap 作为存储结构。  
 假设情景：内存缓存设置的阈值只够存储两个 bitmap 对象，当 put 第三个 bitmap 对象时，将近期最少使用的 bitmap 对象移除。  
-图1: 初始化 LinkedHashMap, 并按使用顺序来排序, accessOrder = true;  
-图2: 向缓存池中放入 bitmap1 和 bitmap2 两个对象。  
-图3: 继续放入第三个 bitmap3，根据假设情景，将会超过设定缓存池阈值。  
-图4: 释放对 bitmap1 对象的引用。  
-图5: bitmap1 对象被 GC 回收。  
+图 1: 初始化 LinkedHashMap, 并按使用顺序来排序, accessOrder = true;  
+图 2: 向缓存池中放入 bitmap1 和 bitmap2 两个对象。  
+图 3: 继续放入第三个 bitmap3，根据假设情景，将会超过设定缓存池阈值。  
+图 4: 释放对 bitmap1 对象的引用。  
+图 5: bitmap1 对象被 GC 回收。  
 ![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_header.png)  
 ![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_put.png)  
 ![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_put_exceed_maxsize2.png)  
