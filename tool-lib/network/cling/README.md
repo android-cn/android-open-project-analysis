@@ -180,7 +180,7 @@ public SendingSearch createSendingSearch(UpnpHeader searchTarget, int mxSeconds)
 ```
 addListener(RegistryListener listener)
 ```
-添加，保存在`RegistryListener`的Set\<RegistryListener\> registryListener 参数内。  
+添加，保存在`RegistryListener`的 Set\<RegistryListener\> registryListener 参数内。  
 实现类有空实现的 DefaultRegistryListener 以及通过注入属性实现的 RegistryListenerAdapter。  
 
 ####4.2.5 Resource  
@@ -233,7 +233,7 @@ KV 形式的数据项，在 RegistryImpl 中用于包装设备、资源、订阅
 根据消息类型得到协议并执行。  
 
 **(5) 发送数据**  
-send(StreamRequestMessage msg) 通过StreamClient发送TCP包。  
+send(StreamRequestMessage msg) 通过 StreamClient 发送 TCP 包。  
 send(OutgoingDatagramMessage msg) 向所有 datagramIO 发送 UDP 包。  
 broadcast(byte[] bytes) 向所有 datagramIO 广播发送数据。  
 
