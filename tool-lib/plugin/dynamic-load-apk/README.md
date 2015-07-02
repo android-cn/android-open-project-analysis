@@ -91,14 +91,14 @@ loadApk 函数调用 preparePluginEnv 函数加载插件，图中虚线框为 pr
 调用`createDexClassLoader(…)`、`createAssetManager(…)`、`createResources(…)`函数完成相应初始化部分。  
 
 **(5) createDexClassLoader(String dexPath)**  
-利用`DexClassLoader`加载插件，DexClassLoader初始化函数如下：    
+利用`DexClassLoader`加载插件，DexClassLoader 初始化函数如下：    
 ```java
 public DexClassLoader (String dexPath, String optimizedDirectory, String libraryPath, ClassLoader parent)
 ```
 其中`dexPath`为插件的路径。  
 `optimizedDirectory`优化后的`dex`存放路径。这里将路径设置为当前 App 应用程序数据目录下名为`dex`的子目录中。  
 `libraryPath`为 Native Library 存放的路径。这里将路径设置为`mNativeLibDir`属性，其在`getInstance(Context)`函数中已经初始化。  
-`parent`父 ClassLoader，ClassLoader 采用双亲委托模式查找类，具体加载方式可见 [ClassLoader基础](http://www.trinea.cn/android/java-loader-common-class/)。  
+`parent`父 ClassLoader，ClassLoader 采用双亲委托模式查找类，具体加载方式可见 [ClassLoader 基础](http://www.trinea.cn/android/java-loader-common-class/)。  
 
 **(6) createAssetManager(String dexPath)**  
 创建 AssetManager，加载插件资源。  
@@ -121,7 +121,7 @@ AssetManager 的无参构造函数以及`addAssetPath`函数都被`hide`了，�
 
 **(7) createResources(AssetManager assetManager)**  
 利用`AssetManager`中已经加载的资源创建`Resources`，代理组件中会从这个`Resources`中读取资源。  
-关于`AssetManager`、`Resources`深入的信息可参考：[Android应用程序资源的查找过程分析](http://blog.csdn.net/luoshengyang/article/details/8806798)。  
+关于`AssetManager`、`Resources`深入的信息可参考：[Android 应用程序资源的查找过程分析](http://blog.csdn.net/luoshengyang/article/details/8806798)。  
 
 **(8) copySoLib(String dexPath)**  
 调用`SoLibManager`拷贝 so 库到 Native Library 目录。  
