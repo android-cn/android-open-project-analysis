@@ -5,13 +5,14 @@
 大家可直接按下面规范添加或修改已有技术点，并在群里通知下其他人。
 
 ####添加规范
-以技术点英文名为文件名新建 md 文件介绍相关技术点，然后在下面列表添加链接。
+以技术点英文名新建文件夹，并新建 README.md 介绍相关技术点，然后在下面列表添加链接。
 
 ####技术点列表
 技术点 | 作者  
 :-- |:--
-[依赖注入](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/dependency-injection.md) | [扔物线](https://github.com/rengwuxian)
-[注解](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/annotation.md) | [Trinea](https://github.com/Trinea)
-[动态代理](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/proxy.md)| [Caij](https://github.com/Caij)
-事件传递 | 
-[View 绘制流程](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/viewdrawflow.md)  | [lightSky](https://github.com/lightSky)
+[依赖注入](./dependency-injection) | [扔物线](https://github.com/rengwuxian)
+[注解](./annotation) | [Trinea](https://github.com/Trinea)
+[动态代理](./proxy)| [Caij](https://github.com/Caij)
+[事件传递](./touch-event) | [Trinea](https://github.com/Trinea)
+[View 绘制流程](./viewdrawflow)  | [lightSky](https://github.com/lightSky)
+[反射](./reflection)  | [Mr.Simple](https://github.com/bboyfeiyu)
