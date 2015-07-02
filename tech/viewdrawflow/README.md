@@ -5,13 +5,13 @@
 
 #### View 绘制机制  
 #####1. View 树的绘图流程
-当 Activity 接收到焦点的时候，它会被请求绘制布局,该请求由Android framework 处理.绘制是从根节点开始，对布局树进行 measure 和 draw 。整个 View 树的绘图流程在`ViewRoot.java`类的`performTraversals()`函数展开，该函数所做 的工作可简单概况为是否需要重新计算视图大小(measure)、是否需要重新安置视图的位置(layout)、以及是否需要重绘(draw)，流程图如下：  
+当 Activity 接收到焦点的时候，它会被请求绘制布局,该请求由 Android framework 处理.绘制是从根节点开始，对布局树进行 measure 和 draw 。整个 View 树的绘图流程在`ViewRoot.java`类的`performTraversals()`函数展开，该函数所做 的工作可简单概况为是否需要重新计算视图大小(measure)、是否需要重新安置视图的位置(layout)、以及是否需要重绘(draw)，流程图如下：  
 ![viewdrawflow img](image/view_mechanism_flow.png)  
 
 **View 绘制流程函数调用链**  
 ![view_draw_method_chain img](image/view_draw_method_chain.png)  
 图片来自 https://plus.google.com/+ArpitMathur/posts/cT1EuBbxEgN  
-需要说明的是，用户主动调用request，只会出发 measure 和 layout 过程，而不会执行 draw 过程
+需要说明的是，用户主动调用 request，只会出发 measure 和 layout 过程，而不会执行 draw 过程
 
 #####2. 概念 
 
@@ -25,7 +25,7 @@
 measure 过程由`measure(int, int)`方法发起，从上到下有序的测量 View ，在 measure 过程的最后，每个视图存储了自己的尺寸大小和测量规格。
 layout 过程由`layout(int, int, int, int)`方法发起，也是自上而下进行遍历。在该过程中，每个父视图会根据 measure 过程得到的尺寸来摆放自己的子视图。  
 
- measure 过程会为一个View及所有子节点的 mMeasuredWidth 和 mMeasuredHeight 变量赋值，该值可以通过 `getMeasuredWidth()`和`getMeasuredHeight()`方法获得。而且这两个值必须在父视图约束范围之内，这样才可以保证所有的父视图都接收所有子视图的测量。如果子视图对于 Measure 得到的大小不满意的时候，父视图会介入并设置测量规则进行第二次 measure。比如，父视图可以先根据未给定的 dimension 去测量每一个子视图，如果最终子视图的未约束尺寸太大或者太小的时候，父视图就会使用一个确切的大小再次对子视图进行 measure 。 
+ measure 过程会为一个 View 及所有子节点的 mMeasuredWidth 和 mMeasuredHeight 变量赋值，该值可以通过 `getMeasuredWidth()`和`getMeasuredHeight()`方法获得。而且这两个值必须在父视图约束范围之内，这样才可以保证所有的父视图都接收所有子视图的测量。如果子视图对于 Measure 得到的大小不满意的时候，父视图会介入并设置测量规则进行第二次 measure。比如，父视图可以先根据未给定的 dimension 去测量每一个子视图，如果最终子视图的未约束尺寸太大或者太小的时候，父视图就会使用一个确切的大小再次对子视图进行 measure 。 
 
 **measure 过程传递尺寸的两个类**  
 - ViewGroup.LayoutParams （View 自身的布局参数）  
@@ -34,8 +34,8 @@ layout 过程由`layout(int, int, int, int)`方法发起，也是自上而下进
 ViewGroup.LayoutParams  
 这个类我们很常见，就是用来指定视图的高度和宽度等参数。对于每个视图的 height 和 width，你有以下选择：  
 - 具体值   
-- MATCH_PARENT 表示子视图希望和父视图一样大(不包含padding值)   
-- WRAP_CONTENT 表示视图为正好能包裹其内容大小(包含padding值)    
+- MATCH_PARENT 表示子视图希望和父视图一样大(不包含 padding 值)   
+- WRAP_CONTENT 表示视图为正好能包裹其内容大小(包含 padding 值)    
 
 ViewGroup 的子类有其对应的 ViewGroup.LayoutParams 的子类。比如 RelativeLayout 拥有的 ViewGroup.LayoutParams 的子类 RelativeLayoutParams。  
 有时我们需要使用 view.getLayoutParams() 方法获取一个视图 LayoutParams ，然后进行强转，但由于不知道其具体类型，可能会导致强转错误。其实该方法得到的就是其所在父视图类型的 LayoutParams，比如 View 的父控件为 RelativeLayout，那么得到的 LayoutParams 类型就为 RelativeLayoutParams。  
@@ -44,7 +44,7 @@ MeasureSpecs
 测量规格，包含测量要求和尺寸的信息，有三种模式:    
 
 - UNSPECIFIED  
-父视图不对子视图有任何约束，它可以达到所期望的任意尺寸。比如ListView、ScrollView，一般自定义View中用不到，
+父视图不对子视图有任何约束，它可以达到所期望的任意尺寸。比如 ListView、ScrollView，一般自定义 View 中用不到，
 
 - EXACTLY  
 父视图为子视图指定一个确切的尺寸，而且无论子视图期望多大，它都必须在该指定大小的边界内，对应的属性为 match_parent 或具体值，比如 100dp，父控件可以通过`MeasureSpec.getSize(measureSpec)`直接得到子控件的尺寸。
@@ -54,13 +54,13 @@ MeasureSpecs
  
 #####3. measure 核心方法  
 - measure(int widthMeasureSpec, int heightMeasureSpec)  
-该方法定义在`View.java`类中，为final类型，不可被复写，但 measure 调用链最终会回调 View/ViewGroup 对象的 `onMeasure()`方法，因此自定义视图时，只需要复写 `onMeasure()` 方法即可。
+该方法定义在`View.java`类中，为 final 类型，不可被复写，但 measure 调用链最终会回调 View/ViewGroup 对象的 `onMeasure()`方法，因此自定义视图时，只需要复写 `onMeasure()` 方法即可。
 
 - onMeasure(int widthMeasureSpec, int heightMeasureSpec)  
 该方法就是我们自定义视图中实现测量逻辑的方法，该方法的参数是父视图对子视图的 width 和 height 的测量要求。在我们自身的自定义视图中，要做的就是根据该 widthMeasureSpec 和 heightMeasureSpec 计算视图的 width 和 height，不同的模式处理方式不同。
 
 - setMeasuredDimension()  
-测量阶段终极方法，在 `onMeasure(int widthMeasureSpec, int heightMeasureSpec)` 方法中调用，将计算得到的尺寸，传递给该方法，测量阶段即结束。该方法也是必须要调用的方法，否则会报异常。在我们在自定义视图的时候，不需要关心系统复杂的 Measure 过程的，只需调用`setMeasuredDimension()`设置根据 MeasureSpec 计算得到的尺寸即可，你可以参考 [ViewPagerIndicator](https://github.com/android-cn/android-open-project-analysis/tree/master/view-pager-indicator) 的onMeasure方法。  
+测量阶段终极方法，在 `onMeasure(int widthMeasureSpec, int heightMeasureSpec)` 方法中调用，将计算得到的尺寸，传递给该方法，测量阶段即结束。该方法也是必须要调用的方法，否则会报异常。在我们在自定义视图的时候，不需要关心系统复杂的 Measure 过程的，只需调用`setMeasuredDimension()`设置根据 MeasureSpec 计算得到的尺寸即可，你可以参考 [ViewPagerIndicator](https://github.com/android-cn/android-open-project-analysis/tree/master/view-pager-indicator) 的 onMeasure 方法。  
 
 下面我们取 ViewGroup 的 `measureChildren（int widthMeasureSpec, int heightMeasureSpec)` 方法对复合 View 的 Measure 流程做一个分析：
 MeasureChild 的方法调用流程图：  
@@ -88,11 +88,11 @@ MeasureChild 的方法调用流程图：
     
     protected void measureChild(View child, int parentWidthMeasureSpec,
             int parentHeightMeasureSpec) {
-        final LayoutParams lp = child.getLayoutParams();//获取Child的LayoutParams
+        final LayoutParams lp = child.getLayoutParams();//获取 Child 的 LayoutParams
 
-        final int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec,// 获取 ChildView的widthMeasureSpec
+        final int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec,// 获取 ChildView 的 widthMeasureSpec
                 mPaddingLeft + mPaddingRight, lp.width);
-        final int childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,// 获取 ChildView的heightMeasureSpec
+        final int childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,// 获取 ChildView 的 heightMeasureSpec
                 mPaddingTop + mPaddingBottom, lp.height);
 
         child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
@@ -105,14 +105,14 @@ MeasureChild 的方法调用流程图：
      * @param spec 对该 View 的测绘要求
      * @param padding 当前 View 在当前唯独上的 paddingand，也有可能含有 margins
      *
-     * @param childDimension 在当前维度上（height或width）的具体指
+     * @param childDimension 在当前维度上（height 或 width）的具体指
      * @return 子视图的 MeasureSpec 
      */
     public static int getChildMeasureSpec(int spec, int padding, int childDimension) {
     		
     		.........
 	  
-	    // 根据获取到的子视图的测量要求和大小创建子视图的MeasureSpec
+	    // 根据获取到的子视图的测量要求和大小创建子视图的 MeasureSpec
 	    return MeasureSpec.makeMeasureSpec(resultSize, resultMode);  
     }
     
@@ -145,7 +145,7 @@ MeasureChild 的方法调用流程图：
 #####4. layout 相关概念及核心方法  
 首先要明确的是，子视图的具体位置都是相对于父视图而言的。View 的 onLayout 方法为空实现，而 ViewGroup 的 onLayout 为 abstract 的，因此，如果自定义的 View 要继承 ViewGroup 时，必须实现 onLayout 函数。  
 
-在layout过程中，子视图会调用`getMeasuredWidth()`和`getMeasuredHeight()`方法获取到 measure 过程得到的 mMeasuredWidth 和 mMeasuredHeight，作为自己的 width 和 height。然后调用每一个子视图的`layout(l, t, r, b)`函数，来确定每个子视图在父视图中的位置。    
+在 layout 过程中，子视图会调用`getMeasuredWidth()`和`getMeasuredHeight()`方法获取到 measure 过程得到的 mMeasuredWidth 和 mMeasuredHeight，作为自己的 width 和 height。然后调用每一个子视图的`layout(l, t, r, b)`函数，来确定每个子视图在父视图中的位置。    
 
 ** LinearLayout 的 onLayout 源码分析**
 ```java
@@ -166,9 +166,9 @@ MeasureChild 的方法调用流程图：
 	            final View child = getVirtualChildAt(i);
 	            if (child == null) {
 	                childTop += measureNullChild(i);
-	            } else if (child.getVisibility() != GONE) {//不需要立即展示的View设置为GONE可加快绘制
-	                final int childWidth = child.getMeasuredWidth();//measure过程确定的Width
-	                final int childHeight = child.getMeasuredHeight();//measure过程确定的height
+	            } else if (child.getVisibility() != GONE) {//不需要立即展示的 View 设置为 GONE 可加快绘制
+	                final int childWidth = child.getMeasuredWidth();//measure 过程确定的 Width
+	                final int childHeight = child.getMeasuredHeight();//measure 过程确定的 height
 	                
 	                ...确定 childLeft、childTop 的值
 	
@@ -202,10 +202,10 @@ MeasureChild 的方法调用流程图：
 由于 ViewGroup 并没有复写此方法，因此，所有的视图最终都是调用 View 的 draw 方法进行绘制的。在自定义的视图中，也不应该复写该方法，而是复写 `onDraw(Canvas)` 方法进行绘制，如果自定义的视图确实要复写该方法，那么请先调用 `super.draw(canvas)`完成系统的绘制，然后再进行自定义的绘制。
 
 - View.onDraw()：  
-View的`onDraw（Canvas）`默认是空实现，自定义绘制过程需要复写的方法，绘制自身的内容。  
+View 的`onDraw（Canvas）`默认是空实现，自定义绘制过程需要复写的方法，绘制自身的内容。  
 
 - dispatchDraw()
-发起对子视图的绘制。View中默认是空实现，ViewGroup 复写了`dispatchDraw()`来对其子视图进行绘制。该方法我们不用去管，自定义的 ViewGroup 不应该对`dispatchDraw()`进行复写。
+发起对子视图的绘制。View 中默认是空实现，ViewGroup 复写了`dispatchDraw()`来对其子视图进行绘制。该方法我们不用去管，自定义的 ViewGroup 不应该对`dispatchDraw()`进行复写。
 
 
 绘制流程图  
@@ -290,14 +290,14 @@ dispatchDraw(Canvas canvas){
 
 ...
 
- if ((flags & FLAG_RUN_ANIMATION) != 0 && canAnimate()) {//处理ChildView的动画
+ if ((flags & FLAG_RUN_ANIMATION) != 0 && canAnimate()) {//处理 ChildView 的动画
  	final boolean buildCache = !isHardwareAccelerated();
             for (int i = 0; i < childrenCount; i++) {
                 final View child = children[i];
                 if ((child.mViewFlags & VISIBILITY_MASK) == VISIBLE) {//只绘制 Visible 状态的布局，因此可以通过延时加载来提高效率
                     final LayoutParams params = child.getLayoutParams();
                     attachLayoutAnimationParameters(child, params, i, childrenCount);// 添加布局变化的动画
-                    bindLayoutAnimation(child);//为Child绑定动画
+                    bindLayoutAnimation(child);//为 Child 绑定动画
                     if (cache) {
                         child.setDrawingCacheEnabled(true);
                         if (buildCache) {
