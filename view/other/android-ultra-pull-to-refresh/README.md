@@ -46,11 +46,11 @@ public boolean checkCanDoRefresh(final PtrFrameLayout frame, final View content,
 ```java
 @Override
 public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-	return checkContentCanBePulledDown(frame, content, header);
+    return checkContentCanBePulledDown(frame, content, header);
 }
 public static boolean checkContentCanBePulledDown(PtrFrameLayout frame, View content, View header) {
     /**
-     * 如果Content不是ViewGroup，返回true,表示可以下拉</br>
+     * 如果 Content 不是 ViewGroup，返回 true,表示可以下拉</br>
      * 例如：TextView，ImageView
      */
     if (!(content instanceof ViewGroup)) {
@@ -60,14 +60,14 @@ public static boolean checkContentCanBePulledDown(PtrFrameLayout frame, View con
     ViewGroup viewGroup = (ViewGroup) content;
 
     /**
-     * 如果Content没有子View（内容为空）时候，返回true，表示可以下拉
+     * 如果 Content 没有子 View（内容为空）时候，返回 true，表示可以下拉
      */
     if (viewGroup.getChildCount() == 0) {
         return true;
     }
 
     /**
-     * 如果Content是AbsListView（ListView，GridView），当第一个item不可见是，返回false，不可以下拉。
+     * 如果 Content 是 AbsListView（ListView，GridView），当第一个 item 不可见是，返回 false，不可以下拉。
      */
     if (viewGroup instanceof AbsListView) {
         AbsListView listView = (AbsListView) viewGroup;
@@ -77,16 +77,16 @@ public static boolean checkContentCanBePulledDown(PtrFrameLayout frame, View con
     }
 
     /**
-     * 如果SDK版本为14以上，可以用canScrollVertically判断是否能在竖直方向上，向上滑动</br>
-     * 不能向上，表示已经滑动到在顶部或者Content不能滑动，返回true，可以下拉</br>
-     * 可以向上，返回false，不能下拉
+     * 如果 SDK 版本为 14 以上，可以用 canScrollVertically 判断是否能在竖直方向上，向上滑动</br>
+     * 不能向上，表示已经滑动到在顶部或者 Content 不能滑动，返回 true，可以下拉</br>
+     * 可以向上，返回 false，不能下拉
      */
     if (Build.VERSION.SDK_INT >= 14) {
         return !content.canScrollVertically(-1);
     } else {
         /**
-         * SDK版本小于14，如果Content是ScrollView或者AbsListView,通过getScrollY判断滑动位置 </br>
-         * 如果位置为0，表示在最顶部，返回true，可以下拉
+         * SDK 版本小于 14，如果 Content 是 ScrollView 或者 AbsListView,通过 getScrollY 判断滑动位置 </br>
+         * 如果位置为 0，表示在最顶部，返回 true，可以下拉
          */
         if (viewGroup instanceof ScrollView || viewGroup instanceof AbsListView) {
             return viewGroup.getScrollY() == 0;
@@ -94,9 +94,9 @@ public static boolean checkContentCanBePulledDown(PtrFrameLayout frame, View con
     }
 
     /**
-     * 最终判断，判断第一个子View的top值</br>
-     * 如果第一个子View有margin，则当top==子view的marginTop+content的paddingTop时，表示在最顶部，返回true，可以下拉</br>
-     * 如果没有margin，则当top==content的paddinTop时，表示在最顶部，返回true，可以下拉
+     * 最终判断，判断第一个子 View 的 top 值</br>
+     * 如果第一个子 View 有 margin，则当 top==子 view 的 marginTop+content 的 paddingTop 时，表示在最顶部，返回 true，可以下拉</br>
+     * 如果没有 margin，则当 top==content 的 paddinTop 时，表示在最顶部，返回 true，可以下拉
      */
     View child = viewGroup.getChildAt(0);
     ViewGroup.LayoutParams glp = child.getLayoutParams();
@@ -109,7 +109,7 @@ public static boolean checkContentCanBePulledDown(PtrFrameLayout frame, View con
     }
 }
 ```
-这里特别注意一下，以上代码中存在一些小bug。[Issue](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/issues/30)
+这里特别注意一下，以上代码中存在一些小 bug。[Issue](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/issues/30)
 ```java
 if (viewGroup instanceof ScrollView || viewGroup instanceof AbsListView) {
     return viewGroup.getScrollY() == 0;
@@ -150,7 +150,7 @@ public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header
 
 ####4.1.3 PtrUIHandler.java
 下拉刷新 UI 接口，对下拉刷新 UI 变化的抽象。一般情况下， Header 会实现此接口，处理下拉过程中的头部 UI 的变化。  
-包含以下5个方法。  
+包含以下 5 个方法。  
 ```java
 public void onUIReset(PtrFrameLayout frame);
 ```
@@ -172,14 +172,14 @@ public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte 
 ```
 下拉过程中位置变化回调。
 ####4.1.4 PtrUIHandlerHolder.java
-实现 UI 接口 PtrUIHandler ，封装了 PtrUIHandler ，并将其组织成链表的形式。之所以封装成链表的目的是作者希望调用者可以像Header一样去实现PtrUIHandler，能够捕捉到onUIReset，onUIRefreshPrepare，onUIRefreshBegin，onUIRefreshComplete 这几个时机去实现自己的逻辑或者UI效果，而它们统一由PtrUIHandlerHolder来管理，你只需要 通过addHandler方法加入到链表中即可，这一点的抽象为那些希望去做一些处理的开发者还是相当方便的。  
+实现 UI 接口 PtrUIHandler ，封装了 PtrUIHandler ，并将其组织成链表的形式。之所以封装成链表的目的是作者希望调用者可以像 Header 一样去实现 PtrUIHandler，能够捕捉到 onUIReset，onUIRefreshPrepare，onUIRefreshBegin，onUIRefreshComplete 这几个时机去实现自己的逻辑或者 UI 效果，而它们统一由 PtrUIHandlerHolder 来管理，你只需要 通过 addHandler 方法加入到链表中即可，这一点的抽象为那些希望去做一些处理的开发者还是相当方便的。  
 ####4.1.5 PtrFrameLayout.java
 UltraPTR 的核心类，自定义控件类。  
-作为自定义控件， UltraPTR 有8个自定义属性。  
+作为自定义控件， UltraPTR 有 8 个自定义属性。  
 `ptr_header`，设置头部 id 。  
 `ptr_content`，设置内容 id 。  
 `ptr_resistance`，阻尼系数，默认: `1.7f`，越大，感觉下拉时越吃力。  
-`ptr_ratio_of_header_height_to_refresh`，触发刷新时移动的位置比例，默认，`1.2f`，移动达到头部高度1.2倍时可触发刷新操作。  
+`ptr_ratio_of_header_height_to_refresh`，触发刷新时移动的位置比例，默认，`1.2f`，移动达到头部高度 1.2 倍时可触发刷新操作。  
 `ptr_duration_to_close`，回弹延时，默认 `200ms`，回弹到刷新高度所用时间。  
 `ptr_duration_to_close_header`，头部回弹时间，默认 `1000ms`。  
 `ptr_pull_to_fresh`，刷新是否保持头部，默认值 `true` 。  
@@ -210,7 +210,7 @@ protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         mOffsetToRefresh = (int) (mHeaderHeight * mRatioOfHeaderHeightToRefresh);
         ...
     }
-	// 测量 Content 
+    // 测量 Content 
     if (mContent != null) {
         measureContentView(mContent, widthMeasureSpec, heightMeasureSpec);
         ...
@@ -233,8 +233,8 @@ final int top = paddingTop + lp.topMargin + offsetX - mHeaderHeight;
 ```java
 final int top = paddingTop + lp.topMargin + offsetX;
 ```
-以上代码可以看出，计算 Header top值的时候，向上偏移的一个 Header 的高度 （`mHeaderHeight`），这样初始情况下， Header 就会被隐藏。  
-代码中有个 `offsetX` 变量（我认为改为 `offsetY` 好些），初始时为0，随着下拉的过程， `offsetX` 会逐渐增大，这样 Header 和 Content 都会向下移动， Header 会显示出来，出现下拉的位置移动效果。 
+以上代码可以看出，计算 Header top 值的时候，向上偏移的一个 Header 的高度 （`mHeaderHeight`），这样初始情况下， Header 就会被隐藏。  
+代码中有个 `offsetX` 变量（我认为改为 `offsetY` 好些），初始时为 0，随着下拉的过程， `offsetX` 会逐渐增大，这样 Header 和 Content 都会向下移动， Header 会显示出来，出现下拉的位置移动效果。 
 
 **（2）行为（ View 事件）**  
 参考技术点，[公共技术点之 View 事件传递](http://codekk.com/open-source-project-analysis/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8BView%20%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92)  
@@ -257,50 +257,50 @@ PtrClassicDefaultHeader 实现了 PtrUIHandler 接口。
 ```java
 @Override
 public void onUIReset(PtrFrameLayout frame) {
-	resetView();
-	mShouldShowLastUpdate = true;
-	tryUpdateLastUpdateTime();
+    resetView();
+    mShouldShowLastUpdate = true;
+    tryUpdateLastUpdateTime();
 }
 private void resetView() {
-	hideRotateView();
-	mProgressBar.setVisibility(INVISIBLE);
+    hideRotateView();
+    mProgressBar.setVisibility(INVISIBLE);
 }
 private void hideRotateView() {
-	mRotateView.clearAnimation();
-	mRotateView.setVisibility(INVISIBLE);
+    mRotateView.clearAnimation();
+    mRotateView.setVisibility(INVISIBLE);
 }
 ```
 重置 View ，隐藏忙碌进度条，隐藏箭头 View ，更新最后刷新时间。  
 ```java
 @Override
 public void onUIRefreshPrepare(PtrFrameLayout frame) {
-	mShouldShowLastUpdate = true;
-	tryUpdateLastUpdateTime();
-	mLastUpdateTimeUpdater.start();
+    mShouldShowLastUpdate = true;
+    tryUpdateLastUpdateTime();
+    mLastUpdateTimeUpdater.start();
 
-	mProgressBar.setVisibility(INVISIBLE);
+    mProgressBar.setVisibility(INVISIBLE);
 
-	mRotateView.setVisibility(VISIBLE);
-	mTitleTextView.setVisibility(VISIBLE);
-	if (frame.isPullToRefresh()) {
-		mTitleTextView.setText(getResources().getString(R.string.cube_ptr_pull_down_to_refresh));
-	} else {
-		mTitleTextView.setText(getResources().getString(R.string.cube_ptr_pull_down));
-	}
+    mRotateView.setVisibility(VISIBLE);
+    mTitleTextView.setVisibility(VISIBLE);
+    if (frame.isPullToRefresh()) {
+        mTitleTextView.setText(getResources().getString(R.string.cube_ptr_pull_down_to_refresh));
+    } else {
+        mTitleTextView.setText(getResources().getString(R.string.cube_ptr_pull_down));
+    }
 } 
 ```
 准备刷新，隐藏忙碌进度条，显示箭头 View ，显示文字，如果是下拉刷新，显示“下拉刷新”，如果是释放刷新，显示“下拉”。  
 ```java
 @Override
 public void onUIRefreshBegin(PtrFrameLayout frame) {
-	mShouldShowLastUpdate = false;
-	hideRotateView();
-	mProgressBar.setVisibility(VISIBLE);
-	mTitleTextView.setVisibility(VISIBLE);
-	mTitleTextView.setText(R.string.cube_ptr_refreshing);
-	
-	tryUpdateLastUpdateTime();
-	mLastUpdateTimeUpdater.stop();
+    mShouldShowLastUpdate = false;
+    hideRotateView();
+    mProgressBar.setVisibility(VISIBLE);
+    mTitleTextView.setVisibility(VISIBLE);
+    mTitleTextView.setText(R.string.cube_ptr_refreshing);
+    
+    tryUpdateLastUpdateTime();
+    mLastUpdateTimeUpdater.stop();
 }
 ```
 开始刷新，隐藏箭头 View ，显示忙碌进度条，显示文字，显示“加载中...”，更新最后刷新时间。  
@@ -308,42 +308,42 @@ public void onUIRefreshBegin(PtrFrameLayout frame) {
 @Override
 public void onUIRefreshComplete(PtrFrameLayout frame) {
 
-	hideRotateView();
-	mProgressBar.setVisibility(INVISIBLE);
-	
-	mTitleTextView.setVisibility(VISIBLE);
-	mTitleTextView.setText(getResources().getString(R.string.cube_ptr_refresh_complete));
-	
-	// update last update time
-	SharedPreferences sharedPreferences = getContext().getSharedPreferences(KEY_SharedPreferences, 0);
-	if (!TextUtils.isEmpty(mLastUpdateTimeKey)) {
-		mLastUpdateTime = new Date().getTime();
-		sharedPreferences.edit().putLong(mLastUpdateTimeKey, mLastUpdateTime).commit();
-	}
+    hideRotateView();
+    mProgressBar.setVisibility(INVISIBLE);
+    
+    mTitleTextView.setVisibility(VISIBLE);
+    mTitleTextView.setText(getResources().getString(R.string.cube_ptr_refresh_complete));
+    
+    // update last update time
+    SharedPreferences sharedPreferences = getContext().getSharedPreferences(KEY_SharedPreferences, 0);
+    if (!TextUtils.isEmpty(mLastUpdateTimeKey)) {
+        mLastUpdateTime = new Date().getTime();
+        sharedPreferences.edit().putLong(mLastUpdateTimeKey, mLastUpdateTime).commit();
+    }
 }
 ```
 刷新结束，隐藏箭头 View ，隐藏忙碌进度条，显示文字，显示“更新完成”，写入最后刷新时间。  
 ```java
 @Override
 public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte status, int lastPos, int currentPos, float oldPercent, float currentPercent) {
-	final int mOffsetToRefresh = frame.getOffsetToRefresh();
-	if (currentPos < mOffsetToRefresh && lastPos >= mOffsetToRefresh) {
-		if (isUnderTouch && status == PtrFrameLayout.PTR_STATUS_PREPARE) {
-			crossRotateLineFromBottomUnderTouch(frame);
-			if (mRotateView != null) {
-				mRotateView.clearAnimation();
-				mRotateView.startAnimation(mReverseFlipAnimation);
-			}
-		}
-	} else if (currentPos > mOffsetToRefresh && lastPos <= mOffsetToRefresh) {
-		if (isUnderTouch && status == PtrFrameLayout.PTR_STATUS_PREPARE) {
-			crossRotateLineFromTopUnderTouch(frame);
-			if (mRotateView != null) {
-				mRotateView.clearAnimation();
-				mRotateView.startAnimation(mFlipAnimation);
-			}
-		}
-	}
+    final int mOffsetToRefresh = frame.getOffsetToRefresh();
+    if (currentPos < mOffsetToRefresh && lastPos >= mOffsetToRefresh) {
+        if (isUnderTouch && status == PtrFrameLayout.PTR_STATUS_PREPARE) {
+            crossRotateLineFromBottomUnderTouch(frame);
+            if (mRotateView != null) {
+                mRotateView.clearAnimation();
+                mRotateView.startAnimation(mReverseFlipAnimation);
+            }
+        }
+    } else if (currentPos > mOffsetToRefresh && lastPos <= mOffsetToRefresh) {
+        if (isUnderTouch && status == PtrFrameLayout.PTR_STATUS_PREPARE) {
+            crossRotateLineFromTopUnderTouch(frame);
+            if (mRotateView != null) {
+                mRotateView.clearAnimation();
+                mRotateView.startAnimation(mFlipAnimation);
+            }
+        }
+    }
 }
 ```
 下拉过程中位置变化回调。  
@@ -351,7 +351,7 @@ public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte 
 当下拉距离从 **大于刷新高度到小于刷新高度** 时，箭头 View 从向上，变为向下，同时改变文字显示。
 
 ####4.1.7 PtrClassicFrameLayout.java
-继承PtrFrameLayout.java，经典下拉刷新实现类。  
+继承 PtrFrameLayout.java，经典下拉刷新实现类。  
 添加了 PtrClassicDefaultHeader 作为头部，用户使用时只需要设置 Content 即可。
 ####4.1.8 PtrUIHandlerHook.java
 钩子任务类，实现了 Runnable 接口，可以理解为在原来的操作之间，插入了一段任务去执行。  
@@ -359,20 +359,20 @@ public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte 
 如果钩子任务已经执行过了，调用 `takeOver` 将会直接恢复执行原来的操作。  
 可以通过 PtrFrameLayout 类的 `setRefreshCompleteHook(PtrUIHandlerHook hook)` 进行设置。当用户调用 `refreshComplete()` 方法表示刷新结束以后，如果有 hook 存在，先执行 hook 的 `takeOver` 方法，执行结束，用户需要主动调用 hook 的 `resume` 方法，然后才会进行 Header 回弹到顶部的动作。
 ####4.1.9 MaterialHeader.java
-Material Design风格的头部实现  
+Material Design 风格的头部实现  
 ![material-design-header](image/material-design-header.gif)
 ####4.1.10 StoreHouseHeader.java
-StoreHouse风格的头部实现  
+StoreHouse 风格的头部实现  
 ![store-house-header](image/store-house-header.gif)
 ####4.1.11 PtrLocalDisplay.java
-显示相关工具类，用于获取用户设备屏幕宽度（像素，DP），高度（像素，DP）以及屏幕密度。 同时提供了dp和px的转化方法。
+显示相关工具类，用于获取用户设备屏幕宽度（像素，DP），高度（像素，DP）以及屏幕密度。同时提供了 dp 和 px 的转化方法。
   
 ###4.2 类关系图
-![UltraPTR类关系图](image/UltraPTR-class.png)
+![UltraPTR 类关系图](image/UltraPTR-class.png)
 
 
 ###5. 杂谈
-####5.1优点
+####5.1 优点
 #####5.1.1 头部行为抽象解耦
 刷微博，刷空间，刷朋友圈，“**刷**” 已经成为很多人的习惯动作。  
 现在的移动应用，几乎所有的用户主动刷新操作，都是通过下拉来完成的。  
@@ -381,7 +381,7 @@ UltraPTR 对头部行为的抽象，可以很方便的使用户定制自己的�
 #####5.1.2 Content 可包含任何 View
 UltraPTR 的 Content 可以包含任意的 View 。这样的好处，就是整个项目中的刷新操作，不管是 ListView ， GridView 还是一个 LinearLayout ，都可以用 UltraPTR 来完成，简便，统一。
   
-####5.2期望
+####5.2 期望
 ![default-header](image/default-header.gif)  
 目前 UltraPTR 在下拉过程中， Header 和 Content 都会有位置变化。  
 
@@ -398,15 +398,9 @@ UltraPTR 的 Content 可以包含任意的 View 。这样的好处，就是整�
 > ```
 > 将 Content 固定，这样下拉只有 Header 位置移动。  
 
-####5.3关于加载更多
+####5.3 关于加载更多
 UltraPTR 没有集成加载更多的功能。项目的 Issue 里面也有人提到希望加入这个功能。  
 [希望加入下拉加载········ #35](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/issues/35)  
 [要是把上拉加载更多 集成进去，就无敌了 #8](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/issues/8)  
 作者给予了回复，认为下拉刷新和加载更多，不是同一个层级的功能。加载更多不应该由 UltraPTR 去实现，而应该由 Content 自己去实现。  
 我也觉得这样是合适的，UltraPTR 的强大之处，就是它的 Content 可以是任何的 View 。因为刷新的动作，可以在任何的 View 上进行，比如一个 TextView ，一个 ImageView ，一个 WebView 或者一个 LineaerLayout 布局中。而加载更多的功能，很多时候只是用在了例如 ListView ，GridView 等上面，而大部分的 View 不会需要这个功能。所以交由 ListView 或者 GridView 自己去实现比较好些。  
-
-
-
-
-  
-
