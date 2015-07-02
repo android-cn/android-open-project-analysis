@@ -1,4 +1,4 @@
-Android 动画基础
+公共技术点之 Android 动画基础
 ----------------
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 公共技术点中的 View 事件传递 部分  
  分析者：[lightSky](https://github.com/lightSky)，校对者：待定，校对状态：未完成  

@@ -1,4 +1,4 @@
-Java 动态代理
+公共技术点之 Java 动态代理
 ----------------
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 公共技术点中的 动态代理 部分  
  项目地址：[Jave Proxy](http://www.grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/6-b27/java/lang/reflect/Proxy.java#Proxy)，分析的版本：[openjdk 1.6](http://www.grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/6-b27/java/lang/reflect/Proxy.java#Proxy)，Demo 地址：[Proxy Demo](https://github.com/android-cn/android-open-project-demo/tree/master/java-dynamic-proxy)  
