@@ -8,11 +8,11 @@ CalendarListView 源码解析
 
 ##1. 功能介绍  
 
-calendarlistview选取提供了一个API 10 +日历日期的简便方法  
+calendarlistview 选取提供了一个 API 10+日历日期的简便方法  
 
-只需要在你的布局中添加datepickerview无需定制。  
+只需要在你的布局中添加 datepickerview 无需定制。  
 
-使用控件RecycleView实现的日期选择器，可以选择时间段。  
+使用控件 RecycleView 实现的日期选择器，可以选择时间段。  
 
 ###1.1 **完成时间**  
 
@@ -22,7 +22,7 @@ calendarlistview选取提供了一个API 10 +日历日期的简便方法
 
 ###1.2 **集成指南**  
 
-lib已经上传至Maven库
+lib 已经上传至 Maven 库
 
 [Gradle, please](http://gradleplease.appspot.com/#calendarlistview)  
 
@@ -40,7 +40,7 @@ dependencies {
 
 ### 1.3 **使用指南**
 
->####1.在你的布局XML声明一个`DayPickerView`  
+>####1.在你的布局 XML 声明一个`DayPickerView`  
 
 
 
@@ -58,7 +58,7 @@ dependencies {
 
 >```
 
->####2.在你的Activity或Fragment中引入`DatePickerController`,然后你需要设置 `getMaxYear` and >`onDayOfMonthSelected`.  
+>####2.在你的 Activity 或 Fragment 中引入`DatePickerController`,然后你需要设置 `getMaxYear` and >`onDayOfMonthSelected`.  
 
 >`getMaxYear`  是设置选择器的最大年数  
 
@@ -146,9 +146,9 @@ dependencies {
 
 >>>[RecyclerView](http://blog.jobbole.com/74208/)相关知识  
 
->>>在这里DayPickerView作为整个Calendar—list-view的容器  
+>>>在这里 DayPickerView 作为整个 Calendar—list-view 的容器  
 
->>>目前SDK中提供了三种自带的LayoutManager:  
+>>>目前 SDK 中提供了三种自带的 LayoutManager:  
 
 >>>LinearLayoutManager  
 
@@ -156,9 +156,9 @@ dependencies {
 
 >>>StaggeredGridLayoutManager  
 
->>>这里用到了LinearLayoutManager  
+>>>这里用到了 LinearLayoutManager  
 
->>>LinearLayoutManager可设置方向，这里使用默认的竖向  
+>>>LinearLayoutManager 可设置方向，这里使用默认的竖向  
 
 
 
@@ -178,7 +178,7 @@ dependencies {
 
 >>`SimpleMonthAdapter` 继承于`RecyclerView.Adapter`  
 
->>>RecyclerView跟ListView一样，需要设置RecyclerView的Adapter，但是这里的Adapter跟ListView使用的Adapter不一样，这里的Adapter需要继承RecyclerView.Adapter，需要实现3个方法：  
+>>>RecyclerView 跟 ListView 一样，需要设置 RecyclerView 的 Adapter，但是这里的 Adapter 跟 ListView 使用的 Adapter 不一样，这里的 Adapter 需要继承 RecyclerView.Adapter，需要实现 3 个方法：  
 
 >>>　　- onCreateViewHolder()  
 
@@ -190,17 +190,17 @@ dependencies {
 
 >>>onCreateViewHolder(ViewGroup viewGroup, int i)    
 
->>>>这个方法主要生成为每个Item inflater出一个View，但是该方法返回的是一个ViewHolder。方法是把View直接封装在ViewHolder中，然后我们面向的是ViewHolder这个实例，这里的ViewHolder即`SimpleMonthView`。直接省去了当初的convertView.setTag(holder)和convertView.getTag()这些繁琐的步骤。
+>>>>这个方法主要生成为每个 Item inflater 出一个 View，但是该方法返回的是一个 ViewHolder。方法是把 View 直接封装在 ViewHolder 中，然后我们面向的是 ViewHolder 这个实例，这里的 ViewHolder 即`SimpleMonthView`。直接省去了当初的 convertView.setTag(holder)和 convertView.getTag()这些繁琐的步骤。
 
 
 
 >>>onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i)    
 
->>>>这个方法主要用于适配渲染数据到View中。方法提供给你了一个viewHolder，而不是原来的convertView。  
+>>>>这个方法主要用于适配渲染数据到 View 中。方法提供给你了一个 viewHolder，而不是原来的 convertView。  
 
 
 
->>>  这里与ListViewAdapter做一个对比
+>>>  这里与 ListViewAdapter 做一个对比
 
 >>> ``` java  
 
@@ -260,9 +260,9 @@ dependencies {
 
 >>> ``` 
 
->>>旧的写法中Line5～Line12＋Line28部分的代码其实起到的作用相当于新的写法的onCreateViewHolder()；  
+>>>旧的写法中 Line5～Line12＋Line28 部分的代码其实起到的作用相当于新的写法的 onCreateViewHolder()；  
 
->>>旧的写法中Line14～Line26部分的代码其实起到的作用相当于新的写法的onBindViewHolder()；
+>>>旧的写法中 Line14～Line26 部分的代码其实起到的作用相当于新的写法的 onBindViewHolder()；
 
 
 
@@ -278,7 +278,7 @@ dependencies {
 
 >>`setSelectedDay()` 当日期被点击 **流程图为:**  
 >>
-![onDrow](img/setSelectedDay.png)  
+![onDrow](image/setSelectedDay.png)  
 
 
 
@@ -286,9 +286,9 @@ dependencies {
 
 >>`SimpleMonthView` 继承于`View`  
 
->>`SimpleMonthView`这里作为RecycleView的Item项，以月份为单位绘制  
+>>`SimpleMonthView`这里作为 RecycleView 的 Item 项，以月份为单位绘制  
 
->>[View绘制流程相关知识](https://github.com/Rogary/android-open-project-analysis/blob/master/tech/viewdrawflow.md)  
+>>[View 绘制流程相关知识](https://github.com/Rogary/android-open-project-analysis/blob/master/tech/viewdrawflow.md)  
 
 >>**View 绘制流程函数调用链**  
 ![](https://github.com/Rogary/android-open-project-analysis/blob/master/tech/image/viewdrawflow/view_draw_method_chain.png)
@@ -320,7 +320,7 @@ dependencies {
 
 >>**(2) 核心方法**  
 >>**onDraw()流程图**  
-![onDrow](img/onDraw.png)  
+![onDrow](image/onDraw.png)  
 >>```java
 	protected void onDraw(Canvas canvas) {
 		drawMonthTitle(canvas);  //绘制月份头部
@@ -333,7 +333,7 @@ dependencies {
 
 >#### 4.[`DatePickerController`](https://github.com/traex/CalendarListview/blob/master/library/src/main/java/com/andexert/calendarlistview/library/DatePickerController.java)  
 
->>`DatePickerController`  日期选择Controller接口，在使用时需要实现以下接口  
+>>`DatePickerController`  日期选择 Controller 接口，在使用时需要实现以下接口  
 
 >>``` java
     public abstract int getMaxYear();  
@@ -359,5 +359,5 @@ dependencies {
 
 
 ##3. 总体设计
-![onDrow](img/zongtisheji.png) 
+![onDrow](image/zongtisheji.png) 
 
