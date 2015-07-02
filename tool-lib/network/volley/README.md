@@ -48,7 +48,7 @@ Volley 的调用比较简单，通过 newRequestQueue(…) 函数新建并启动
 
 ###3. 流程图
 Volley 请求流程图  
-![Volley请求流程图](image/Volley-run-flow-chart.png)  
+![Volley 请求流程图](image/Volley-run-flow-chart.png)  
 > **上图是 Volley 请求时的流程图，在  Volley 的发布演讲中给出，我在这里将其用中文重新画出。**   
 
 ###4. 详细设计
@@ -56,7 +56,7 @@ Volley 请求流程图
 ![类关系图](image/volley-class.png)  
 这是 Volley 框架的主要类关系图    
 > 图中**红色圈内**的部分，组成了 Volley 框架的核心，围绕 RequestQueue 类，将各个功能点以**组合**的方式结合在了一起。各个功能点也都是以**接口**或者**抽象类**的形式提供。  
-> 红色圈外面的部分，在 Volley 源码中放在了toolbox包中，作为 Volley 为各个功能点提供的默认的具体实现。    
+> 红色圈外面的部分，在 Volley 源码中放在了 toolbox 包中，作为 Volley 为各个功能点提供的默认的具体实现。    
 > 通过类图我们看出， Volley 有着非常好的拓展性。通过各个功能点的接口，我们可以给出自定义的，更符合我们需求的具体实现。
 > 
 > **多用组合，少用继承；针对接口编程，不针对具体实现编程。**  
@@ -93,8 +93,8 @@ RequestQueue queue = new RequestQueue(new DiskBasedCache(cacheDir), network);
 queue.start();
 return queue;
 ```
-> 我们平时大多采用`Volly.newRequestQueue(context)`的默认实现，构建RequestQueue。  
-> 通过源码可以看出，我们可以抛开 Volley 工具类构建自定义的RequestQueue，采用自定义的`HttpStatck`，采用自定义的`Network`实现，采用自定义的Cache实现等来构建`RequestQueue`。  
+> 我们平时大多采用`Volly.newRequestQueue(context)`的默认实现，构建 RequestQueue。  
+> 通过源码可以看出，我们可以抛开 Volley 工具类构建自定义的 RequestQueue，采用自定义的`HttpStatck`，采用自定义的`Network`实现，采用自定义的 Cache 实现等来构建`RequestQueue`。  
 **优秀框架的高可拓展性的魅力来源于此啊**
 
 **(2). HttpURLConnection 和 AndroidHttpClient(HttpClient 的封装)如何选择及原因：**  
@@ -124,7 +124,7 @@ public Map<String, String> getHeaders() throws AuthFailureError {
 ```  
 
 ####4.2.2 Request.java
-代表一个网络请求的抽象类。我们通过构建一个`Request`类的非抽象子类(StringRequest、JsonRequest、ImageRequest或自定义)对象，并将其加入到·RequestQueue·中来完成一次网络请求操作。  
+代表一个网络请求的抽象类。我们通过构建一个`Request`类的非抽象子类(StringRequest、JsonRequest、ImageRequest 或自定义)对象，并将其加入到·RequestQueue·中来完成一次网络请求操作。  
 Volley 支持 8 种 Http 请求方式 **GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE, PATCH**  
 Request 类中包含了请求 url，请求请求方式，请求 Header，请求 Body，请求的优先级等信息。  
 
@@ -150,7 +150,7 @@ protected Map<String, String> getParams()
 在上面`getBody`函数没有被重写情况下，此方法的返回值会被 key、value 分别编码后拼装起来转换为字节码作为 Body 内容。  
 
 ####4.2.3 RequestQueue.java
-Volley 框架的核心类，将请求Request加入到一个运行的`RequestQueue`中，来完成请求操作。
+Volley 框架的核心类，将请求 Request 加入到一个运行的`RequestQueue`中，来完成请求操作。
 ####(1). 主要成员变量
 RequestQueue 中维护了两个**基于优先级**的 Request 队列，缓存请求队列和网络请求队列。  
 放在缓存请求队列中的 Request，将通过缓存获取数据；放在网络请求队列中的 Request，将通过网络获取数据。  
@@ -189,7 +189,7 @@ public void start() {
     }
 }
 ```
-start 方法中，开启一个**缓存调度线程`CacheDispatcher`**和 n 个**网络调度线程`NetworkDispatcher`**，这里 n 默认为4，存在优化的余地，比如可以根据 CPU 核数以及网络类型计算更合适的并发数。  
+start 方法中，开启一个**缓存调度线程`CacheDispatcher`**和 n 个**网络调度线程`NetworkDispatcher`**，这里 n 默认为 4，存在优化的余地，比如可以根据 CPU 核数以及网络类型计算更合适的并发数。  
 缓存调度线程不断的从缓存请求队列中取出 Request 去处理，网络调度线程不断的从网络请求队列中取出 Request 去处理。  
 
 ####(3). 加入请求
@@ -330,14 +330,14 @@ public synchronized void returnBuf(byte[] buf)
 ```java
 public synchronized byte[] getBuf(int len)
 ```
-获取长度不小于 len 的 byte[]，遍历缓存，找出第一个长度大于传入参数`len`的 byte[]，并返回；如果最终没有合适的byte[]，new 一个返回。  
+获取长度不小于 len 的 byte[]，遍历缓存，找出第一个长度大于传入参数`len`的 byte[]，并返回；如果最终没有合适的 byte[]，new 一个返回。  
 ```java
 private synchronized void trim()
 ```
 当缓存的 byte 超过预先设置的大小时，按照先进先出的顺序删除最早的 byte[]。  
 
 ####4.2.17 PoolingByteArrayOutputStream.java
-继承ByteArrayOutputStream，原始 ByteArrayOutputStream 中用于接受写入 bytes 的 buf，每次空间不足时便会 new 更大容量的 byte[]，而 PoolingByteArrayOutputStream 使用了 ByteArrayPool 作为 Byte[] 缓存来减少这种操作，从而提高性能。  
+继承 ByteArrayOutputStream，原始 ByteArrayOutputStream 中用于接受写入 bytes 的 buf，每次空间不足时便会 new 更大容量的 byte[]，而 PoolingByteArrayOutputStream 使用了 ByteArrayPool 作为 Byte[] 缓存来减少这种操作，从而提高性能。  
 
 ####4.2.18 HttpHeaderParser.java
 Http header 的解析工具类，在 Volley 中主要作用是用于解析 Header 从而判断返回结果是否需要缓存，如果需要返回 Header 中相关信息。  
@@ -371,11 +371,11 @@ public static Cache.Entry parseCacheHeaders(NetworkResponse response)
 ```java
 public int getCurrentTimeout();
 ```
-获取当前请求用时（用于Log）
+获取当前请求用时（用于 Log）
 ```java
 public int getCurrentRetryCount();
 ```
-获取已经重试的次数（用于Log）
+获取已经重试的次数（用于 Log）
 ```java
 public void retry(VolleyError error) throws VolleyError;
 ```
@@ -445,7 +445,7 @@ public void setErrorImageResId(int errorImage)
 public void setImageUrl(String url, ImageLoader imageLoader)
 ```
 设置网络图片的 Url 和 ImageLoader，将利用这个 ImageLoader 去获取网络图片。  
->如果有新的图片加载请求，会把这个ImageView上旧的加载请求取消。  
+>如果有新的图片加载请求，会把这个 ImageView 上旧的加载请求取消。  
 
 ####4.2.30 ClearCacheRequest.java
 用于人为清空 Http 缓存的请求。  
@@ -481,7 +481,7 @@ Volley 中所有错误异常的父类，继承自 Exception，可通过此类设
 继承自 VolleyError，代表请求超时错误。  
 
 ####4.2.40 NoConnectionError.java
-继承自NetworkError，代表无法建立连接错误。  
+继承自 NetworkError，代表无法建立连接错误。  
 
 ###5. 杂谈
 ####5.1 关于 Http 缓存
@@ -519,7 +519,7 @@ private void addCacheHeaders(Map<String, String> headers, Cache.Entry entry) {
 **可是有的服务端实现不是比较时间，而是直接的判断服务器资源文件修改时间，是否和`If-Modified-Since`所传时间相等。这样使用`Date`就不能实现正确的再验证，因为`Date`的时间总不会和服务器资源文件修改时间相等。**  
 
 尽管使用`Date`可能出现的不正确情况，归结于服务端没有正确的实现 Http 语义。  
-**但我还是希望Volley也能完全正确的实现Http语义，至少同时处理`Last-Modified`和`Date`,并且优先使用`Last-Modified`。**  
+**但我还是希望 Volley 也能完全正确的实现 Http 语义，至少同时处理`Last-Modified`和`Date`,并且优先使用`Last-Modified`。**  
 
 ####5.2 Bug
 #####(1). BasicNetwork.performRequest(…)
