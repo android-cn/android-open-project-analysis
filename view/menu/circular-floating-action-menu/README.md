@@ -72,13 +72,13 @@ public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, 
             }
         }
         else {
-            //通过mutate()方法解决Drawable共用一个内存空间的问题
+            //通过 mutate()方法解决 Drawable 共用一个内存空间的问题
             backgroundDrawable = backgroundDrawable.mutate().getConstantState().newDrawable();
         }
         //设置背景（考虑版本问题）
         setBackgroundResource(backgroundDrawable);
         if(contentView != null) {
-            //添加view(即菜单的选项视图)
+            //添加 view(即菜单的选项视图)
             setContentView(contentView, contentParams);
         }
         setClickable(true);
@@ -157,7 +157,7 @@ public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, 
 ```
 
 将视图绑定到 activity 的主视图中。这样我们就能在 activity 的主视图中操作这个 view 了。
-FloatingActionButton的建造器
+FloatingActionButton 的建造器
 ```java
     /**
      * A builder for {@link com.cpacm.library.FloatingActionButton} in conventional Java Builder format
@@ -196,7 +196,7 @@ FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(this)
 ```
 
 * Builder(this) 将 activity 传入 menu 中
-* addSubActionView 添加选项按钮到 activity 的视图中。在 FloatingActionMenu中管理 SubActionView 是一个 Item 的 list 集合，每次加一个按钮就往里面添加。Item 是一个辅助类，里面包括一个视图，x 坐标，y 坐标，长度，宽度。
+* addSubActionView 添加选项按钮到 activity 的视图中。在 FloatingActionMenu 中管理 SubActionView 是一个 Item 的 list 集合，每次加一个按钮就往里面添加。Item 是一个辅助类，里面包括一个视图，x 坐标，y 坐标，长度，宽度。
 * setAnimationHandler 则是设定动画。
 * attachTo 是将 menu 与 activity 的视图绑定。（即把菜单按钮的视图添加到 activity 的视图中）  
 
@@ -259,8 +259,8 @@ stateChangeListener 为状态变化的监听器，开关都会响应相应的方
         ...//具体代码请自行查看源代码
     }
 ```
-Animator属性动画以及其他动画的实现请参考我写的博客  
-[Android的动画效果](http://www.cnblogs.com/cpacm/p/4067283.html)
+Animator 属性动画以及其他动画的实现请参考我写的博客  
+[Android 的动画效果](http://www.cnblogs.com/cpacm/p/4067283.html)
 
 ####4.3 如何使用
         // Set up the white button on the lower right corner
