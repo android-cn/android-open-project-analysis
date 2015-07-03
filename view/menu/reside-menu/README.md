@@ -237,7 +237,7 @@ attachToActivity执行后
 
 ##### 4.1.3 TouchDisableView
 该类本身的功能非常单纯，在本项目中起一个容器的作用,通过重载`onInterceptTouchEvent`方法并返回指定值来控制是否拦截内部子`View`的`Touch`事件。
-如果读者不了解`onInterceptTouchEvent`的运作机制,可以参考 [View 事件传递](http://localhost:3000/open-source-project-analysis/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92)
+如果读者不了解`onInterceptTouchEvent`的运作机制,可以参考 [View 事件传递](http://www.codekk.com/open-source-project-analysis/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92)
 
 以ResideMenu中的AnimatorListener回调为例:
 
