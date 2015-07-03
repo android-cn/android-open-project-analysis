@@ -3,9 +3,9 @@
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 公共技术点中的 Android 动画基础 部分  
  分析者：[lightSky](https://github.com/lightSky)，校对者：[Trinea](https://github.com/Trinea)，校对状态：未完成  
 
-#一  传统 View 动画(Tween/Frame)
+###一  传统 View 动画(Tween/Frame)
 
-## 1.1 Tween 动画##
+#### 1.1 Tween 动画##
 
 主要有 4 中：缩放、平移、渐变、旋转
 
@@ -49,7 +49,7 @@ XML: @[package:]anim/filename
 ```
 布局文件必须有一个独立的根元素，可以是 `<alpha>`,` <scale>`, `<translate>`, `<rotate>`, `<set>`（持有一组其它的动画元素，甚至可以是内嵌的 set 元素） 中的一个
 
-### 1.1.1 `<set> `
+#### 1.1.1 `<set> `
 一个持有其它动画元素的容器 `<alpha>`, `<scale>`, `<translate>`,` <rotate>`或者其它 ``` <set> ``` 元素
 
 属性  
@@ -58,7 +58,7 @@ XML: @[package:]anim/filename
 android:shareInterpolator  
 Boolean 值， true：代表在所有的子元素中共享同一个插值器
 
-### 1.1.2  ```<alpha> ```
+#### 1.1.2  ```<alpha> ```
 >A fade-in or fade-out animation. Represents an AlphaAnimation.
 一个渐入渐出的动画，对应的 java 类为 AlphaAnimation。
 
@@ -67,7 +67,7 @@ android:fromAlpha
 android:toAlpha  
 代表动画开始和结束时透明度，0.0 表示完全透明，1.0 表示完全不透明，Float 值
 
-### 1.1.3   ```<scale>   ```
+#### 1.1.3   ```<scale>   ```
 可以实现动态调控件尺寸的效果，通过设置 pivotX 和 pivotY 你可以指定 image 缩放的中心点，比如：如果这些值是 0，则表示左上角，所有的缩放变化将沿着右下角的轨迹运动。对应的类为：ScaleAnimation  
 属性  
 android:fromXScale  
@@ -83,7 +83,7 @@ android:pivotY
 代表缩放的中轴点 X/Y 坐标，浮点值  
 如果我们想表示中轴点为图像的中心，我们可以把两个属性值定义成 0.5 或者 50%。
 
-### 1.1.4  ```<translate> ```
+#### 1.1.4  ```<translate> ```
 代表一个水平、垂直的位移。对应的类为 TranslateAnimation.
 属性  
 android:fromXDelta  属性代表起始 X 方向的位置  
@@ -97,7 +97,7 @@ android:toYDelta
 如果以 num%表示，代表相对于自己的百分比，比如 toXDelta 定义为 100%就表示在 X 方向上移动自己的 1 倍距离  
 如果以 num%p 表示，代表相对于父类组件的百分比。
 
-### 1.1.5  ```<rotate>  ```
+#### 1.1.5  ```<rotate>  ```
 是旋转动画，与之对应的 Java 类是 RotateAnimation
 
 属性  
@@ -128,7 +128,7 @@ image.startAnimation(hyperspaceJump);
 ```
 另外，在动画中，如果我们添加了 android:fillAfter="true"后，这个动画执行完之后保持最后的状态；android:duration="integer"代表动画持续的时间，单位为毫秒。
 
-### 1.1.6 插值器
+#### 1.1.6 插值器
 
 用于修改一个动画过程中的速率，可以定义各种各样的非线性变化函数，比如加速、减速等  
 在 Android 中所有的插值器都是 Interpolator 的子类，通过 android:interpolator   属性你可以引用不同的插值器。下面是几种插值器:    
@@ -203,7 +203,7 @@ public float getInterpolation(float input) {
         return (float)(Math.cos((input + 1) * Math.PI) / 2.0f) + 0.5f;    
 }    
 ```
-## 1.2 Frame 动画
+#### 1.2 Frame 动画
 
 文件目录：res/drawable/filename.xml  
 编译资源数据类型 AnimationDrawable  
@@ -221,11 +221,11 @@ XML: @[package:]drawable.filename
 </animation-list>  
 ```
 
-### 1.2.1 `<animation-list>`
+#### 1.2.1 `<animation-list>`
  必须作为根元素，包含一个或者多个根元素  
 属性：android:oneshot ：true：只执行一次动画，false：循环执行  
 
-### 1.2.2  ```<item> ```
+#### 1.2.2  ```<item> ```
 >A single frame of animation. Must be a child of a  ```<animation-list> ``` element.
 一帧独立动画，必须是 ```<animation-list> ```的子元素  
 
@@ -256,17 +256,16 @@ rocketAnimation.start();
 ```
 
 
-#  二. Property Animation
+###  二. Property Animation
 
-
-##2.1 Property Animation 的工作方式
+####2.1 Property Animation 的工作方式
 
 Property Animation 动画有两个步聚：  
 1.计算属性值  
 2.为目标对象的属性设置属性值，即应用和刷新动画  
 
 
-###2.1.1 计算属性值
+####2.1.1 计算属性值
 
 ![属性值计算](./image/valuecaculate.png)
 
@@ -280,11 +279,11 @@ Property Animation 动画有两个步聚：
 当插值分数计算完成后，ValueAnimator 会根据插值分数调用合适的 TypeEvaluator 去计算运动中的属性值。  
 以上分析引入了两个概念：已完成动画分数（elapsed fraction）、插值分数( interpolated fraction )。
 
-## 2.2 核心类
+#### 2.2 核心类
 
 ![属性动画类继承关系](./image/propertyanimhirachy.png) 
 
-###2.2.1 Interpolators
+####2.2.1 Interpolators
 
 插值器：时间的函数，定义了动画的变化律。  
 插值器只需实现一个方法：`getInterpolation(float input)`,其作用就是把 0 到 1 的 elapsed   fraction 变化映射到另一个 interpolated fraction。  Interpolator 接口的直接继承自`TimeInterpolator`，内部没有任何方法，而`TimeInterpolator`只有一个`getInterpolation`方法，所以所有的插值器只需实现`getInterpolation`方法即可。  
@@ -293,7 +292,7 @@ Property Animation 动画有两个步聚：
 
 简单点解释这个方法，就是当要执行 input 的时间时，通过 Interpolator 计算返回另外一个时间点，让系统执行另外一个时间的动画效果。
 
-### 2.2.2 Evaluators
+#### 2.2.2 Evaluators
 
 Evaluators 告诉属性动画系统如何去计算一个属性值。它们通过 Animator 提供的动画的起始和结束值去计算一个动画的属性值。
 属性系统提供了以下几种 Evaluators：
@@ -316,7 +315,7 @@ Evaluators 告诉属性动画系统如何去计算一个属性值。它们通过
 
 对于自定义高级动画时，弄清`TimeInterpolator`和`TypeEvaluator`非常重要，如果你希望要自定义自己的动画，那么这两个函数肯定是关键部分，一个是定义动画变化率，一个是定义数据结构和属性值计算方式，两者共同决定了一个动画的运动。  
 
-### 2.2.3 ValueAnimator
+#### 2.2.3 ValueAnimator
 
 属性动画中的主要的时序引擎，如动画时间，开始、结束属性值，相应时间属性值计算方法等。包含了所有计算动画值的核心函数。也包含了每一个动画时间上的细节，信息，一个动画是否重复，是否监听更新事件等，并且还可以设置自定义的计算类型。  
 
@@ -325,16 +324,16 @@ Evaluators 告诉属性动画系统如何去计算一个属性值。它们通过
 ValueAnimator animation = ValueAnimator.ofFloat(0f, 1f);
 animation.setDuration(1000);
 animation.addUpdateListener(new AnimatorUpdateListener() {
-@Override
-public void onAnimationUpdate(ValueAnimator animation) {
+    @Override
+    public void onAnimationUpdate(ValueAnimator animation) {
         Log.i("update", ((Float) animation.getAnimatedValue()).toString());
-      }
+    }
 });
 animation.setInterpolator(new CycleInterpolator(3));
 animation.start();
 ```
 
-###2.2.4 ObjectAnimator
+####2.2.4 ObjectAnimator
 继承自`ValueAnimator`，允许你指定要进行动画的对象以及该对象的一个属性。该类会根据计算得到的新值自动更新属性。也就是说上 Property Animation 的两个步骤都实现了。大多数的情况，你使用`ObjectAnimator`就足够了，因为它使得目标对象动画值的处理过程变得简单，不用再向`ValueAnimator`那样自己写动画更新的逻辑。但`ObjectAnimator`有一定的限制，比如它需要目标对象的属性提供指定的处理方法，这个时候你需要根据自己的需求在`ObjectAnimator`和`ValueAnimator`中做个选择了，看哪种实现更简便。  
 
 `ObjectAnimator`的自动更新功能，依赖于属性身上的`setter`和`getter`方法，所以为了让`ObjectAnimator`能够正确的更新属性值，你必须遵从以下规范:  
@@ -359,7 +358,7 @@ ObjectAnimator.ofFloat(targetObject, "propName", 1f)
 当你不希望向外暴露`Setter`方法的时候，或者希望获取到动画值统一做处理的话，亦或只需要一个简单的时序机制(拥有动画的各种值)的话，那么你可以选择使用`ValueAnimator`，它更简单。如果你就是希望更新动画，为了简便，可以使用`ObjectAnimator`，但自定义的属性必须有`setter`和`getter`方法，并且它们必须都是标准的驼峰式（确保内部能够调用），必须有结束值。你可以实现`Animator.AnimatorListener`接口根据自己的需求去更新 View。  
 
 
-###2.2.5 AnimatorSet
+####2.2.5 AnimatorSet
 提供组合动画能力的类。并可设置组中动画的时序关系，如同时播放、有序播放或延迟播放。`Elevator`会告诉属性动画系统如何计算一个属性的值，它们会从`Animator`类中获取时序数据，比如开始和结束值，并依据这些数据计算动画的属性值。  
 
 **小结：**
@@ -373,7 +372,7 @@ ObjectAnimator.ofFloat(targetObject, "propName", 1f)
 两者都可以进行属性动画，但是`ObjectAnimator`更加简单，不用去做更新属性值的计算，但是必须要提供标准的`setter`和`getter`方法，让`ObjectAnimator`能够获取和更新属性值。
 
 
-### 2.2.6 ViewPropertyAnimator
+#### 2.2.6 ViewPropertyAnimator
 
 可以方便的为某个 View 的多个属性添加并行的动画，只使用一个`ViewPropertyAnimator`对象就可以完成。它的行为更像一个`ObjectAnimator`，因为它修改的是对象的实际属性值。但它为一次性给多个属性添加动画提供了方便，而且使用`ViewPropertyAnimator`的代码更连贯更易读。  
 下面的代码段分别展示了使用多个`ObjectAnimator`对象、一个`ObjectAnimator`对象、 `ViewPropertyAnimator`同时为一个 View 的 X 和 Y 属性添加动画的示例：  
@@ -398,11 +397,11 @@ ObjectAnimator.ofPropertyValuesHolder(myView, pvhX, pvyY).start();
 `myView.animate().x(50f).y(100f);//myView.animate()直接返回一个 ViewPropertyAnimator 对象`
 
 
-### 2.2.7 PropertyValuesHolder
+#### 2.2.7 PropertyValuesHolder
 顾名思义，该类持有属性，相关属性值的操作以及属性的 setter，getter 方法的创建，属性值以 Keyframe 来承载，最终由 KeyframeSet 统一处理。
 
 
-### 2.2.8 KeyFrame
+#### 2.2.8 KeyFrame
 
 一个`keyframe`对象由一对 time / value 的键值对组成，可以为动画定义某一特定时间的特定状态。  
 每个`keyframe`可以拥有自己的插值器，用于控制前一帧和当前帧的时间间隔间内的动画。  
@@ -427,7 +426,7 @@ PropertyValuesHolder pvhRotation = PropertyValuesHolder.ofKeyframe("rotation", k
 ObjectAnimator rotationAnim = ObjectAnimator.ofPropertyValuesHolder(target, pvhRotation)
 rotationAnim.setDuration(5000);
 ```
-### 2.2.9 KeyFrameSet
+#### 2.2.9 KeyFrameSet
 根据 Animator 传入的值，为当前动画创建一个特定类型的 KeyFrame 集合。  
 通常通过 ObjectAnimator.ofFloat(...)进行赋值时，这些值其实是通过一个 KeyFrameSet 来维护的  
 比如：
@@ -455,7 +454,7 @@ Keyframe(0,50)，Keyframe(1/2,100)，Keyframe(1,200), 时间点 0，1/2，1 都�
 ```
 
 
-## 2.3 在 XML 中声明属性动画
+#### 2.3 在 XML 中声明属性动画
 
 通过在 XML 中定义的动画，可以很方便的在多个 Activities 中重用而且更容易编辑，复用性强。为了区分新的属性动画，从 3.1 开始，你应`res/animator/`下存放属性动画的资源文件，使用`animator`文件夹是可选的，但是如果你想在 Eclipse ADT 插件中使用布局编辑工具（ADT 11.0.0+），就必须在`res/animator`文件夹下存放了，因为 ADT 只会查找`res/animator`文件夹下的属性动画资源文件。
 
@@ -527,16 +526,16 @@ XML 文件的根元素必须为`<set>`,` <objectAnimator>`, or `<valueAnimator>`
 </set>  
 ```
 
-### 2.3.2 元素介绍  
+#### 2.3.2 元素介绍  
 
-### 2.3.2.1 `<set>`  
+#### 2.3.2.1 `<set>`  
 动画集合节点，有一个属性 ordering，表示它的子动画启动方式是先后有序的还是同时。
 
 属性  
 sequentially：动画按照先后顺序  
 together (default) ：动画同时启动  
 
-### 2.3.2.2 `<objectAnimator>`
+#### 2.3.2.2 `<objectAnimator>`
 一个对象的一个属性，相应的 Java 类为:`ObjectAnimator`  
 
 属性  
@@ -568,7 +567,7 @@ Float、int 或者 color，也是必须值，表明了动画结束的点，颜�
 `android:valueType`  
 关键参数，如果该 value 是一个颜色，那么就不需要指定，因为动画框架会自动的处理颜色值。有 intType 和 floatType 两种：分别说明动画值为 int 和 float 型。  
 
-### 2.3.2.3 `<animator>`
+#### 2.3.2.3 `<animator>`
 
 在一个特定的时间里执行一个动画。相对应的是 ValueAnimator.所有的属性和<objectAnimator>一样
 android:valueTo  
@@ -612,7 +611,7 @@ set.setTarget(myObject);
 set.start();  
 ```
 
-#三 View anim 与 property anim 的比较
+###三 View anim 与 property anim 的比较
 
 ####View anim 系统
 view animation system 提供的能力只能够为 View 添加动画。因此如果你想为非 View 对象添加动画，就必须自己去实现，
