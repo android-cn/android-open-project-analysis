@@ -1,7 +1,10 @@
 开源项目分析项目成员信息
 ============
 #### 第二期成员
-大家正在进行中:muscle::joy::dancers: 具体见：[Schedule](./zen/schedule.md)
+
+成员 | 分析文档 | GitHub | 微博 | 博客 | 其他 
+:--|:--|:-- |:--  |:--  |:--
+ Grumoon | [Ultra-Pull-To-Refresh 分析](http://codekk.com/open-source-project-analysis/detail/Android/Grumoon/android-Ultra-Pull-To-Refresh%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90) | [Grumoon](https://github.com/grumoon) |[GrumoonX](http://weibo.com/u/2020325351) | [Grumoon](http://blog.csdn.net/grumoon) | [website](http://www.zhangxuzhou.cn),[Grumoon@Google Plus](https://plus.google.com/u/0/100937234485461240778/posts)  
 
 #### 第一期成员
 
@@ -17,3 +20,6 @@ cpacm | [CFAMenu 分析](https://github.com/android-cn/android-open-project-anal
 Caij | [xUtils 分析](https://github.com/android-cn/android-open-project-analysis/tree/master/xutils) | [Caij](https://github.com/Caij) | [World_Caij](http://weibo.com/2300562462/profile?topnav=1&wvr=6) | [caij](http://caij.github.io/) | [Caij@Google Plus](https://plus.google.com/u/0/)  
 Huxian99 | [Universal Image Loader 分析](https://github.com/android-cn/android-open-project-analysis/tree/master/universal-image-loader) | [Huxian99](https://github.com/huxian99) |[Huxian999](http://weibo.com/1738682942) | [Huxian99](http://huxian99.github.io/) | [Huxian99@Google Plus](https://plus.google.com/115023889387276644931/posts)
 爱早起 | [Android Lock Pattern 分析](https://github.com/android-cn/android-open-project-analysis/tree/master/android-lockpattern) | [爱早起](https://github.com/liang7) |[liAng爱早起](http://weibo.com/unliang) | [hiliang.cn](http://www.hiliang.cn/)
+
+#### 第三期成员
+准备中:muscle::joy::dancers: 具体见：[Schedule](./zen/schedule.md)
