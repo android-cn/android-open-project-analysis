@@ -14,7 +14,7 @@ NineOldAnimations 源码解析
 NineOldAndroids 提供了和系统属性一样的动画功能。看源码你可以发现，其实 NOA 的架构实现和系统属性动画实现架构其实是一样的。只是兼容的那一部分采用了 Matrix 实现了各种动画效果，中间多了一些辅助类，比如 PreHoneycombCompat，AnimatorProxy，ViewHelper，另外某些类对于兼容有些改动，其它的类几乎和系统属性动画部分是一样的。
 
 ####1.2 实现原理
-在[属性动画基础](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/tech/anim.md)中已经提到：ValueAnimator 的缺点是需要通过实现 AnimatorUpdateListener 自己手动去更新属性值，它的子类 ObjectAnimator 为用户实现了自动更新动画，但是对于自定义的属性，需要提供标准 JavaBean 的 setter 和 getter 方法，以便获取和更新属性值。NOA 也是遵循了这样的实现思路，对于 3.0 之前的系统来说，属性动画中所提供的属性都是新的，在实现的时候也就都属于自定义的。NOA 在 PreHoneycombCompat 中定义了这些属性，并在 get 和 setValue 中提供了标准的 setter 和 getter 方法用于设置和获取属性值，这里的 setter 和 getter 其实是直接调用 AnimatorProxy 类的方法。
+在[属性动画基础](http://localhost:3000/open-source-project-analysis/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Android%20%E5%8A%A8%E7%94%BB%E5%9F%BA%E7%A1%80)中已经提到：ValueAnimator 的缺点是需要通过实现 AnimatorUpdateListener 自己手动去更新属性值，它的子类 ObjectAnimator 为用户实现了自动更新动画，但是对于自定义的属性，需要提供标准 JavaBean 的 setter 和 getter 方法，以便获取和更新属性值。NOA 也是遵循了这样的实现思路，对于 3.0 之前的系统来说，属性动画中所提供的属性都是新的，在实现的时候也就都属于自定义的。NOA 在 PreHoneycombCompat 中定义了这些属性，并在 get 和 setValue 中提供了标准的 setter 和 getter 方法用于设置和获取属性值，这里的 setter 和 getter 其实是直接调用 AnimatorProxy 类的方法。
 
 ###2. 总体设计
 ![整体设计](./image/arch.jpg)     
@@ -47,7 +47,7 @@ NineOldAndroids 提供了和系统属性一样的动画功能。看源码你可�
 
 *    **ViewHelper** ： 设置各种动画值的帮助类,可以简单的设置并应用动画值。内部先做是否需要代理的判断，然后调用不同的实现，NOA 的具体实现其实在 AnimatorProxy 中完成的；  
 
-核心类更详细多介绍，请参考[公共技术点动画基础](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/tech/anim.md)部分
+核心类更详细多介绍，请参考[公共技术点动画基础](http://localhost:3000/open-source-project-analysis/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Android%20%E5%8A%A8%E7%94%BB%E5%9F%BA%E7%A1%80)部分
 
 ### 2.2 基本使用 
 **示例 1:**      
@@ -208,7 +208,7 @@ ObjectAnimator 是 ValueAnimator 的子类,ObjectAnimator 负责的是属性动�
             
 ```     
     
- `ValueAnimator`和`ObjectAnimator`都可以完成属性动画，但它们之间的区别和优劣可以参考[公共技术点动画基础](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/tech/anim.md)的相关部分
+ `ValueAnimator`和`ObjectAnimator`都可以完成属性动画，但它们之间的区别和优劣可以参考[公共技术点动画基础](http://localhost:3000/open-source-project-analysis/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Android%20%E5%8A%A8%E7%94%BB%E5%9F%BA%E7%A1%80)的相关部分
  
 ##### 4.1.3  KeyFrameSet.java 
    关键帧集合类在动画运行时会根据流逝的时间因子 (fraction)和类型估值器来计算当前时间目标属性的最新值,然后将这个值通过反射或者 Property 的 set 方法设置给目标对象。下面是获取当前属性值的计算函数。     
