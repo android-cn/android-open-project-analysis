@@ -288,10 +288,10 @@ dependencies {
 
 >>`SimpleMonthView`这里作为 RecycleView 的 Item 项，以月份为单位绘制  
 
->>[View 绘制流程相关知识](https://github.com/Rogary/android-open-project-analysis/blob/master/tech/viewdrawflow.md)  
+>>[View 绘制流程相关知识](http://localhost:3000/open-source-project-analysis/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E7%BB%98%E5%88%B6%E6%B5%81%E7%A8%8B)  
 
 >>**View 绘制流程函数调用链**  
-![](https://github.com/Rogary/android-open-project-analysis/blob/master/tech/image/viewdrawflow/view_draw_method_chain.png)
+![](https://raw.githubusercontent.com/android-cn/android-open-project-analysis/master/tech/viewdrawflow/image/view_draw_method_chain.png)
 >>图片来自 https://plus.google.com/+ArpitMathur/posts/cT1EuBbxEgN  
 
 >>**(1) 主要成员变量含义**  

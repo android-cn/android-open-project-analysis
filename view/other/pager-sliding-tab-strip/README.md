@@ -1,5 +1,5 @@
 PagerSlidingTabStrip 源码解析
-=====
+====================================
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 PagerSlidingTabStrip 部分  
  项目地址：[PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip)，分析的版本：[3f4738e](https://github.com/astuetz/PagerSlidingTabStrip/commit/3f4738eca833faeca563d93cd77c8df763a45fb6)，Demo 地址：[PagerSlidingTabStrip Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/pager-sliding-tab-strip-demo-ayyb1988)  
  分析者：[ayyb1988](https://github.com/ayyb1988)，分析状态：已完成，校对者：[Trinea](https://github.com/Trinea)，校对状态：校对中
@@ -155,7 +155,7 @@ for (int i = 0; i < tabCount; i++) {
 ```
 
 ####4.3 View 绘制机制
-请参考[公共技术点 viewdrawflow](https://github.com/android-cn/android-open-project-analysis/blob/master/tech/viewdrawflow.md)部分
+请参考[公共技术点 viewdrawflow](http://localhost:3000/open-source-project-analysis/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E7%BB%98%E5%88%B6%E6%B5%81%E7%A8%8B)部分
 
 在 pagerSlidingTabStrip 中重写了 onDraw 函数
 **绘画滑动指示器; 绘画整个 tabs 下划线; 绘画 tab 之间间隔线。**代码如下
@@ -205,12 +205,12 @@ for (int i = 0; i < tabCount; i++) {
 
 ####View 的绘制：
 1. [How Android Draws Views](http://developer.android.com/guide/topics/ui/how-android-draws.html)
-2. [View 绘制流程](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/tech/viewdrawflow.md)
+2. [View 绘制流程](http://localhost:3000/open-source-project-analysis/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E7%BB%98%E5%88%B6%E6%B5%81%E7%A8%8B)
 3. [ Android View 绘制流程](http://blog.csdn.net/wangjinyu501/article/details/9008271)
 4. [Android 中 View 绘制流程以及 invalidate()等相关方法分析](http://blog.csdn.net/qinjuning/article/details/7110211)
 5. [Android 中 measure 过程、WRAP_CONTENT 详解以及 xml 布局文件解析流程浅析(下)](http://blog.csdn.net/qinjuning/article/details/8074262)
 
 ####TOUCH 事件处理
-1. [View 事件传递](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/tech/touch-event.md)
+1. [View 事件传递](http://localhost:3000/open-source-project-analysis/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92)
 2. [Andriod 从源码的角度详解 View,ViewGroup 的 Touch 事件的分发机制](http://blog.csdn.net/xiaanming/article/details/21696315)
 3. [Android 中 Touch（触屏）事件传递机制](http://blog.csdn.net/wangjinyu501/article/details/22584465)
