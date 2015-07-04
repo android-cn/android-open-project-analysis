@@ -5,7 +5,8 @@
 成员 | 分析文档 | GitHub | 微博 | 博客 | 其他 
 :--|:--|:-- |:--  |:--  |:--
  Grumoon | [Ultra-Pull-To-Refresh 分析](http://codekk.com/open-source-project-analysis/detail/Android/Grumoon/android-Ultra-Pull-To-Refresh%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90) | [Grumoon](https://github.com/grumoon) |[GrumoonX](http://weibo.com/u/2020325351) | [Grumoon](http://blog.csdn.net/grumoon) | [website](http://www.zhangxuzhou.cn),[Grumoon@Google Plus](https://plus.google.com/u/0/100937234485461240778/posts)  
- FFish | [DynamicLoadApk](http://codekk.com/open-source-project-analysis/detail/Android/FFish/DynamicLoadApk%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90) | [FFish](https://github.com/FFish) | [食用淡水鱼](http://weibo.com/ynz1991) | [淡水鱼馆](http://ffish.top) | [FFish@SegmentFault](http://segmentfault.com/u/shiyongdanshuiyu)
+ FFish | [DynamicLoadApk](http://codekk.com/open-source-project-analysis/detail/Android/FFish/DynamicLoadApk%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90) | [FFish](https://github.com/FFish) | [食用淡水鱼](http://weibo.com/ynz1991) | [淡水鱼馆](http://ffish.top) | [FFish@SegmentFault](http://segmentfault.com/u/shiyongdanshuiyu)  
+ Rogary | [CalendarListView 源码解析](http://codekk.com/open-source-project-analysis/detail/Android/undefined/CalendarListView%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90) | [Rogary](https://github.com/Rogary) | [佳________威](http://weibo.com/u/2332964512) | 无 | 无
 
 #### 第一期成员
 
