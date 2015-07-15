@@ -9,6 +9,7 @@
  Rogary | [CalendarListView 源码解析](http://codekk.com/open-source-project-analysis/detail/Android/undefined/CalendarListView%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90) | [Rogary](https://github.com/Rogary) | [佳________威](http://weibo.com/u/2332964512) | 无 | 无
   hongyangAndroid | [BaseAdapterHelper 源码分析](http://www.codekk.com/open-source-project-analysis/detail/Android/hongyangAndroid/BaseAdapterHelper%20%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90) | [hongyangAndroid](https://github.com/hongyangAndroid) | [鸿洋_](http://weibo.com/3165018720) | [鸿洋_](http://blog.csdn.net/lmj623565791) | [慕课网教程](http://www.imooc.com/space/teacher/id/320852)  
 Huxian99 | [SlidingMenu 分析](http://www.codekk.com/open-source-project-analysis/detail/Android/huxian99/SlidingMenu%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90) | [Huxian99](https://github.com/huxian99) |[Huxian999](http://weibo.com/1738682942) | [Huxian99](http://huxian99.github.io/) | [Huxian99@Google Plus](https://plus.google.com/115023889387276644931/posts)  
+Mr.Simple | [NineOldAnimations 分析](http://codekk.com/open-source-project-analysis/detail/Android/Mr.Simple/NineOldAnimations%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90)、[公共技术点之 Java 反射](http://codekk.com/open-source-project-analysis/detail/Android/Mr.Simple/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E5%8F%8D%E5%B0%84%20Reflection) | [Mr.Simple](https://github.com/bboyfeiyu) |[Mr.Simple](http://weibo.com/mrsimp1e) | [Mr.Simple](http://blog.csdn.net/bboyfeiyu) | [开发技术前线](http://www.devtf.cn)  
 
 #### 第一期成员
 
