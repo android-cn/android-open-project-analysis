@@ -7,18 +7,18 @@ android-Ultra-Pull-To-Refresh 源码解析
 ###1. 功能介绍  
 下拉刷新，几乎是每个 Android 应用都会需要的功能。 android-Ultra-Pull-To-Refresh （以下简称 UltraPTR ）便是一个强大的 Andriod 下拉刷新框架。  
 主要特点：  
-(1).继承于 ViewGroup ， Content 可以包含任何 View 。  
+(1).继承于 ViewGroup， Content 可以包含任何 View。  
 (2).简洁完善的 Header 抽象，方便进行拓展，构建符合需求的头部。  
-> 对比 [Android-PullToRefresh](https://github.com/chrisbanes/Android-PullToRefresh) 项目，UltraPTR 没有实现 **加载更多** 的功能，但我认为 **下拉刷新** 和 **加载更多** 不是同一层次的功能， **下拉刷新** 有更广泛的需求，可以适用于任何页面。而 **加载更多** 的功能应该交由具体的 Content 自己去实现。这应该是和 Google 官方推出 SwipeRefreshLayout 是相同的设计思路，但对比 SwipeRefreshLayout ， UltraPTR 更灵活，更容易拓展。
+> 对比 [Android-PullToRefresh](https://github.com/chrisbanes/Android-PullToRefresh) 项目，UltraPTR 没有实现 **加载更多** 的功能，但我认为 **下拉刷新** 和 **加载更多** 不是同一层次的功能， **下拉刷新** 有更广泛的需求，可以适用于任何页面。而 **加载更多** 的功能应该交由具体的 Content 自己去实现。这应该是和 Google 官方推出 SwipeRefreshLayout 是相同的设计思路，但对比 SwipeRefreshLayout， UltraPTR 更灵活，更容易拓展。
 
 ###2. 总体设计
 UltraPTR 总体设计比较简单清晰。  
 首先抽象出了两个接口，功能接口和 UI 接口。  
 PtrHandler 代表下拉刷新的功能接口，包含刷新功能回调方法以及判断是否可以下拉的方法。用户实现此接口来进行数据刷新工作。   
 PtrUIHandler 代表下拉刷新的 UI 接口，包含准备下拉，下拉中，下拉完成，重置以及下拉过程中的位置变化等回调方法。通常情况下， Header 需要实现此接口，来处理下拉刷新过程中头部 UI 的变化。  
-整个项目围绕核心类 PtrFrameLayout 。 PtrFrameLayout 代表了一个下拉刷新的自定义控件。  
-PtrFrameLayout 继承自 ViewGroup ，有且只能有两个子 View ，头部 Header 和内容 Content 。通常情况下 Header 会实现 PtrUIHandler 接口， Content 可以为任意的 View 。  
-和所有的自定义控件一样， PtrFrameLayout 通过重写 onFinishInflate ， onMeasure ， onLayout 来确定控件大小和位置。通过重写 dispatchTouchEvent 来确定控件的下拉行为。  
+整个项目围绕核心类 PtrFrameLayout。 PtrFrameLayout 代表了一个下拉刷新的自定义控件。  
+PtrFrameLayout 继承自 ViewGroup，有且只能有两个子 View，头部 Header 和内容 Content。通常情况下 Header 会实现 PtrUIHandler 接口， Content 可以为任意的 View。  
+和所有的自定义控件一样， PtrFrameLayout 通过重写 onFinishInflate， onMeasure， onLayout 来确定控件大小和位置。通过重写 dispatchTouchEvent 来确定控件的下拉行为。  
 
 ###3. 流程图
 请参照 `4.1.5 PtrFrameLayout 事件拦截流程图`
@@ -37,9 +37,9 @@ public void onRefreshBegin(final PtrFrameLayout frame)
 public boolean checkCanDoRefresh(final PtrFrameLayout frame, final View content, final View header)
 ```
 判断是否可以下拉刷新。 UltraPTR 的 Content 可以包含任何内容，用户在这里判断决定是否可以下拉。  
-例如，如果 Content 是 TextView ，则可以直接返回 true ，表示可以下拉刷新。  
-如果 Content 是 ListView ，当第一条在顶部时返回 true ，表示可以下拉刷新。  
-如果 Content 是 ScrollView ，当滑动到顶部时返回 true ，表示可以刷新。  
+例如，如果 Content 是 TextView，则可以直接返回 true，表示可以下拉刷新。  
+如果 Content 是 ListView，当第一条在顶部时返回 true，表示可以下拉刷新。  
+如果 Content 是 ScrollView，当滑动到顶部时返回 true，表示可以刷新。  
 
 ####4.1.2 PtrDefaultHandler.java
 抽象类，实现了 PtrHandler.java 接口，给出了 `checkCanDoRefresh` 的默认实现，给出了常见 View 是否可以下拉的判断方法。  
@@ -115,9 +115,9 @@ if (viewGroup instanceof ScrollView || viewGroup instanceof AbsListView) {
     return viewGroup.getScrollY() == 0;
 }
 ```
-如果 Content 是 AbsListView（ListView，GridView），通过 getScrollY() 获取的值一直是 0 ，所以这段代码的判断，无效。  
+如果 Content 是 AbsListView（ListView，GridView），通过 getScrollY() 获取的值一直是 0，所以这段代码的判断，无效。  
 
-> **注意：上述 bug ，在新版本 ([3a34b2e](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/tree/3a34b2e89f9dc4522569ce9340910621fd543828)) 中已经做出了修复。以下是最新版本的代码。**
+> **注意：上述 bug，在新版本 ([3a34b2e](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/tree/3a34b2e89f9dc4522569ce9340910621fd543828)) 中已经做出了修复。以下是最新版本的代码。**
 > ```java
 public static boolean canChildScrollUp(View view) {
     if (android.os.Build.VERSION.SDK_INT < 14) {
@@ -146,7 +146,7 @@ public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header
 }
 > ```
 > 新的判断方式也比较简单明了。  
-> 当然以上给出的是针对通用 View 的判断方式。如果遇到特殊需求的 View ，或者自定义 View 。使用者还是要自己实现符合需求的判断。
+> 当然以上给出的是针对通用 View 的判断方式。如果遇到特殊需求的 View，或者自定义 View。使用者还是要自己实现符合需求的判断。
 
 ####4.1.3 PtrUIHandler.java
 下拉刷新 UI 接口，对下拉刷新 UI 变化的抽象。一般情况下， Header 会实现此接口，处理下拉过程中的头部 UI 的变化。  
@@ -154,7 +154,7 @@ public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header
 ```java
 public void onUIReset(PtrFrameLayout frame);
 ```
-Content 重新回到顶部， Header 消失，整个下拉刷新过程完全结束以后，重置 View 。
+Content 重新回到顶部， Header 消失，整个下拉刷新过程完全结束以后，重置 View。
 ```java
 public void onUIRefreshPrepare(PtrFrameLayout frame);
 ```
@@ -172,17 +172,17 @@ public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte 
 ```
 下拉过程中位置变化回调。
 ####4.1.4 PtrUIHandlerHolder.java
-实现 UI 接口 PtrUIHandler ，封装了 PtrUIHandler ，并将其组织成链表的形式。之所以封装成链表的目的是作者希望调用者可以像 Header 一样去实现 PtrUIHandler，能够捕捉到 onUIReset，onUIRefreshPrepare，onUIRefreshBegin，onUIRefreshComplete 这几个时机去实现自己的逻辑或者 UI 效果，而它们统一由 PtrUIHandlerHolder 来管理，你只需要 通过 addHandler 方法加入到链表中即可，这一点的抽象为那些希望去做一些处理的开发者还是相当方便的。  
+实现 UI 接口 PtrUIHandler，封装了 PtrUIHandler，并将其组织成链表的形式。之所以封装成链表的目的是作者希望调用者可以像 Header 一样去实现 PtrUIHandler，能够捕捉到 onUIReset，onUIRefreshPrepare，onUIRefreshBegin，onUIRefreshComplete 这几个时机去实现自己的逻辑或者 UI 效果，而它们统一由 PtrUIHandlerHolder 来管理，你只需要 通过 addHandler 方法加入到链表中即可，这一点的抽象为那些希望去做一些处理的开发者还是相当方便的。  
 ####4.1.5 PtrFrameLayout.java
 UltraPTR 的核心类，自定义控件类。  
 作为自定义控件， UltraPTR 有 8 个自定义属性。  
-`ptr_header`，设置头部 id 。  
-`ptr_content`，设置内容 id 。  
+`ptr_header`，设置头部 id。  
+`ptr_content`，设置内容 id。  
 `ptr_resistance`，阻尼系数，默认: `1.7f`，越大，感觉下拉时越吃力。  
 `ptr_ratio_of_header_height_to_refresh`，触发刷新时移动的位置比例，默认，`1.2f`，移动达到头部高度 1.2 倍时可触发刷新操作。  
 `ptr_duration_to_close`，回弹延时，默认 `200ms`，回弹到刷新高度所用时间。  
 `ptr_duration_to_close_header`，头部回弹时间，默认 `1000ms`。  
-`ptr_pull_to_fresh`，刷新是否保持头部，默认值 `true` 。  
+`ptr_pull_to_fresh`，刷新是否保持头部，默认值 `true`。  
 `ptr_keep_header_when_refresh`，下拉刷新 / 释放刷新，默认为释放刷新。  
   
 下面从 **显示** 和 **行为** 两个方面分析此类。  
@@ -192,8 +192,8 @@ UltraPTR 的核心类，自定义控件类。
 @Override
 protected void onFinishInflate() {...}
 ```
-UltraPTR 有且只有两个子 View ，重写 onFinishInflate 方法来确定 Header 和 Content 。  
-可以通过 `setHeaderView` 在代码中设置 Header ，或者通过 `ptr_header` 和 `ptr_content ` 两个自定义属性来设置。也可以直接在布局文件中，为 PtrFrameLayout 加入两个子 View ，然后在 onFinishInflate 进行判断赋值。  
+UltraPTR 有且只有两个子 View，重写 onFinishInflate 方法来确定 Header 和 Content。  
+可以通过 `setHeaderView` 在代码中设置 Header，或者通过 `ptr_header` 和 `ptr_content ` 两个自定义属性来设置。也可以直接在布局文件中，为 PtrFrameLayout 加入两个子 View，然后在 onFinishInflate 进行判断赋值。  
 通常情况下， Header 会实现 PtrUIHandler 接口。  
 最终，将 Header 实例赋值给 mHeaderView 变量，Content 实例赋值给 mContent 变量。  
 
@@ -218,13 +218,13 @@ protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 }
 
 ```
-重写 onMeasure ，测量 Header 和 Content ，将 Header 的高度赋值给 `mHeaderHeight` 变量，将计算出的下拉刷新偏移量赋值给 `mOffsetToRefresh `变量。
+重写 onMeasure，测量 Header 和 Content，将 Header 的高度赋值给 `mHeaderHeight` 变量，将计算出的下拉刷新偏移量赋值给 `mOffsetToRefresh `变量。
 ```java
 @Override
 protected void onLayout(boolean flag, int i, int j, int k, int l) {...}
 ```
-PtrFrameLayout 继承 ViewGroup ，继承 ViewGroup 必须重写 onLayout 方法来确定子 View 的位置。  
-PtrFrameLayout 只有两个子 View 。  
+PtrFrameLayout 继承 ViewGroup，继承 ViewGroup 必须重写 onLayout 方法来确定子 View 的位置。  
+PtrFrameLayout 只有两个子 View。  
 对于 Header   
 ```java
 final int top = paddingTop + lp.topMargin + offsetX - mHeaderHeight;
@@ -243,9 +243,9 @@ ViewGroup 的事件处理，通常重写 onInterceptTouchEvent 方法或者 disp
 ![UltraPTR-dispatchTouchEvent-flow-chart](image/UltraPTR-dispatchTouchEvent-flow-chart.png)  
 以上有两点需要分析下  
 > 1. ACTION_UP 或者 ACTION_CANCEL 时候执行的 onRelease 方法。  
-> **功能上**，通过执行 `tryToPerformRefresh` 方法，如果向下拉动的位移已经超过了触发下拉刷新的偏移量 `mOffsetToRefresh` ，并且当前状态是 PTR_STATUS_PREPARE ，执行刷新功能回调。  
-> **行为上**，如果没有达到触发刷新的偏移量，或者当前状态为 PTR_STATUS_COMPLETE ，或者刷新过程中不保持头部位置，则执行向上的位置回复动作。
-> 2. ACTION_MOVE 中判断是否可以纵向 move 。  
+> **功能上**，通过执行 `tryToPerformRefresh` 方法，如果向下拉动的位移已经超过了触发下拉刷新的偏移量 `mOffsetToRefresh`，并且当前状态是 PTR_STATUS_PREPARE，执行刷新功能回调。  
+> **行为上**，如果没有达到触发刷新的偏移量，或者当前状态为 PTR_STATUS_COMPLETE，或者刷新过程中不保持头部位置，则执行向上的位置回复动作。
+> 2. ACTION_MOVE 中判断是否可以纵向 move。  
 > ACTION_MOVE 的方向**向下**，如果 `mPtrHandler` 不为空，并且 `mPtrHandler.checkCanDoRefresh` 返回值为 true，则可以移动， Header 和 Content 向下移动，否则，事件交由父类处理。  
 > ACTION_MOVE 的方向**向上**，如果当前位置大于起始位置，则可以移动，Header 和 Content 向上移动，否则，事件交由父类处理。
 
@@ -270,7 +270,7 @@ private void hideRotateView() {
     mRotateView.setVisibility(INVISIBLE);
 }
 ```
-重置 View ，隐藏忙碌进度条，隐藏箭头 View ，更新最后刷新时间。  
+重置 View，隐藏忙碌进度条，隐藏箭头 View，更新最后刷新时间。  
 ```java
 @Override
 public void onUIRefreshPrepare(PtrFrameLayout frame) {
@@ -289,7 +289,7 @@ public void onUIRefreshPrepare(PtrFrameLayout frame) {
     }
 } 
 ```
-准备刷新，隐藏忙碌进度条，显示箭头 View ，显示文字，如果是下拉刷新，显示“下拉刷新”，如果是释放刷新，显示“下拉”。  
+准备刷新，隐藏忙碌进度条，显示箭头 View，显示文字，如果是下拉刷新，显示“下拉刷新”，如果是释放刷新，显示“下拉”。  
 ```java
 @Override
 public void onUIRefreshBegin(PtrFrameLayout frame) {
@@ -303,7 +303,7 @@ public void onUIRefreshBegin(PtrFrameLayout frame) {
     mLastUpdateTimeUpdater.stop();
 }
 ```
-开始刷新，隐藏箭头 View ，显示忙碌进度条，显示文字，显示“加载中...”，更新最后刷新时间。  
+开始刷新，隐藏箭头 View，显示忙碌进度条，显示文字，显示“加载中...”，更新最后刷新时间。  
 ```java
 @Override
 public void onUIRefreshComplete(PtrFrameLayout frame) {
@@ -322,7 +322,7 @@ public void onUIRefreshComplete(PtrFrameLayout frame) {
     }
 }
 ```
-刷新结束，隐藏箭头 View ，隐藏忙碌进度条，显示文字，显示“更新完成”，写入最后刷新时间。  
+刷新结束，隐藏箭头 View，隐藏忙碌进度条，显示文字，显示“更新完成”，写入最后刷新时间。  
 ```java
 @Override
 public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte status, int lastPos, int currentPos, float oldPercent, float currentPercent) {
@@ -379,7 +379,7 @@ StoreHouse 风格的头部实现
 所以一个精心设计的下拉刷新头部，可以使你的应用让人眼前一亮。  
 UltraPTR 对头部行为的抽象，可以很方便的使用户定制自己的下拉刷新头部，来实现各种效果。  
 #####5.1.2 Content 可包含任何 View
-UltraPTR 的 Content 可以包含任意的 View 。这样的好处，就是整个项目中的刷新操作，不管是 ListView ， GridView 还是一个 LinearLayout ，都可以用 UltraPTR 来完成，简便，统一。
+UltraPTR 的 Content 可以包含任意的 View。这样的好处，就是整个项目中的刷新操作，不管是 ListView， GridView 还是一个 LinearLayout，都可以用 UltraPTR 来完成，简便，统一。
   
 ####5.2 期望
 ![default-header](image/default-header.gif)  
@@ -389,10 +389,10 @@ UltraPTR 的 Content 可以包含任意的 View 。这样的好处，就是整�
 例如  
 **知乎**，下拉时 Header 和 Content 都没有位置变化，只是 Header 中有效果变化。  
 ![zhihu-header](image/zhihu-header.gif)  
-**Evernote** ，下拉时 Content 不动， Header 有位置变化。  
+**Evernote**，下拉时 Content 不动， Header 有位置变化。  
 ![evernote-header](image/evernote-header.gif)  
 总结起来，就是希望更加抽象 Header 和 Content 在下拉过程中的行为变化。做到真正的 **Ultra**  
-> **注意：**在新版本 ([3a34b2e](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/tree/3a34b2e89f9dc4522569ce9340910621fd543828)) ，可以使用  
+> **注意：**在新版本 ([3a34b2e](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/tree/3a34b2e89f9dc4522569ce9340910621fd543828))，可以使用  
 > ```java
 > public void setPinContent(boolean pinContent)
 > ```
@@ -403,4 +403,4 @@ UltraPTR 没有集成加载更多的功能。项目的 Issue 里面也有人提�
 [希望加入下拉加载········ #35](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/issues/35)  
 [要是把上拉加载更多 集成进去，就无敌了 #8](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/issues/8)  
 作者给予了回复，认为下拉刷新和加载更多，不是同一个层级的功能。加载更多不应该由 UltraPTR 去实现，而应该由 Content 自己去实现。  
-我也觉得这样是合适的，UltraPTR 的强大之处，就是它的 Content 可以是任何的 View 。因为刷新的动作，可以在任何的 View 上进行，比如一个 TextView ，一个 ImageView ，一个 WebView 或者一个 LineaerLayout 布局中。而加载更多的功能，很多时候只是用在了例如 ListView ，GridView 等上面，而大部分的 View 不会需要这个功能。所以交由 ListView 或者 GridView 自己去实现比较好些。  
+我也觉得这样是合适的，UltraPTR 的强大之处，就是它的 Content 可以是任何的 View。因为刷新的动作，可以在任何的 View 上进行，比如一个 TextView，一个 ImageView，一个 WebView 或者一个 LinearLayout 布局中。而加载更多的功能，很多时候只是用在了例如 ListView，GridView 等上面，而大部分的 View 不会需要这个功能。所以交由 ListView 或者 GridView 自己去实现比较好些。  
