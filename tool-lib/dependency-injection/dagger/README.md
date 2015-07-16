@@ -369,7 +369,7 @@ bindings 数据结构为 HashMap，value 就是具体的 Binding，key 是用来
 连接(Link)：从 DAG 的角度说，就是把某个节点与其所依赖的各个节点连接起来。而对于 Binding 来说，就是把当前 Binding 和它依赖的 Binding (`ProvidesBinding`)进行连接，即初始化这个 Binding 依赖的所有 Binding，使它们可用。  
 
 #####(3). attachSuccess
-一个标志，对于某个 Binding，在获取它依赖的`DependencyBinding`时，如果他所有的`DependencyBinding`都已经添加到`Binding`库中，attachSuccess 则为 true，否则为 false。如果为 false ，表示该 Binding 尚未连接，添加到待连接队列中，否则标记为已连接。  
+一个标志，对于某个 Binding，在获取它依赖的`DependencyBinding`时，如果他所有的`DependencyBinding`都已经添加到`Binding`库中，attachSuccess 则为 true，否则为 false。如果为 false，表示该 Binding 尚未连接，添加到待连接队列中，否则标记为已连接。  
 
 #####(4). linkedBindings
 默认为 null，只有在 linkAll() 函数被调用后才有效，用于存储所有已经连接的 Binding，同时也是一个标记，表示这个 ObjectGraph 已经不能被改变。  

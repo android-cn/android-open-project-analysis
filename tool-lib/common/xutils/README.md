@@ -22,7 +22,7 @@ xUtils 一个 Android 公共库框架，主要包括四个部分：View，Db, Ht
 #####2.1.2 流程图
 ![流程图](image/view_sque.png)
 #####2.1.3 核心类功能介绍
-######请先了解[注解](http://www.codekk.com/open-source-project-analysis/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E6%B3%A8%E8%A7%A3%20Annotation) ，[动态代理](http://www.codekk.com/open-source-project-analysis/detail/Android/Caij/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86)  可以帮助到您， 如果已经了解请忽略。
+######请先了解[注解](http://www.codekk.com/open-source-project-analysis/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E6%B3%A8%E8%A7%A3%20Annotation)，[动态代理](http://www.codekk.com/open-source-project-analysis/detail/Android/Caij/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86)  可以帮助到您， 如果已经了解请忽略。
 注解和反射知识是这个模块的主要内容
 #####1.ViewUtils.java  
 View 和各种事件的注入以及资源的注入。
@@ -345,7 +345,7 @@ private BitmapCache bitmapCache;
 - 2.通过 handler 进行线程通信
 
 ####不同点：
-- 1. Volley 的 Http 请求在 android 2.3 版本之前是通过 HttpClient ，在之后的版本是通过 URLHttpConnection。xUtils 都是通过 HttpClient 请求网络（bitmap 模块图片下载是通过 URLHttpConnection）。 URLHttpConnection 默认支持 GZIP 压缩，api 操作简单。
+- 1. Volley 的 Http 请求在 android 2.3 版本之前是通过 HttpClient，在之后的版本是通过 URLHttpConnection。xUtils 都是通过 HttpClient 请求网络（bitmap 模块图片下载是通过 URLHttpConnection）。 URLHttpConnection 默认支持 GZIP 压缩，api 操作简单。
 - 2.Volley 将 Http 请求数据先缓存进 byte[]， 然后是分配给不同的请求转化为需要的格式。xUtils 是直接转化为想要的格式。 Volley：扩展性好， 但是不能存在大数据请求，否则就 OOM。xUtils：不缓存入 byte[] 支持大数据的请求， 速度比 Volley 稍快，但扩展性就低。
 - 4.Volley 访问网络数据时直接开启固定个数线程访问网络， 在 run 方法中执行死循环， 阻塞等待请求队列。 xUtils 是开启线程池来管理线程。
 - 5. 缓存失效策略， volley 的所有网络数据支持从 http 响应头中控制是否缓存和读取缓存失效时间，每个请求可以控制是否缓存和缓存失效时间。 Xutils 网络数据请求是统一自定义缓存失效时间。

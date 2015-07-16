@@ -540,13 +540,13 @@ together (default) ：动画同时启动
 
 属性  
 android:propertyName：  
-String 类型，必须要设定的值，代表要执行动画的属性，通过名字引用，比如你可以指定了一个 View 的"alpha" 或者 "backgroundColor" ，这个 objectAnimator 元素没有暴露 target 属性，因此不能够在 XML 中执行一个动画，必须通过调用`loadAnimator()` 填充你的 XML 动画资源，并且调用`setTarget()` 应用到拥有这个属性的目标对象上。
+String 类型，必须要设定的值，代表要执行动画的属性，通过名字引用，比如你可以指定了一个 View 的"alpha" 或者 "backgroundColor"，这个 objectAnimator 元素没有暴露 target 属性，因此不能够在 XML 中执行一个动画，必须通过调用`loadAnimator()` 填充你的 XML 动画资源，并且调用`setTarget()` 应用到拥有这个属性的目标对象上。
 
 `android:valueTo`  
 Float、int 或者 color，也是必须值，表明了动画结束的点，颜色由 6 位十六进制的数字表示。  
 
 `android:valueFrom`  
-相对应 valueTo，动画的起始点，如果没有指定，系统会通过属性身上的 get 方法获取 ，颜色也是 6 位十六进制的数字表示。  
+相对应 valueTo，动画的起始点，如果没有指定，系统会通过属性身上的 get 方法获取，颜色也是 6 位十六进制的数字表示。  
 
 `android:duration`  
 动画的时长，int 类型，以毫秒为单位，默认为 300 毫秒。  

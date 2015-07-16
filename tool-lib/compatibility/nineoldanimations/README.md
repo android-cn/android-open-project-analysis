@@ -71,7 +71,7 @@ colorAnim.start();
 
 
 **示例 3：**     
-动画集合，5 秒内对 View 的旋转、平移、缩放和透明度都进行了改变 。
+动画集合，5 秒内对 View 的旋转、平移、缩放和透明度都进行了改变。
 
 ``` 
 AnimatorSet set = new AnimatorSet();  
