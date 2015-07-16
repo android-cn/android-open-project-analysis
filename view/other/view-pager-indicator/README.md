@@ -231,7 +231,7 @@ vpi_attrs.xml
 #####3.4.4 自定义 View 的绘制
 请参考上面的 CirclePageIndicator 的 onDraw，也可以参考 tech 下的[View 的绘制流程](http://www.codekk.com/open-source-project-analysis/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E7%BB%98%E5%88%B6%E6%B5%81%E7%A8%8B)的 Draw 部分。
 #####3.4.5 使 View 可交互
-请参考上面的 CirclePageIndicator 的 onTouch ，这里只是简单的处理了 onTouch 事件，交互更好的自定义控件往往会加一些自然的动画等。
+请参考上面的 CirclePageIndicator 的 onTouch，这里只是简单的处理了 onTouch 事件，交互更好的自定义控件往往会加一些自然的动画等。
 ##4. 杂谈
 大多数的 App 中的导航都类似，ViewPagerIndicator 能够满足你开发的基本需求，如果不能满足，你可以在源码的基础上进行一些简单的改造。其中有一点是很多朋友提出的就是 LineIndicator 没有实现 TextView 颜色状态的联动。这个有已经实现的开源库:[PagerSlidingTabStrip](https://github.com/jpardogo/PagerSlidingTabStrip)，你可以作为参考。  
 对于什么时候需要自定义控件以及如何更好的进行自定义控件的定制，你可以参考这篇文章[深入解析 Android 的自定义布局](http://greenrobot.me/devpost/android-custom-layout) 相信会有一些启发。  

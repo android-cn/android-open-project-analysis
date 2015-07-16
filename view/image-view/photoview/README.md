@@ -338,7 +338,7 @@ OnGestureListener 接口回调的实现方法.
 以上 3 个类并不实际执行 放大/缩小 行为, 判断行为之后会回调给 PhtotViewAttacher 执行缩放/移动操作
 
 ##### 4.1.14 VersionedGestureDetector
-提供 GestureDetector 的实例，由它根据系统版本决定实例化哪一个 GestureDetector ，主要是为了兼容 Android 的不同版本。
+提供 GestureDetector 的实例，由它根据系统版本决定实例化哪一个 GestureDetector，主要是为了兼容 Android 的不同版本。
 具体调用栈请参考总体设计中调用流程图,注意一点,PhotoViewAttacher 本身就实现了 OnGestureListener 接口,实际的缩放操作是由 PhotoViewAttacher 完成的,而不是这里声明的各个 GestureDetector.
 
  

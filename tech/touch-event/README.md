@@ -32,7 +32,7 @@
 
 附上两张原文中流程图：  
 (1) View 不处理事件流程图  
-![view-ignore-touch-event-example](https://farm6.staticflickr.com/5529/13927155020_73bdfab805_o.jpg)  
+![view-ignore-touch-event-example](image/ignorant-view-example.jpg)  
 
 (2) View 处理事件流程图  
-![view-process-touch-event-example](https://farm8.staticflickr.com/7062/14110505861_6569e33985_o.jpg)  
+![view-process-touch-event-example](image/interested-view-example.jpg)  

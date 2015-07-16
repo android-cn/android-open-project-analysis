@@ -5,7 +5,7 @@
 
 #### View 绘制机制  
 #####1. View 树的绘图流程
-当 Activity 接收到焦点的时候，它会被请求绘制布局,该请求由 Android framework 处理.绘制是从根节点开始，对布局树进行 measure 和 draw 。整个 View 树的绘图流程在`ViewRoot.java`类的`performTraversals()`函数展开，该函数所做 的工作可简单概况为是否需要重新计算视图大小(measure)、是否需要重新安置视图的位置(layout)、以及是否需要重绘(draw)，流程图如下：  
+当 Activity 接收到焦点的时候，它会被请求绘制布局,该请求由 Android framework 处理.绘制是从根节点开始，对布局树进行 measure 和 draw。整个 View 树的绘图流程在`ViewRoot.java`类的`performTraversals()`函数展开，该函数所做 的工作可简单概况为是否需要重新计算视图大小(measure)、是否需要重新安置视图的位置(layout)、以及是否需要重绘(draw)，流程图如下：  
 ![viewdrawflow img](image/view_mechanism_flow.png)  
 
 **View 绘制流程函数调用链**  
@@ -22,10 +22,10 @@
 树的遍历是有序的，由父视图到子视图，每一个 ViewGroup 负责测绘它所有的子视图，而最底层的 View 会负责测绘自身。  
 
 **具体分析**  
-measure 过程由`measure(int, int)`方法发起，从上到下有序的测量 View ，在 measure 过程的最后，每个视图存储了自己的尺寸大小和测量规格。
+measure 过程由`measure(int, int)`方法发起，从上到下有序的测量 View，在 measure 过程的最后，每个视图存储了自己的尺寸大小和测量规格。
 layout 过程由`layout(int, int, int, int)`方法发起，也是自上而下进行遍历。在该过程中，每个父视图会根据 measure 过程得到的尺寸来摆放自己的子视图。  
 
- measure 过程会为一个 View 及所有子节点的 mMeasuredWidth 和 mMeasuredHeight 变量赋值，该值可以通过 `getMeasuredWidth()`和`getMeasuredHeight()`方法获得。而且这两个值必须在父视图约束范围之内，这样才可以保证所有的父视图都接收所有子视图的测量。如果子视图对于 Measure 得到的大小不满意的时候，父视图会介入并设置测量规则进行第二次 measure。比如，父视图可以先根据未给定的 dimension 去测量每一个子视图，如果最终子视图的未约束尺寸太大或者太小的时候，父视图就会使用一个确切的大小再次对子视图进行 measure 。 
+ measure 过程会为一个 View 及所有子节点的 mMeasuredWidth 和 mMeasuredHeight 变量赋值，该值可以通过 `getMeasuredWidth()`和`getMeasuredHeight()`方法获得。而且这两个值必须在父视图约束范围之内，这样才可以保证所有的父视图都接收所有子视图的测量。如果子视图对于 Measure 得到的大小不满意的时候，父视图会介入并设置测量规则进行第二次 measure。比如，父视图可以先根据未给定的 dimension 去测量每一个子视图，如果最终子视图的未约束尺寸太大或者太小的时候，父视图就会使用一个确切的大小再次对子视图进行 measure。 
 
 **measure 过程传递尺寸的两个类**  
 - ViewGroup.LayoutParams （View 自身的布局参数）  
@@ -38,7 +38,7 @@ ViewGroup.LayoutParams
 - WRAP_CONTENT 表示视图为正好能包裹其内容大小(包含 padding 值)    
 
 ViewGroup 的子类有其对应的 ViewGroup.LayoutParams 的子类。比如 RelativeLayout 拥有的 ViewGroup.LayoutParams 的子类 RelativeLayoutParams。  
-有时我们需要使用 view.getLayoutParams() 方法获取一个视图 LayoutParams ，然后进行强转，但由于不知道其具体类型，可能会导致强转错误。其实该方法得到的就是其所在父视图类型的 LayoutParams，比如 View 的父控件为 RelativeLayout，那么得到的 LayoutParams 类型就为 RelativeLayoutParams。  
+有时我们需要使用 view.getLayoutParams() 方法获取一个视图 LayoutParams，然后进行强转，但由于不知道其具体类型，可能会导致强转错误。其实该方法得到的就是其所在父视图类型的 LayoutParams，比如 View 的父控件为 RelativeLayout，那么得到的 LayoutParams 类型就为 RelativeLayoutParams。  
 
 MeasureSpecs  
 测量规格，包含测量要求和尺寸的信息，有三种模式:    
@@ -70,7 +70,7 @@ MeasureChild 的方法调用流程图：
 ```java
     /**
      * 请求所有子 View 去 measure 自己，要考虑的部分有对子 View 的测绘要求 MeasureSpec 以及其自身的 padding
-     * 这里跳过所有为 GONE 状态的子 View ，最繁重的工作是在 getChildMeasureSpec 方法中处理的
+     * 这里跳过所有为 GONE 状态的子 View，最繁重的工作是在 getChildMeasureSpec 方法中处理的
      *
      * @param widthMeasureSpec  对该 View 的 width 测绘要求
      * @param heightMeasureSpec 对该 View 的 height 测绘要求

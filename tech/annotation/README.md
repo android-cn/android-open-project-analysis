@@ -110,7 +110,7 @@ MethodInfo Annotation 作用为给方法添加相关信息，包括 author、dat
 这里是 MethodInfo 的实现部分  
 (1). 通过 @interface 定义，注解名即为自定义注解名  
 (2). 注解配置参数名为注解类的方法名，且：  
-a. 所有方法没有方法体，没有参数没有修饰符，实际只允许 public & abstract 修饰符，默认为 public ，不允许抛异常  
+a. 所有方法没有方法体，没有参数没有修饰符，实际只允许 public & abstract 修饰符，默认为 public，不允许抛异常  
 b. 方法返回值只能是基本类型，String, Class, annotation, enumeration 或者是他们的一维数组  
 c. 若只有一个默认属性，可直接用 value() 函数。一个属性都没有表示该 Annotation 为 Mark Annotation  
 (3). 可以加 default 表示默认值  
@@ -219,7 +219,7 @@ process 函数返回值表示这组 annotations 是否被这个 Processor 接受
     
 [RestMethodInfo.java](https://github.com/square/retrofit/blob/master/retrofit/src/main/java/retrofit/RestMethodInfo.java) 的 parseMethodAnnotations 方法如上，会检查每个方法的每个 Annotation， 看是否被 RestMethod 这个 Annotation 修饰的 Annotation 修饰，这个有点绕，就是是否被 GET、DELETE、POST、PUT、HEAD、PATCH 这些 Annotation 修饰，然后得到 Annotation 信息，在对接口进行动态代理时会掉用到这些 Annotation 信息从而完成调用。  
 
-Retrofit 原理涉及到[动态代理](http://codekk.com/open-source-project-analysis/detail/Android/Caij/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8BJava%20%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86)，这里原理都只介绍 Annotation，具体原理分析请见 [Android 开源项目实现原理解析](http://www.codekk.com)   
+Retrofit 原理涉及到[动态代理](http://codekk.com/open-source-project-analysis/detail/Android/Caij/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86)，这里原理都只介绍 Annotation，具体原理分析请见 [Android 开源项目实现原理解析](http://codekk.com/open-source-project-analysis)   
 
 #### 6.2 Annotation — Butter Knife  
 (1) 调用
@@ -262,7 +262,7 @@ Retrofit 原理涉及到[动态代理](http://codekk.com/open-source-project-ana
 
 
 [ButterKnifeProcessor.java](https://github.com/JakeWharton/butterknife/blob/master/butterknife/src/main/java/butterknife/internal/ButterKnifeProcessor.java) 的 process 方法如上，编译时，在此方法中过滤 InjectView 这个 Annotation 到 targetClassMap 后，会根据 targetClassMap 中元素生成不同的 class 文件到最终的 APK 中，然后在运行时调用 ButterKnife.inject(x) 函数时会到之前编译时生成的类中去找。
-这里原理都只介绍 Annotation，具体原理分析请见 [Android 开源项目实现原理解析](http://www.codekk.com)   
+这里原理都只介绍 Annotation，具体原理分析请见 [Android 开源项目实现原理解析](http://codekk.com/open-source-project-analysis)   
 
 #### 6.3 Annotation — ActiveAndroid  
 (1) 调用  
@@ -301,5 +301,5 @@ Retrofit 原理涉及到[动态代理](http://codekk.com/open-source-project-ana
  
 [TableInfo.java](https://github.com/pardom/ActiveAndroid/blob/master/src/com/activeandroid/TableInfo.java) 的构造函数如上，运行时，得到所有行信息并存储起来用来构件表信息。  
 
-这里原理都只介绍 Annotation，具体原理分析请见 [Android 开源项目实现原理解析](http://www.codekk.com)   
+这里原理都只介绍 Annotation，具体原理分析请见 [Android 开源项目实现原理解析](http://codekk.com/open-source-project-analysis)   
 

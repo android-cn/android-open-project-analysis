@@ -83,7 +83,7 @@ pagerSlidingTabStrip 实现联动效果的原理是，它引用了 ViewPager 的
 	
 	    //当前 view 的位置也即 tab 的位置
 	    currentPosition = position;
-	    //当前 view 滑动的距离 。其中 currentPositionOffset 为 float，介于 0~1 代表相对于 tab 宽偏移的比例
+	    //当前 view 滑动的距离。其中 currentPositionOffset 为 float，介于 0~1 代表相对于 tab 宽偏移的比例
 	    currentPositionOffset = positionOffset;
 	    //根据上面得到的 view 的位置和偏移位置，来同步 tab 的位置和偏移距离。
 	    scrollToChild(position, (int) (positionOffset * tabsContainer.getChildAt(position).getWidth()));
