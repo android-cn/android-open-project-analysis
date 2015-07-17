@@ -97,12 +97,12 @@ imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
 **DisplayBitmapTask：**用于显示图片的任务, 具体参考`4.2.18 DisplayBitmapTask.java`。  
 
 ###3. 流程图
-![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/uil-flow.png)  
+![](image/uil-flow.png)  
 上图为图片加载及显示流程图，在 uil 库中给出，这里用中文重新画出。  
 
 ###4. 详细设计
 ####4.1 类关系图
-![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/relation-class.png)  
+![](image/relation-class.png)  
 
 ####4.2 核心类功能介绍
 #####4.2.1 ImageLoader.java
@@ -908,8 +908,8 @@ LRU: Least Recently Used 近期最少使用算法, 选用了基于链表结构�
 图 3: 继续放入第三个 bitmap3，根据假设情景，将会超过设定缓存池阈值。  
 图 4: 释放对 bitmap1 对象的引用。  
 图 5: bitmap1 对象被 GC 回收。  
-![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_header.png)  
-![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_put.png)  
-![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_put_exceed_maxsize2.png)  
-![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_put_trim.png)  
-![](https://github.com/android-cn/android-open-project-analysis/blob/master/universal-image-loader/image/lru_trim_result.png)  
+![](image/lru_header.png)  
+![](image/lru_put.png)  
+![](image/lru_put_exceed_maxsize2.png)  
+![](image/lru_put_trim.png)  
+![](image/lru_trim_result.png)  
