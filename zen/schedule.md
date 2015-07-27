@@ -6,9 +6,11 @@
 [Picasso](https://github.com/square/picasso) | [Trinea](https://github.com/Trinea) | | 06/19 | 06/20 | 06/25 | 06/27 | 06/30 | 07/01 
 [okhttp](https://github.com/square/okhttp) | [ayyb1988](https://github.com/ayyb1988) | | 06/21 | 06/29 | 07/10 | 07/20 | 08/00 | 08/15 
 [ijkplayer](https://github.com/Bilibili/ijkplayer) | [ayyb1988](https://github.com/ayyb1988) | | 06/21 | 06/29 | 07/10 | 07/20 | 08/00 | 08/15 
-[retrofit](https://github.com/square/retrofit) | [guoGavin](https://github.com/guoGavin) | [lightSky](https://github.com/lightSky) | Done | 07/17 | 07/27 | 08/7 | 08/17 | 08/27 
+[retrofit](https://github.com/square/retrofit) | [guoGavin](https://github.com/guoGavin) | [lightSky](https://github.com/lightSky) | Done | Done | 07/27 | 08/7 | 08/17 | 08/27 
 [RxJava](https://github.com/ReactiveX/RxJava) | [ChrisZou](https://github.com/ChrisZou) || 07/12 | 07/19 | 07/26 | 08/02 | 08/09 | 08/16 
-[FlyRefresh](https://github.com/race604/FlyRefresh)| [skyacer](https://github.com/skyacer) || 07/26 | 08/02 | 08/09 | 08/16 | 08/23 | 08/30 
+[FlyRefresh](https://github.com/race604/FlyRefresh)| [skyacer](https://github.com/skyacer) || 07/26 | 08/02 | 08/09 | 08/16 | 08/23 | 08/30   
+[Glide](https://github.com/bumptech/glide)| [lightSky](https://github.com/lightSky) || 08/06 | 08/08 | 08/19 | 08/26 | 09/03 | 09/07 
+
 
 ####3. 二期计划(进行中)
 大家根据自己的时间安排补充 Demo、功能介绍、详细设计、流程图、总体设计、完成 6个阶段的 DeadLine 时间点。  
