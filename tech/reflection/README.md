@@ -55,7 +55,7 @@ public static Class<?> forName (String className, boolean shouldInitialize, Clas
 	
 ### 2.2 通过 Class 对象构造目标类型的对象	
    一旦你拿到 Class 对象之后，你就可以为所欲为了！当你善用它的时候它就是神兵利器，当你心怀鬼胎之时它就会变成恶魔。但获取 Class 对象只是第一步，我们需要在执行那些强大的行为之前通过 Class 对象构造出该类型的对象，然后才能通过该对象释放它的能量。
-	我们知道，在 java 中药构造对象，必须通过该类的构造函数，那么其实反射也是一样一样的。但是它们确实有区别的，通过反射构造对象，我们首先要获取类的 Constructor(构造器)对象，然后通过 Constructor 来创建目标类的对象。还是直接上代码的。     
+	我们知道，在 java 中要构造对象，必须通过该类的构造函数，那么其实反射也是一样一样的。但是它们确实有区别的，通过反射构造对象，我们首先要获取类的 Constructor(构造器)对象，然后通过 Constructor 来创建目标类的对象。还是直接上代码的。     
 	
 ```
     private static void classForName() {
