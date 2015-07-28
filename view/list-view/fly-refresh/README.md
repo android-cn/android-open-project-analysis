@@ -64,7 +64,7 @@ convert -coalesce animation.gif frame.png
 头部叠放在内容块的下面;
 内容块可以下拉，放手会回弹，并且会触发飞机飞出的动画;
 头部块会随着下拉过程中有动画产生（之后会重点来介绍）;
-
+![structure](image/structure.jpg)  
 
 ---
 
