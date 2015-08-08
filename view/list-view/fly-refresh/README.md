@@ -133,9 +133,10 @@ convert -coalesce animation.gif frame.png
 
 >#### 2.[`PullHeaderLayout`](https://github.com/race604/FlyRefresh/blob/master/library/src/main/java/com/race604/flyrefresh/PullHeaderLayout.java)
 
->>这是一个基类，主要实现了布局和滑动的功能。
+>>这是一个基类，主要实现了布局和滑动的功能。这个基类继承自`ViewGroup`,而`ViewGroup`可以包括其他视图，它是一个视图的集合，对应到这个框架上来，也定义了最重要的两个子视图，一个是固定悬浮按钮`FloatingActionButton`还有一个纸飞机的`ImageView`，这个类最大的作用是对Touch事件的处理，因为需要时刻的判断View所处的状态，如果`mContent`可以整体滑动时候，layout就要截获Touch事件，并且把这个Touch事件传递给子视图，这样才能完成刷新的功能。
+在这个类中还用到了两个辅助的类，一个是之前的`HeaderController`，还有一个是内部类`ScrollChecker `,这个主要检查`ContentView `是否可以滑动。
 
->>>**(1) 主要成员变量含义**  
+>>>**(1) 主要成员变量和常量含义**  
 
 >>>
 
@@ -147,3 +148,33 @@ convert -coalesce animation.gif frame.png
 
 4.`STATE_BOUNCE` 上下振动状态
 
+5.`mHeaderView` 头部视图
+
+6.`mContent` 内容视图，也就是可伸展的部分，有一部分被头部遮挡。
+
+7.`mScrollChecker` 滑动检查，判断mContent是否可以伸展。
+
+>>>**(2) 主要方法含义**  
+>>>
+
+1.`public void setActionDrawable(Drawable actionDrawable)` 这个方法初始化了用到的视图，固定悬浮按钮和纸飞机。
+
+2.`protected void onFinishInflate()`这个方法是渲染视图结束时的回调，这里对两个子视图`mHead`和`mContent`进行了处理，保证了子视图数量在两个以内，并且保证了`mHead`和`mContent`保持对子视图的引用。 
+
+3.`public boolean dispatchTouchEvent(MotionEvent ev)`这个方法显然是对触摸事件的分发，这里着重说一下`ACTION_DOWN`和`ACTION_MOVE`两种情况，第一种`ACTION_DOWN`的时候它会判断控件是不是在上下振动的状态，如果是则立刻停止，这一点很符合我们的习惯。然后是`ACTION_MOVE`,这里做了之前提到的拦截Touch事件的处理：
+>```  java
+     if (!mHeaderController.isInTouch()) {
+      mHeaderController.onTouchDown(ev.getX(), ev.getY());
+      offsetY = mHeaderController.getOffsetY();
+      }
+     willMovePos(offsetY);
+
+>```
+这一段代码也就是当recyclerView到顶部以后要进入刷新头部时候执行的。其中最重要的还是`willMovePos(offsetY)`，这个方法把偏移量`offsetY`传给`willMovePos`然后再通过`private void movePos(float delta)`传给头部子视图。
+
+>#### 3.[`FlyRefreshLayout`](https://github.com/race604/FlyRefresh/blob/master/library/src/main/java/com/race604/flyrefresh/FlyRefreshLayout.java)
+
+>>这个类是继承于`PullHeaderLayout`，这个类主要为了简化使用，在这个类中添加了动画头部`MountanScenceView `和刷新的接口`OnPullRefreshListener`，这个类中实现了对纸飞机动画的实现，其中包括三个步骤：
+1. 随着下拉，逆时针转动；
+2. 放手的时候，触发刷新，发射出去；
+3. 刷新完成，飞机飞回来，回到原来的位置。
