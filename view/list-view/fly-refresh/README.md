@@ -178,3 +178,27 @@ convert -coalesce animation.gif frame.png
 1. 随着下拉，逆时针转动；
 2. 放手的时候，触发刷新，发射出去；
 3. 刷新完成，飞机飞回来，回到原来的位置。
+
+动画1：需要重载`protected void onMoveHeader(int state, float progress)`这个函数，这个函数也是`PullHeaderLayout `的回调，在这个函数中设置相应的旋转角度即可。
+动画2：是一个组合的动画，飞机整体向右上角移动，同时飞机绕 X 轴做 3D 转动，飞机头部慢慢趋向水平，并且慢慢缩小。利用`ObjectAnimator`实现组合动画，利用`  transY.setInterpolator(PathInterpolatorCompat.create(0.7f, 1f));`来实现贝塞尔曲线插值，使得曲线更加平滑，看起来不会那么生硬。
+动画3：这一步飞机回来和动画二差不多，只是把飞行方向和飞行轨迹进行了相应的调整。
+
+>>>**(1) 主要成员变量和常量含义**  
+>>>
+
+1. `mFlyAnimator` 动画集合
+
+2. `mListener` 回调OnPullRefreshListener开始和完成的状态
+
+>>>**(2) 主要方法含义**  
+>>>
+
+1. `protected void onStartRefreshAnimation()` 刷新开始也是动画开始的回调
+
+2. `public void onRefreshFinish()` 刷新结束也是动画结束的回调
+
+这里涉及了很多回调，如果读者对回调不太清楚的请移步至：http://blog.csdn.net/as02446418/article/details/47154849
+
+同时在下拉的过程中应该注意到山脉和树干的变化，这里作者把它放到另一个类`MountanScenceView`中实现，具体请看2.1.3
+
+>#### 4.[`MountanScenceView`](https://github.com/race604/FlyRefresh/blob/master/library/src/main/java/com/race604/flyrefresh/internal/MountanScenceView.java)
