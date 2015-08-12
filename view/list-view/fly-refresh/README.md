@@ -202,3 +202,134 @@ convert -coalesce animation.gif frame.png
 同时在下拉的过程中应该注意到山脉和树干的变化，这里作者把它放到另一个类`MountanScenceView`中实现，具体请看2.1.3
 
 >#### 4.[`MountanScenceView`](https://github.com/race604/FlyRefresh/blob/master/library/src/main/java/com/race604/flyrefresh/internal/MountanScenceView.java)
+
+>>这个类继承了`View`,并且实现了`IPullHeader`接口，这个接口比较简单，在本类最后有介绍，该类实现了最出彩的山脉和树木弯曲的动画。因为山脉按照远近分为三层景深，近处的山的颜色比较深，而且随着下拉的时候也会向下移动，并且呈现视差，并且伴随树的弯曲，这是整个动画的点睛之笔。因为在移动过程中，山脉图片始终要充满整个屏幕，所以用单纯的图片是不太现实的，所以这里用到的是`Path`来绘制整个场景。在这里用到了`onMeasure()`来计算出缩放的比例
+
+>>> ``` java
+>>> @Override
+>>>    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+>>>        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+>>>        final float width = getMeasuredWidth();
+
+>>>        final float height = getMeasuredHeight();
+
+>>>        mScaleX = width / WIDTH;
+
+>>>        mScaleY = height / HEIGHT;
+>>>
+>>>        updateMountainPath(mMoveFactor);
+
+>>>        updateTreePath(mMoveFactor, true);
+
+>>>    }
+
+>>> ```
+
+
+>>> updateMountainPath(mMoveFactor)的实现也并不难，原理是用多个点练成线绘制而成，下面看实现的一部分代码
+
+>>> ``` java
+>>> private void updateMountainPath(float factor) {
+
+>>>        mTransMatrix.reset();
+>>>        mTransMatrix.setScale(mScaleX, mScaleY);
+>>>        /**
+>>>         * 用path绘制山脉，由点连线最后扩充，保证整个屏幕宽度
+>>>         */
+>>>        int offset1 = (int) (10 * factor);
+>>>        mMount1.reset();
+>>>        mMount1.moveTo(0, 95 + offset1);
+>>>        mMount1.lineTo(55, 74 + offset1);
+>>>        mMount1.lineTo(146, 104 + offset1);
+>>>        mMount1.lineTo(227, 72 + offset1);
+>>>        mMount1.lineTo(WIDTH, 80 + offset1);
+>>>        mMount1.lineTo(WIDTH, HEIGHT);
+>>>        mMount1.lineTo(0, HEIGHT);
+>>>        mMount1.close();
+>>>        mMount1.transform(mTransMatrix);
+>>>        ...
+>>>        }
+
+>>>  然后我们来介绍一下这部分最重要的在下拉过程中树的弯曲的实现，这里采用的是将整个树对称中心，用一条“不可见”的贝塞尔曲线支撑，树干和树枝围绕这条中心线密集的用直线堆积构建。树的弯曲效果，只需要移动贝塞尔曲线的控制点。
+
+>>>  这里生成了一个贝塞尔曲线插值器
+>>>    final Interpolator interpolator = PathInterpolatorCompat.create(0.8f, -0.5f * factor);
+
+>>> factor是作为弯曲的程度
+
+
+>>>  下面的代码大体意思是将每棵树用25个采样点构建树干和树枝
+>>> ```java
+>>>       final int N = 25;
+>>>        final float dp = 1f / N;
+>>>        final float dy = -dp * height;
+>>>        float y = y0;
+>>>        float p = 0;
+>>>        float[] xx = new float[N + 1];
+>>>        float[] yy = new float[N + 1];
+>>>        for (int i = 0; i <= N; i++) {
+>>>            // 把归一化的采样坐标转换为实际坐标
+>>>            xx[i] = interpolator.getInterpolation(p) * maxMove + x0;
+>>>            yy[i] = y;
+>>>
+>>>            y += dy;
+>>>            p += dp;
+>>>        }
+>>>   ```
+
+>>> 下面是构建树干的代码
+>>>  ```java
+>>>   mTrunk.reset();
+>>>        mTrunk.moveTo(x0 - trunkSize, y0);
+>>>        int max = (int) (N * 0.7f);// 树干的高度为整个树的0.7
+>>>        int max1 = (int) (max * 0.5f);// 三角形收缩开始的点
+>>>        float diff = max - max1;
+>>>        // 添加树干左边的边缘
+>>>        for (int i = 0; i < max; i++) {
+>>>            if (i < max1) { // 等距
+>>>                mTrunk.lineTo(xx[i] - trunkSize, yy[i]);
+>>>            } else { // 线性收缩
+>>>                mTrunk.lineTo(xx[i] - trunkSize * (max - i) / diff, yy[i]);
+>>>            }
+>>>        }
+>>>        // 添加树干右边的边缘，这里和上面对称
+>>>        for (int i = max - 1; i >= 0; i--) {
+>>>            if (i < max1) {
+>>>                mTrunk.lineTo(xx[i] + trunkSize, yy[i]);
+>>>            } else {
+>>>                mTrunk.lineTo(xx[i] + trunkSize * (max - i) / diff, yy[i]);
+>>>            }
+>>>        }
+>>>        mTrunk.close();
+>>>   ```
+
+
+>>>这个类介绍的基本已经结束了，最后再说一下实现的`onPullProgress`接口，下面是源代码：
+
+>>> ``` java
+>>>  @Override
+>>>    public void onPullProgress(PullHeaderLayout parent, int state, float factor) {
+
+>>>        float bendFactor;
+>>>        //振动状态
+>>>        if (state == PullHeaderLayout.STATE_BOUNCE) {
+>>>           if (factor < mBounceMax) {
+>>>                mBounceMax = factor;
+>>>            }
+>>>            bendFactor = factor;
+>>>        } else {
+>>>            mBounceMax = factor;
+>>>            bendFactor = Math.max(0, factor);
+>>>        }
+>>>
+>>>        mMoveFactor = Math.max(0, mBounceMax);
+>>>        updateMountainPath(mMoveFactor);
+>>>        updateTreePath(bendFactor, false);
+>>>
+>>>        postInvalidate();
+>>>    }
+>>>   ```
+
+>>>  这里对是否是振动状态进行了判断，最后的方法有必要提一下`postInvalidate()`，这个方法是`View`里的，作用就是在UI线程以外的地方通知UI线程来重绘界面
