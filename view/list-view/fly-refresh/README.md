@@ -4,22 +4,23 @@
 > 本文为 [FlyRefresh](https://github.com/android-cn/android-open-project-analysis) 中 FlyRefresh 部分  
 > 项目地址：[FlyRefresh](https://github.com/race604/FlyRefresh)，分析的版本：[5299e8b](https://github.com/race604/FlyRefresh/commit/5299e8b969aab63fc1fde0a5423b19a61cded53b "Commit id is 5299e8b969aab63fc1fde0a5423b19a61cded53b]")，Demo 地址：[fly-refresh-demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/fly-refresh-demo)  
 
-> 分析者：[skyacer](http://github.com/skyacer)，分析状态：未完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始  
+> 分析者：[skyacer](http://github.com/skyacer)，分析状态：完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始  
+
 
 ##1. 功能介绍  
 
-FlyRefresh 是一个非常漂亮的下拉刷新的框架，下拉后会有纸飞机在顶部转一圈然后如果有新的item则会增加一条。添加方法只需要在你的布局中添加 FlyRefreshLayout 即可，使用的RecyclerView实现。
+>FlyRefresh 是一个非常漂亮的下拉刷新的框架，下拉后会有纸飞机在顶部转一圈然后如果有新的item则会增加一条。添加方法只需要在你的布局中添加 FlyRefreshLayout 即可，使用的RecyclerView实现。
 
 ###1.1 **完成时间**  
 
-- `2015-08-08`更新 
+- `2015-08-19`更新 
 
 
 
 ###1.2 **集成指南**  
 
 
-在 gradle 中
+>在 gradle 中
 
 ``` xml
 
@@ -39,32 +40,32 @@ dependencies {
 
 >``` xml
 
-  		<com.race604.flyrefresh.FlyRefreshLayout
-  		android:id="@+id/fly_layout"
-  		android:layout_width="match_parent"
-  		android:layout_height="match_parent">
+>     <com.race604.flyrefresh.FlyRefreshLayout
+>     android:id="@+id/fly_layout"
+>     android:layout_width="match_parent"
+>     android:layout_height="match_parent">
 
-   		 <android.support.v7.widget.RecyclerView
-    		  android:id="@+id/list"
-    		  android:layout_width="match_parent"
-    		  android:layout_height="match_parent"
-    		  android:paddingTop="24dp"
-   		   android:background="#FFFFFF"/>
-		</com.race604.flyrefresh.FlyRefreshLayout>
+>        <android.support.v7.widget.RecyclerView
+>           android:id="@+id/list"
+>           android:layout_width="match_parent"
+>           android:layout_height="match_parent"
+>           android:paddingTop="24dp"
+>          android:background="#FFFFFF"/>
+>     </com.race604.flyrefresh.FlyRefreshLayout>
 
 >```
->####2.在你的Activity或者Fragment中引入`FlyRefreshLayout`，然后你需要设置下拉监听
+####2.在你的Activity或者Fragment中引入`FlyRefreshLayout`，然后你需要设置下拉监听
 >```  java
-      flyrefreshLayout.setOnPullRefreshListener(new FlyRefreshLayout.OnPullRefreshListener() {
-            @Override
-            public void onRefresh(FlyRefreshLayout flyRefreshLayout) {
-              //刷新时需要完成的逻辑
-              }
-
-            @Override
-            public void onRefreshAnimationEnd(FlyRefreshLayout flyRefreshLayout) {
-                //结束刷新，也就是动画结束的时候需要展示的内容
-            }
+>       flyrefreshLayout.setOnPullRefreshListener(new FlyRefreshLayout.OnPullRefreshListener() {
+>             @Override
+>             public void onRefresh(FlyRefreshLayout flyRefreshLayout) {
+>               //刷新时需要完成的逻辑
+>               }
+> 
+>             @Override
+>             public void onRefreshAnimationEnd(FlyRefreshLayout flyRefreshLayout) {
+>                 //结束刷新，也就是动画结束的时候需要展示的内容
+>             }
 >``` 
 
 >`recyclerView` 是需要刷新的列表
@@ -78,7 +79,7 @@ dependencies {
 >``` 
 
 ### 1.4 **总体设计分析**
-由于效果是动画实现，原作者采用把GIF图分解成一帧一帧的图片，分解的方法如下：
+> 由于效果是动画实现，原作者采用把GIF图分解成一帧一帧的图片，分解的方法如下：
 >```
 convert -coalesce animation.gif frame.png
 >```
@@ -94,6 +95,7 @@ convert -coalesce animation.gif frame.png
 
 
 ##2. 详细设计
+>类图设计：![ClassStructure](image/ClassStructure.jpg)  
 
 ###2.1 类详细介绍
 
@@ -134,7 +136,7 @@ convert -coalesce animation.gif frame.png
 >#### 2.[`PullHeaderLayout`](https://github.com/race604/FlyRefresh/blob/master/library/src/main/java/com/race604/flyrefresh/PullHeaderLayout.java)
 
 >>这是一个基类，主要实现了布局和滑动的功能。这个基类继承自`ViewGroup`,而`ViewGroup`可以包括其他视图，它是一个视图的集合，对应到这个框架上来，也定义了最重要的两个子视图，一个是固定悬浮按钮`FloatingActionButton`还有一个纸飞机的`ImageView`，这个类最大的作用是对Touch事件的处理，因为需要时刻的判断View所处的状态，如果`mContent`可以整体滑动时候，layout就要截获Touch事件，并且把这个Touch事件传递给子视图，这样才能完成刷新的功能。
->>>在这个类中还用到了两个辅助的类，一个是之前的`HeaderController`，还有一个是内部类`ScrollChecker `,这个主要检查`ContentView `是否可以滑动。
+>>在这个类中还用到了两个辅助的类，一个是之前的`HeaderController`，还有一个是内部类`ScrollChecker `,这个主要检查`ContentView `是否可以滑动。
 
 >>>**(1) 主要成员变量和常量含义**  
 
@@ -161,34 +163,34 @@ convert -coalesce animation.gif frame.png
 
 >>>2.`protected void onFinishInflate()`这个方法是渲染视图结束时的回调，这里对两个子视图`mHead`和`mContent`进行了处理，保证了子视图数量在两个以内，并且保证了`mHead`和`mContent`保持对子视图的引用。 
 
->>>3.`public boolean dispatchTouchEvent(MotionEvent ev)`这个方法显然是对触摸事件的分发，这里着重说一下`ACTION_DOWN`和`ACTION_MOVE`两种情况，第一种`ACTION_DOWN`的时候它会判断控件是不是在上下振动的状态，如果是则立刻停止，这一点很符合我们的习惯。然后是`ACTION_MOVE`,这里做了之前提到的拦截Touch事件的处理：
+> > > 3.`public boolean dispatchTouchEvent(MotionEvent ev)`这个方法显然是对触摸事件的分发，这里着重说一下`ACTION_DOWN`和`ACTION_MOVE`两种情况，第一种`ACTION_DOWN`的时候它会判断控件是不是在上下振动的状态，如果是则立刻停止，这一点很符合我们的习惯。然后是`ACTION_MOVE`,这里做了之前提到的拦截Touch事件的处理：
 >```  java
-     if (!mHeaderController.isInTouch()) {
-      mHeaderController.onTouchDown(ev.getX(), ev.getY());
-      offsetY = mHeaderController.getOffsetY();
-      }
-     willMovePos(offsetY);
-
+> > >      if (!mHeaderController.isInTouch()) {
+> > >       mHeaderController.onTouchDown(ev.getX(), ev.getY());
+> > >       offsetY = mHeaderController.getOffsetY();
+> > >       }
+> > >      willMovePos(offsetY);
 >```
->>>这一段代码也就是当recyclerView到顶部以后要进入刷新头部时候执行的。其中最重要的还是`willMovePos(offsetY)`，这个方法把偏移量`offsetY`传给`willMovePos`然后再通过`private void movePos(float delta)`传给头部子视图。
+
+> > >  这一段代码也就是当recyclerView到顶部以后要进入刷新头部时候执行的。其中最重要的还是`willMovePos(offsetY)`，这个方法把偏移量`offsetY`传给`willMovePos`然后再通过`private void movePos(float delta)`传给头部子视图。
 
 >#### 3.[`FlyRefreshLayout`](https://github.com/race604/FlyRefresh/blob/master/library/src/main/java/com/race604/flyrefresh/FlyRefreshLayout.java)
 
 >>这个类是继承于`PullHeaderLayout`，这个类主要为了简化使用，在这个类中添加了动画头部`MountanScenceView `和刷新的接口`OnPullRefreshListener`，这个类中实现了对纸飞机动画的实现，其中包括三个步骤：
->>>1. 随着下拉，逆时针转动；
->>>2. 放手的时候，触发刷新，发射出去；
->>>3. 刷新完成，飞机飞回来，回到原来的位置。
+>>1. 随着下拉，逆时针转动；
+>>2. 放手的时候，触发刷新，发射出去；
+>>3. 刷新完成，飞机飞回来，回到原来的位置。
 
->>>动画1：需要重载`protected void onMoveHeader(int state, float progress)`这个函数，这个函数也是`PullHeaderLayout `的回调，在这个函数中设置相应的旋转角度即可。
->>>动画2：是一个组合的动画，飞机整体向右上角移动，同时飞机绕 X 轴做 3D 转动，飞机头部慢慢趋向水平，并且慢慢缩小。利用`ObjectAnimator`实现组合动画，利用`  transY.setInterpolator(PathInterpolatorCompat.create(0.7f, 1f));`来实现贝塞尔曲线插值，使得曲线更加平滑，看起来不会那么生硬。
->>>动画3：这一步飞机回来和动画二差不多，只是把飞行方向和飞行轨迹进行了相应的调整。
+> > 动画1：需要重载`protected void onMoveHeader(int state, float progress)`这个函数，这个函数也是`PullHeaderLayout `的回调，在这个函数中设置相应的旋转角度即可。
+> > 动画2：是一个组合的动画，飞机整体向右上角移动，同时飞机绕 X 轴做 3D 转动，飞机头部慢慢趋向水平，并且慢慢缩小。利用`ObjectAnimator`实现组合动画，利用`  transY.setInterpolator(PathInterpolatorCompat.create(0.7f, 1f));`来实现贝塞尔曲线插值，使得曲线更加平滑，看起来不会那么生硬。
+>>动画3：这一步飞机回来和动画二差不多，只是把飞行方向和飞行轨迹进行了相应的调整。
 
 >>>**(1) 主要成员变量和常量含义**  
 >>>
 
-1. `mFlyAnimator` 动画集合
-
-2. `mListener` 回调OnPullRefreshListener开始和完成的状态
+> > > 1. `mFlyAnimator` 动画集合
+> > > 
+> > > 2. `mListener` 回调OnPullRefreshListener开始和完成的状态
 
 >>>**(2) 主要方法含义**  
 >>>
@@ -235,9 +237,9 @@ convert -coalesce animation.gif frame.png
 
 >>>        mTransMatrix.reset();
 >>>        mTransMatrix.setScale(mScaleX, mScaleY);
->>>        /**
->>>         * 用path绘制山脉，由点连线最后扩充，保证整个屏幕宽度
->>>         */
+>>>      
+>>>  //用path绘制山脉，由点连线最后扩充，保证整个屏幕宽度
+>>>       
 >>>        int offset1 = (int) (10 * factor);
 >>>        mMount1.reset();
 >>>        mMount1.moveTo(0, 95 + offset1);
@@ -252,15 +254,15 @@ convert -coalesce animation.gif frame.png
 >>>        ...
 >>>        }
 
->>>  然后我们来介绍一下这部分最重要的在下拉过程中树的弯曲的实现，这里采用的是将整个树对称中心，用一条“不可见”的贝塞尔曲线支撑，树干和树枝围绕这条中心线密集的用直线堆积构建。树的弯曲效果，只需要移动贝塞尔曲线的控制点。
+>>  然后我们来介绍一下这部分最重要的在下拉过程中树的弯曲的实现，这里采用的是将整个树对称中心，用一条“不可见”的贝塞尔曲线支撑，树干和树枝围绕这条中心线密集的用直线堆积构建。树的弯曲效果，只需要移动贝塞尔曲线的控制点。
 
->>>  这里生成了一个贝塞尔曲线插值器
->>>    final Interpolator interpolator = PathInterpolatorCompat.create(0.8f, -0.5f * factor);
+>>  这里生成了一个贝塞尔曲线插值器
+>>    final Interpolator interpolator = PathInterpolatorCompat.create(0.8f, -0.5f * factor);
 
->>> factor是作为弯曲的程度
+>> factor是作为弯曲的程度
 
 
->>>  下面的代码大体意思是将每棵树用25个采样点构建树干和树枝
+>>  下面的代码大体意思是将每棵树用25个采样点构建树干和树枝
 >>> ```java
 >>>       final int N = 25;
 >>>        final float dp = 1f / N;
@@ -279,7 +281,7 @@ convert -coalesce animation.gif frame.png
 >>>        }
 >>>   ```
 
->>> 下面是构建树干的代码
+>> 下面是构建树干的代码
 >>>  ```java
 >>>   mTrunk.reset();
 >>>        mTrunk.moveTo(x0 - trunkSize, y0);
@@ -306,7 +308,7 @@ convert -coalesce animation.gif frame.png
 >>>   ```
 
 
->>>这个类介绍的基本已经结束了，最后再说一下实现的`onPullProgress`接口，下面是源代码：
+>>这个类介绍的基本已经结束了，最后再说一下实现的`onPullProgress`接口，下面是源代码：
 
 >>> ``` java
 >>>  @Override
@@ -332,7 +334,7 @@ convert -coalesce animation.gif frame.png
 >>>    }
 >>>   ```
 
->>>  这里对是否是振动状态进行了判断，最后的方法有必要提一下`postInvalidate()`，这个方法是`View`里的，作用就是在UI线程以外的地方通知UI线程来重绘界面。
+>>  这里对是否是振动状态进行了判断，最后的方法有必要提一下`postInvalidate()`，这个方法是`View`里的，作用就是在UI线程以外的地方通知UI线程来重绘界面。
 
 
 >#### 5.[`SampleItemAnimator`](https://github.com/race604/FlyRefresh/blob/master/app/src/main/java/com/race604/flyrefresh/sample/SampleItemAnimator.java)
@@ -368,4 +370,8 @@ convert -coalesce animation.gif frame.png
 >>> ``` 
 
 
->>>这里我们可以看到实现动画的代码之前也有提到过类似的，这里其实就是一个动画集合，使用到了插值器，主要的动画是icon 的晃动和内容的 3D 旋转
+>>这里我们可以看到实现动画的代码之前也有提到过类似的，这里其实就是一个动画集合，使用到了插值器，主要的动画是icon 的晃动和内容的 3D 旋转
+
+##3. 流程设计
+
+>流程设计：![FlowChart](image/FlyRfresh-flow-chart.jpg)  
