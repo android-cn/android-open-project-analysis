@@ -374,4 +374,4 @@ convert -coalesce animation.gif frame.png
 
 ##3. 流程设计
 
->流程设计：![FlowChart](image/FlyRfresh-flow-chart.jpg)  
+>流程设计：![FlowChart](image/FlyRfresh-flow-chart.png)  
