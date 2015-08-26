@@ -9,7 +9,7 @@ Android 开源项目源码解析
 **在线网站：[www.codekk.com](http://codekk.com/open-source-project-analysis)**  
 
 ###1. 如何加入
-以`你想分析的开源库库名`作为验证信息，申请加入 QQ 群（424059748）即可  
+以`你想分析的开源库库名`作为验证信息，申请加入 QQ 群（485334692）即可  
 
 ###2. 具体编写步骤
 具体步骤请见：[编写步骤](./zen/procedure.md)  
