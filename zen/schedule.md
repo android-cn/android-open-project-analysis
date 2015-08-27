@@ -10,6 +10,7 @@
 [RxJava](https://github.com/ReactiveX/RxJava) | [ChrisZou](https://github.com/ChrisZou) || 07/12 | 07/19 | 07/26 | 08/02 | 08/09 | 08/16 
 [FlyRefresh](https://github.com/race604/FlyRefresh)| [skyacer](https://github.com/skyacer) || Done | Done | Done | Done | 08/23 | 08/30   
 [Glide](https://github.com/bumptech/glide)| [lightSky](https://github.com/lightSky) || 08/06 | 08/08 | 08/19 | 08/26 | 09/03 | 09/07 
+[LitePal](https://github.com/LitePalFramework/LitePal)| [hongyangAndroid](https://github.com/hongyangAndroid) || 09/06 | 09/08 | 09/19 | 09/26 | 10/03 | 10/07 
 
 
 ####3. 二期计划(进行中)
