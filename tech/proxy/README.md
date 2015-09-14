@@ -607,4 +607,4 @@ GitHubService service = restAdapter.create(GitHubService.class);
 ```java
 List<Repo> repos = service.listRepos("octocat");
 ```
-即可开始网络请求，`Retrofit`的原理就是基于动态代理，它同时用到了 [注解](http://www.codekk.com/open-source-project-analysis/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E6%B3%A8%E8%A7%A3%20Annotation "注解 详解") 的原理，本文不做深入介绍，具体请等待 [Retrofit 源码解析](https://github.com/android-cn/android-open-project-analysis/tree/master/retrofit) 完成。  
+即可开始网络请求，`Retrofit`的原理就是基于动态代理，它同时用到了 [注解](http://a.codekk.com/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E6%B3%A8%E8%A7%A3%20Annotation "注解 详解") 的原理，本文不做深入介绍，具体请等待 [Retrofit 源码解析](https://github.com/android-cn/android-open-project-analysis/tree/master/retrofit) 完成。  

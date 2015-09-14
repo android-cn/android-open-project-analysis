@@ -1,9 +1,7 @@
 CalendarListView 源码解析
-====================================
-
+----------------
 > 本文为 [CalendarListView](https://github.com/android-cn/android-open-project-analysis) 中 CalanderListView 部分  
 > 项目地址：[CalendarListView](https://github.com/traex/CalendarListview)，分析的版本：[063952b](https://github.com/traex/CalendarListview/commit/063952b3e6e109eebebebfceb52c8c2fc76c6844 "Commit id is 063952b3e6e109eebebebfceb52c8c2fc76c6844]")，Demo 地址：[calendar-list-view-demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/calendar-list-view-demo)  
-
 > 分析者：[Rogary](http://github.com/Rogary)，分析状态：未完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始  
 
 ##1. 功能介绍  
@@ -17,7 +15,6 @@ calendarlistview 选取提供了一个 API 10+日历日期的简便方法
 ###1.1 **完成时间**  
 
 - `2015-2-12`完成  
-
 
 
 ###1.2 **集成指南**  
@@ -288,7 +285,7 @@ dependencies {
 
 >>`SimpleMonthView`这里作为 RecycleView 的 Item 项，以月份为单位绘制  
 
->>[View 绘制流程相关知识](http://www.codekk.com/open-source-project-analysis/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E7%BB%98%E5%88%B6%E6%B5%81%E7%A8%8B)  
+>>[View 绘制流程相关知识](http://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E7%BB%98%E5%88%B6%E6%B5%81%E7%A8%8B)  
 
 >>**View 绘制流程函数调用链**  
 ![](https://raw.githubusercontent.com/android-cn/android-open-project-analysis/master/tech/viewdrawflow/image/view_draw_method_chain.png)
