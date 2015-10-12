@@ -11,21 +11,21 @@
 
 ###2. 总体设计
 ####2.1 总体设计图
-![总体设计图](image/glide_analysis/glide_module.jpg)  
+![总体设计图](image/glide_module.jpg)  
 
 ####2.2 Glide中的概念
 
-**Glide**
+**Glide**  
 使用RequestBuilder创建request的静态接口，并持有Engine，BitmapPool，DiskCache，MemoryCache。
 实现了ComponentCallbacks2，注册了低内存情况的回调。当内存不足的时候，进行相应的内存清理。回调的触发发生在RequestManagerFragment的onLowMemory和onTrimMemory中。
 
-**GlideBuilder**
+**GlideBuilder**  
 为Glide创建一些默认值，比如：Engine，MemoryCache，DiskCache，RequestOptions，GlideExecutor，MemorySizeCalculator
 
-**GlideModule**
+**GlideModule**  
 可以通过GlideBuilder进行一些延迟的配置和ModelLoaders的注册。
 
-**注意：**  
+**注意：**   
 所有的实现的module必须是public的，并且只拥有一个空的构造函数，以便Glide懒加载的时候可以通过反射调用。
 GlideModule是不能指定调用顺序的。因此在创建多个GlideModule的时候，要注意不同Module之间的setting不要冲突了。
 如何创建Module，请参看Demo
@@ -38,16 +38,16 @@ GlideModule是不能指定调用顺序的。因此在创建多个GlideModule的�
 - 将任意复杂的model转换为可以被decode的数据类型
 - 允许model结合View的尺寸获取特定大小的资源
 
-**Resource**
+**Resource**  
 对资源进行包装的接口，提供get，recycle，getSize，以及原始类的getResourceClass方法。
 resource包下也就是各种资源：bitmap，bytes，drawable，file，gif，以及相关编码器，解码器，转换器
 
-**Request**
+**Request**  
 `animation`  : 资源动画相关
 `target`：
 request的载体，各种资源对应的加载类，含有生命周期的回调方法，方便开发人员进行相应的准备以及资源回收工作。
 
-##数据及处理相关概念
+**数据及处理相关概念**  
 
 - data ：代表原始的，未修改过的资源，对应dataClass
 - resource : 修改过的资源，对应resourceClass
@@ -58,14 +58,14 @@ request的载体，各种资源对应的加载类，含有生命周期的回调�
 dataClass---(decoder解码)-->resourceClass
 resourceClass ---(transcoder转换)---> transcodeClass
 
-**ResourceTranscoder**
+**ResourceTranscoder**  
 资源转换器，将给定的资源类型，转换为另一种资源类型
 BitmapBytesTranscoder
 BitmapDrawableTranscoder
 GifDrawableBytesTranscoder
 SvgDrawableTranscoder
 
-**Registry**
+**Registry**  
 对Glide所支持的Encoder ，Decoder ，Transcoder组件进行注册
 因为Glide所支持的数据处理方式太多，把每一种的数据类型及相应的处理方式形象化为组件。通过registry的方式管理。
 如下，注册了将使用BitmapDrawableTranscoder将 Bitmap转换为BitmapDrawable的组件。
@@ -86,18 +86,18 @@ Registry.register(Bitmap.class, BitmapDrawable.class,new BitmapDrawableTranscode
 ###4. 详细设计
 ####4.1 类关系图
 
-![类关系图](image/glide_analysis/glide_framework.png)  
+![类关系图](image/glide_framework.png)  
 
 ####4.2 类详细介绍
 #####4.2.1 Glide  
 #####4.2.2 RequestBuilder 
 创建请求，设置通用的配置，以及请求的发起  
 
-**主要函数**
-(1) **apply(BaseRequestOptions requestOptions)**  
+**主要函数**  
+(1) **apply(BaseRequestOptions requestOptions)**    
 应用请求的配置
 
-(2) **transition(TransitionOptions<?, ? super TranscodeType> transitionOptions)**
+(2) **transition(TransitionOptions<?, ? super TranscodeType> transitionOptions)**  
 配置完成时的过渡动画
 
 (3) **thumbnail(@Nullable RequestBuilder<TranscodeType> thumbnailRequest)**  
@@ -126,7 +126,7 @@ int overrideWidth, int overrideHeight)**
 设置资源的Target，并创建，绑定，跟踪，发起请求
 
 **整个请求的创建流程图**  
-![请求的创建流程图](image/glide_analysis/glide_request_build_flow.jpg)  
+![请求的创建流程图](image/glide_request_build_flow.jpg)  
 
 #####4.2.3 Engine
 任务创建，发起，回调，管理存活或者缓存的资源
@@ -189,7 +189,7 @@ ResourceCallback cb)
 ```
 
 **load调用处理流程图：**  
-![load调用处理流程图](image/glide_analysis/glide_preload_flow.jpg)
+![load调用处理流程图](image/glide_preload_flow.jpg)
 
 ###4.2.4 EngineJob 
 添加，移除回调，调度DecodeJob  
@@ -263,7 +263,7 @@ new DecodeCallback<ResourceType>(dataSource));
 获取数据成功后，进行处理，内部调用的是`runLoadPath(Data data, DataSource dataSource,LoadPath<Data, ResourceType, R> path)`    
 
 **数据加载流程图**  
-class![数据加载流程图](image/glide_analysis/glide_load_flow.jpg)
+class![数据加载流程图](image/glide_load_flow.jpg)
 
 ####4.2.6  LoadPath
 根据给定的数据类型的DataFetcher尝试获取数据，然后尝试通过一个或多个decodePath进行decode。  
@@ -546,14 +546,7 @@ void removeListener(LifecycleListener listener);
 参考文档：  
 
 [get-to-know-glide-recommended-by-google](http://inthecheesefactory.com/blog/get-to-know-glide-recommended-by-google/en)  
-
-https://github.com/bboyfeiyu/android-tech-frontier/tree/master/others/Google%E6%8E%A8%E8%8D%90%E7%9A%84%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E5%BA%93Glide%E4%BB%8B%E7%BB%8D
-
-https://plus.google.com/+HugoVisser/posts/Rra8mrU1pCx
-
+[picasso-vs-imageloader-vs-fresco-vs-glide](http://stackoverflow.com/questions/29363321/picasso-v-s-imageloader-v-s-fresco-vs-glide)  
+https://plus.google.com/+HugoVisser/posts/Rra8mrU1pCx  
 http://blog.csdn.net/fancylovejava/article/details/44747759
-
-[picasso-vs-imageloader-vs-fresco-vs-glide]http://stackoverflow.com/questions/29363321/picasso-v-s-imageloader-v-s-fresco-vs-glide)  
-
-http://stackoverflow.com/questions/19995007/local-image-caching-solution-for-android-square-picasso-vs-universal-image-load
 
