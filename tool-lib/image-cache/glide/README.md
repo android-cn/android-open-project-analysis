@@ -7,7 +7,7 @@
 分析者：[lightSky](https://github.com/lightSky)，分析状态：未完成，校对者：待定，校对状态：未开始   
 
 ###1. 功能介绍  
-图片加载框架，相对于UniversalImageLoader，Picasso，它还支持video,Gif,SVG格式,旨在打造更好的列表图片滑动体验。Google曾在一次开发者大会上做过推荐。
+图片加载框架，相对于UniversalImageLoader，Picasso，它还支持video,Gif,SVG格式,而且支持缩略图请求，旨在打造更好的列表图片滑动体验。Google曾在一次开发者大会上做过推荐。
 
 ###2. 总体设计
 ####2.1 总体设计图
@@ -67,14 +67,14 @@ SvgDrawableTranscoder
 
 **Registry**  
 对Glide所支持的Encoder ，Decoder ，Transcoder组件进行注册
-因为Glide所支持的数据处理方式太多，把每一种的数据类型及相应的处理方式形象化为组件。通过registry的方式管理。
+因为Glide所支持的数据类型太多，把每一种的数据类型及相应的处理方式的组合形象化为一种组件。通过registry的方式管理。
 如下，注册了将使用BitmapDrawableTranscoder将 Bitmap转换为BitmapDrawable的组件。
 
 ```java
 Registry.register(Bitmap.class, BitmapDrawable.class,new BitmapDrawableTranscoder(resources, bitmapPool))
 ```
 
-`BaseRequestOptions：图片，transform配置
+`BaseRequestOptions`：图片，transform配置
 `ThumbnailRequestCoordinator`：请求协调器，缩略图，和完整图片请求  
 
 
@@ -104,7 +104,7 @@ Registry.register(Bitmap.class, BitmapDrawable.class,new BitmapDrawableTranscode
 配置缩略图的请求，如果配置的缩略图请求在完整的图片请求完成前回调，那么该缩略图会展示，如果在完整请求之后，那么缩略图就无效。Glide不会保证缩略图请求和完整图片请求的顺序。 
 
 (4) **多个load重载的方法**  
-指定加载的数据类型
+指定加载的数据类型  
 load(@Nullable Object model)  
 load(@Nullable String string)  
 load(@Nullable Uri uri)  
@@ -114,7 +114,7 @@ load(@Nullable URL url)
 load(@Nullable byte[] model)
 
 (5) **buildRequest(Target<TranscodeType> target)**   
-创建请求，如果配置了thumbnail请求，则构建一个ThumbnailRequestCoordinator（包含FullRequest和ThumbnailRequest）请求，否则简单的构建一个Request。  
+创建请求，如果配置了thumbnail（缩略图）请求，则构建一个ThumbnailRequestCoordinator（包含了FullRequest和ThumbnailRequest）请求，否则简单的构建一个Request。  
 
 (6) **obtainRequest(Target<TranscodeType> target,
 BaseRequestOptions<?> requestOptions, RequestCoordinator requestCoordinator,
@@ -122,14 +122,14 @@ TransitionOptions<?, ? super TranscodeType> transitionOptions, Priority priority
 int overrideWidth, int overrideHeight)**  
 创建一个请求，内部直接调用了SingleRequest的一个静态方法obtain。  
 
-(7) **into(Y target)**
+(7) **into(Y target)**  
 设置资源的Target，并创建，绑定，跟踪，发起请求
 
 **整个请求的创建流程图**  
 ![请求的创建流程图](image/glide_request_build_flow.jpg)  
 
 #####4.2.3 Engine
-任务创建，发起，回调，管理存活或者缓存的资源
+任务创建，发起，回调，管理存活和缓存的资源
 
 **主要函数**  
 
@@ -137,11 +137,13 @@ int overrideWidth, int overrideHeight)**
 从内存缓存中获取资源，获取成功后会放入到activeResources中
 
 **(2) loadFromActiveResources**  
+从存活的资源中加载资源，资源加载完成后，会在内存中保存一份Reference引用的资源
 
 **(3) getReferenceQueue**  
-activeResources是一个持有缓存WeakReference的Map集合。
+activeResources是一个持有缓存WeakReference的Map集合。ReferenceQueue就是提供资源WeakReference的虚引用队列。
 `activeResources.put(key, new ResourceWeakReference(key, cached, getReferenceQueue()));`  
-这里要提的是负责清除WeakReference被回收的activeResources资源的实现，使用到了MessageQueue.IdleHandler，源码的注释：当一个线程等待更多message的时候会触发该回调,就是messageQuene空闲的时候会触发该回调
+这里要提的是负责清除WeakReference被回收的activeResources资源的实现：  
+使用到了MessageQueue.IdleHandler，源码的注释：当一个线程等待更多message的时候会触发该回调,就是messageQuene空闲的时候会触发该回调
 
 ```java
 /**
@@ -167,11 +169,7 @@ queue.addIdleHandler(new RefQueueIdleHandler(activeResources, resourceReferenceQ
 
 `RefQueueIdleHandler`实现了`MessageQueue.IdleHandler`接口，该接口有一个`queueIdle`方法，负责清除WeakReference被回收的activeResources资源。
 
-(4) load  
-真正的开始加载资源，看下面的流程图  
-注：其中
-```
-load(
+(4) **load(
 GlideContext glideContext,
 Object model,
 Key signature,
@@ -185,14 +183,15 @@ Map<Class<?>, Transformation<?>> transformations,
 boolean isTransformationRequired,
 Options options,
 boolean isMemoryCacheable,
-ResourceCallback cb)
-```
+ResourceCallback cb)**   
+真正的开始加载资源，看下面的流程图
 
 **load调用处理流程图：**  
+注：DecodeJob是整个任务的核心部分，在下面DecodeJob中有详细介绍，这里主要整个流程  
 ![load调用处理流程图](image/glide_preload_flow.jpg)
 
 ###4.2.4 EngineJob 
-添加，移除回调，调度DecodeJob  
+添加，移除资源加载完成的回调，调度DecodeJob  
 
 ####主要方法  
 **(1)start(DecodeJob<R> decodeJob)**  
@@ -203,7 +202,7 @@ ResourceCallback cb)
 
 ###4.2.5  DecodeJob
 实现了Runnable接口，整个调度任务的核心类，整个请求的繁重工作都在这里完成：处理来自缓存或者原始的资源，应用转换动画以及transcode。  
-负责根据请求类型，通过不同的Generator加载数据，回调DecodeJob的onDataFetcherReady方法对资源进行处理
+负责根据缓存类型获取不同的Generator加载数据，数据加载成功后回调DecodeJob的onDataFetcherReady方法对资源进行处理
 
 ####主要方法  
 
@@ -221,10 +220,10 @@ ResourceCallback cb)
 - DECODE_DATA:获取数据成功，但执行和回调不在同一线程，希望回到自己的线程去处理数据
 
 **(2) getNextStage**  
-获取下一步的策略，一共5种策略：  
+获取下一步执行的策略，一共5种策略：  
 `INITIALIZE`，`RESOURCE_CACHE`，`DATA_CACHE`，`SOURCE`，`FINISHED`  
 
-加载数据的策略有三种：  
+其中加载数据的策略有三种：  
 `RESOURCE_CACHE`，`DATA_CACHE`，`SOURCE`，
 分别对应的Generator:  
 
@@ -244,23 +243,18 @@ ResourceCallback cb)
 根据Stage获取到相应的Generator后会执行currentGenerator.startNext()，如果中途startNext返回true，则直接回调，否则最终会得到SOURCE的stage，重新调度任务
 
 **(4) startNext**
-从当前策略对应的Generator获取数据，数据获取成功则直接回调。否则尝试从下一个策略的Generator获取数据。
+从当前策略对应的Generator获取数据，数据获取成功则回调DecodeJob的`onDataFetcherReady`对资源进行处理。否则尝试从下一个策略的Generator获取数据。
 
-获取sourceId－－－>获取cache －－－>获取modelLoader－－－>LoadData--->loadData  
-
-**(5) DecodeCallback**
-成功获得数据，处理过程中的回调
-
-**DecodeCallback.onResourceDecoded**  
-decode完成后的回调，decode   进行相应的处理
-path.load(rewinder, options, width, height,
-new DecodeCallback<ResourceType>(dataSource));
-
-**(6) reschedule**  
+**(5) reschedule**  
 重新调度当前任务  
 
-**(7) decodeFromRetrievedData**
+**(6) decodeFromRetrievedData**
 获取数据成功后，进行处理，内部调用的是`runLoadPath(Data data, DataSource dataSource,LoadPath<Data, ResourceType, R> path)`    
+
+**(7) DecodeCallback.onResourceDecoded**  
+decode完成后的回调，对decode的资源进行transform
+path.load(rewinder, options, width, height,
+new DecodeCallback<ResourceType>(dataSource));
 
 **数据加载流程图**  
 class![数据加载流程图](image/glide_load_flow.jpg)
@@ -311,40 +305,28 @@ class![数据加载流程图](image/glide_load_flow.jpg)
 
 ####4.2.15 ActivityFragmentLifecycle  
 用于注册，同步所有监听了Activity或者Fragment的生命周期事件的listener的帮助类。  
-RequestManagerFragment初始化时会创建该类，然后传给Request Manager。RequestManager会通过ActivityFragmentLifecycle的 addListener方法注册一些listener。当RequestManagerFragment生命周期方法执行的时候，会遍历所有注册的LifecycleListener并执行相应生命周期方法。
-
-**RequestManager注册的LifecycleListener类型**    
-
-- RequestManager自身  
-RequestManager自己实现了LifecycleListener。主要的请求管理也是在这里处理的。 
-- RequestManagerConnectivityListener，该listener也实现了LifecycleListener，用于网络连接时进行相应的请求恢复。
-这里的请求是指那些还未完成的请求，已经完成的请求并不会重新发起。
-
-另外Target接口也是直接继承自LifecycleListener，因此开发者可以监听资源处理的整个过程，在不同阶段进行相应的处理。
-
 
 ####4.2.16 DataFetcher
-每一次通过ModelLoader加载资源的时候都会创建的实例。
-loadData 当目标资源没有在缓存中找到时才会被调用,cancel方法也是。  
-如果loadData被调用，cleanup也会被调用。
-`loadData`：异步方法，如果在缓存中没有找到目标资源才会调用 
+每一次通过ModelLoader加载资源的时候都会创建的实例。  
+`loadData` ：异步方法，如果目标资源没有在缓存中找到时才会被调用,cancel方法也是。 
 `cleanup`：清理或者回收DataFetcher使用的资源，在loadData提供的数据被decode完成后调用。
 
-**DataCallback**  
+**主要方法**  
+**(1) DataCallback**  
+三种Generator实现了该接口，用于数据加载结果的回调  
 ```java
 //数据load完成并且可用时回调
 void onDataReady(@Nullable T data);
 //数据load失败时回调
 void onLoadFailed(Exception e);
-``
-
-**getDataClass()**
+```
+**(2) getDataClass()**
 返回fetcher尝试获取的数据类型
 
-**getDataSource()**
+**(3) getDataSource()**
 获取数据的来源
 
-**DataSource**
+**(4) DataSource**
 ```
 public enum DataSource {
 //数据从本地硬盘获取，也有可能通过一个已经从远程获取到数据的Content Provider
@@ -358,7 +340,7 @@ RESOURCE_DISK_CACHE,
 //数据来自内存
 MEMORY_CACHE,
 }
-``
+```
 
 ####4.2.17  DataFetcherGenerator
 根据注册的ModelLoaders和model生成一系列的DataFetchers。
@@ -370,22 +352,21 @@ DecodeJob实现的接口，包含以下方法：
 `onDataFetcherReady`：load完成
 `onDataFetcherFailed`：load失败
 
-
 ####4.2.18  Registry  
-管理组件的注册
+管理组件（数据类型＋数据处理）的注册
 
 **主要成员变量**  
-- ModelLoaderRegistry
-- EncoderRegistry
-- ResourceDecoderRegistry
-- ResourceEncoderRegistry
+- ModelLoaderRegistry ：注册所有数据加载的loader
+- ResourceDecoderRegistry：注册所有资源转换的decoder  
+- TranscoderRegistry：注册所有对decoder之后进行特殊处理的transcoder
+- ResourceEncoderRegistry：注册所有持久化resource（处理过的资源）数据的encoder
+- EncoderRegistry ： 注册所有的持久化原始数据的encoder
 - DataRewinderRegistry
-- TranscoderRegistry
 
-**数据处理的流程**  
-load ---> decode ---> trancode --->  encode
-Glide在初始化的时候，regist了glide所支持的数据类型的所有组件， 每种组件由功能及处理的资源类型组成：
+**标准的数据处理流程：**  
+![数据处理流程图](image/glide_data_process_flow.jpg)
 
+Glide在初始化的时候，通过Registry注册以下所有组件， 每种组件由功能及处理的资源类型组成：
 - loader:     model＋data＋ModelLoaderFactory  
 - decoder:    dataClass＋resourceClass＋decoder  
 - transcoder: resourceClass＋transcodeClass  
@@ -393,22 +374,35 @@ Glide在初始化的时候，regist了glide所支持的数据类型的所有组�
 - resourceEncoder resourceClass + encoder
 - rewind :    缓冲区处理
 
-从组件接收的参数也可以看到，
-- model ---(modelLoader)--> data
-- dataClass---(decoder解码)-->resourceClass
-- resourceClass ---(transcoder转换)---> transcodeClass
+Decoder | Source | Resource | 
+:--|:-- |:--  |
+BitmapDrawableDecoder   | 	Bitmap              |		Drawable  
+StreamBitmapDecoder     |  	InputStream         |  	Bitmap	
+ByteBufferBitmapDecoder |	  ByteBuffer          |  	Bitmap  
+GifFrameResourceDecoder | 	GifDecoder          |	 	Bitmap  
+StreamGifDecoder 	      |	  InputStream         | 	GifDrawable  
+ByteBufferGifDecoder	  |	  ByteBuffer          |	  Gif	  
+SvgDecoder		          |		InputStream	        |   SVG  
+VideoBitmapDecoder 	    |	  ParcelFileDescriptor|	  Bitmap  
+FileDecoder             |		File                | 	file    
 
-decode＋transcode的处理流程称为decodePath。LoadPath是对的 codePath的封装，持有一个decodePath的List。在通过modelloader.fetchData获取到data后，会对data进行decode，具体的decode操作就是通过loadPath来完成。
+**transcoder**  
+BitmapDrawableTransformation 
+GifDrawableTransformation	
+FitCenter
+CircleCrop
+CenterCrop
+
+`decode＋transcode`的处理流程称为decodePath。  
+LoadPath是对decodePath的封装，持有一个decodePath的List。在通过modelloader.fetchData获取到data后，会对data进行decode，具体的decode操作就是通过loadPath来完成。
 resourceClass就是asBitmap，asDrawable的bitmap或者drawable
-
-**标准的数据处理流程：**  
-model ---(modelLoader)-----> data --(decoder)--> resource --(transcoder)--> transcodeClass
 
 **ModelLoaderRegistry**  
 持有多个ModelLoader，model和数据类型按照优先级进行处理
 
 loader注册示例：
-registry.append(Integer.class, InputStream.class, new ResourceLoader.StreamFactory())
+registry  
+.append(Integer.class, InputStream.class, new ResourceLoader.StreamFactory())
 .append(GifDecoder.class, GifDecoder.class, new UnitModelLoader.Factory<GifDecoder>())
 
 **主要函数**  
@@ -537,6 +531,16 @@ void removeListener(LifecycleListener listener);
 }
 ```
 
+RequestManagerFragment初始化时会创建一个ActivityFragmentLifecycle对象传给Request Manager。RequestManager会通过ActivityFragmentLifecycle的 addListener方法注册一些listener。当RequestManagerFragment生命周期方法执行的时候，会遍历所有注册的LifecycleListener并执行相应生命周期方法。
+
+**RequestManager注册的LifecycleListener类型**    
+
+- RequestManager自身  
+RequestManager自己实现了LifecycleListener。主要的请求管理也是在这里处理的。 
+- RequestManagerConnectivityListener，该listener也实现了LifecycleListener，用于网络连接时进行相应的请求恢复。
+这里的请求是指那些还未完成的请求，已经完成的请求并不会重新发起。
+
+另外Target接口也是直接继承自LifecycleListener，因此开发者可以监听资源处理的整个过程，在不同阶段进行相应的处理。
 
 ###5. 杂谈
 该项目存在的问题、可优化点及类似功能项目对比等，非所有项目必须。  
