@@ -7,7 +7,7 @@
 分析者：[lightSky](https://github.com/lightSky)，分析状态：未完成，校对者：待定，校对状态：未开始   
 
 ###1. 功能介绍  
-图片加载框架，相对于UniversalImageLoader，Picasso，它还支持video,Gif,SVG格式,而且支持缩略图请求，旨在打造更好的列表图片滑动体验。Google曾在一次开发者大会上做过推荐。
+图片加载框架，相对于UniversalImageLoader，Picasso，它还支持video，Gif，SVG格式，支持缩略图请求，旨在打造更好的列表图片滑动体验。Glide有生命周期的概念（主要是对请求进行pause，resume，clear），而且其生命周期与Activity/Fragment的生命周期绑定，支持Volley，OkHttp，并提供了相应的integration libraries，内存更加友好。
 
 ###2. 总体设计
 ####2.1 总体设计图
@@ -40,11 +40,9 @@ GlideModule是不能指定调用顺序的。因此在创建多个GlideModule的�
 
 **Resource**  
 对资源进行包装的接口，提供get，recycle，getSize，以及原始类的getResourceClass方法。
-resource包下也就是各种资源：bitmap，bytes，drawable，file，gif，以及相关编码器，解码器，转换器
+resource包下也就是各种资源：bitmap，bytes，drawable，file，gif，以及相关解码器，转换器
 
-**Request**  
-`animation`  : 资源动画相关
-`target`：
+**Target**  
 request的载体，各种资源对应的加载类，含有生命周期的回调方法，方便开发人员进行相应的准备以及资源回收工作。
 
 **数据及处理相关概念**  
@@ -52,19 +50,19 @@ request的载体，各种资源对应的加载类，含有生命周期的回调�
 - data ：代表原始的，未修改过的资源，对应dataClass
 - resource : 修改过的资源，对应resourceClass
 - transcoder : 资源转换器，比如 BitmapBytesTranscoder（Bitmap转换为Bytes），GifDrawableBytes- Transcoder
-- ResourceEncoder : 持久化数据的接口，这里注意下，该类并不与decoder相对应，而是序列化的接口
-- ResourceDecoder : 对数据进行解码,比如ByteBufferGifDecoder（将ByteBuffer转换为Gif），StreamBitmapDecoder（Stream转换为Bitmap）
+- ResourceEncoder : 持久化数据的接口，这里注意下，该类并不与decoder相对应，而是用于本地缓存的接口
+- ResourceDecoder : 数据解码器,比如ByteBufferGifDecoder（将ByteBuffer转换为Gif），StreamBitmapDecoder（Stream转换为Bitmap）
 
 dataClass---(decoder解码)-->resourceClass
-resourceClass ---(transcoder转换)---> transcodeClass
 
 **ResourceTranscoder**  
-资源转换器，将给定的资源类型，转换为另一种资源类型
-BitmapBytesTranscoder
-BitmapDrawableTranscoder
-GifDrawableBytesTranscoder
-SvgDrawableTranscoder
+资源转换器，将给定的资源类型，转换为另一种资源类型，比如将Bitmap转换为Drawable，Bitmap转换为Bytes  
 
+resourceClass ---(transcoder转换)---> transcodeClass  
+  
+**Transformation**  
+比如对图片进行FitCenter，CircleCrop，CenterCrop的transformation，或者根据给定宽高对Bitmap进行处理的BitmapDrawableTransformation  
+  
 **Registry**  
 对Glide所支持的Encoder ，Decoder ，Transcoder组件进行注册
 因为Glide所支持的数据类型太多，把每一种的数据类型及相应的处理方式的组合形象化为一种组件。通过registry的方式管理。
@@ -74,8 +72,8 @@ SvgDrawableTranscoder
 Registry.register(Bitmap.class, BitmapDrawable.class,new BitmapDrawableTranscoder(resources, bitmapPool))
 ```
 
-`BaseRequestOptions`：图片，transform配置
-`ThumbnailRequestCoordinator`：请求协调器，缩略图，和完整图片请求  
+**ThumbnailRequestCoordinator**  
+请求协调器，包含两个请求：缩略图请求＋完整图片请求  
 
 
 ###3. 流程图
@@ -90,20 +88,16 @@ Registry.register(Bitmap.class, BitmapDrawable.class,new BitmapDrawableTranscode
 
 ####4.2 类详细介绍
 #####4.2.1 Glide  
+向外暴露单例静态接口，构建Request，配置资源类型，缓存策略，图片处理等，可以直接通过该类完整简单的图片请求和填充。内存持有一些内存变量`BitmapPool`，`MemoryCache`，`ByteArrayPool`，便于低内存情况时自动清理内存。
+
 #####4.2.2 RequestBuilder 
-创建请求，设置通用的配置，以及请求的发起  
+创建请求，资源类型配置，缩略图配置，以及通过BaseRequestOptions进行一些默认图，图片处理的配置  
 
 **主要函数**  
-(1) **apply(BaseRequestOptions requestOptions)**    
-应用请求的配置
-
-(2) **transition(TransitionOptions<?, ? super TranscodeType> transitionOptions)**  
-配置完成时的过渡动画
-
-(3) **thumbnail(@Nullable RequestBuilder<TranscodeType> thumbnailRequest)**  
+(1) **thumbnail(@Nullable RequestBuilder<TranscodeType> thumbnailRequest)**  
 配置缩略图的请求，如果配置的缩略图请求在完整的图片请求完成前回调，那么该缩略图会展示，如果在完整请求之后，那么缩略图就无效。Glide不会保证缩略图请求和完整图片请求的顺序。 
 
-(4) **多个load重载的方法**  
+(2) **多个load重载的方法**  
 指定加载的数据类型  
 load(@Nullable Object model)  
 load(@Nullable String string)  
@@ -113,16 +107,10 @@ load(@Nullable Integer resourceId)
 load(@Nullable URL url)  
 load(@Nullable byte[] model)
 
-(5) **buildRequest(Target<TranscodeType> target)**   
+(3) **buildRequest(Target<TranscodeType> target)**   
 创建请求，如果配置了thumbnail（缩略图）请求，则构建一个ThumbnailRequestCoordinator（包含了FullRequest和ThumbnailRequest）请求，否则简单的构建一个Request。  
 
-(6) **obtainRequest(Target<TranscodeType> target,
-BaseRequestOptions<?> requestOptions, RequestCoordinator requestCoordinator,
-TransitionOptions<?, ? super TranscodeType> transitionOptions, Priority priority,
-int overrideWidth, int overrideHeight)**  
-创建一个请求，内部直接调用了SingleRequest的一个静态方法obtain。  
-
-(7) **into(Y target)**  
+(4) **into(Y target)**  
 设置资源的Target，并创建，绑定，跟踪，发起请求
 
 **整个请求的创建流程图**  
@@ -137,7 +125,7 @@ int overrideWidth, int overrideHeight)**
 从内存缓存中获取资源，获取成功后会放入到activeResources中
 
 **(2) loadFromActiveResources**  
-从存活的资源中加载资源，资源加载完成后，会在内存中保存一份Reference引用的资源
+从存活的资源中加载资源，资源加载完成后，再将这个缓存数据放到一个 value 为软引用的 activeResources map 中，并计数引用数，在图片加载完成后进行判断，如果引用计数为空则回收掉。
 
 **(3) getReferenceQueue**  
 activeResources是一个持有缓存WeakReference的Map集合。ReferenceQueue就是提供资源WeakReference的虚引用队列。
@@ -191,7 +179,7 @@ ResourceCallback cb)**
 ![load调用处理流程图](image/glide_preload_flow.jpg)
 
 ###4.2.4 EngineJob 
-添加，移除资源加载完成的回调，调度DecodeJob  
+调度DecodeJob，添加，移除资源回调，并notify回调    
 
 ####主要方法  
 **(1)start(DecodeJob<R> decodeJob)**  
@@ -201,7 +189,7 @@ ResourceCallback cb)**
 实现了Handler.Callback接口，用于Engine任务完成时回调主线程  
 
 ###4.2.5  DecodeJob
-实现了Runnable接口，整个调度任务的核心类，整个请求的繁重工作都在这里完成：处理来自缓存或者原始的资源，应用转换动画以及transcode。  
+实现了Runnable接口，调度任务的核心类，整个请求的繁重工作都在这里完成：处理来自缓存或者原始的资源，应用转换动画以及transcode。  
 负责根据缓存类型获取不同的Generator加载数据，数据加载成功后回调DecodeJob的onDataFetcherReady方法对资源进行处理
 
 ####主要方法  
@@ -265,10 +253,6 @@ class![数据加载流程图](image/glide_load_flow.jpg)
 ####4.2.7  DecodePath
 根据指定的数据类型对resource进行decode和transcode
 
-**SingleRequest** 
-请求，实现了Request接口，请求的发起在begin方法中。
-
-
 ####4.2.8 RequestTracker
 追踪，取消，重启请求
 
@@ -313,7 +297,7 @@ class![数据加载流程图](image/glide_load_flow.jpg)
 
 **主要方法**  
 **(1) DataCallback**  
-三种Generator实现了该接口，用于数据加载结果的回调  
+用于数据加载结果的回调,三种Generator实现了该接口    
 ```java
 //数据load完成并且可用时回调
 void onDataReady(@Nullable T data);
@@ -361,7 +345,6 @@ DecodeJob实现的接口，包含以下方法：
 - TranscoderRegistry：注册所有对decoder之后进行特殊处理的transcoder
 - ResourceEncoderRegistry：注册所有持久化resource（处理过的资源）数据的encoder
 - EncoderRegistry ： 注册所有的持久化原始数据的encoder
-- DataRewinderRegistry
 
 **标准的数据处理流程：**  
 ![数据处理流程图](image/glide_data_process_flow.jpg)
@@ -385,13 +368,14 @@ ByteBufferGifDecoder	  |	  ByteBuffer          |	  Gif
 SvgDecoder		          |		InputStream	        |   SVG  
 VideoBitmapDecoder 	    |	  ParcelFileDescriptor|	  Bitmap  
 FileDecoder             |		File                | 	file    
-
-**transcoder**  
-BitmapDrawableTransformation 
-GifDrawableTransformation	
-FitCenter
-CircleCrop
-CenterCrop
+  
+    
+Transcoder | 数据源 | 转换后的资源 | 
+:--|:-- |:--  |
+BitmapBytesTranscoder   | 	Bitmap              |		Bytes  
+BitmapDrawableTranscoder     |  	Bitmap         |  	Drawable	
+GifDrawableBytesTranscoder |	  GifDrawable          |  	Bytes  
+SvgDrawableTranscoder | 	Svg          |	 	Drawable  
 
 `decode＋transcode`的处理流程称为decodePath。  
 LoadPath是对decodePath的封装，持有一个decodePath的List。在通过modelloader.fetchData获取到data后，会对data进行decode，具体的decode操作就是通过loadPath来完成。
@@ -543,12 +527,11 @@ RequestManager自己实现了LifecycleListener。主要的请求管理也是在�
 另外Target接口也是直接继承自LifecycleListener，因此开发者可以监听资源处理的整个过程，在不同阶段进行相应的处理。
 
 ###5. 杂谈
-该项目存在的问题、可优化点及类似功能项目对比等，非所有项目必须。  
-只能说Glide相对于简洁的UML来说是相当的复杂，无论从设计上还是细节实现上，可能和Glide的强大功能有关。一些设计概念很少碰到，比如register，loadpath，整个数据处理流程的拆分三个部分，每个部分所支持的数据全部通过组件注册的方式来支持，很多方法或者构造函数会接收10多个参数，看着着实眼花缭乱。这里的分析把大体的功能模块分析了，比如请求的统一管理，生命周期的同步，具体的实现细节还有很大一部分的工作量。对于开源项目的初学者来说并不是一个好的项目，门槛太高。但其确实功能强大，效率更高。
+Glide相对于简洁的UML来说是相当的复杂，无论从设计上还是细节实现上，可能和Glide的强大功能有关。一些设计概念很少碰到，比如register，loadpath，整个数据处理流程的拆分三个部分，每个部分所支持的数据全部通过组件注册的方式来支持，很多方法或者构造函数会接收10多个参数，看着着实眼花缭乱。这里的分析把大体的功能模块分析了，比如请求的统一管理，生命周期的同步，具体的实现细节还有很大一部分的工作量。对于开源项目的初学者来说并不是一个好的项目，门槛太高。但其确实功能强大，效率更高。本篇分析也借鉴了Trinea在2015 MDCC上分享的文章[开源选型之 Android 三大图片缓存原理、特性对比](http://mp.weixin.qq.com/s?__biz=MzAxNjI3MDkzOQ==&mid=400056342&idx=1&sn=894325d70f16a28bfe8d6a4da31ec304&scene=2&srcid=10210byVbMGLHg7vXUJLgHaR&from=timeline&isappinstalled=0#rd)。
 
 
-参考文档：  
-
+###参考文档
+[开源选型之 Android 三大图片缓存原理、特性对比](http://mp.weixin.qq.com/s?__biz=MzAxNjI3MDkzOQ==&mid=400056342&idx=1&sn=894325d70f16a28bfe8d6a4da31ec304&scene=2&srcid=10210byVbMGLHg7vXUJLgHaR&from=timeline&isappinstalled=0#rd)
 [get-to-know-glide-recommended-by-google](http://inthecheesefactory.com/blog/get-to-know-glide-recommended-by-google/en)  
 [picasso-vs-imageloader-vs-fresco-vs-glide](http://stackoverflow.com/questions/29363321/picasso-v-s-imageloader-v-s-fresco-vs-glide)  
 https://plus.google.com/+HugoVisser/posts/Rra8mrU1pCx  
