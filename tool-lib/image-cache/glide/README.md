@@ -77,8 +77,8 @@ Registry.register(Bitmap.class, BitmapDrawable.class,new BitmapDrawableTranscode
 
 
 ###3. 流程图
-待补充  
 
+![类关系图](image/glide_base_flow.png)  
 
 
 ###4. 详细设计
