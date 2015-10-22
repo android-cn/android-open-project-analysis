@@ -12,8 +12,7 @@
 [Glide](https://github.com/bumptech/glide)| [lightSky](https://github.com/lightSky) || 08/06 | 08/08 | 08/19 | 08/26 | 09/03 | 09/07 
 [LitePal](https://github.com/LitePalFramework/LitePal)| [hongyangAndroid](https://github.com/hongyangAndroid) || 09/06 | 09/08 | 09/19 | 09/26 | 10/03 | 10/07 
 [android-async-http](https://github.com/loopj/android-async-http)| [yuanhuihui](https://github.com/yuanhuihui) || 09/06 | 09/08 | 09/19 | 09/26 | 10/03 | 10/07 
-
-
+[circular-progress-button](https://github.com/dmytrodanylyk/circular-progress-button)| [kirilenkoo](https://github.com/kirilenkoo) || 10/23 | 10/25 | 11/01 | 11/6 | 11/8 | 11/15 
 ####3. 二期计划(进行中)
 大家根据自己的时间安排补充 Demo、功能介绍、详细设计、流程图、总体设计、完成 6个阶段的 DeadLine 时间点。  
 
