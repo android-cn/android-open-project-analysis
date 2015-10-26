@@ -297,9 +297,9 @@ retrofit也可以与[Rxjava](https://github.com/ReactiveX/RxJava)联合起来使
   Retrofit整体框架的代码并不多，主要是围绕着converter，CallAdapter设计的整个框架。花了两天时间耐耐心心地把代码也是挺有收获。Retrofit用到的基本技术是动态代理，Java注解。另外如果对设计模式很熟悉的话，读起来感觉就会很简单。整个架构设计的非常好。
 
 
-  [1]: /tool-lib/network/retrofit/images/model.png
-  [2]: /tool-lib/network/retrofit/images/flow-draw.png
-  [3]: /tool-lib/network/retrofit/images/retrofit-uml.png
-  [4]: /tool-lib/network/retrofit/images/call-adapter-uml.png
+  [1]: image/model.png
+  [2]: image/flow-draw.png
+  [3]: /tool-lib/network/retrofit/image/retrofit-uml.png
+  [4]: /tool-lib/network/retrofit/image/call-adapter-uml.png
   [5]: http://a.codekk.com/detail/Android/Caij/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86
 
