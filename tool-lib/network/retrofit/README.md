@@ -3,7 +3,7 @@ Retrofit源码解析
 
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 Retrofit 部分  
 > 项目地址：[Retrofit](https://github.com/square/retrofit)，分析的版本：[35ce778](https://github.com/square/retrofit/commit/e68011938e92d7f50f8e2a64ad0e57788549dd5c)，Demo 地址：[Retrofit Demo](https://github.com/android-cn/android-open-project-demo/tree/master/Retrofit-demo)    
-> 分析者：[houzhi](https://github.com/xxxzhi)，
+> 分析者：[xxxzhi](https://github.com/xxxzhi)，
 
 ###1. 功能介绍
 ####1.1 Retrofit
@@ -293,13 +293,13 @@ retrofit也可以与[Rxjava](https://github.com/ReactiveX/RxJava)联合起来使
 
 正在开发中，主要是通过扩展CallAdapter，将之前Call，转换为rxjava需要的Observable<?>。
 
-###5 总结
+###5 杂谈
   Retrofit整体框架的代码并不多，主要是围绕着converter，CallAdapter设计的整个框架。花了两天时间耐耐心心地把代码也是挺有收获。Retrofit用到的基本技术是动态代理，Java注解。另外如果对设计模式很熟悉的话，读起来感觉就会很简单。整个架构设计的非常好。
 
 
-  [1]: http://houzhi.me/photo/uploads/big/a3760401b2f048dd2ba15957319f2acf.png
-  [2]: http://houzhi.me/photo/uploads/big/4b953d179088156d0a39710c55c01304.png
-  [3]: http://houzhi.me/photo/uploads/big/b57c0728a33d8913262a459785d461df.png
-  [4]: http://houzhi.me/photo/uploads/big/dd16de4ae14635827e856e80b1bc77d8.png
+  [1]: /tool-lib/network/retrofit/images/model.png
+  [2]: /tool-lib/network/retrofit/images/flow-draw.png
+  [3]: /tool-lib/network/retrofit/images/retrofit-uml.png
+  [4]: /tool-lib/network/retrofit/images/call-adapter-uml.png
   [5]: http://a.codekk.com/detail/Android/Caij/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86
 
