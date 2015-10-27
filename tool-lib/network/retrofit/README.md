@@ -294,7 +294,7 @@ retrofit也可以与[Rxjava](https://github.com/ReactiveX/RxJava)联合起来使
 正在开发中，主要是通过扩展CallAdapter，将之前Call，转换为rxjava需要的Observable<?>。
 
 ###5 杂谈
-  Retrofit整体框架的代码并不多，主要是围绕着converter，CallAdapter设计的整个框架。花了两天时间耐耐心心地把代码也是挺有收获。Retrofit用到的基本技术是动态代理，Java注解。另外如果对设计模式很熟悉的话，读起来感觉就会很简单。整个架构设计的非常好。
+  Retrofit整体框架的代码并不多，主要是围绕着converter，CallAdapter设计的整个框架。花了两天时间耐耐心心地把代码也是挺有收获。Retrofit用到的基本技术是动态代理，Java注解，Java范型。另外如果对设计模式很熟悉的话，读起来感觉就会很简单。整个架构设计的非常好。
 
 
   [1]: image/model.png
