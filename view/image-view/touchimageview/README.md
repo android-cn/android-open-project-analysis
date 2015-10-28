@@ -1,65 +1,59 @@
-${ÏîÄ¿Ãû} Ô´Âë½âÎö
+TouchImageView æºç è§£æž
 ====================================
-> ±¾ÎÄÎª [Android ¿ªÔ´ÏîÄ¿Ô´Âë½âÎö](https://github.com/android-cn/android-open-project-analysis) ÖÐ ${ÏîÄ¿Ãû} ²¿·Ö  
- ÏîÄ¿µØÖ·£º[${ÏîÄ¿Ãû}](${ÏîÄ¿Ô­µØÖ·})£¬·ÖÎöµÄ°æ±¾£º[${commitId}.substring(0, 7)](${ÏîÄ¿Ô­µØÖ·}/commit/${commitId} "Commit id is ${commitId}")£¬Demo µØÖ·£º[${ÏîÄ¿Ãû} Demo](https://github.com/android-cn/android-open-project-demo/tree/master/${ÏîÄ¿ Demo µØÖ·})    
- ·ÖÎöÕß£º[${·ÖÎöÕß}](${·ÖÎöÕß Github µØÖ·})£¬·ÖÎö×´Ì¬£ºÎ´Íê³É£¬Ð£¶ÔÕß£º[Trinea](https://github.com/trinea)£¬Ð£¶Ô×´Ì¬£ºÎ´¿ªÊ¼   
+> æœ¬æ–‡ä¸º [Android å¼€æºé¡¹ç›®æºç è§£æž](https://github.com/android-cn/android-open-project-analysis) ä¸­ TouchImageView éƒ¨åˆ†  
+ é¡¹ç›®åœ°å€ï¼š[TouchImageView](https://github.com/MikeOrtiz/TouchImageView)ï¼Œåˆ†æžçš„ç‰ˆæœ¬ï¼š[6dbeac4](https://github.com/MikeOrtiz/TouchImageView/commit/6dbeac4f11936185ba374c73144ac431c23c9aab "Commit id is 6dbeac4f11936185ba374c73144ac431c23c9aab")ï¼ŒDemo åœ°å€ï¼š[TouchImageView Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/touchimageview-demo)    
+ åˆ†æžè€…ï¼š[truistic](https://github.com/truistic)ï¼Œåˆ†æžçŠ¶æ€ï¼šæœªå®Œæˆï¼Œæ ¡å¯¹è€…ï¼š[Trinea](https://github.com/trinea)ï¼Œæ ¡å¯¹çŠ¶æ€ï¼šæœªå¼€å§‹   
 
-½¨Òé´ó¼Ò¿´ÏÂ [Volley](../volley/README.md)¡¢[UIL](../universal-image-loader/README.md)¡¢[Dagger](../dagger/README.md)¡¢[Event Bus](../event-bus/README.md) µÄ·ÖÎö£¬ÁË½â·ÖÎö¸Ãµ½Ê²Ã´³Ì¶È£¬ÒÔ¼°ÀàËÆÁ÷³ÌÍ¼ºÍ×ÜÌåÉè¼Æ¸ÃÔõÃ´×ö¡£  
 
-`¸´ÖÆÒ»·Ýµ½×Ô¼ºµÄÏîÄ¿ÎÄ¼þ¼ÐÏÂ£¬È»ºó¸ù¾Ý×Ô¼ºÏîÄ¿Ìæ»»µô ${} ÄÚÈÝ£¬É¾µô±¾ÐÐ¼°ÉÏÃæÁ½ÐÐ¡£`  
+###1. åŠŸèƒ½ä»‹ç»  
+TouchImageViewç»§æ‰¿äºŽImageViewï¼Œé™¤äº†ImageViewçš„åŠŸèƒ½å¤–ï¼ŒTouchImageviewå¢žåŠ äº†åŒæŒ‡ç¼©æ”¾ã€æ‹–æ‹½ã€åŒå‡»æ”¾å¤§ç­‰åŠŸèƒ½ï¼Œå¹¶ä¼´æœ‰è¾ƒå¥½åŠ¨ç”»æ•ˆæžœã€‚  
 
-###1. ¹¦ÄÜ½éÉÜ  
-¹¦ÄÜ½éÉÜ£¬°üÀ¨¹¦ÄÜ»òÓÅµãµÈ  
+###2. è¯¦ç»†è®¾è®¡
+###2.1 ç±»è¯¦ç»†ä»‹ç»
+ç±»åŠå…¶ä¸»è¦å‡½æ•°åŠŸèƒ½ä»‹ç»ã€æ ¸å¿ƒåŠŸèƒ½æµç¨‹å›¾ï¼Œæµç¨‹å›¾å¯ä½¿ç”¨ [Google Drawing](https://docs.google.com/drawings)ã€[Visio](http://products.office.com/en-us/visio/flowchart-software)ã€[StarUML](http://staruml.io/)ã€‚  
+###2.2 ç±»å…³ç³»å›¾
+ç±»å…³ç³»å›¾ï¼Œç±»çš„ç»§æ‰¿ã€ç»„åˆå…³ç³»å›¾ï¼Œå¯æ˜¯ç”¨ [StarUML](http://staruml.io/) å·¥å…·ã€‚  
 
-**Íê³ÉÊ±¼ä**  
-- `Ò»ÌìÄÚ`Íê³É  
+**å®Œæˆæ—¶é—´**  
+- æ ¹æ®é¡¹ç›®å¤§å°è€Œå®šï¼Œç›®å‰ç®€å•æ ¹æ®é¡¹ç›® Java æ–‡ä»¶æ•°åˆ¤æ–­ï¼Œå®Œæˆæ—¶é—´å¤§è‡´ä¸ºï¼š`æ–‡ä»¶æ•° * 7 / 10`å¤©ï¼Œç‰¹æ®Šé¡¹ç›®å…·ä½“å¯¹å¾…  
 
-###2. ÏêÏ¸Éè¼Æ
-###2.1 ÀàÏêÏ¸½éÉÜ
-Àà¼°ÆäÖ÷Òªº¯Êý¹¦ÄÜ½éÉÜ¡¢ºËÐÄ¹¦ÄÜÁ÷³ÌÍ¼£¬Á÷³ÌÍ¼¿ÉÊ¹ÓÃ [Google Drawing](https://docs.google.com/drawings)¡¢[Visio](http://products.office.com/en-us/visio/flowchart-software)¡¢[StarUML](http://staruml.io/)¡£  
-###2.2 Àà¹ØÏµÍ¼
-Àà¹ØÏµÍ¼£¬ÀàµÄ¼Ì³Ð¡¢×éºÏ¹ØÏµÍ¼£¬¿ÉÊÇÓÃ [StarUML](http://staruml.io/) ¹¤¾ß¡£  
+###3. æµç¨‹å›¾
+ä¸»è¦åŠŸèƒ½æµç¨‹å›¾  
+- å¦‚ Retrofitã€Volley çš„è¯·æ±‚å¤„ç†æµç¨‹ï¼ŒAndroid-Universal-Image-Loader çš„å›¾ç‰‡å¤„ç†æµç¨‹å›¾  
+- å¯ä½¿ç”¨ [Google Drawing](https://docs.google.com/drawings)ã€[Visio](http://products.office.com/en-us/visio/flowchart-software)ã€[StarUML](http://staruml.io/) ç­‰å·¥å…·å®Œæˆï¼Œå…¶ä»–å·¥å…·æŽ¨èï¼Ÿï¼Ÿ  
+- éžæ‰€æœ‰é¡¹ç›®å¿…é¡»ï¼Œä¸éœ€è¦çš„è¯·å…ˆåœ¨ç¾¤é‡Œåé¦ˆ  
 
-**Íê³ÉÊ±¼ä**  
-- ¸ù¾ÝÏîÄ¿´óÐ¡¶ø¶¨£¬Ä¿Ç°¼òµ¥¸ù¾ÝÏîÄ¿ Java ÎÄ¼þÊýÅÐ¶Ï£¬Íê³ÉÊ±¼ä´óÖÂÎª£º`ÎÄ¼þÊý * 7 / 10`Ìì£¬ÌØÊâÏîÄ¿¾ßÌå¶Ô´ý  
+**å®Œæˆæ—¶é—´**  
+- `ä¸¤å¤©å†…`å®Œæˆ  
 
-###3. Á÷³ÌÍ¼
-Ö÷Òª¹¦ÄÜÁ÷³ÌÍ¼  
-- Èç Retrofit¡¢Volley µÄÇëÇó´¦ÀíÁ÷³Ì£¬Android-Universal-Image-Loader µÄÍ¼Æ¬´¦ÀíÁ÷³ÌÍ¼  
-- ¿ÉÊ¹ÓÃ [Google Drawing](https://docs.google.com/drawings)¡¢[Visio](http://products.office.com/en-us/visio/flowchart-software)¡¢[StarUML](http://staruml.io/) µÈ¹¤¾ßÍê³É£¬ÆäËû¹¤¾ßÍÆ¼ö£¿£¿  
-- ·ÇËùÓÐÏîÄ¿±ØÐë£¬²»ÐèÒªµÄÇëÏÈÔÚÈºÀï·´À¡  
+###4. æ€»ä½“è®¾è®¡
+æ•´ä¸ªåº“åˆ†ä¸ºå“ªäº›æ¨¡å—åŠæ¨¡å—ä¹‹é—´çš„è°ƒç”¨å…³ç³»ã€‚  
+- å¦‚å¤§å¤šæ•°å›¾ç‰‡ç¼“å­˜ä¼šåˆ†ä¸º Loader å’Œ Processer ç­‰æ¨¡å—ã€‚  
+- å¯ä½¿ç”¨ [Google Drawing](https://docs.google.com/drawings)ã€[Visio](http://products.office.com/en-us/visio/flowchart-software)ã€[StarUML](http://staruml.io/) ç­‰å·¥å…·å®Œæˆï¼Œå…¶ä»–å·¥å…·æŽ¨èï¼Ÿï¼Ÿ  
+- éžæ‰€æœ‰é¡¹ç›®å¿…é¡»ï¼Œä¸éœ€è¦çš„è¯·å…ˆåœ¨ç¾¤é‡Œåé¦ˆã€‚  
 
-**Íê³ÉÊ±¼ä**  
-- `Á½ÌìÄÚ`Íê³É  
+**å®Œæˆæ—¶é—´**  
+- `ä¸¤å¤©å†…`å®Œæˆ  
 
-###4. ×ÜÌåÉè¼Æ
-Õû¸ö¿â·ÖÎªÄÄÐ©Ä£¿é¼°Ä£¿éÖ®¼äµÄµ÷ÓÃ¹ØÏµ¡£  
-- Èç´ó¶àÊýÍ¼Æ¬»º´æ»á·ÖÎª Loader ºÍ Processer µÈÄ£¿é¡£  
-- ¿ÉÊ¹ÓÃ [Google Drawing](https://docs.google.com/drawings)¡¢[Visio](http://products.office.com/en-us/visio/flowchart-software)¡¢[StarUML](http://staruml.io/) µÈ¹¤¾ßÍê³É£¬ÆäËû¹¤¾ßÍÆ¼ö£¿£¿  
-- ·ÇËùÓÐÏîÄ¿±ØÐë£¬²»ÐèÒªµÄÇëÏÈÔÚÈºÀï·´À¡¡£  
+###5. æ‚è°ˆ
+è¯¥é¡¹ç›®å­˜åœ¨çš„é—®é¢˜ã€å¯ä¼˜åŒ–ç‚¹åŠç±»ä¼¼åŠŸèƒ½é¡¹ç›®å¯¹æ¯”ç­‰ï¼Œéžæ‰€æœ‰é¡¹ç›®å¿…é¡»ã€‚  
 
-**Íê³ÉÊ±¼ä**  
-- `Á½ÌìÄÚ`Íê³É  
+**å®Œæˆæ—¶é—´**  
+- `ä¸¤å¤©å†…`å®Œæˆ  
 
-###5. ÔÓÌ¸
-¸ÃÏîÄ¿´æÔÚµÄÎÊÌâ¡¢¿ÉÓÅ»¯µã¼°ÀàËÆ¹¦ÄÜÏîÄ¿¶Ô±ÈµÈ£¬·ÇËùÓÐÏîÄ¿±ØÐë¡£  
+###6. ä¿®æ”¹å®Œå–„  
+åœ¨å®Œæˆäº†ä¸Šé¢ 5 ä¸ªéƒ¨åˆ†åŽï¼Œç§»åŠ¨æ¨¡å—é¡ºåºï¼Œå°†  
+`2. è¯¦ç»†è®¾è®¡` -> `2.1 æ ¸å¿ƒç±»åŠŸèƒ½ä»‹ç»` -> `2.2 ç±»å…³ç³»å›¾` -> `3. æµç¨‹å›¾` -> `4. æ€»ä½“è®¾è®¡`  
+é¡ºåºå˜ä¸º  
+`2. æ€»ä½“è®¾è®¡` -> `3. æµç¨‹å›¾` -> `4. è¯¦ç»†è®¾è®¡` -> `4.1 ç±»å…³ç³»å›¾` -> `4.2 æ ¸å¿ƒç±»åŠŸèƒ½ä»‹ç»`  
+å¹¶è‡ªè¡Œæ ¡éªŒä¼˜åŒ–ä¸€éï¼Œç¡®è®¤æ— è¯¯åŽå°†æ–‡ç« å¼€å¤´çš„  
+`åˆ†æžçŠ¶æ€ï¼šæœªå®Œæˆ`  
+å˜ä¸ºï¼š  
+`åˆ†æžçŠ¶æ€ï¼šå·²å®Œæˆ`  
 
-**Íê³ÉÊ±¼ä**  
-- `Á½ÌìÄÚ`Íê³É  
+æœ¬æœŸæ ¡å¯¹ä¼šç”±ä¸“é—¨çš„`Buddy`å®Œæˆï¼Œå¯èƒ½ä¼šå¯¹åˆ†æžæ–‡æ¡£è¿›è¡Œä¸€äº›ä¿®æ”¹ï¼Œè¯·å¤§å®¶ç†è§£ã€‚  
 
-###6. ÐÞ¸ÄÍêÉÆ  
-ÔÚÍê³ÉÁËÉÏÃæ 5 ¸ö²¿·Öºó£¬ÒÆ¶¯Ä£¿éË³Ðò£¬½«  
-`2. ÏêÏ¸Éè¼Æ` -> `2.1 ºËÐÄÀà¹¦ÄÜ½éÉÜ` -> `2.2 Àà¹ØÏµÍ¼` -> `3. Á÷³ÌÍ¼` -> `4. ×ÜÌåÉè¼Æ`  
-Ë³Ðò±äÎª  
-`2. ×ÜÌåÉè¼Æ` -> `3. Á÷³ÌÍ¼` -> `4. ÏêÏ¸Éè¼Æ` -> `4.1 Àà¹ØÏµÍ¼` -> `4.2 ºËÐÄÀà¹¦ÄÜ½éÉÜ`  
-²¢×ÔÐÐÐ£ÑéÓÅ»¯Ò»±é£¬È·ÈÏÎÞÎóºó½«ÎÄÕÂ¿ªÍ·µÄ  
-`·ÖÎö×´Ì¬£ºÎ´Íê³É`  
-±äÎª£º  
-`·ÖÎö×´Ì¬£ºÒÑÍê³É`  
+**å®Œæˆæ—¶é—´**  
+- `ä¸¤å¤©å†…`å®Œæˆ  
 
-±¾ÆÚÐ£¶Ô»áÓÉ×¨ÃÅµÄ`Buddy`Íê³É£¬¿ÉÄÜ»á¶Ô·ÖÎöÎÄµµ½øÐÐÒ»Ð©ÐÞ¸Ä£¬Çë´ó¼ÒÀí½â¡£  
-
-**Íê³ÉÊ±¼ä**  
-- `Á½ÌìÄÚ`Íê³É  
-
-**µ½´Ë±ã´ó¹¦¸æ³É£¬¹§Ï²´ó¼Ò^_^**  
+**åˆ°æ­¤ä¾¿å¤§åŠŸå‘Šæˆï¼Œæ­å–œå¤§å®¶^_^**  
