@@ -3,7 +3,7 @@ Retrofit源码解析
 
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 Retrofit 部分  
 > 项目地址：[Retrofit](https://github.com/square/retrofit)，分析的版本：[35ce778](https://github.com/square/retrofit/commit/e68011938e92d7f50f8e2a64ad0e57788549dd5c)，Demo 地址：[Retrofit Demo](https://github.com/android-cn/android-open-project-demo/tree/master/Retrofit-demo)    
-> 分析者：[xxxzhi](https://github.com/xxxzhi)，
+> 分析者：[xxxzhi](https://github.com/xxxzhi)，分析状态：未完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始   
 
 ###1. 功能介绍
 ####1.1 Retrofit
@@ -271,7 +271,50 @@ OkHttpRequestBodyConverter：将OkHttp的RequestBody转化为OkHttp的RequestBod
         handler.post(r);
       }
     }
-```
+``` 
+
+#####4.2.16 Utils
+这是Retrofit中的一个工具类，里面包含了很多范型的检查、操作。另外以及一些基本的工具性的功能。下面是它里面的函数：
+
+- checkNotNull
+`<T> T checkNotNull(T object, String message)`
+检查非空，如果是null，则抛出NullPointerException，内容提示为message。
+
+- closeQuietly
+` static void closeQuietly(Closeable closeable)`
+静默地关闭Closeable对象。不会抛出异常
+
+-  isAnnotationPresent
+`static boolean isAnnotationPresent(Annotation[] annotations,Class<? extends Annotation> cls) `
+判断cls是否是annotations里面的一个实例。如果在则返回true。
+
+- readBodyToBytesIfNecessary
+`static ResponseBody readBodyToBytesIfNecessary(final ResponseBody body) throws IOException `
+如果body非null的话，把整个body读取出来（读取到buffer），返回再返回一个ResponseBody。
+
+- validateServiceInterface
+` static <T> void validateServiceInterface(Class<T> service) `
+验证接口是否有效，这个接口就是用户自定义的接口。如果不是接口，或者里面没有任何函数，则抛出IllegalArgumentException异常。
+
+- getSingleParameterUpperBound
+`public static Type getSingleParameterUpperBound(ParameterizedType type)`
+该函数获取type的单个模版参数的上届。如果type有多个类型，函数会抛出异常，如果模版参数不是WildcardType，则直接返回模版参数类型
+
+- hasUnresolvableType
+`public static boolean hasUnresolvableType(Type type)`
+判断是否有不能分解的类型，比如有TypeVariable，WildcardType等
+- getRawType
+`public static Class<?> getRawType(Type type) `
+这个方法是从Gson里面截取的，获取type的实际类型。
+
+- methodError
+`static RuntimeException methodError(Method method, String message, Object... args)`
+`static RuntimeException methodError(Throwable cause, Method method, String message,Object... args)`
+两个重载函数，抛出方法错误异常
+
+- getCallResponseType
+`static Type getCallResponseType(Type returnType) `
+获取返回Call的返回类型，必须是模版参数类型，并且Call的模版参数不能是retrofit.Response.class。返回getSingleParameterUpperBound(returnType)
 
 ####4.3 扩展
 Retrofit是很适合扩展的，里面设计的Call，以及Converter就是为了方便扩展使用。
