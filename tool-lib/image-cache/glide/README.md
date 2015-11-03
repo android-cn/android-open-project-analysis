@@ -4,7 +4,7 @@
 ====================================
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 Glide 部分  
 项目地址：[Glide](https://github.com/bumptech/glide)，分析的版本：[cb640b2](https://github.com/bumptech/glide/commit/cb640b2221044fe272ea6a249772cf71ba0d5fab)，Demo 地址：[Glide Demo](https://github.com/android-cn/android-open-project-demo/tree/master/${项目 Demo 地址})    
-分析者：[lightSky](https://github.com/lightSky)，分析状态：未完成，校对者：待定，校对状态：未开始   
+分析者：[lightSky](https://github.com/lightSky)，分析状态：未完成，校对者：[Trinea](https://github.com/Trinea)，校对状态：未开始   
 
 ###1. 功能介绍  
 图片加载框架，相对于UniversalImageLoader，Picasso，它还支持video，Gif，SVG格式，支持缩略图请求，旨在打造更好的列表图片滑动体验。Glide有生命周期的概念（主要是对请求进行pause，resume，clear），而且其生命周期与Activity/Fragment的生命周期绑定，支持Volley，OkHttp，并提供了相应的integration libraries，内存更加友好。
@@ -17,10 +17,11 @@
 
 **Glide**  
 使用RequestBuilder创建request的静态接口，并持有Engine，BitmapPool，DiskCache，MemoryCache。
-实现了ComponentCallbacks2，注册了低内存情况的回调。当内存不足的时候，进行相应的内存清理。回调的触发发生在RequestManagerFragment的onLowMemory和onTrimMemory中。
+实现了ComponentCallbacks2，注册了低内存情况的回调。当内存不足的时候，进行相应的内存清理。回调的触发发生在RequestManagerFragment的onLowMemory和onTrimMemory中。  
+更详细的介绍可参考**4.2.1 Glide** 
 
 **GlideBuilder**  
-为Glide创建一些默认值，比如：Engine，MemoryCache，DiskCache，RequestOptions，GlideExecutor，MemorySizeCalculator
+为Glide设置一些默认配置，比如：Engine，MemoryCache，DiskCache，RequestOptions，GlideExecutor，MemorySizeCalculator
 
 **GlideModule**  
 可以通过GlideBuilder进行一些延迟的配置和ModelLoaders的注册。
@@ -30,6 +31,14 @@
 GlideModule是不能指定调用顺序的。因此在创建多个GlideModule的时候，要注意不同Module之间的setting不要冲突了。
 如何创建Module，请参看Demo
 
+**Engine**  
+负责任务创建，发起，回调，资源的管理
+详细介绍请参考**4.2.3 Engine**
+
+**DecodeJob**  
+调度任务的核心类，整个请求的繁重工作都在这里完成,处理来自缓存或者原始的资源，应用转换动画以及transcode。  
+详细介绍请参考**4.2.5 DecodeJob**  
+
 **ModelLoader**  
 各种资源的ModelLoader<Model, Data> 
 
@@ -38,6 +47,8 @@ GlideModule是不能指定调用顺序的。因此在创建多个GlideModule的�
 - 将任意复杂的model转换为可以被decode的数据类型
 - 允许model结合View的尺寸获取特定大小的资源
 
+更详细的介绍请参考 **4.2.19 ModelLoader**  
+
 **Resource**  
 对资源进行包装的接口，提供get，recycle，getSize，以及原始类的getResourceClass方法。
 resource包下也就是各种资源：bitmap，bytes，drawable，file，gif，以及相关解码器，转换器
@@ -45,23 +56,18 @@ resource包下也就是各种资源：bitmap，bytes，drawable，file，gif，�
 **Target**  
 request的载体，各种资源对应的加载类，含有生命周期的回调方法，方便开发人员进行相应的准备以及资源回收工作。
 
-**数据及处理相关概念**  
+**ThumbnailRequestCoordinator**  
+请求协调器，包含两个请求：缩略图请求＋完整图片请求  
+
+**数据相关概念**  
 
 - data ：代表原始的，未修改过的资源，对应dataClass
 - resource : 修改过的资源，对应resourceClass
 - transcoder : 资源转换器，比如 BitmapBytesTranscoder（Bitmap转换为Bytes），GifDrawableBytes- Transcoder
 - ResourceEncoder : 持久化数据的接口，这里注意下，该类并不与decoder相对应，而是用于本地缓存的接口
 - ResourceDecoder : 数据解码器,比如ByteBufferGifDecoder（将ByteBuffer转换为Gif），StreamBitmapDecoder（Stream转换为Bitmap）
-
-dataClass---(decoder解码)-->resourceClass
-
-**ResourceTranscoder**  
-资源转换器，将给定的资源类型，转换为另一种资源类型，比如将Bitmap转换为Drawable，Bitmap转换为Bytes  
-
-resourceClass ---(transcoder转换)---> transcodeClass  
-  
-**Transformation**  
-比如对图片进行FitCenter，CircleCrop，CenterCrop的transformation，或者根据给定宽高对Bitmap进行处理的BitmapDrawableTransformation  
+- ResourceTranscoder : 资源转换器，将给定的资源类型，转换为另一种资源类型，比如将Bitmap转换为Drawable，Bitmap转换为Bytes  
+- Transformation : 比如对图片进行FitCenter，CircleCrop，CenterCrop的transformation，或者根据给定宽高对Bitmap进行处理的BitmapDrawableTransformation  
   
 **Registry**  
 对Glide所支持的Encoder ，Decoder ，Transcoder组件进行注册
@@ -72,13 +78,12 @@ resourceClass ---(transcoder转换)---> transcodeClass
 Registry.register(Bitmap.class, BitmapDrawable.class,new BitmapDrawableTranscoder(resources, bitmapPool))
 ```
 
-**ThumbnailRequestCoordinator**  
-请求协调器，包含两个请求：缩略图请求＋完整图片请求  
+关于Decoder，Transcoder和Registry的详细介绍请参考**4.2.18 Registry**  
 
 
 ###3. 流程图
 
-![类关系图](image/glide_base_flow.png)  
+![流程图](image/glide_base_flow.jpg)  
 
 
 ###4. 详细设计
@@ -116,7 +121,7 @@ load(@Nullable byte[] model)
 **整个请求的创建流程图**  
 ![请求的创建流程图](image/glide_request_build_flow.jpg)  
 
-#####4.2.3 Engine
+###4.2.3 Engine
 任务创建，发起，回调，管理存活和缓存的资源
 
 **主要函数**  
@@ -194,14 +199,14 @@ ResourceCallback cb)**
 
 ####主要方法  
 
-**(1) runWrapped()**
+**(1) runWrapped()**  
 根据不同的runReason执行不同的任务，共两种任务类型：
 
-- runGenerators():load数据
+- runGenerators():load数据  
 - decodeFromRetrievedData()：处理已经load到的数据
 
 **RunReason**  
-再次执行任务的原因，三种枚举值：
+再次执行任务的原因，三种枚举值：  
 
 - INITIALIZE:第一次调度任务
 - WITCH_TO_SOURCE_SERVICE:本地缓存策略失败，尝试重新获取数据，两种情况；当stage为Stage.SOURCE，或者获取数据失败并且执行和回调发生在了不同的线程
@@ -227,27 +232,27 @@ ResourceCallback cb)**
 - RESOURCE
 - AUTOMATIC（默认方式，依赖于DataFetcher的数据源和ResourceEncoder的EncodeStrategy）
 
-**(3) getNextGenerator**
+**(3) getNextGenerator**  
 根据Stage获取到相应的Generator后会执行currentGenerator.startNext()，如果中途startNext返回true，则直接回调，否则最终会得到SOURCE的stage，重新调度任务
 
-**(4) startNext**
+**(4) startNext**  
 从当前策略对应的Generator获取数据，数据获取成功则回调DecodeJob的`onDataFetcherReady`对资源进行处理。否则尝试从下一个策略的Generator获取数据。
 
-**(5) reschedule**  
+**(5) reschedule**   
 重新调度当前任务  
 
-**(6) decodeFromRetrievedData**
+**(6) decodeFromRetrievedData**  
 获取数据成功后，进行处理，内部调用的是`runLoadPath(Data data, DataSource dataSource,LoadPath<Data, ResourceType, R> path)`    
 
-**(7) DecodeCallback.onResourceDecoded**  
+**(7) DecodeCallback.onResourceDecoded**    
 decode完成后的回调，对decode的资源进行transform
 path.load(rewinder, options, width, height,
 new DecodeCallback<ResourceType>(dataSource));
 
-**数据加载流程图**  
+**数据加载流程图**   
 class![数据加载流程图](image/glide_load_flow.jpg)
 
-####4.2.6  LoadPath
+####4.2.6  LoadPath  
 根据给定的数据类型的DataFetcher尝试获取数据，然后尝试通过一个或多个decodePath进行decode。  
 
 ####4.2.7  DecodePath
@@ -291,8 +296,8 @@ class![数据加载流程图](image/glide_load_flow.jpg)
 用于注册，同步所有监听了Activity或者Fragment的生命周期事件的listener的帮助类。  
 
 ####4.2.16 DataFetcher
-每一次通过ModelLoader加载资源的时候都会创建的实例。  
-`loadData` ：异步方法，如果目标资源没有在缓存中找到时才会被调用,cancel方法也是。 
+每一次通过ModelLoader加载资源的时候都会创建的实例。    
+`loadData` ：异步方法，如果目标资源没有在缓存中找到时才会被调用,cancel方法也是。     
 `cleanup`：清理或者回收DataFetcher使用的资源，在loadData提供的数据被decode完成后调用。
 
 **主要方法**  
@@ -300,7 +305,7 @@ class![数据加载流程图](image/glide_load_flow.jpg)
 用于数据加载结果的回调,三种Generator实现了该接口    
 ```java
 //数据load完成并且可用时回调
-void onDataReady(@Nullable T data);
+void onDataReady(@Nullable T data);  
 //数据load失败时回调
 void onLoadFailed(Exception e);
 ```
@@ -326,15 +331,15 @@ MEMORY_CACHE,
 }
 ```
 
-####4.2.17  DataFetcherGenerator
+####4.2.17  DataFetcherGenerator  
 根据注册的ModelLoaders和model生成一系列的DataFetchers。
 
-**FetcherReadyCallback**
+**FetcherReadyCallback**  
 DecodeJob实现的接口，包含以下方法：  
-`reschedule`：在Glide自己的线程上再次调用startNext
-当Generator从DataFetcher完成loadData时回调，含有的方法：
-`onDataFetcherReady`：load完成
-`onDataFetcherFailed`：load失败
+`reschedule`：在Glide自己的线程上再次调用startNext  
+当Generator从DataFetcher完成loadData时回调，含有的方法：  
+`onDataFetcherReady`：load完成  
+`onDataFetcherFailed`：load失败  
 
 ####4.2.18  Registry  
 管理组件（数据类型＋数据处理）的注册
@@ -350,14 +355,17 @@ DecodeJob实现的接口，包含以下方法：
 ![数据处理流程图](image/glide_data_process_flow.jpg)
 
 Glide在初始化的时候，通过Registry注册以下所有组件， 每种组件由功能及处理的资源类型组成：
-- loader:     model＋data＋ModelLoaderFactory  
-- decoder:    dataClass＋resourceClass＋decoder  
-- transcoder: resourceClass＋transcodeClass  
-- encoder:    dataClass＋encoder  
-- resourceEncoder resourceClass + encoder
-- rewind :    缓冲区处理
 
-Decoder | Source | Resource | 
+组件| 构成
+:--|:-- |  
+loader |   model＋data＋ModelLoaderFactory  
+decoder |    dataClass＋resourceClass＋decoder  
+transcoder |  resourceClass＋transcodeClass  
+encoder  |    dataClass＋encoder  
+resourceEncoder  | resourceClass + encoder
+rewind  |    缓冲区处理
+
+Decoder | 数据源 | 解码后的资源 | 
 :--|:-- |:--  |
 BitmapDrawableDecoder   | 	Bitmap              |		Drawable  
 StreamBitmapDecoder     |  	InputStream         |  	Bitmap	
@@ -369,34 +377,36 @@ SvgDecoder		          |		InputStream	        |   SVG
 VideoBitmapDecoder 	    |	  ParcelFileDescriptor|	  Bitmap  
 FileDecoder             |		File                | 	file    
   
-    
+  
 Transcoder | 数据源 | 转换后的资源 | 
 :--|:-- |:--  |
 BitmapBytesTranscoder   | 	Bitmap              |		Bytes  
 BitmapDrawableTranscoder     |  	Bitmap         |  	Drawable	
 GifDrawableBytesTranscoder |	  GifDrawable          |  	Bytes  
 SvgDrawableTranscoder | 	Svg          |	 	Drawable  
-
+  
+  
 `decode＋transcode`的处理流程称为decodePath。  
-LoadPath是对decodePath的封装，持有一个decodePath的List。在通过modelloader.fetchData获取到data后，会对data进行decode，具体的decode操作就是通过loadPath来完成。
-resourceClass就是asBitmap，asDrawable的bitmap或者drawable
-
+LoadPath是对decodePath的封装，持有一个decodePath的List。在通过modelloader.fetchData获取到data后，会对data进行decode，具体的decode操作就是通过loadPath来完成。resourceClass就是asBitmap，asDrawable方法的参数。  
+  
 **ModelLoaderRegistry**  
 持有多个ModelLoader，model和数据类型按照优先级进行处理
 
 loader注册示例：
+```java
 registry  
 .append(Integer.class, InputStream.class, new ResourceLoader.StreamFactory())
 .append(GifDecoder.class, GifDecoder.class, new UnitModelLoader.Factory<GifDecoder>())
+```
 
 **主要函数**  
-**(1) register，append，prepend**
+**(1) register，append，prepend**  
 注册各种功能的组件
 
-**(2) getRegisteredResourceClasses(Class<Model> modelClass, Class<TResource> resourceClass, Class<Transcode> transcodeClass)**
+**(2) getRegisteredResourceClasses(Class<Model> modelClass, Class<TResource> resourceClass, Class<Transcode> transcodeClass)**  
 获取Glide初始化时注册的所有resourceClass
 
-**(3) getModelLoaders(Model model)**
+**(3) getModelLoaders(Model model)**  
 
 **(4) hasLoadPath(Class<?> dataClass)**  
 判断注册的组件是否可以处理给定的dataClass  
@@ -404,8 +414,8 @@ registry
 - 直接调用`getLoadPath(dataClass, resourceClass, transcodeClass)`  
 - 该方法先从loadPathCache缓存中尝试获取LoadPath,如果没有，则先根据dataClass, resourceClass, transcodeClass获取所有的decodePaths，如果decodePaths不为空，则创建一个`LoadPath<>(dataClass, resourceClass, transcodeClass, decodePaths,exceptionListPool)` 并缓存起来。
 
-**(5) getDecodePaths**
-根据dataClass, resourceClass, transcodeClass从注册的组件中找到所有可以处理的组合decodePath。就是将满足条件的不同处理阶段（modelloader，decoder，transcoder）的组件组合在一起。满足处理条件的有可能是多个组合。因为decodePath的功能是进行decode和transcode，所以getDecodePath的目的就是要找到符合条件的decoder和transcoder然后创建DecodePath。
+**(5) getDecodePaths**  
+根据dataClass, resourceClass, transcodeClass从注册的组件中找到所有可以处理的组合decodePath。就是将满足条件的不同处理阶段（modelloader，decoder，transcoder）的组件组合在一起。满足处理条件的有可能是多个组合。因为decodePath的功能是进行decode和transcode，所以getDecodePath的目的就是要找到符合条件的decoder和transcoder然后创建DecodePath。  
 
 
 ####4.2.19   ModelLoader<Model, Data>
@@ -413,28 +423,28 @@ registry
 ModelLoader是一个工厂接口。将任意复杂的model转换为准确具体的可以被DataFetcher获取的数据类型。
 每一个model内部实现了一个ModelLoaderFactory，内部实现就是将model转换为Data
 
-**重要成员**
-`LoadData<Data>`  
+**重要成员**  
+`LoadData<Data>`    
 Key sourceKey，用于表明load数据的来源。
 List<Key> alternateKeys：指向相应的变更数据
 DataFetcher<Data> fetcher：用于获取不在缓存中的数据
 
-**重要方法**
+**重要方法**  
 
-**(1) buildLoadData**
+**(1) buildLoadData**  
 返回一个LoadData
 
-**(2) handles(Model model)**
+**(2) handles(Model model)**  
 判断给定的model是否可以被当前modelLoader处理
 
-####4.2.20  ModelLoaderFactory 
+####4.2.20  ModelLoaderFactory   
 根据给定的类型，创建不同的ModelLoader，因为它会被静态持有，所以不应该维持非应用生命周期的context或者对象。
 
-####4.2.21 DataFetcherGenerator
-通过注册的DataLoader生成一系列的DataFetcher
-`DataCacheGenerator`：根据未修改的缓存数据生成DataFetcher
-`ResourceCacheGenerator`：根据已处理的缓存数据生成DataFetcher
-`SourceGenerator`：根据原始的数据和给定的model通过ModelLoader生成的DataFetcher
+####4.2.21 DataFetcherGenerator  
+通过注册的DataLoader生成一系列的DataFetcher  
+`DataCacheGenerator`：根据未修改的缓存数据生成DataFetcher  
+`ResourceCacheGenerator`：根据已处理的缓存数据生成DataFetcher  
+`SourceGenerator`：根据原始的数据和给定的model通过ModelLoader生成的DataFetcher  
 
 ####4.2.22 DecodeHelper
 getPriority
@@ -467,10 +477,10 @@ getHeight
 可以参考RequestManager的两个方法：
 `pauseRequestsRecursive`,`resumeRequestsRecursive`  ，
 
-**resumeRequestsRecursive**
+**resumeRequestsRecursive**  
 递归重启所有RequestManager下的所有request。
 
-**pauseRequestsRecursive**
+**pauseRequestsRecursive**  
 递归所有childFragments的RequestManager的 pauseRequest方法。
 childFragments表示那些依赖当前Activity或者Fragment的所有fragments
 
@@ -478,13 +488,13 @@ childFragments表示那些依赖当前Activity或者Fragment的所有fragments
 - 如果当前Context是Fragment，那么依附它的所有childFragment的请求都会中止  
 - 如果当前的Context是ApplicationContext，或者当前的Fragment处于detached状态，那么只有当前的RequestManager的请求会被中止
 
-**注意：**
+**注意：**  
 在Android 4.2之前，如果当前的context是Fragment，那么它的childFragment的请求并不会被中止。但v4的support Fragment是可以的。
 
-**如何管理没有ChildFragment的请求？**
+**如何管理没有ChildFragment的请求？**  
 很简单，只会存在当前context自己的RequestManagerFragment，那么伴随当前上下文的生命周期触发，会调用RequestManagerFragment的RequestManager相应的lefecycle方法实现请求的控制，资源回收。
 
-**为何每一个上下文会创建自己的RequestManagerFragment？**
+**为何每一个上下文会创建自己的RequestManagerFragment？**  
 因为`RequestManagerRetriever.getSupportRequestManagerFragment(fm)`是通过FragmentManager来获取的
 
 - 如果传入到Glide.with(...)的context是activity  
@@ -496,7 +506,7 @@ childFragments表示那些依赖当前Activity或者Fragment的所有fragments
 
 关键在于每一个上下文拥有一个自己的RequestManagerFragment。而传入的context不同，会返回不同的RequestManagerFragment，顶层上下文会保存所有的childRequestManagerFragments。
 
-#### 请求的管理是如何巧妙的设计 ?
+#### 请求的管理是如何巧妙的设计 ?  
 ```java  
 public interface Lifecycle {
 /**
@@ -514,7 +524,7 @@ void addListener(LifecycleListener listener);
 void removeListener(LifecycleListener listener);
 }
 ```
-
+  
 RequestManagerFragment初始化时会创建一个ActivityFragmentLifecycle对象传给Request Manager。RequestManager会通过ActivityFragmentLifecycle的 addListener方法注册一些listener。当RequestManagerFragment生命周期方法执行的时候，会遍历所有注册的LifecycleListener并执行相应生命周期方法。
 
 **RequestManager注册的LifecycleListener类型**    
@@ -527,7 +537,7 @@ RequestManager自己实现了LifecycleListener。主要的请求管理也是在�
 另外Target接口也是直接继承自LifecycleListener，因此开发者可以监听资源处理的整个过程，在不同阶段进行相应的处理。
 
 ###5. 杂谈
-Glide相对于简洁的UML来说是相当的复杂，无论从设计上还是细节实现上，可能和Glide的强大功能有关。一些设计概念很少碰到，比如register，loadpath，整个数据处理流程的拆分三个部分，每个部分所支持的数据全部通过组件注册的方式来支持，很多方法或者构造函数会接收10多个参数，看着着实眼花缭乱。这里的分析把大体的功能模块分析了，比如请求的统一管理，生命周期的同步，具体的实现细节还有很大一部分的工作量。对于开源项目的初学者来说并不是一个好的项目，门槛太高。但其确实功能强大，效率更高。本篇分析也借鉴了Trinea在2015 MDCC上分享的文章[开源选型之 Android 三大图片缓存原理、特性对比](http://mp.weixin.qq.com/s?__biz=MzAxNjI3MDkzOQ==&mid=400056342&idx=1&sn=894325d70f16a28bfe8d6a4da31ec304&scene=2&srcid=10210byVbMGLHg7vXUJLgHaR&from=timeline&isappinstalled=0#rd)。
+Glide优点在于其生命周期的管理，资源类型的支持多。但相对于简洁的UniversalImageLoader和Picasso，无论从设计上还是细节实现上，都复杂的多，从代码的实现上可以看出，正式因为Glide的生命周期管理，内存友好，资源类型支持多这些优点相关。一些设计概念很少碰到，比如decodePath，loadpath。整个数据处理流程的拆分三个部分，每个部分所支持的数据以及处理方式全部通过组件注册的方式来支持，很多方法或者构造函数会接收10多个参数，看着着实眼花缭乱。这里的分析把大体的功能模块分析了，比如请求的统一管理，生命周期的同步，具体的实现细节还需要一部分的工作量。对于开源项目的初学者来说，Glide并不是一个好的项目，门槛太高。也因为如此，所以Glide的使用并没有其它几种图片库的使用那么广泛，相关文档很欠缺，本篇分析希望成为一个很好的参考，也希望大家提出自己的建议和意见，继续优化，让更多开发者能更快了解，使用这个强大的库。
 
 
 ###参考文档

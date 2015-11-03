@@ -13,7 +13,7 @@
 - 该文件夹以`开源库名-demo`命名，全小写，单词间用`-`连接。  
 如果已有该文件夹，则以`开源库名-demo-${GitHub 用户名}`命名，如`event-bus-demo-trinea`；  
 - 示例工程要求覆盖到该开源项目所有功能，不允许拷贝官方 Demo；  
-- 若没有自己的 Code Format 文件，使用 [common](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/common) 文件夹下 code format，code template 文件；  
+- Android Studio 用默认的格式化文件，Eclipse 用 [common](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/common) 文件夹下 code format，code template 文件；  
 - 文件夹下需要有名为 apk 的子文件夹，用于存放可运行 APK 文件；  
 - 文件夹下需要有名为 README.md 的介绍文件，其中包含以下内容。  
 (1). Demo Download  
