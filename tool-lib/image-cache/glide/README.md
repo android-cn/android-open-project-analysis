@@ -259,12 +259,80 @@ class![数据加载流程图](image/glide_load_flow.jpg)
 根据指定的数据类型对resource进行decode和transcode
 
 ####4.2.8 RequestTracker
-追踪，取消，重启请求
+追踪，取消，重启失败，正在处理或者已经完成的请求  
+
+**重要方法**  
+
+**(1) resumeRequests**   
+重启所有未完成或者失败的请求，Activity/Fragment的生命周期`onStart`的时候，会触发RequestManager调用该方法 
+
+**(2) pauseRequests**   
+停止所有的请求，Activity/Fragment的生命周期`onStop`的时候，会触发RequestManager调用该方法。  
+
+**(3) clearRequests**   
+取消所有的请求并清理它们的资源,Activity/Fragment的生命周期`onDestory`的时候，会触发RequestManager调用该方法。  
+
+**(4) restartRequests**   
+重启失败的请求，取消并重新启动进行中的请求,网络重新连接的时候，会调用该方法重启请求。  
+
+**(5) clearRemoveAndRecycle**  
+停止追踪指定的请求，清理，回收相关资源。
+
 
 ####4.2.9 TargetTracker
-持有当前所有存活的Target，并触发Target相应的生命周期方法。方便开发者在回调中，进行相应的处理。  
+持有当前所有存活的Target，并触发Target相应的生命周期方法。方便开发者在整个请求过程的不同状态中进行回调，做相应的处理。  
 
-####4.2.10 RequestManagerFragment  
+####4.2.10  RequestManager 
+核心类之一，用于Glide管理请求。  
+可通过Activity/Fragment/Connectivity的生命周期方法进行stop,start和restart请求。
+
+**重要方法**  
+**(1) resumeRequests**  
+在onStart方法中调用，其实是通过requestTracker处理,同时也会调用`targetTracker.onStart();`回调Target相应周期方法。
+
+**(2) pauseRequests**
+在onStop方法中调用，其实是通过requestTracker处理，同时也会调用`targetTracker.onStop();`回调Target相应周期方法  
+
+**(3) onDestroy**
+调用`targetTracker.onDestroy();`，`requestTracker.clearRequests();`，`lifecycle.removeListener(this);`等进行资源清理。  
+
+**(4) resumeRequestsRecursive**  
+递归重启所有RequestManager下的所有request。
+
+**(5) pauseRequestsRecursive**  
+递归所有childFragments的RequestManager的 pauseRequest方法。
+childFragments表示那些依赖当前Activity或者Fragment的所有fragments
+
+- 如果当前Context是Activity，那么依附它的所有fragments的请求都会中止  
+- 如果当前Context是Fragment，那么依附它的所有childFragment的请求都会中止  
+- 如果当前的Context是ApplicationContext，或者当前的Fragment处于detached状态，那么只有当前的RequestManager的请求会被中止
+
+**注意：**  
+在Android 4.2之前，如果当前的context是Fragment，那么它的childFragment的请求并不会被中止。但v4的support Fragment是可以的。
+
+很重要的一个相关类:`RequestManagerFragment`。  
+当Glide.with(context)获取RequestManager的时候，Glide都会先尝试获取当前上下文相关的RequestManagerFragment。  
+
+RequestManagerFragment初始化时会创建一个ActivityFragmentLifecycle对象，并在创建自己的Request Manager的时候同时传入，这样ActivityFragmentLifecycle便成了它们之间的纽带。RequestManagerFragment生命周期方法触发的时候，就可以通过ActivityFragmentLifecycle同时触发RequestManager相应的方法，执行相应的操作。  
+
+Request Manager通过ActivityFragmentLifecycle的addListener方法注册一些LifecycleListener。当RequestManagerFragment生命周期方法执行的时候，触发ActivityFragmentLifecycle的相应方法，这些方法会遍历所有注册的LifecycleListener并执行相应生命周期方法。
+
+RequestManager注册的LifecycleListener类型
+
+- RequestManager自身  
+RequestManager自己实现了LifecycleListener。主要的请求管理也是在这里处理的。
+
+- RequestManagerConnectivityListener，该listener也实现了LifecycleListener，用于网络连接时进行相应的请求恢复。 这里的请求是指那些还未完成的请求，已经完成的请求并不会重新发起。
+另外Target接口也是直接继承自LifecycleListener，因此RequestManager在触发相应的生命周期方法的时候也会调用所有Target相应的生命周期方法，这样开发者可以监听资源处理的整个过程，在不同阶段进行相应的处理。
+
+生命周期的管理主要由`RequestTracker`和`TargetTracker`处理。
+
+
+生命周期事件的传递：  
+待补充
+
+
+####4.2.11 RequestManagerFragment  
 与当前上下文绑定的Fragment，统一管理当前上下文下的所有childFragment的请求。  
 每一个Context都会拥有一个RequestManagerFragment，在自身的Fragment生命周期方法中触发listener相应的生命周期方法。 
 复写了onLowMemory和onTrimMemory，低内存情况出现的时候，会调用RequestManager的相应方法进行内存清理。  
@@ -275,16 +343,12 @@ class![数据加载流程图](image/glide_load_flow.jpg)
 - memoryCache： 
 - byteArrayPool： 
 
-####4.2.11  RequestManager 
-核心类之一，统一管理当前context相关的所有请求。
-很重要的一个相关类:`RequestManagerFragment`。
-当Glide.with(context)获取RequestManager的时候，Glide都会先尝试获取当前上下文相关的RequestManagerFragment。
 
 ####4.2.12 RequestManagerRetriever 
 根据不同的Context获取相应的RequestManager，context可以是FragmentActivity，Activity，ContextWrapper。
 
 ####4.2.13 RequestManagerTreeNode
-上文提到获取所有childRequestManagerFragments的RequestManager就是通过该类获得，就一个方法：getDescendants，作用就是基于给定的Context，获取所有的RequestManager。上下文层级由Activity或者Fragment获得，ApplicationContext的上下文不会提供RequestManager的层级关系，而且Application生命周期过长，所以生命周期的控制只针对于Activity和Fragment。
+上文提到获取所有childRequestManagerFragments的RequestManager就是通过该类获得，就一个方法：getDescendants，作用就是基于给定的Context，获取所有层级相关的RequestManager。上下文层级由Activity或者Fragment获得，ApplicationContext的上下文不会提供RequestManager的层级关系，而且Application生命周期过长，所以Glide中对请求的控制只针对于Activity和Fragment。
 
 ####4.2.14 LifecycleListener  
 用于监听Activity或者Fragment的生命周期方法的接口，基本上请求相关的所有类都实现了该接口
@@ -459,11 +523,11 @@ getHeight
 
 关键就是`RequestManagerFragment`，用于绑定当前上下文以及同步生命周期。比如当前的context为activity，那么activity对应的RequestManagerFragment就与宿主activity的生命周期绑定了。同样Fragment对应的RequestManagerFragment的生命周期也与宿主Fragment保持一致。
 
-#### 请求管理的实现  
+####五 请求管理的实现  
 `pauseRequests`，`resumeRequests`  
-在RequestManagerFragment对应Request Manager的生命周期方法中触发，最终由`RequestTracker`和`TargetTracker`处理。
+在RequestManagerFragment对应Request Manager的生命周期方法中触发，
 
-**如何控制当前上下文的所有ChildFragment的请求？**
+#####5.1 如何控制当前上下文的所有ChildFragment的请求？
 **情景：**  
 假设当前上下文是Activity（Fragment类似）创建了多个Fragment，每个Fragment通过Glide.with(fragment.this)方式加载图片。
 
@@ -474,27 +538,10 @@ getHeight
 
 同理，如果当前context是Fragment，Fragment对应的RequestManagerFragment可以获取它自己所有的Child Fragment的RequestManagerFragment。
 
-可以参考RequestManager的两个方法：
-`pauseRequestsRecursive`,`resumeRequestsRecursive`  ，
-
-**resumeRequestsRecursive**  
-递归重启所有RequestManager下的所有request。
-
-**pauseRequestsRecursive**  
-递归所有childFragments的RequestManager的 pauseRequest方法。
-childFragments表示那些依赖当前Activity或者Fragment的所有fragments
-
-- 如果当前Context是Activity，那么依附它的所有fragments的请求都会中止  
-- 如果当前Context是Fragment，那么依附它的所有childFragment的请求都会中止  
-- 如果当前的Context是ApplicationContext，或者当前的Fragment处于detached状态，那么只有当前的RequestManager的请求会被中止
-
-**注意：**  
-在Android 4.2之前，如果当前的context是Fragment，那么它的childFragment的请求并不会被中止。但v4的support Fragment是可以的。
-
-**如何管理没有ChildFragment的请求？**  
+#####5.2 如何管理没有ChildFragment的请求？  
 很简单，只会存在当前context自己的RequestManagerFragment，那么伴随当前上下文的生命周期触发，会调用RequestManagerFragment的RequestManager相应的lefecycle方法实现请求的控制，资源回收。
 
-**为何每一个上下文会创建自己的RequestManagerFragment？**  
+#####5.3 为何每一个上下文会创建自己的RequestManagerFragment ？
 因为`RequestManagerRetriever.getSupportRequestManagerFragment(fm)`是通过FragmentManager来获取的
 
 - 如果传入到Glide.with(...)的context是activity  
@@ -506,37 +553,7 @@ childFragments表示那些依赖当前Activity或者Fragment的所有fragments
 
 关键在于每一个上下文拥有一个自己的RequestManagerFragment。而传入的context不同，会返回不同的RequestManagerFragment，顶层上下文会保存所有的childRequestManagerFragments。
 
-#### 请求的管理是如何巧妙的设计 ?  
-```java  
-public interface Lifecycle {
-/**
-* Adds the given listener to the set of listeners managed by this Lifecycle implementation.
-*/
-void addListener(LifecycleListener listener);
-
-/**
-* Removes the given listener from the set of listeners managed by this Lifecycle implementation,
-* returning {@code true} if the listener was removed sucessfully, and {@code false} otherwise.
-*
-* <p>This is an optimization only, there is no guarantee that every added listener will
-* eventually be removed.
-*/
-void removeListener(LifecycleListener listener);
-}
-```
-  
-RequestManagerFragment初始化时会创建一个ActivityFragmentLifecycle对象传给Request Manager。RequestManager会通过ActivityFragmentLifecycle的 addListener方法注册一些listener。当RequestManagerFragment生命周期方法执行的时候，会遍历所有注册的LifecycleListener并执行相应生命周期方法。
-
-**RequestManager注册的LifecycleListener类型**    
-
-- RequestManager自身  
-RequestManager自己实现了LifecycleListener。主要的请求管理也是在这里处理的。 
-- RequestManagerConnectivityListener，该listener也实现了LifecycleListener，用于网络连接时进行相应的请求恢复。
-这里的请求是指那些还未完成的请求，已经完成的请求并不会重新发起。
-
-另外Target接口也是直接继承自LifecycleListener，因此开发者可以监听资源处理的整个过程，在不同阶段进行相应的处理。
-
-###5. 杂谈
+###六. 杂谈
 Glide优点在于其生命周期的管理，资源类型的支持多。但相对于简洁的UniversalImageLoader和Picasso，无论从设计上还是细节实现上，都复杂的多，从代码的实现上可以看出，正式因为Glide的生命周期管理，内存友好，资源类型支持多这些优点相关。一些设计概念很少碰到，比如decodePath，loadpath。整个数据处理流程的拆分三个部分，每个部分所支持的数据以及处理方式全部通过组件注册的方式来支持，很多方法或者构造函数会接收10多个参数，看着着实眼花缭乱。这里的分析把大体的功能模块分析了，比如请求的统一管理，生命周期的同步，具体的实现细节还需要一部分的工作量。对于开源项目的初学者来说，Glide并不是一个好的项目，门槛太高。也因为如此，所以Glide的使用并没有其它几种图片库的使用那么广泛，相关文档很欠缺，本篇分析希望成为一个很好的参考，也希望大家提出自己的建议和意见，继续优化，让更多开发者能更快了解，使用这个强大的库。
 
 
