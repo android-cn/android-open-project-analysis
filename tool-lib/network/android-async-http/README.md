@@ -1,8 +1,5 @@
 
->  An asynchronous, callback-based Http client for Android built on top of Apache's HttpClient libraries. 
-
-
-android-async-http 源码解析
+android-async-http 源码原理解析
 ====================================
 
 > 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 android-async-http 部分  
@@ -23,7 +20,7 @@ Http响应处理者(HttpResponseHandler)： 可以针对性的生成不同数据
 
 重试处理者(RetryHandler)：可以针对不同的异常情况根据自身预设定的white&black exception List 进行智能筛选，选择需要重试的请求。   
 
-拦截器(Interceptor): 在该框架中的应用类似于Spring中的 aop(Aspect Oriented Programming), 多次设定与Httpclient属性中。
+拦截器(Interceptor): 在该框架中的应用类似于Spring中的 aop(Aspect Oriented Programming), 多次设定于Httpclient属性中。
 
 ## 特点： 
 
@@ -131,7 +128,7 @@ Http响应处理者(HttpResponseHandler)： 可以针对性的生成不同数据
 
 ```
    
-   	private Handler handler;  /// 内部类 ResponderHandler 的赋值对象， 负责发送，处理消息。
+    private Handler handler;  /// 内部类 ResponderHandler 的赋值对象， 负责发送，处理消息。
    
     private boolean useSynchronousMode; 
    
@@ -679,4 +676,4 @@ protected abstract JSON_TYPE parseResponse(String rawJsonData, boolean isFailure
 
 # 5. 杂谈总结
 
-第一次大胆分析大神的源码，整个分析过程一共使用了三天，包括与设计图的制作， 中间还有一些部分不太了解，有很多不对的地方，请大家批评指正 。框架整个设计框架巧妙的使用了基于Apache HttpClient框架的回调。充分使用了Httpclient 中的各种 handler ， interceptor 将整个数据响应过程通过接口使其可扩展化，过程化，结构化。 而框架整体看起来又浑然一体，的确很牛气。
+第一次大胆分析大神的源码，整个分析过程一共使用了三天8月6号就完成了,只是一直忙于工作没有上传,十分抱歉，文章中包括与设计图的制作，中间还有一些部分不太了解，有很多不对的地方，请大家批评指正 。框架整个设计框架巧妙的使用了基于Apache HttpClient框架的回调。充分使用了Httpclient 中的各种 handler ， interceptor 将整个数据响应过程通过接口使其可扩展化，过程化，结构化。 而框架整体看起来又浑然一体，的确很牛气。
