@@ -13,7 +13,7 @@
 [Glide](https://github.com/bumptech/glide)| [lightSky](https://github.com/lightSky) || 08/06 | 08/08 | 08/19 | 08/26 | 09/03 | 09/07 
 [LitePal](https://github.com/LitePalFramework/LitePal)| [hongyangAndroid](https://github.com/hongyangAndroid) || 09/06 | 09/08 | 09/19 | 09/26 | 10/03 | 10/07 
 [android-async-http](https://github.com/loopj/android-async-http)| [yuanhuihui](https://github.com/yuanhuihui) || 09/06 | 09/08 | 09/19 | 09/26 | 10/03 | 10/07 
-[TouchImageView](https://github.com/MikeOrtiz/TouchImageView)|[truistic](https://github.com/truistic)|| Done | 10/28 | 11/03 | 11/06 | 11/08 | 11/11 
+[TouchImageView](https://github.com/MikeOrtiz/TouchImageView)|[truistic](https://github.com/truistic)|| Done | 11/13 | 11/18 | 11/22 | 11/25 | 11/29 
 [ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)|[demonyan](https://github.com/demonyan)|| 11/07 | 11/10 | 11/13 | 11/16 | 11/22 | 11/29 
 
 
