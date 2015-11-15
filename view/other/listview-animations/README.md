@@ -3,8 +3,8 @@
 
 
 ---
-本文为 [Android 开源项目源码解析](http://codekk.com/open-source-project-analysis) 中ListViewAnimations部分
-项目地址：[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)，分析的版本：[25124c5](https://github.com/nhaarman/ListViewAnimations/commit/25124c555c9d6ced81ce3e78b3d8a0e02fc274ce)，Demo 地址：[ListViewAnimations Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/listview-animations-demo)
+本文为 [Android 开源项目源码解析](http://codekk.com/open-source-project-analysis) 中ListViewAnimations部分   
+项目地址：[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)，分析的版本：[25124c5](https://github.com/nhaarman/ListViewAnimations/commit/25124c555c9d6ced81ce3e78b3d8a0e02fc274ce)，Demo 地址：[ListViewAnimations Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/listview-animations-demo)  
 分析者：[demonyan](https://github.com/demonyan)，分析状态：未完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始
 
 ## 1. 功能介绍
@@ -328,7 +328,8 @@ public View getView(final int position, @Nullable final View convertView, @NonNu
 >* `ExpandableListItemAdapter`  
 `ArrayAdapter`的子类，实现点击`item`的`Expandable`行为。开发者需要继承该抽象类类并实现`getTitleView`方法和`getContentView`方法，`getTitleView`方法返回显示`Title`的视图，`getContentView`方法返回显示`Content`的视图。
 
-4.3 `lib-core-slh`：对核心库的扩展，用于支持`StickListHeaders`功能 `StickyListHeaders`使得在`Android`也可以像`iOS`一样，给`ListView`中内容添加`Header`的开源库，可以参考本文后的资料链接。
+4.3 `lib-core-slh`：对核心库的扩展，用于支持`StickListHeaders`功能。  
+`StickyListHeaders`使得在`Android`也可以像`iOS`一样，给`ListView`中内容添加`Header`的开源库，可以参考本文后的资料链接。
 >* `StickyListHeadersAdapterDecorator`  
 继承于`BaseAdapterDecorator`类并实现`StickyListHeadersAdapter`接口，在`getHeaderView`方法中给`headView`添加动画。所装饰的`Adapter`必须实现`StickyListHeadersAdapter`接口，否则会产生异常。
 ```java
