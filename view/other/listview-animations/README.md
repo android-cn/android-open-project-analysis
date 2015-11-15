@@ -57,7 +57,8 @@ public void add(final int index, @NonNull final T item) {
 >* `AnimationAdatper`  
 `BaseAdaperDecorator`的子类，根据用户需求在`getView`方法中为`item`添加`AnimatorSet`。包含成员变量`mViewAnimator`，通过调用它的`animateViewIfNecessary`方法给子View添加动画。动画由三部分构成，第一部分，通过`mDecoratorBaseAdapter`的`getAnimators`方法获得装饰器实例的动画；第二部分，获得当前实例的动画；第三部分，`Alpha`显示动画。最终`item`执行这三部分的动画组合。
 ```java
-private void animateViewIfNecessary(final int position, @NonNull final View view, @NonNull final ViewGroup parent) {
+private void animateViewIfNecessary(final int position, @NonNull final View view, 
+        @NonNull final ViewGroup parent) {
     ...
     Animator[] childAnimators;
     if (getDecoratedBaseAdapter() instanceof AnimationAdapter) {
@@ -204,7 +205,8 @@ private boolean handleMoveEvent(@NonNull final MotionEvent event) {
         if (position != AdapterView.INVALID_POSITION) {
             View downView = mWrapper.getChildAt(position - mWrapper.getFirstVisiblePosition());
             assert downView != null;
-            if (mDraggableManager.isDraggable(downView, position - mWrapper.getHeaderViewsCount(), event.getX() - downView.getX(), event.getY() - downView.getY())) {
+            if (mDraggableManager.isDraggable(downView, position - mWrapper.getHeaderViewsCount(), 
+                    event.getX() - downView.getX(), event.getY() - downView.getY())) {
                 startDragging(position - mWrapper.getHeaderViewsCount());
                 handled = true;
             }
@@ -308,7 +310,8 @@ public void setListViewWrapper(@NonNull final ListViewWrapper listViewWrapper) {
 >* `SimpleSwipeUndoAdapter`  
 继承`SwipeUndoAdapter`类并实现`UndoCallback`接口，`getView`方法中会将`primaryView`或者`undoView`显示于`item`。所装饰的`Adapter`必须实现`UndoAdapter`接口，否则会产生异常。
 ```java
-public View getView(final int position, @Nullable final View convertView, @NonNull final ViewGroup parent) {
+public View getView(final int position, @Nullable final View convertView, 
+        @NonNull final ViewGroup parent) {
     SwipeUndoView view = (SwipeUndoView) convertView;
     if (view == null) {
         view = new SwipeUndoView(mContext);
