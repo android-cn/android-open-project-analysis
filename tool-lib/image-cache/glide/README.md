@@ -7,7 +7,7 @@
 分析者：[lightSky](https://github.com/lightSky)，分析状态：未完成，校对者：[Trinea](https://github.com/Trinea)，校对状态：未开始   
 
 ###1. 功能介绍  
-图片加载框架，相对于UniversalImageLoader，Picasso，它还支持video，Gif，SVG格式，支持缩略图请求，旨在打造更好的列表图片滑动体验。Glide有生命周期的概念（主要是对请求进行pause，resume，clear），而且其生命周期与Activity/Fragment的生命周期绑定，支持Volley，OkHttp，并提供了相应的integration libraries，内存更加友好。
+图片加载框架，相对于UniversalImageLoader，Picasso，它还支持video，Gif，SVG格式，支持缩略图请求，旨在打造更好的列表图片滑动体验。Glide有生命周期的概念（主要是对请求进行pause，resume，clear），而且其生命周期与Activity/Fragment的生命周期绑定，支持Volley，OkHttp，并提供了相应的integration libraries，内存方面也更加友好。
 
 ###2. 总体设计
 ####2.1 总体设计图
@@ -17,7 +17,7 @@
 
 **Glide**  
 使用RequestBuilder创建request的静态接口，并持有Engine，BitmapPool，DiskCache，MemoryCache。
-实现了ComponentCallbacks2，注册了低内存情况的回调。当内存不足的时候，进行相应的内存清理。回调的触发发生在RequestManagerFragment的onLowMemory和onTrimMemory中。  
+实现了ComponentCallbacks2，注册了低内存情况的回调。当内存不足的时候，进行相应的内存清理。回调的发生在RequestManagerFragment的onLowMemory和onTrimMemory中。  
 更详细的介绍可参考**4.2.1 Glide** 
 
 **GlideBuilder**  
@@ -63,15 +63,15 @@ request的载体，各种资源对应的加载类，含有生命周期的回调�
 
 - data ：代表原始的，未修改过的资源，对应dataClass
 - resource : 修改过的资源，对应resourceClass
-- transcoder : 资源转换器，比如 BitmapBytesTranscoder（Bitmap转换为Bytes），GifDrawableBytes- Transcoder
-- ResourceEncoder : 持久化数据的接口，这里注意下，该类并不与decoder相对应，而是用于本地缓存的接口
+- transcoder : 资源转换器，比如 BitmapBytesTranscoder（Bitmap转换为Bytes），GifDrawableBytesTranscoder
+- ResourceEncoder : 持久化数据的接口，注意，该类并不与decoder相对应，而是用于本地缓存的接口
 - ResourceDecoder : 数据解码器,比如ByteBufferGifDecoder（将ByteBuffer转换为Gif），StreamBitmapDecoder（Stream转换为Bitmap）
 - ResourceTranscoder : 资源转换器，将给定的资源类型，转换为另一种资源类型，比如将Bitmap转换为Drawable，Bitmap转换为Bytes  
 - Transformation : 比如对图片进行FitCenter，CircleCrop，CenterCrop的transformation，或者根据给定宽高对Bitmap进行处理的BitmapDrawableTransformation  
   
 **Registry**  
-对Glide所支持的Encoder ，Decoder ，Transcoder组件进行注册
-因为Glide所支持的数据类型太多，把每一种的数据类型及相应的处理方式的组合形象化为一种组件。通过registry的方式管理。
+对Glide所支持的Encoder ，Decoder ，Transcoder组件进行注册  
+因为Glide所支持的数据类型太多，把每一种的数据类型及相应处理方式的组合形象化为一种组件的概念。通过registry的方式管理。
 如下，注册了将使用BitmapDrawableTranscoder将 Bitmap转换为BitmapDrawable的组件。
 
 ```java
@@ -284,7 +284,7 @@ class![数据加载流程图](image/glide_load_flow.jpg)
 
 ####4.2.10  RequestManager 
 核心类之一，用于Glide管理请求。  
-可通过Activity/Fragment/Connectivity的生命周期方法进行stop,start和restart请求。
+可通过Activity/Fragment/Connectivity（网络连接监听器）的生命周期方法进行stop,start和restart请求。
 
 **重要方法**  
 **(1) resumeRequests**  
@@ -297,18 +297,24 @@ class![数据加载流程图](image/glide_load_flow.jpg)
 调用`targetTracker.onDestroy();`，`requestTracker.clearRequests();`，`lifecycle.removeListener(this);`等进行资源清理。  
 
 **(4) resumeRequestsRecursive**  
-递归重启所有RequestManager下的所有request。
+递归重启所有RequestManager下的所有request。在Glide中源码中没有用到，暴露给开发者的接口。
 
 **(5) pauseRequestsRecursive**  
-递归所有childFragments的RequestManager的 pauseRequest方法。
-childFragments表示那些依赖当前Activity或者Fragment的所有fragments
+递归所有childFragments的RequestManager的`pauseRequest`方法。同样也只是暴露给开发者的接口。  
+childFragments表示那些依赖当前Activity或者Fragment的所有fragments   
 
 - 如果当前Context是Activity，那么依附它的所有fragments的请求都会中止  
 - 如果当前Context是Fragment，那么依附它的所有childFragment的请求都会中止  
 - 如果当前的Context是ApplicationContext，或者当前的Fragment处于detached状态，那么只有当前的RequestManager的请求会被中止
 
 **注意：**  
-在Android 4.2之前，如果当前的context是Fragment，那么它的childFragment的请求并不会被中止。但v4的support Fragment是可以的。
+在Android 4.2 AP17之前，如果当前的context是Fragment（当fragment的parent如果是activity，fragment.getParentFragment()直接返回null），那么它的childFragment的请求并不会被中止。原因是在4.2之前系统不允许获取parent fragment，因此不能确定其parentFragment。 但v4的support Fragment是可以的，因为v4包的Fragment对应的SupportRequestManagerFragment提供了一个parentFragmentHint，它相当于Fragment的ParentFragment。在RequestManagerRetriever.get(support.V4.Fragment fragment)的时候将参数fragment作为parentFragmentHint。 
+
+**(6) registerFragmentWithRoot**  
+获取Activity相应的RequestManagerFragment，并添加到Activity的事务当中去，同时将当前的Fragment添加到childRequestManagerFragments的HashSet集合中去，以便在`pauseRequestsRecursive`和`resumeRequestsRecursive`方法中调用`RequestManagerTreeNode.getDescendants()`的时候返回所有的childFragments。在RequestManagerFragment的`onAttach`方法以及`setParentFragmentHint`方法中调用。
+
+**(6) unregisterFragmentWithRoot**  
+对应上面的registerFragmentWithRoot方法，在RequestManagerFragment的onDetach，onDestroy或者重新register前将当前的fragment进行remove
 
 很重要的一个相关类:`RequestManagerFragment`。  
 当Glide.with(context)获取RequestManager的时候，Glide都会先尝试获取当前上下文相关的RequestManagerFragment。  
@@ -327,9 +333,8 @@ RequestManager自己实现了LifecycleListener。主要的请求管理也是在�
 
 生命周期的管理主要由`RequestTracker`和`TargetTracker`处理。
 
-
-生命周期事件的传递：  
-待补充
+**生命周期事件的传递**    
+![load调用处理流程图](image/glide_life_control.jpg)
 
 
 ####4.2.11 RequestManagerFragment  
@@ -345,7 +350,12 @@ RequestManager自己实现了LifecycleListener。主要的请求管理也是在�
 
 
 ####4.2.12 RequestManagerRetriever 
-根据不同的Context获取相应的RequestManager，context可以是FragmentActivity，Activity，ContextWrapper。
+提供一些静态方法，用语创建或者从Activity/Fragment获取RequestManager。  
+get(Activity activity)
+get(android.app.Fragment fragment)
+get(Activity activity)  
+get(FragmentActivity activity)
+getSupportRequestManagerFragment
 
 ####4.2.13 RequestManagerTreeNode
 上文提到获取所有childRequestManagerFragments的RequestManager就是通过该类获得，就一个方法：getDescendants，作用就是基于给定的Context，获取所有层级相关的RequestManager。上下文层级由Activity或者Fragment获得，ApplicationContext的上下文不会提供RequestManager的层级关系，而且Application生命周期过长，所以Glide中对请求的控制只针对于Activity和Fragment。
@@ -527,14 +537,15 @@ getHeight
 `pauseRequests`，`resumeRequests`  
 在RequestManagerFragment对应Request Manager的生命周期方法中触发，
 
-#####5.1 如何控制当前上下文的所有ChildFragment的请求？
+#####5.1 如何控制当前上下文的所有ChildFragment的请求？  
 **情景：**  
-假设当前上下文是Activity（Fragment类似）创建了多个Fragment，每个Fragment通过Glide.with(fragment.this)方式加载图片。
-
-- 为每一个Fragment创建一个RequestManagerFragment（原因看下面）并提交到当前上下文的事务中。 
+假设当前上下文是Activity（Fragment类似）创建了多个Fragment，每个Fragment通过Glide.with(fragment.this)方式加载图片   
+![childFragment生命周期控制流程图](image/glide_life_control_theory.jpg)  
+    
+- 首先Glide会为Activity以及每一个Fragment创建一个RequestManagerFragment（原因看下面）并提交到当前上下文的事务中。 
 以上保证了每个Fragment以及对应的RequestManagerFragment生命周期是与Activity的生命周期绑定的。  
 - 在RequestManagerFragment的onAttach方法中通过Glide.with(activity.this)先获得Activity（宿主）的`RequestManagerFragment`(rootRequestManagerFragment)，并将每个Fragment相应的RequestManagerFragment添加到childRequestManagerFragments集合中。  
-- Activity通过childRequestManagerFragments获取所有childFragment的RequestManager对请求进行pause，resume。
+- Activity通过自己的RequestManager的childRequestManagerFragments获取所有childFragment的RequestManager，然后对请求进行pause，resume。
 
 同理，如果当前context是Fragment，Fragment对应的RequestManagerFragment可以获取它自己所有的Child Fragment的RequestManagerFragment。
 
@@ -549,7 +560,7 @@ getHeight
 - 如果传入到Glide.with(...)的context是Fragment
 `fm = fragment.getChildFragmentManager();`
 
-因为fm不同，而且如果一个activity下面有多个Fragment，并以Glide.with(fragment.this)的方式加载图片。那么每个Fragment都会为自己创建一个fm相关的RequestManagerFragment。
+因为上下文不同导致得到的fm不同，从而`RequestManagerRetriever.getSupportRequestManagerFragment(fm)`方法返回的RequestManagerFrament不同。而且如果一个activity下面有多个Fragment，并以Glide.with(fragment.this)的方式加载图片。那么每个Fragment都会为自己创建一个fm相关的RequestManagerFragment。
 
 关键在于每一个上下文拥有一个自己的RequestManagerFragment。而传入的context不同，会返回不同的RequestManagerFragment，顶层上下文会保存所有的childRequestManagerFragments。
 
