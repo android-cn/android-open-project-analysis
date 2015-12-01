@@ -1,23 +1,21 @@
-﻿时间计划表
+时间计划表
 ============
 ####4. 三期计划(进行中)
-
-开源库名 | 认领者 | 解析文档 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
-:--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
-[Picasso](https://github.com/square/picasso) | [Trinea](https://github.com/Trinea) | | | 12/05 | 12/05 | 12/08 | 12/10 | 12/13 | 12/17
-[okhttp](https://github.com/square/okhttp) | [ayyb1988](https://github.com/ayyb1988) | | | 06/21 | 06/29 | 07/10 | 07/20 | 08/00 | 08/15 
-[ijkplayer](https://github.com/Bilibili/ijkplayer) | [ayyb1988](https://github.com/ayyb1988) | | | 06/21 | 06/29 | 07/10 | 07/20 | 08/00 | 08/15 
-[retrofit](https://github.com/square/retrofit) | [guoGavin](https://github.com/guoGavin) | | [lightSky](https://github.com/lightSky) | Done | Done | 07/27 | 08/7 | 08/17 | 08/27 
-[Retrofit2.0](https://github.com/square/retrofit) | [xxxzhi](https://github.com/xxxzhi) | | | Done | Done | Done | Done | Done | Done 
-[RxJava](https://github.com/ReactiveX/RxJava) | [ChrisZou](https://github.com/ChrisZou) | | | 07/12 | 07/19 | 07/26 | 08/02 | 08/09 | 08/16 
-[FlyRefresh](https://github.com/race604/FlyRefresh)| [skyacer](https://github.com/skyacer) | | | Done | Done | Done | Done | 08/23 | 08/30 
-[Glide](https://github.com/bumptech/glide)| [lightSky](https://github.com/lightSky) | [文档](../tool-lib/image-cache/glide) | [Trinea](https://github.com/Trinea)| 08/06 | Done | Done | Done | Done | 09/07 
-[LitePal](https://github.com/LitePalFramework/LitePal)| [hongyangAndroid](https://github.com/hongyangAndroid) | | | 09/06 | 09/08 | 09/19 | 09/26 | 10/03 | 10/07 
-[android-async-http](https://github.com/loopj/android-async-http)| [yuanhuihui](https://github.com/yuanhuihui) | | | 09/06 | 09/08 | 09/19 | 09/26 | 10/03 | 10/07 
-[TouchImageView](https://github.com/MikeOrtiz/TouchImageView)| [truistic](https://github.com/truistic)| | | Done | 11/13 | 11/18 | 11/22 | 11/25 | 11/29 
-[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)|[demonyan](https://github.com/demonyan) | | | 11/07 | 11/10 | 11/13 | 11/16 | 11/22 | 11/29 
-
-
+开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
+:--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
+[Picasso](https://github.com/square/picasso) | [Trinea](https://github.com/Trinea) | | 12/05 | 12/05 | 12/08 | 12/10 | 12/13 | 12/17
+[okhttp](https://github.com/square/okhttp) | [ayyb1988](https://github.com/ayyb1988) | | 06/21 | 06/29 | 07/10 | 07/20 | 08/00 | 08/15 
+[ijkplayer](https://github.com/Bilibili/ijkplayer) | [ayyb1988](https://github.com/ayyb1988) | | 06/21 | 06/29 | 07/10 | 07/20 | 08/00 | 08/15 
+[retrofit](https://github.com/square/retrofit) | [guoGavin](https://github.com/guoGavin) | [lightSky](https://github.com/lightSky) | Done | Done | 07/27 | 08/7 | 08/17 | 08/27 
+[Retrofit2.0](https://github.com/square/retrofit) | [xxxzhi](https://github.com/xxxzhi) | | Done | Done | Done | Done | Done | Done 
+[RxJava](https://github.com/ReactiveX/RxJava) | [ChrisZou](https://github.com/ChrisZou) || 07/12 | 07/19 | 07/26 | 08/02 | 08/09 | 08/16 
+[FlyRefresh](https://github.com/race604/FlyRefresh)| [skyacer](https://github.com/skyacer) || Done | Done | Done | Done | 08/23 | 08/30   
+[Glide](https://github.com/bumptech/glide)| [lightSky](https://github.com/lightSky) |[Trinea](https://github.com/Trinea)| 08/06 | Done | Done | Done | Done | 09/07 
+[LitePal](https://github.com/LitePalFramework/LitePal)| [hongyangAndroid](https://github.com/hongyangAndroid) || 09/06 | 09/08 | 09/19 | 09/26 | 10/03 | 10/07 
+[android-async-http](https://github.com/loopj/android-async-http)| [yuanhuihui](https://github.com/yuanhuihui) || 09/06 | 09/08 | 09/19 | 09/26 | 10/03 | 10/07 
+[TouchImageView](https://github.com/MikeOrtiz/TouchImageView)|[truistic](https://github.com/truistic)|| Done | 11/13 | 11/18 | 11/22 | 11/25 | 11/29 
+[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)|[demonyan](https://github.com/demonyan)|| 11/07 | 11/10 | 11/13 | 11/16 | 11/22 | 11/29 
+[rxAndroid](https://github.com/ReactiveX/RxAndroid)|[zengfeng1993](https://github.com/zengfeng1993)|| 12/7 |12/19| 12/26 | 1/3 | 1/10| 1/17|
 ####3. 二期计划(已完成)
 大家根据自己的时间安排补充 Demo、功能介绍、详细设计、流程图、总体设计、完成 6个阶段的 DeadLine 时间点。  
 
