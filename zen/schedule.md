@@ -1,6 +1,6 @@
 ﻿时间计划表
 ============
-####4. 三期计划(计划中)
+####4. 三期计划(进行中)
 开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
 [Picasso](https://github.com/square/picasso) | [Trinea](https://github.com/Trinea) | | 12/05 | 12/05 | 12/08 | 12/10 | 12/13 | 12/17
@@ -17,7 +17,7 @@
 [ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)|[demonyan](https://github.com/demonyan)|| 11/07 | 11/10 | 11/13 | 11/16 | 11/22 | 11/29 
 
 
-####3. 二期计划(进行中)
+####3. 二期计划(已完成)
 大家根据自己的时间安排补充 Demo、功能介绍、详细设计、流程图、总体设计、完成 6个阶段的 DeadLine 时间点。  
 
 预计时间可参考：[common README](./common/README.md)，另外为了详细设计更细致，该阶段大家可多预留时间。  
