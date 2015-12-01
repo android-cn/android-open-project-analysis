@@ -17,6 +17,7 @@
 [TouchImageView](https://github.com/MikeOrtiz/TouchImageView)| [truistic](https://github.com/truistic) | [文档](../view/image-view/touchimageview) | | Done | 11/13 | 11/18 | 11/22 | 11/25 | 11/29 
 [ListViewAnimations](https://github.com/nhaarman/ListViewAnimations) | [demonyan](https://github.com/demonyan) | | | 11/07 | 11/10 | 11/13 | 11/16 | 11/22 | 11/29 
 [rxAndroid](https://github.com/ReactiveX/RxAndroid)|[zengfeng1993](https://github.com/zengfeng1993) | | | 12/7 |12/19 | 12/26 | 1/3 | 1/10 | 1/17 |
+[fresco](https://github.com/facebook/fresco/) | [desmond1121](https://github.com/desmond1121) | [文档](https://github.com/desmond1121/Fresco-Source-Analysis) | | Done | Done | Done | Done | Done | Done
 
 
 ####3. 二期计划(已完成)
