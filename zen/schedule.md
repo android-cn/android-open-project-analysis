@@ -3,7 +3,7 @@
 ####4. 三期计划(计划中)
 开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
-[Picasso](https://github.com/square/picasso) | [Trinea](https://github.com/Trinea) | | 06/19 | 06/20 | 06/25 | 06/27 | 06/30 | 07/01 
+[Picasso](https://github.com/square/picasso) | [Trinea](https://github.com/Trinea) | | 12/05 | 12/05 | 12/08 | 12/10 | 12/13 | 12/17
 [okhttp](https://github.com/square/okhttp) | [ayyb1988](https://github.com/ayyb1988) | | 06/21 | 06/29 | 07/10 | 07/20 | 08/00 | 08/15 
 [ijkplayer](https://github.com/Bilibili/ijkplayer) | [ayyb1988](https://github.com/ayyb1988) | | 06/21 | 06/29 | 07/10 | 07/20 | 08/00 | 08/15 
 [retrofit](https://github.com/square/retrofit) | [guoGavin](https://github.com/guoGavin) | [lightSky](https://github.com/lightSky) | Done | Done | 07/27 | 08/7 | 08/17 | 08/27 
