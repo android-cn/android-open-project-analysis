@@ -15,20 +15,20 @@
 
 ## 2. 总体设计
 我们知道，`ListView`视图的展现方式是无穷尽的，数据来源也是多种多样的，同时人们还有着各式各样的动画需求。这就要求`ListView`具有很好的扩展性。  
-![listview-adapter.png](https://github.com/demonyan/android-open-project-analysis/blob/master/view/other/listview-animations/image/listview-adapter.png)
-以上是`Android Framework`中`ListView`及相应`Adapter`的类关系图。得益于Android团队的良好设计，通过桥接模式很好的解决了对`ListView`复杂多变的需求，也就是通过将抽象部分和实现部分分离解耦，从而使得各自可以适应各种需求变化。同时，还可以发现适配器模式的应用，通过`ListAdapter`定义最基本的目标接口，其他适配器类针对目标接口对数据源进行修饰。例如，`SimpleAdapter`提供最简单的适配，`ArrayAdapter`对数据源是数组的情况进行适配，`CursorAdapter`对数据源是数据库的情况进行适配。`ListViewAnimations`正是对此设计的继承和发扬，作者比较巧妙地运用装饰模式，不改变原有类的情况下，对其进行增强，也就是在`getView`方法体内增加各种动画效果。装饰模式既能动态添加新功能，又有效避免功能组合时的类爆炸。`BaseAdapterDecorator`是继承于`BaseAdapter`的抽象装饰类，类中的`mDecoratorBaseAdapter`对象用于保存装饰角色。该类是`ListViewAnimations`的核心，其他具体装饰器都继承于该类并实现`item`的动画功能。
+![listview-adapter.png](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/view/other/listview-animations/image/listview-adapter.png)
+以上是`Android Framework`中`ListView`及相应`Adapter`的类关系图。得益于Android团队的良好设计，通过桥接模式很好的解决了对`ListView`复杂多变的需求，也就是通过将抽象部分和实现部分分离解耦，从而使得各自可以适应各种需求变化。同时，还可以发现适配器模式的应用，通过`ListAdapter`定义最基本的目标接口，其他适配器类针对目标接口对数据源进行修饰。例如，`SimpleAdapter`提供最简单的适配，`ArrayAdapter`对数据源是数组的情况进行适配，`CursorAdapter`对数据源是数据库的情况进行适配。`ListViewAnimations`正是对此设计的继承和发扬，作者比较巧妙地运用装饰模式，不改变原有类的情况下，对其进行增强，也就是在`getView`方法体内对`item`增加各种动画效果。装饰模式既能动态添加新功能，又有效避免功能组合时的类爆炸。`BaseAdapterDecorator`是继承于`BaseAdapter`的抽象装饰类，类中的`mDecoratorBaseAdapter`对象用于保存装饰角色。该类是`ListViewAnimations`的核心，其他具体装饰器都继承于该类并实现`item`的动画功能。
 
 ## 3. 流程图
 `ListViewAnimations`动画库的使用流程图如下所示。   
-![listview-animations-use-flow.png](https://github.com/demonyan/android-open-project-analysis/blob/master/view/other/listview-animations/image/listview-animations-use-flow.png)  
-与`ListView`的流程基本一致，主要不同的地方在于可以使用一个或多个`BaseAdapterDecorator`类来装饰`BaseAdapter`对象。  
+![listview-animations-use-flow.png](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/view/other/listview-animations/image/listview-animations-use-flow.png)  
+与使用`ListView`的流程基本一致，主要不同的地方在于可以使用一个或多个`BaseAdapterDecorator`类来装饰`BaseAdapter`对象。  
 
 ## 4. 详细设计
 `ListViewAnimations`组成模块包含三部分：  
 4.1 `lib-core`：核心库，主要是各种展示动画部分
 >* `BaseAdapterDecorator`  
 `BaseAdapterDecorator`继承于`BaseAdapter`类，并实现了`SectionIndexer`, `Swappable`, `Insertable`, `ListViewWrapperSetter`接口。`ListViewAnimations`库中其他`Adapter`都继承于该类，并根据具体需求实现相应接口中的方法。类关系图如下所示。
-![listviewanimations-BaseAdapterDecorator.png](https://github.com/demonyan/android-open-project-analysis/blob/master/view/other/listview-animations/image/listviewanimations-BaseAdapterDecorator.png)
+![listviewanimations-BaseAdapterDecorator.png](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/view/other/listview-animations/image/listviewanimations-BaseAdapterDecorator.png)
 `SectionIndexer`接口声明在`ListView`中的`sections`间快速滚动的方法，`Swappable`接口声明实现`ListView`中两个`item`相互交换的方法，`Insertable`接口声明给`ListView`添加`item`的方法，`ListViewWrapperSetter`接口声明对`AbsListView`进行包装的方法。
 该类包含成员变量`mDecoratedBaseAdapter`和成员变量`mListViewWrapper`，分别用于保存装饰角色和对应的任意`ListView`包装类实例。其中，`setListViewWrapper`方法用于保存`ListView`的包装类实例。
 ```java
@@ -127,7 +127,7 @@ protected Animator getAnimator(@NonNull final ViewGroup parent, @NonNull final V
 >* `DynamicListView`  
 `ListViewAnimations`库中最重要的自定义组件，继承于`ListView`。包含以下功能：`Drag-and-Drop`功能，由`DragAndDropHandler`类实现；`Swipe-to-Dismiss`功能，由`SwipeTouchListener`类及其子类实现；`Swipe-Undo`功能，由`SwipeUndoAdapter`类实现；`Animate addition`功能，由`AnimateAdditionAdapter`类实现。
 `DynamicListView`重写了父类`ListView`的`setAdapter`方法和`dispatchTouchEvent`方法，从而扩展了父类的功能。流程图如下所示。
-![listviewanimations-DynamicListview-event.png](https://github.com/demonyan/android-open-project-analysis/blob/master/view/other/listview-animations/image/listviewanimations-DynamicListview-event.png)
+![listviewanimations-DynamicListview-event.png](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/view/other/listview-animations/image/listviewanimations-dynamicListview-event.png)
 `setAdapter`方法用于给`ListView`绑定`Adapter`，首先通过`Adapter`链向上获得`rootAdapter`，即最终实现`getView`接口的`Adapter`，一般这个`Adapter`需要开发者实现。如果在`Adapter`链中发现`SwipeUndoAdatper`的实例，说明需要`Swipe-Undo`功能，则初始化`mSwipeUndoAdapter`为该`SwipeUndoAdatper`的实例。如果`rootAdapter`实现了`Insertable`接口，则初始化`mAnimationAdditionAdapter`。如果`mDragAndDropHandler`不为空，则为`mDragAndDropHandler`绑定`Adapter`。
 ```java
 public void setAdapter(final ListAdapter adapter) {
