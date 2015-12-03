@@ -16,7 +16,7 @@
 ## 2. 总体设计
 我们知道，`ListView`视图的展现方式是无穷尽的，数据来源也是多种多样的，同时人们还有着各式各样的动画需求。这就要求`ListView`具有很好的扩展性。  
 ![listview-adapter.png](https://github.com/aosp-exchange-group/android-open-project-analysis/blob/master/view/other/listview-animations/image/listview-adapter.png)
-以上是`Android Framework`中`ListView`及相应`Adapter`的类关系图。得益于Android团队的良好设计，通过桥接模式很好的解决了对`ListView`复杂多变的需求，也就是通过将抽象部分和实现部分分离解耦，从而使得各自可以适应各种需求变化。同时，还可以发现适配器模式的应用，通过`ListAdapter`定义最基本的目标接口，其他适配器类针对目标接口对数据源进行修饰。例如，`SimpleAdapter`提供最简单的适配，`ArrayAdapter`对数据源是数组的情况进行适配，`CursorAdapter`对数据源是数据库的情况进行适配。`ListViewAnimations`正是对此设计的继承和发扬，作者比较巧妙地运用装饰模式，不改变原有类的情况下，对其进行增强，也就是在`getView`方法体内对`item`增加各种动画效果。装饰模式既能动态添加新功能，又有效避免功能组合时的类爆炸。`BaseAdapterDecorator`是继承于`BaseAdapter`的抽象装饰类，类中的`mDecoratorBaseAdapter`对象用于保存装饰角色。该类是`ListViewAnimations`的核心，其他具体装饰器都继承于该类并实现`item`的动画功能。
+以上是`Android Framework`中`ListView`及相应`Adapter`的类关系图。得益于`Android`团队的良好设计，通过桥接模式很好的解决了对`ListView`复杂多变的需求，也就是通过将抽象部分和实现部分分离解耦，从而使得各自可以适应各种需求变化。同时，还可以发现适配器模式的应用，通过`ListAdapter`定义最基本的目标接口，其他适配器类针对目标接口对数据源进行修饰。例如，`SimpleAdapter`提供最简单的适配，`ArrayAdapter`对数据源是数组的情况进行适配，`CursorAdapter`对数据源是数据库的情况进行适配。`ListViewAnimations`正是对此设计的继承和发扬，作者比较巧妙地运用装饰模式，不改变原有类的情况下，对其进行增强，也就是在`getView`方法体内对`item`增加各种动画效果。装饰模式既能动态添加新功能，又有效避免功能组合时的类爆炸。`BaseAdapterDecorator`是继承于`BaseAdapter`的抽象装饰类，类中的`mDecoratorBaseAdapter`对象用于保存装饰角色。该类是`ListViewAnimations`的核心，其他具体装饰器都继承于该类并实现`item`的动画功能。
 
 ## 3. 流程图
 `ListViewAnimations`动画库的使用流程图如下所示。   
@@ -41,7 +41,7 @@ public void setListViewWrapper(@NonNull final ListViewWrapper listViewWrapper) {
 }
 ```
 >* `ArrayAdapter`  
-继承BaseAdapter类，用于`ArrayList`适配，并实现`Swappable`和`Insertable`接口，也就是说使用该类作为`Adapter`，可以实现基本的互换`item`和增加删除`item`。
+继承自BaseAdapter类，用于`ArrayList`适配，并实现`Swappable`和`Insertable`接口，也就是说使用该类作为`Adapter`，可以实现基本的`item`互换和增加删除`item`。
 ```java
 /** 实现Swappable接口　*/
 public void swapItems(final int positionOne, final int positionTwo) {
@@ -56,9 +56,9 @@ public void add(final int index, @NonNull final T item) {
 }
 ```
 >* `ViewAnimator`  
-根据位置判断是否应该给子View添加动画，并计算动画延时。包含成员变量`mAnimators`，类型为`SparseArray<Animator>`，用于保存`item`的动画。
+根据位置判断是否应该给`item`添加动画，并计算动画延时。包含成员变量`mAnimators`，类型为`SparseArray<Animator>`，用于保存`item`的动画。
 >* `AnimationAdatper`  
-`BaseAdaperDecorator`的子类，根据用户需求在`getView`方法中为`item`添加`AnimatorSet`。包含成员变量`mViewAnimator`，通过调用它的`animateViewIfNecessary`方法给子View添加动画。动画由三部分构成，第一部分，通过`mDecoratorBaseAdapter`的`getAnimators`方法获得装饰器实例的动画；第二部分，获得当前实例的动画；第三部分，`Alpha`显示动画。最终`item`执行这三部分的动画组合。
+`BaseAdaperDecorator`的子类，根据用户需求在`getView`方法中为`item`添加`AnimatorSet`。包含成员变量`mViewAnimator`，通过调用它的`animateViewIfNecessary`方法给`item`添加动画。动画由三部分构成，第一部分，通过`mDecoratorBaseAdapter`的`getAnimators`方法获得装饰器实例的动画；第二部分，获得当前实例的动画；第三部分，`Alpha`显示动画。最终`item`执行这三部分的动画组合。
 ```java
 private void animateViewIfNecessary(final int position, @NonNull final View view, 
         @NonNull final ViewGroup parent) {
@@ -73,7 +73,7 @@ private void animateViewIfNecessary(final int position, @NonNull final View view
     Animator alphaAnimator = ObjectAnimator.ofFloat(view, ALPHA, 0, 1);
     /** 将动画组合起来 */
     Animator[] concatAnimators = AnimatorUtil.concatAnimators(childAnimators, animators, alphaAnimator);
-    /** 调用ViewAnimator的方法给子View添加动画 */
+    /** 调用ViewAnimator的方法给item添加动画 */
     mViewAnimator.animateViewIfNecessary(position, view, concatAnimators);
 }
 ```
@@ -122,8 +122,8 @@ protected Animator getAnimator(@NonNull final ViewGroup parent, @NonNull final V
     return ObjectAnimator.ofFloat(view, TRANSLATION_X, parent.getWidth(), 0);
 }
 ```
----
-4.2 `lib-manipulation`：主要是操作子View的功能，比如`Swipe-to-Dismiss`，`Drag-and-Drop`，`Swipe-Undo`等。  
+  
+4.2 `lib-manipulation`：主要是操作`item`的功能，比如`Swipe-to-Dismiss`，`Drag-and-Drop`，`Swipe-Undo`等。  
 >* `DynamicListView`  
 `ListViewAnimations`库中最重要的自定义组件，继承于`ListView`。包含以下功能：`Drag-and-Drop`功能，由`DragAndDropHandler`类实现；`Swipe-to-Dismiss`功能，由`SwipeTouchListener`类及其子类实现；`Swipe-Undo`功能，由`SwipeUndoAdapter`类实现；`Animate addition`功能，由`AnimateAdditionAdapter`类实现。
 `DynamicListView`重写了父类`ListView`的`setAdapter`方法和`dispatchTouchEvent`方法，从而扩展了父类的功能。流程图如下所示。
@@ -285,7 +285,7 @@ private boolean handleMoveEvent(@Nullable final View view, @NonNull final Motion
 >* `SwipeDismissTouchListener`  
 `SwipeTouchListener`的子类，实现手指横滑后`item`的删除操作，删除成功后调用`OnDismissCallback`来回调开发者实现的逻辑。
 >* `SwipeUndoTouchListener`  
-`SwipeDismissTouchListener`的子类，在手指横滑后可以让用户选择是否撤销删除，而不是直接删除子View。可以显示或者隐藏`UndoView`，当用户确认撤销操作时显示撤销动画。
+`SwipeDismissTouchListener`的子类，在手指横滑后可以让用户选择是否撤销删除，而不是直接删除`item`。可以显示或者隐藏`UndoView`，当用户确认撤销操作时显示撤销动画。
 >* `AnimateAdditionAdaptor`  
 `BaseAdaperDecorator`的子类，实现插入`item`时的动画效果。该类装饰的`rootAdapter`必须实现`Insertable`接口，否则构造方法会抛出异常。
 >* `SwipeDismissAdapter`  
@@ -350,7 +350,7 @@ public View getHeaderView(final int position, final View convertView, final View
 `StickyListHeadersListView`的包装类，实现`ListViewWrapper`的接口方法。
 
 ## 5. 杂谈
-由于`ListViewAnimations`库实现中出现许多包装类以及回调接口，代码可读性不高。通过多读源码，同时结合`Demo`学习该库，对了解`ListView`实现思路，`View`的事件分发机制，Android动画基础和设计模式会有所帮助。目前RecyclerView以它独有的优势得到愈来愈多的使用，`ListViewAnimations`库的`feature_recyclervier`分支中实现了对`RecyclerView`的支持。作者可能为了避免`master`太复杂而带来的使用不便，或者觉得`RecyclerView`对`item`动画(`RecycleView`有`ItemAnimator`来实现各种动画)的支持已经足够灵活和优秀，`mater`分支并未看到对`RecyclerView`的支持。
+由于`ListViewAnimations`库实现中出现许多包装类以及回调接口，代码可读性不高。通过多读源码，同时结合`Demo`学习该库，对了解`ListView`实现思路，`View`的事件分发机制，`Android`动画基础和设计模式会有所帮助。目前`RecyclerView`以它独有的优势得到愈来愈多的使用，`ListViewAnimations`库的`feature_recyclervier`分支中实现了对`RecyclerView`的支持。作者可能为了避免`master`太复杂而带来的使用不便，或者觉得`RecyclerView`对`item`动画(`RecycleView`有`ItemAnimator`来实现各种动画)的支持已经足够灵活和优秀，`mater`分支并未看到对`RecyclerView`的支持。
 
 ### 参考文献
 1. [Android设计模式源码解析之桥接模式](https://github.com/simple-android-framework/android_design_patterns_analysis/tree/master/bridge/shen0834)
