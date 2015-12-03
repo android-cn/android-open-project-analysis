@@ -5,20 +5,23 @@
 ---
 本文为 [Android 开源项目源码解析](http://codekk.com/open-source-project-analysis) 中ListViewAnimations部分   
 项目地址：[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)，分析的版本：[25124c5](https://github.com/nhaarman/ListViewAnimations/commit/25124c555c9d6ced81ce3e78b3d8a0e02fc274ce)，Demo 地址：[ListViewAnimations Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/listview-animations-demo)  
-分析者：[demonyan](https://github.com/demonyan)，分析状态：未完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始
+分析者：[demonyan](https://github.com/demonyan)，分析状态：已完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始
 
 ## 1. 功能介绍
 ### 1.1 ListViewAnimations
-`ListViewAnimations`开源库可以让Android开发者很方便为`ListView`(严格来说`AbsListView`更准确些，但为了方便统称`ListView`，下同)添加动画效果。
+`ListViewAnimations`开源库可以让Android开发者很方便为`ListView`(严格来说`AbsListView`更准确些，因为还包含`GridView`。但为了方便统称`ListView`，下同)添加动画效果。
 `ListViewAnimations`提供`Alpha`，`Swing-RightIn`，`Swing-LeftIn`， `Swing-BottomIn`，`Swing-RightIn`和`ScaleIn`等内置动画效果。并支持`StickyListHeaders`
 ，`Swipe-to-Dismiss`和`Swipe-Undo`，`Drag-and-Drop`重排序，`ExpandableList`等常用功能。开发者可以组合库提供的动画，也可以继承库的抽象类实现自定义的动画。
 
 ## 2. 总体设计
-我们知道，`ListView`视图的展现方式是无穷尽的，数据来源也是多种多样的，同时人们还有着各式各样的动画需求。这就要求`ListView`具有很好的扩展性。
+我们知道，`ListView`视图的展现方式是无穷尽的，数据来源也是多种多样的，同时人们还有着各式各样的动画需求。这就要求`ListView`具有很好的扩展性。  
 ![listview-adapter.png](https://github.com/demonyan/android-open-project-analysis/blob/master/view/other/listview-animations/image/listview-adapter.png)
 以上是`Android Framework`中`ListView`及相应`Adapter`的类关系图。得益于Android团队的良好设计，通过桥接模式很好的解决了对`ListView`复杂多变的需求，也就是通过将抽象部分和实现部分分离解耦，从而使得各自可以适应各种需求变化。同时，还可以发现适配器模式的应用，通过`ListAdapter`定义最基本的目标接口，其他适配器类针对目标接口对数据源进行修饰。例如，`SimpleAdapter`提供最简单的适配，`ArrayAdapter`对数据源是数组的情况进行适配，`CursorAdapter`对数据源是数据库的情况进行适配。`ListViewAnimations`正是对此设计的继承和发扬，作者比较巧妙地运用装饰模式，不改变原有类的情况下，对其进行增强，也就是在`getView`方法体内增加各种动画效果。装饰模式既能动态添加新功能，又有效避免功能组合时的类爆炸。`BaseAdapterDecorator`是继承于`BaseAdapter`的抽象装饰类，类中的`mDecoratorBaseAdapter`对象用于保存装饰角色。该类是`ListViewAnimations`的核心，其他具体装饰器都继承于该类并实现`item`的动画功能。
 
 ## 3. 流程图
+`ListViewAnimations`动画库的使用流程图如下所示。   
+![listview-animations-use-flow.png](https://github.com/demonyan/android-open-project-analysis/blob/master/view/other/listview-animations/image/listview-animations-use-flow.png)  
+与`ListView`的流程基本一致，主要不同的地方在于可以使用一个或多个`BaseAdapterDecorator`类来装饰`BaseAdapter`对象。  
 
 ## 4. 详细设计
 `ListViewAnimations`组成模块包含三部分：  
@@ -331,7 +334,7 @@ public View getView(final int position, @Nullable final View convertView,
 >* `ExpandableListItemAdapter`  
 `ArrayAdapter`的子类，实现点击`item`的`Expandable`行为。开发者需要继承该抽象类类并实现`getTitleView`方法和`getContentView`方法，`getTitleView`方法返回显示`Title`的视图，`getContentView`方法返回显示`Content`的视图。
 
-4.3 `lib-core-slh`：对核心库的扩展，用于支持`StickListHeaders`功能。  
+4.3 `lib-core-slh`：对动画核心库的扩展，用于支持`StickListHeaders`功能。  
 `StickyListHeaders`使得在`Android`也可以像`iOS`一样，给`ListView`中内容添加`Header`的开源库，可以参考本文后的资料链接。
 >* `StickyListHeadersAdapterDecorator`  
 继承于`BaseAdapterDecorator`类并实现`StickyListHeadersAdapter`接口，在`getHeaderView`方法中给`headView`添加动画。所装饰的`Adapter`必须实现`StickyListHeadersAdapter`接口，否则会产生异常。
@@ -347,7 +350,7 @@ public View getHeaderView(final int position, final View convertView, final View
 `StickyListHeadersListView`的包装类，实现`ListViewWrapper`的接口方法。
 
 ## 5. 杂谈
-由于`ListViewAnimations`库实现中出现许多包装类以及回调接口，代码可读性不高。通过多读源码，同时结合`Demo`学习该库，对了解`ListView`实现思路，`View`的事件分发机制，Android动画基础和设计模式会有所帮助。目前RecyclerView以它独有的优势得到愈来愈多的使用，`ListViewAnimations`库的`feature_recyclervier`分支中实现了对`RecyclerView`的支持。作者可能为了避免`master`太复杂而带来的使用不便，或者觉得`RecyclerView`对`item`动画的支持已经足够灵活和优秀，`mater`分支并未看到对`RecyclerView`的支持。
+由于`ListViewAnimations`库实现中出现许多包装类以及回调接口，代码可读性不高。通过多读源码，同时结合`Demo`学习该库，对了解`ListView`实现思路，`View`的事件分发机制，Android动画基础和设计模式会有所帮助。目前RecyclerView以它独有的优势得到愈来愈多的使用，`ListViewAnimations`库的`feature_recyclervier`分支中实现了对`RecyclerView`的支持。作者可能为了避免`master`太复杂而带来的使用不便，或者觉得`RecyclerView`对`item`动画(`RecycleView`有`ItemAnimator`来实现各种动画)的支持已经足够灵活和优秀，`mater`分支并未看到对`RecyclerView`的支持。
 
 ### 参考文献
 1. [Android设计模式源码解析之桥接模式](https://github.com/simple-android-framework/android_design_patterns_analysis/tree/master/bridge/shen0834)
