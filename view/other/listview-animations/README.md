@@ -1,63 +1,64 @@
-# ListViewAnimationsÔ´Âë½âÎö
+# ListViewAnimationsæºç è§£æ
 
 
 
 ---
-±¾ÎÄÎª [Android ¿ªÔ´ÏîÄ¿Ô´Âë½âÎö](http://codekk.com/open-source-project-analysis) ÖĞListViewAnimations²¿·Ö
-ÏîÄ¿µØÖ·£º[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)£¬·ÖÎöµÄ°æ±¾£º[25124c5](https://github.com/nhaarman/ListViewAnimations/commit/25124c555c9d6ced81ce3e78b3d8a0e02fc274ce)£¬Demo µØÖ·£ºListViewAnimations Demo
-·ÖÎöÕß£º[demonyan](https://github.com/demonyan)£¬·ÖÎö×´Ì¬£ºÎ´Íê³É£¬Ğ£¶ÔÕß£º[Trinea](https://github.com/trinea)£¬Ğ£¶Ô×´Ì¬£ºÎ´¿ªÊ¼
+æœ¬æ–‡ä¸º [Android å¼€æºé¡¹ç›®æºç è§£æ](http://codekk.com/open-source-project-analysis) ä¸­ListViewAnimationséƒ¨åˆ†   
+é¡¹ç›®åœ°å€ï¼š[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)ï¼Œåˆ†æçš„ç‰ˆæœ¬ï¼š[25124c5](https://github.com/nhaarman/ListViewAnimations/commit/25124c555c9d6ced81ce3e78b3d8a0e02fc274ce)ï¼ŒDemo åœ°å€ï¼š[ListViewAnimations Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/listview-animations-demo)  
+åˆ†æè€…ï¼š[demonyan](https://github.com/demonyan)ï¼Œåˆ†æçŠ¶æ€ï¼šæœªå®Œæˆï¼Œæ ¡å¯¹è€…ï¼š[Trinea](https://github.com/trinea)ï¼Œæ ¡å¯¹çŠ¶æ€ï¼šæœªå¼€å§‹
 
-## 1. ¹¦ÄÜ½éÉÜ
+## 1. åŠŸèƒ½ä»‹ç»
 ### 1.1 ListViewAnimations
-`ListViewAnimations`¿ªÔ´¿â¿ÉÒÔÈÃAndroid¿ª·¢ÕßºÜ·½±ãÎª`ListView`(ÑÏ¸ñÀ´Ëµ`AbsListView`¸ü×¼È·Ğ©£¬µ«ÎªÁË·½±ãÍ³³Æ`ListView`£¬ÏÂÍ¬)Ìí¼Ó¶¯»­Ğ§¹û¡£
-`ListViewAnimations`Ìá¹©`Alpha`£¬`Swing-RightIn`£¬`Swing-LeftIn`£¬ `Swing-BottomIn`£¬`Swing-RightIn`ºÍ`ScaleIn`µÈÄÚÖÃ¶¯»­Ğ§¹û¡£²¢Ö§³Ö`StickyListHeaders`
-£¬`Swipe-to-Dismiss`ºÍ`Swipe-Undo`£¬`Drag-and-Drop`ÖØÅÅĞò£¬`ExpandableList`µÈ³£ÓÃ¹¦ÄÜ¡£¿ª·¢Õß¿ÉÒÔ×éºÏ¿âÌá¹©µÄ¶¯»­£¬Ò²¿ÉÒÔ¼Ì³Ğ¿âµÄ³éÏóÀàÊµÏÖ×Ô¶¨ÒåµÄ¶¯»­¡£
+`ListViewAnimations`å¼€æºåº“å¯ä»¥è®©Androidå¼€å‘è€…å¾ˆæ–¹ä¾¿ä¸º`ListView`(ä¸¥æ ¼æ¥è¯´`AbsListView`æ›´å‡†ç¡®äº›ï¼Œä½†ä¸ºäº†æ–¹ä¾¿ç»Ÿç§°`ListView`ï¼Œä¸‹åŒ)æ·»åŠ åŠ¨ç”»æ•ˆæœã€‚
+`ListViewAnimations`æä¾›`Alpha`ï¼Œ`Swing-RightIn`ï¼Œ`Swing-LeftIn`ï¼Œ `Swing-BottomIn`ï¼Œ`Swing-RightIn`å’Œ`ScaleIn`ç­‰å†…ç½®åŠ¨ç”»æ•ˆæœã€‚å¹¶æ”¯æŒ`StickyListHeaders`
+ï¼Œ`Swipe-to-Dismiss`å’Œ`Swipe-Undo`ï¼Œ`Drag-and-Drop`é‡æ’åºï¼Œ`ExpandableList`ç­‰å¸¸ç”¨åŠŸèƒ½ã€‚å¼€å‘è€…å¯ä»¥ç»„åˆåº“æä¾›çš„åŠ¨ç”»ï¼Œä¹Ÿå¯ä»¥ç»§æ‰¿åº“çš„æŠ½è±¡ç±»å®ç°è‡ªå®šä¹‰çš„åŠ¨ç”»ã€‚
 
-## 2. ×ÜÌåÉè¼Æ
-ÎÒÃÇÖªµÀ£¬`ListView`ÊÓÍ¼µÄÕ¹ÏÖ·½Ê½ÊÇÎŞÇî¾¡µÄ£¬Êı¾İÀ´Ô´Ò²ÊÇ¶àÖÖ¶àÑùµÄ£¬Í¬Ê±ÈËÃÇ»¹ÓĞ×Å¸÷Ê½¸÷ÑùµÄ¶¯»­ĞèÇó¡£Õâ¾ÍÒªÇó`ListView`¾ßÓĞºÜºÃµÄÀ©Õ¹ĞÔ¡£
-![listview-adapter](https://github.com/demonyan/android-open-project-analysis/tree/master/view/other/listview-animations/image/listview-adapter.png)
-ÒÔÉÏÊÇ`Android Framework`ÖĞ`ListView`¼°ÏàÓ¦`Adapter`µÄÀà¹ØÏµÍ¼¡£µÃÒæÓÚAndroidÍÅ¶ÓµÄÁ¼ºÃÉè¼Æ£¬Í¨¹ıÇÅ½ÓÄ£Ê½ºÜºÃµÄ½â¾öÁË¶Ô`ListView`¸´ÔÓ¶à±äµÄĞèÇó£¬Ò²¾ÍÊÇÍ¨¹ı½«³éÏó²¿·ÖºÍÊµÏÖ²¿·Ö·ÖÀë½âñî£¬´Ó¶øÊ¹µÃ¸÷×Ô¿ÉÒÔÊÊÓ¦¸÷ÖÖĞèÇó±ä»¯¡£Í¬Ê±£¬»¹¿ÉÒÔ·¢ÏÖÊÊÅäÆ÷Ä£Ê½µÄÓ¦ÓÃ£¬Í¨¹ı`ListAdapter`¶¨Òå×î»ù±¾µÄÄ¿±ê½Ó¿Ú£¬ÆäËûÊÊÅäÆ÷ÀàÕë¶ÔÄ¿±ê½Ó¿Ú¶ÔÊı¾İÔ´½øĞĞĞŞÊÎ¡£ÀıÈç£¬`SimpleAdapter`Ìá¹©×î¼òµ¥µÄÊÊÅä£¬`ArrayAdapter`¶ÔÊı¾İÔ´ÊÇÊı×éµÄÇé¿ö½øĞĞÊÊÅä£¬`CursorAdapter`¶ÔÊı¾İÔ´ÊÇÊı¾İ¿âµÄÇé¿ö½øĞĞÊÊÅä¡£`ListViewAnimations`ÕıÊÇ¶Ô´ËÉè¼ÆµÄ¼Ì³ĞºÍ·¢Ñï£¬×÷Õß±È½ÏÇÉÃîµØÔËÓÃ×°ÊÎÄ£Ê½£¬²»¸Ä±äÔ­ÓĞÀàµÄÇé¿öÏÂ£¬¶ÔÆä½øĞĞÔöÇ¿£¬Ò²¾ÍÊÇÔÚ`getView`·½·¨ÌåÄÚÔö¼Ó¸÷ÖÖ¶¯»­Ğ§¹û¡£×°ÊÎÄ£Ê½¼ÈÄÜ¶¯Ì¬Ìí¼ÓĞÂ¹¦ÄÜ£¬ÓÖÓĞĞ§±ÜÃâ¹¦ÄÜ×éºÏÊ±µÄÀà±¬Õ¨¡£`BaseAdapterDecorator`ÊÇ¼Ì³ĞÓÚ`BaseAdapter`µÄ³éÏó×°ÊÎÀà£¬ÀàÖĞµÄ`mDecoratorBaseAdapter`¶ÔÏóÓÃÓÚ±£´æ×°ÊÎ½ÇÉ«¡£¸ÃÀàÊÇ`ListViewAnimations`µÄºËĞÄ£¬ÆäËû¾ßÌå×°ÊÎÆ÷¶¼¼Ì³ĞÓÚ¸ÃÀà²¢ÊµÏÖ`item`µÄ¶¯»­¹¦ÄÜ¡£
+## 2. æ€»ä½“è®¾è®¡
+æˆ‘ä»¬çŸ¥é“ï¼Œ`ListView`è§†å›¾çš„å±•ç°æ–¹å¼æ˜¯æ— ç©·å°½çš„ï¼Œæ•°æ®æ¥æºä¹Ÿæ˜¯å¤šç§å¤šæ ·çš„ï¼ŒåŒæ—¶äººä»¬è¿˜æœ‰ç€å„å¼å„æ ·çš„åŠ¨ç”»éœ€æ±‚ã€‚è¿™å°±è¦æ±‚`ListView`å…·æœ‰å¾ˆå¥½çš„æ‰©å±•æ€§ã€‚
+![listview-adapter.png](https://github.com/demonyan/android-open-project-analysis/blob/master/view/other/listview-animations/image/listview-adapter.png)
+ä»¥ä¸Šæ˜¯`Android Framework`ä¸­`ListView`åŠç›¸åº”`Adapter`çš„ç±»å…³ç³»å›¾ã€‚å¾—ç›ŠäºAndroidå›¢é˜Ÿçš„è‰¯å¥½è®¾è®¡ï¼Œé€šè¿‡æ¡¥æ¥æ¨¡å¼å¾ˆå¥½çš„è§£å†³äº†å¯¹`ListView`å¤æ‚å¤šå˜çš„éœ€æ±‚ï¼Œä¹Ÿå°±æ˜¯é€šè¿‡å°†æŠ½è±¡éƒ¨åˆ†å’Œå®ç°éƒ¨åˆ†åˆ†ç¦»è§£è€¦ï¼Œä»è€Œä½¿å¾—å„è‡ªå¯ä»¥é€‚åº”å„ç§éœ€æ±‚å˜åŒ–ã€‚åŒæ—¶ï¼Œè¿˜å¯ä»¥å‘ç°é€‚é…å™¨æ¨¡å¼çš„åº”ç”¨ï¼Œé€šè¿‡`ListAdapter`å®šä¹‰æœ€åŸºæœ¬çš„ç›®æ ‡æ¥å£ï¼Œå…¶ä»–é€‚é…å™¨ç±»é’ˆå¯¹ç›®æ ‡æ¥å£å¯¹æ•°æ®æºè¿›è¡Œä¿®é¥°ã€‚ä¾‹å¦‚ï¼Œ`SimpleAdapter`æä¾›æœ€ç®€å•çš„é€‚é…ï¼Œ`ArrayAdapter`å¯¹æ•°æ®æºæ˜¯æ•°ç»„çš„æƒ…å†µè¿›è¡Œé€‚é…ï¼Œ`CursorAdapter`å¯¹æ•°æ®æºæ˜¯æ•°æ®åº“çš„æƒ…å†µè¿›è¡Œé€‚é…ã€‚`ListViewAnimations`æ­£æ˜¯å¯¹æ­¤è®¾è®¡çš„ç»§æ‰¿å’Œå‘æ‰¬ï¼Œä½œè€…æ¯”è¾ƒå·§å¦™åœ°è¿ç”¨è£…é¥°æ¨¡å¼ï¼Œä¸æ”¹å˜åŸæœ‰ç±»çš„æƒ…å†µä¸‹ï¼Œå¯¹å…¶è¿›è¡Œå¢å¼ºï¼Œä¹Ÿå°±æ˜¯åœ¨`getView`æ–¹æ³•ä½“å†…å¢åŠ å„ç§åŠ¨ç”»æ•ˆæœã€‚è£…é¥°æ¨¡å¼æ—¢èƒ½åŠ¨æ€æ·»åŠ æ–°åŠŸèƒ½ï¼Œåˆæœ‰æ•ˆé¿å…åŠŸèƒ½ç»„åˆæ—¶çš„ç±»çˆ†ç‚¸ã€‚`BaseAdapterDecorator`æ˜¯ç»§æ‰¿äº`BaseAdapter`çš„æŠ½è±¡è£…é¥°ç±»ï¼Œç±»ä¸­çš„`mDecoratorBaseAdapter`å¯¹è±¡ç”¨äºä¿å­˜è£…é¥°è§’è‰²ã€‚è¯¥ç±»æ˜¯`ListViewAnimations`çš„æ ¸å¿ƒï¼Œå…¶ä»–å…·ä½“è£…é¥°å™¨éƒ½ç»§æ‰¿äºè¯¥ç±»å¹¶å®ç°`item`çš„åŠ¨ç”»åŠŸèƒ½ã€‚
 
-## 3. Á÷³ÌÍ¼
+## 3. æµç¨‹å›¾
 
-## 4. ÏêÏ¸Éè¼Æ
-`ListViewAnimations`×é³ÉÄ£¿é°üº¬Èı²¿·Ö£º
-4.1 `lib-core`£ººËĞÄ¿â£¬Ö÷ÒªÊÇ¸÷ÖÖÕ¹Ê¾¶¯»­²¿·Ö
->* `BaseAdapterDecorator`
-`BaseAdapterDecorator`¼Ì³ĞÓÚ`BaseAdapter`Àà£¬²¢ÊµÏÖÁË`SectionIndexer`£¬`Swappable`£¬`Insertable`£¬`ListViewWrapperSetter`½Ó¿Ú¡£`ListViewAnimations`¿âÖĞÆäËû`Adapter`¶¼¼Ì³ĞÓÚ¸ÃÀà£¬²¢¸ù¾İ¾ßÌåĞèÇóÊµÏÖÏàÓ¦½Ó¿ÚÖĞµÄ·½·¨¡£Àà¹ØÏµÍ¼ÈçÏÂËùÊ¾¡£
+## 4. è¯¦ç»†è®¾è®¡
+`ListViewAnimations`ç»„æˆæ¨¡å—åŒ…å«ä¸‰éƒ¨åˆ†ï¼š  
+4.1 `lib-core`ï¼šæ ¸å¿ƒåº“ï¼Œä¸»è¦æ˜¯å„ç§å±•ç¤ºåŠ¨ç”»éƒ¨åˆ†
+>* `BaseAdapterDecorator`  
+`BaseAdapterDecorator`ç»§æ‰¿äº`BaseAdapter`ç±»ï¼Œå¹¶å®ç°äº†`SectionIndexer`, `Swappable`, `Insertable`, `ListViewWrapperSetter`æ¥å£ã€‚`ListViewAnimations`åº“ä¸­å…¶ä»–`Adapter`éƒ½ç»§æ‰¿äºè¯¥ç±»ï¼Œå¹¶æ ¹æ®å…·ä½“éœ€æ±‚å®ç°ç›¸åº”æ¥å£ä¸­çš„æ–¹æ³•ã€‚ç±»å…³ç³»å›¾å¦‚ä¸‹æ‰€ç¤ºã€‚
 ![listviewanimations-BaseAdapterDecorator.png](https://github.com/demonyan/android-open-project-analysis/blob/master/view/other/listview-animations/image/listviewanimations-BaseAdapterDecorator.png)
-`SectionIndexer`½Ó¿ÚÉùÃ÷ÔÚ`ListView`ÖĞµÄ`sections`¼ä¿ìËÙ¹ö¶¯µÄ·½·¨£¬`Swappable`½Ó¿ÚÉùÃ÷ÊµÏÖ`ListView`ÖĞÁ½¸ö`item`Ïà»¥½»»»µÄ·½·¨£¬`Insertable`½Ó¿ÚÉùÃ÷¸ø`ListView`Ìí¼Ó`item`µÄ·½·¨£¬`ListViewWrapperSetter`½Ó¿ÚÉùÃ÷¶Ô`AbsListView`½øĞĞ°ü×°µÄ·½·¨¡£
-¸ÃÀà°üº¬³ÉÔ±±äÁ¿`mDecoratedBaseAdapter`ºÍ³ÉÔ±±äÁ¿`mListViewWrapper`£¬·Ö±ğÓÃÓÚ±£´æ×°ÊÎ½ÇÉ«ºÍ¶ÔÓ¦µÄÈÎÒâ`ListView`°ü×°ÀàÊµÀı¡£ÆäÖĞ£¬`setListViewWrapper`·½·¨ÓÃÓÚ±£´æ`ListView`µÄ°ü×°ÀàÊµÀı¡£
+`SectionIndexer`æ¥å£å£°æ˜åœ¨`ListView`ä¸­çš„`sections`é—´å¿«é€Ÿæ»šåŠ¨çš„æ–¹æ³•ï¼Œ`Swappable`æ¥å£å£°æ˜å®ç°`ListView`ä¸­ä¸¤ä¸ª`item`ç›¸äº’äº¤æ¢çš„æ–¹æ³•ï¼Œ`Insertable`æ¥å£å£°æ˜ç»™`ListView`æ·»åŠ `item`çš„æ–¹æ³•ï¼Œ`ListViewWrapperSetter`æ¥å£å£°æ˜å¯¹`AbsListView`è¿›è¡ŒåŒ…è£…çš„æ–¹æ³•ã€‚
+è¯¥ç±»åŒ…å«æˆå‘˜å˜é‡`mDecoratedBaseAdapter`å’Œæˆå‘˜å˜é‡`mListViewWrapper`ï¼Œåˆ†åˆ«ç”¨äºä¿å­˜è£…é¥°è§’è‰²å’Œå¯¹åº”çš„ä»»æ„`ListView`åŒ…è£…ç±»å®ä¾‹ã€‚å…¶ä¸­ï¼Œ`setListViewWrapper`æ–¹æ³•ç”¨äºä¿å­˜`ListView`çš„åŒ…è£…ç±»å®ä¾‹ã€‚
 ```java
 public void setListViewWrapper(@NonNull final ListViewWrapper listViewWrapper) {
     mListViewWrapper = listViewWrapper;
-    /** µİ¹é³õÊ¼»¯Ã¿¸ö×°ÊÎ½ÇÉ«µÄmListViewWrapper */
+    /** é€’å½’åˆå§‹åŒ–æ¯ä¸ªè£…é¥°è§’è‰²çš„mListViewWrapper */
     if (mDecoratedBaseAdapter instanceof ListViewWrapperSetter) {
         ((ListViewWrapperSetter) mDecoratedBaseAdapter).setListViewWrapper(listViewWrapper);
     }
 }
 ```
->* `ArrayAdapter`
-¼Ì³ĞBaseAdapterÀà£¬ÓÃÓÚ`ArrayList`ÊÊÅä£¬²¢ÊµÏÖ`Swappable`ºÍ`Insertable`½Ó¿Ú£¬Ò²¾ÍÊÇËµÊ¹ÓÃ¸ÃÀà×÷Îª`Adapter`£¬¿ÉÒÔÊµÏÖ»ù±¾µÄ»¥»»`item`ºÍÔö¼ÓÉ¾³ı`item`¡£
+>* `ArrayAdapter`  
+ç»§æ‰¿BaseAdapterç±»ï¼Œç”¨äº`ArrayList`é€‚é…ï¼Œå¹¶å®ç°`Swappable`å’Œ`Insertable`æ¥å£ï¼Œä¹Ÿå°±æ˜¯è¯´ä½¿ç”¨è¯¥ç±»ä½œä¸º`Adapter`ï¼Œå¯ä»¥å®ç°åŸºæœ¬çš„äº’æ¢`item`å’Œå¢åŠ åˆ é™¤`item`ã€‚
 ```java
-/** ÊµÏÖSwappable½Ó¿Ú¡¡*/
+/** å®ç°Swappableæ¥å£ã€€*/
 public void swapItems(final int positionOne, final int positionTwo) {
     T firstItem = mItems.set(positionOne, getItem(positionTwo));
     notifyDataSetChanged();
     mItems.set(positionTwo, firstItem);
 }
-/** ÊµÏÖInsertable½Ó¿Ú¡¡*/
+/** å®ç°Insertableæ¥å£ã€€*/
 public void add(final int index, @NonNull final T item) {
     mItems.add(index, item);
     notifyDataSetChanged();
 }
 ```
->* `ViewAnimator`
-¸ù¾İÎ»ÖÃÅĞ¶ÏÊÇ·ñÓ¦¸Ã¸ø×ÓViewÌí¼Ó¶¯»­£¬²¢¼ÆËã¶¯»­ÑÓÊ±¡£°üº¬³ÉÔ±±äÁ¿`mAnimators`£¬ÀàĞÍÎª`SparseArray<Animator>`£¬ÓÃÓÚ±£´æ`item`µÄ¶¯»­¡£
->* `AnimationAdatper`
-`BaseAdaperDecorator`µÄ×ÓÀà£¬¸ù¾İÓÃ»§ĞèÇóÔÚ`getView`·½·¨ÖĞÎª`item`Ìí¼Ó`AnimatorSet`¡£°üº¬³ÉÔ±±äÁ¿`mViewAnimator`£¬Í¨¹ıµ÷ÓÃËüµÄ`animateViewIfNecessary`·½·¨¸ø×ÓViewÌí¼Ó¶¯»­¡£¶¯»­ÓÉÈı²¿·Ö¹¹³É£¬µÚÒ»²¿·Ö£¬Í¨¹ı`mDecoratorBaseAdapter`µÄ`getAnimators`·½·¨»ñµÃ×°ÊÎÆ÷ÊµÀıµÄ¶¯»­£»µÚ¶ş²¿·Ö£¬»ñµÃµ±Ç°ÊµÀıµÄ¶¯»­£»µÚÈı²¿·Ö£¬`Alpha`ÏÔÊ¾¶¯»­¡£×îÖÕ`item`Ö´ĞĞÕâÈı²¿·ÖµÄ¶¯»­×éºÏ¡£
+>* `ViewAnimator`  
+æ ¹æ®ä½ç½®åˆ¤æ–­æ˜¯å¦åº”è¯¥ç»™å­Viewæ·»åŠ åŠ¨ç”»ï¼Œå¹¶è®¡ç®—åŠ¨ç”»å»¶æ—¶ã€‚åŒ…å«æˆå‘˜å˜é‡`mAnimators`ï¼Œç±»å‹ä¸º`SparseArray<Animator>`ï¼Œç”¨äºä¿å­˜`item`çš„åŠ¨ç”»ã€‚
+>* `AnimationAdatper`  
+`BaseAdaperDecorator`çš„å­ç±»ï¼Œæ ¹æ®ç”¨æˆ·éœ€æ±‚åœ¨`getView`æ–¹æ³•ä¸­ä¸º`item`æ·»åŠ `AnimatorSet`ã€‚åŒ…å«æˆå‘˜å˜é‡`mViewAnimator`ï¼Œé€šè¿‡è°ƒç”¨å®ƒçš„`animateViewIfNecessary`æ–¹æ³•ç»™å­Viewæ·»åŠ åŠ¨ç”»ã€‚åŠ¨ç”»ç”±ä¸‰éƒ¨åˆ†æ„æˆï¼Œç¬¬ä¸€éƒ¨åˆ†ï¼Œé€šè¿‡`mDecoratorBaseAdapter`çš„`getAnimators`æ–¹æ³•è·å¾—è£…é¥°å™¨å®ä¾‹çš„åŠ¨ç”»ï¼›ç¬¬äºŒéƒ¨åˆ†ï¼Œè·å¾—å½“å‰å®ä¾‹çš„åŠ¨ç”»ï¼›ç¬¬ä¸‰éƒ¨åˆ†ï¼Œ`Alpha`æ˜¾ç¤ºåŠ¨ç”»ã€‚æœ€ç»ˆ`item`æ‰§è¡Œè¿™ä¸‰éƒ¨åˆ†çš„åŠ¨ç”»ç»„åˆã€‚
 ```java
-private void animateViewIfNecessary(final int position, @NonNull final View view, @NonNull final ViewGroup parent) {
+private void animateViewIfNecessary(final int position, @NonNull final View view, 
+        @NonNull final ViewGroup parent) {
     ...
     Animator[] childAnimators;
     if (getDecoratedBaseAdapter() instanceof AnimationAdapter) {
@@ -67,29 +68,29 @@ private void animateViewIfNecessary(final int position, @NonNull final View view
     }
     Animator[] animators = getAnimators(parent, view);
     Animator alphaAnimator = ObjectAnimator.ofFloat(view, ALPHA, 0, 1);
-    /** ½«¶¯»­×éºÏÆğÀ´ */
+    /** å°†åŠ¨ç”»ç»„åˆèµ·æ¥ */
     Animator[] concatAnimators = AnimatorUtil.concatAnimators(childAnimators, animators, alphaAnimator);
-    /** µ÷ÓÃViewAnimatorµÄ·½·¨¸ø×ÓViewÌí¼Ó¶¯»­ */
+    /** è°ƒç”¨ViewAnimatorçš„æ–¹æ³•ç»™å­Viewæ·»åŠ åŠ¨ç”» */
     mViewAnimator.animateViewIfNecessary(position, view, concatAnimators);
 }
 ```
->* `ResourceAnimationAdapter`
-`AnimationAdatper`µÄ×ÓÀà£¬`getAnimators`·½·¨ÖĞ¿ÉÒÔÍ¨¹ı`getAnimationResourceId`Ìí¼Ó×Ô¶¨Òå¶¯»­¡£¿ª·¢Õß¿ÉÒÔ¼Ì³ĞÕâ¸ö³éÏóÀà²¢ÊµÏÖ`getAnimationResourceId`·½·¨£¬´Ó¶øÊµÏÖ×Ô¶¨Òå¶¯»­Ğ§¹û¡£
+>* `ResourceAnimationAdapter`  
+`AnimationAdatper`çš„å­ç±»ï¼Œ`getAnimators`æ–¹æ³•ä¸­å¯ä»¥é€šè¿‡`getAnimationResourceId`æ·»åŠ è‡ªå®šä¹‰åŠ¨ç”»ã€‚å¼€å‘è€…å¯ä»¥ç»§æ‰¿è¿™ä¸ªæŠ½è±¡ç±»å¹¶å®ç°`getAnimationResourceId`æ–¹æ³•ï¼Œä»è€Œå®ç°è‡ªå®šä¹‰åŠ¨ç”»æ•ˆæœã€‚
 ```java
 public Animator[] getAnimators(@NonNull final ViewGroup parent, @NonNull final View view) {
     return new Animator[]{AnimatorInflater.loadAnimator(mContext, getAnimationResourceId())};
 }
 ```
->* `SingleAnimationAdapter` `AnimationAdatper`µÄ×ÓÀà£¬Ìá¹©µÄ³éÏó·½·¨`getAnimator`ÓÉ×ÓÀàÊµÏÖ¡£Í¨¹ı¼Ì³ĞÕâ¸ö³éÏóÀà²¢ÊµÏÖ`getAnimator`·½·¨£¬´Ó¶øÊµÏÖ×Ô¶¨Òå¶¯»­Ğ§¹û¡£
+>* `SingleAnimationAdapter` `AnimationAdatper`çš„å­ç±»ï¼Œæä¾›çš„æŠ½è±¡æ–¹æ³•`getAnimator`ç”±å­ç±»å®ç°ã€‚é€šè¿‡ç»§æ‰¿è¿™ä¸ªæŠ½è±¡ç±»å¹¶å®ç°`getAnimator`æ–¹æ³•ï¼Œä»è€Œå®ç°è‡ªå®šä¹‰åŠ¨ç”»æ•ˆæœã€‚  
 >* `AlphaInAnimationAdapter`
-`AnimationAdatper`µÄ×ÓÀà£¬`getAnimator`·½·¨²¢Î´·µ»ØÈÎºÎ¶¯»­¡£
+`AnimationAdatper`çš„å­ç±»ï¼Œ`getAnimator`æ–¹æ³•å¹¶æœªè¿”å›ä»»ä½•åŠ¨ç”»ã€‚
 ```java
 protected Animator getAnimator(@NonNull final ViewGroup parent, @NonNull final View view) {
     return new Animator[0];
 }
 ```
->* `ScaleInAnimationAdapter`
-`AnimationAdatper`µÄ×ÓÀà£¬`getAnimator`·½·¨·µ»Øscale¶¯»­¡£
+>* `ScaleInAnimationAdapter`  
+`AnimationAdatper`çš„å­ç±»ï¼Œ`getAnimator`æ–¹æ³•è¿”å›scaleåŠ¨ç”»ã€‚
 ```java
 protected Animator getAnimator(@NonNull final ViewGroup parent, @NonNull final View view) {
     ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, SCALE_X, mScaleFrom, 1f);
@@ -97,41 +98,41 @@ protected Animator getAnimator(@NonNull final ViewGroup parent, @NonNull final V
     return new ObjectAnimator[]{scaleX, scaleY};
 }
 ```
->* `SwingBottomInAnimationAdapter`
-`AnimationAdatper`µÄ×ÓÀà£¬`getAnimator`·½·¨·µ»ØYÖá·½Ïò´ÓÏÂÍùÉÏµÄ¶¯»­¡£
+>* `SwingBottomInAnimationAdapter`  
+`AnimationAdatper`çš„å­ç±»ï¼Œ`getAnimator`æ–¹æ³•è¿”å›Yè½´æ–¹å‘ä»ä¸‹å¾€ä¸Šçš„åŠ¨ç”»ã€‚
 ```java
 protected Animator getAnimator(@NonNull final ViewGroup parent, @NonNull final View view) {
     return ObjectAnimator.ofFloat(view, TRANSLATION_Y, parent.getMeasuredHeight() >> 1, 0);
 }
 ```
->* `SwingLeftInAnimationAdapter`
-`AnimationAdatper`µÄ×ÓÀà£¬`getAnimator`·½·¨·µ»Ø´Ó×óÍùÓÒµÄ¶¯»­¡£
+>* `SwingLeftInAnimationAdapter`  
+`AnimationAdatper`çš„å­ç±»ï¼Œ`getAnimator`æ–¹æ³•è¿”å›ä»å·¦å¾€å³çš„åŠ¨ç”»ã€‚
 ```java
 protected Animator getAnimator(@NonNull final ViewGroup parent, @NonNull final View view) {
     return ObjectAnimator.ofFloat(view, TRANSLATION_X, 0 - parent.getWidth(), 0);
 }
 ```
->* `SwingRightInAnimationAdapter`
-`AnimationAdatper`µÄ×ÓÀà£¬`getAnimator`·½·¨·µ»Ø´ÓÓÒÍù×óµÄ¶¯»­¡£
+>* `SwingRightInAnimationAdapter`  
+`AnimationAdatper`çš„å­ç±»ï¼Œ`getAnimator`æ–¹æ³•è¿”å›ä»å³å¾€å·¦çš„åŠ¨ç”»ã€‚
 ```java
 protected Animator getAnimator(@NonNull final ViewGroup parent, @NonNull final View view) {
     return ObjectAnimator.ofFloat(view, TRANSLATION_X, parent.getWidth(), 0);
 }
 ```
 ---
-4.2 `lib-manipulation`£ºÖ÷ÒªÊÇ²Ù×÷×ÓViewµÄ¹¦ÄÜ£¬±ÈÈç`Swipe-to-Dismiss`£¬`Drag-and-Drop`£¬`Swipe-Undo`µÈ¡£
->* `DynamicListView`
-`ListViewAnimations`¿âÖĞ×îÖØÒªµÄ×Ô¶¨Òå×é¼ş£¬¼Ì³ĞÓÚ`ListView`¡£°üº¬ÒÔÏÂ¹¦ÄÜ£º`Drag-and-Drop`¹¦ÄÜ£¬ÓÉ`DragAndDropHandler`ÀàÊµÏÖ£»`Swipe-to-Dismiss`¹¦ÄÜ£¬ÓÉ`SwipeTouchListener`Àà¼°Æä×ÓÀàÊµÏÖ£»`Swipe-Undo`¹¦ÄÜ£¬ÓÉ`SwipeUndoAdapter`ÀàÊµÏÖ£»`Animate addition`¹¦ÄÜ£¬ÓÉ`AnimateAdditionAdapter`ÀàÊµÏÖ¡£
-`DynamicListView`ÖØĞ´ÁË¸¸Àà`ListView`µÄ`setAdapter`·½·¨ºÍ`dispatchTouchEvent`·½·¨£¬´Ó¶øÀ©Õ¹ÁË¸¸ÀàµÄ¹¦ÄÜ¡£Á÷³ÌÍ¼ÈçÏÂËùÊ¾¡£
+4.2 `lib-manipulation`ï¼šä¸»è¦æ˜¯æ“ä½œå­Viewçš„åŠŸèƒ½ï¼Œæ¯”å¦‚`Swipe-to-Dismiss`ï¼Œ`Drag-and-Drop`ï¼Œ`Swipe-Undo`ç­‰ã€‚  
+>* `DynamicListView`  
+`ListViewAnimations`åº“ä¸­æœ€é‡è¦çš„è‡ªå®šä¹‰ç»„ä»¶ï¼Œç»§æ‰¿äº`ListView`ã€‚åŒ…å«ä»¥ä¸‹åŠŸèƒ½ï¼š`Drag-and-Drop`åŠŸèƒ½ï¼Œç”±`DragAndDropHandler`ç±»å®ç°ï¼›`Swipe-to-Dismiss`åŠŸèƒ½ï¼Œç”±`SwipeTouchListener`ç±»åŠå…¶å­ç±»å®ç°ï¼›`Swipe-Undo`åŠŸèƒ½ï¼Œç”±`SwipeUndoAdapter`ç±»å®ç°ï¼›`Animate addition`åŠŸèƒ½ï¼Œç”±`AnimateAdditionAdapter`ç±»å®ç°ã€‚
+`DynamicListView`é‡å†™äº†çˆ¶ç±»`ListView`çš„`setAdapter`æ–¹æ³•å’Œ`dispatchTouchEvent`æ–¹æ³•ï¼Œä»è€Œæ‰©å±•äº†çˆ¶ç±»çš„åŠŸèƒ½ã€‚æµç¨‹å›¾å¦‚ä¸‹æ‰€ç¤ºã€‚
 ![listviewanimations-DynamicListview-event.png](https://github.com/demonyan/android-open-project-analysis/blob/master/view/other/listview-animations/image/listviewanimations-DynamicListview-event.png)
-`setAdapter`·½·¨ÓÃÓÚ¸ø`ListView`°ó¶¨`Adapter`£¬Ê×ÏÈÍ¨¹ı`Adapter`Á´ÏòÉÏ»ñµÃ`rootAdapter`£¬¼´×îÖÕÊµÏÖ`getView`½Ó¿ÚµÄ`Adapter`£¬Ò»°ãÕâ¸ö`Adapter`ĞèÒª¿ª·¢ÕßÊµÏÖ¡£Èç¹ûÔÚ`Adapter`Á´ÖĞ·¢ÏÖ`SwipeUndoAdatper`µÄÊµÀı£¬ËµÃ÷ĞèÒª`Swipe-Undo`¹¦ÄÜ£¬Ôò³õÊ¼»¯`mSwipeUndoAdapter`Îª¸Ã`SwipeUndoAdatper`µÄÊµÀı¡£Èç¹û`rootAdapter`ÊµÏÖÁË`Insertable`½Ó¿Ú£¬Ôò³õÊ¼»¯`mAnimationAdditionAdapter`¡£Èç¹û`mDragAndDropHandler`²»Îª¿Õ£¬ÔòÎª`mDragAndDropHandler`°ó¶¨`Adapter`¡£
+`setAdapter`æ–¹æ³•ç”¨äºç»™`ListView`ç»‘å®š`Adapter`ï¼Œé¦–å…ˆé€šè¿‡`Adapter`é“¾å‘ä¸Šè·å¾—`rootAdapter`ï¼Œå³æœ€ç»ˆå®ç°`getView`æ¥å£çš„`Adapter`ï¼Œä¸€èˆ¬è¿™ä¸ª`Adapter`éœ€è¦å¼€å‘è€…å®ç°ã€‚å¦‚æœåœ¨`Adapter`é“¾ä¸­å‘ç°`SwipeUndoAdatper`çš„å®ä¾‹ï¼Œè¯´æ˜éœ€è¦`Swipe-Undo`åŠŸèƒ½ï¼Œåˆ™åˆå§‹åŒ–`mSwipeUndoAdapter`ä¸ºè¯¥`SwipeUndoAdatper`çš„å®ä¾‹ã€‚å¦‚æœ`rootAdapter`å®ç°äº†`Insertable`æ¥å£ï¼Œåˆ™åˆå§‹åŒ–`mAnimationAdditionAdapter`ã€‚å¦‚æœ`mDragAndDropHandler`ä¸ä¸ºç©ºï¼Œåˆ™ä¸º`mDragAndDropHandler`ç»‘å®š`Adapter`ã€‚
 ```java
 public void setAdapter(final ListAdapter adapter) {
     ListAdapter wrappedAdapter = adapter;
     mSwipeUndoAdapter = null;
     if (adapter instanceof BaseAdapter) {
         BaseAdapter rootAdapter = (BaseAdapter) wrappedAdapter;
-        /** ±éÀúAdapterÁ´»ñµÃrootAdapter */
+        /** éå†Adapteré“¾è·å¾—rootAdapter */
         while (rootAdapter instanceof BaseAdapterDecorator) {
             if (rootAdapter instanceof SwipeUndoAdapter) {
                 mSwipeUndoAdapter = (SwipeUndoAdapter) rootAdapter;
@@ -150,7 +151,7 @@ public void setAdapter(final ListAdapter adapter) {
     }
 }
 ```
-> `dispatchTouchEvent`·½·¨ÓÃÓÚ´¦Àí·Ö·¢À´µÄÊÂ¼ş¡£Èç¹û»¹Ã»ÓĞ`TouchEventHandler`Ïû·Ñ`onTouch`ÊÂ¼ş£¬ÔòÏÈ½»ÓÉ`DragAndDropHandler`µÄ`onTouchEvent`À´³¢ÊÔ´¦Àí¸ÃÊÂ¼ş£¬Èç¹û`onTouch`ÊÂ¼ş¿ÉÒÔÂú×ãÍÏ×§µÄÌõ¼ş£¬ÄÇÃ´`TouchEventHandler`ÔòÎª`DragAndDropHandler`£¬Í¬Ê±»á¸ø`SwipeTouchListener`·¢ËÍ`ACTION_CANCEL`ÊÂ¼ş£¬ÒÔºóµÄ`ACTION_MOVE`ÊÂ¼ş¶¼»á½»ÓÉ`DragAndDropHandler`À´´¦Àí£¬Ö±µ½`ACTION_UP`ÊÂ¼ş»òÕß`ACTION_CANCEL`ÊÂ¼ş³öÏÖ¡£·ñÔò»á½»ÓÉ`SwipeTouchListener`À´³¢ÊÔ´¦ÀíÊÂ¼ş£¬Èç¹û`onTouch`ÊÂ¼şÂú×ãºá»¬µÄÌõ¼ş£¬ÄÇÃ´`TouchEventHandler`ÔòÎª`SwipeTouchListener`£¬Í¬Ê±·¢ËÍ`ACTION_CANCEL`ÊÂ¼ş¸ø`DragAndDropHandler`£¬ÒÔºóµÄ`ACTION_MOVE`ÊÂ¼ş¶¼»á½»ÓÉ`SwipeTouchListener`À´´¦Àí£¬Ö±µ½`ACTION_UP`ÊÂ¼ş»òÕß`ACTION_CANCEL`ÊÂ¼ş³öÏÖ¡£
+> `dispatchTouchEvent`æ–¹æ³•ç”¨äºå¤„ç†åˆ†å‘æ¥çš„äº‹ä»¶ã€‚å¦‚æœè¿˜æ²¡æœ‰`TouchEventHandler`æ¶ˆè´¹`onTouch`äº‹ä»¶ï¼Œåˆ™å…ˆäº¤ç”±`DragAndDropHandler`çš„`onTouchEvent`æ¥å°è¯•å¤„ç†è¯¥äº‹ä»¶ï¼Œå¦‚æœ`onTouch`äº‹ä»¶å¯ä»¥æ»¡è¶³æ‹–æ‹½çš„æ¡ä»¶ï¼Œé‚£ä¹ˆ`TouchEventHandler`åˆ™ä¸º`DragAndDropHandler`ï¼ŒåŒæ—¶ä¼šç»™`SwipeTouchListener`å‘é€`ACTION_CANCEL`äº‹ä»¶ï¼Œä»¥åçš„`ACTION_MOVE`äº‹ä»¶éƒ½ä¼šäº¤ç”±`DragAndDropHandler`æ¥å¤„ç†ï¼Œç›´åˆ°`ACTION_UP`äº‹ä»¶æˆ–è€…`ACTION_CANCEL`äº‹ä»¶å‡ºç°ã€‚å¦åˆ™ä¼šäº¤ç”±`SwipeTouchListener`æ¥å°è¯•å¤„ç†äº‹ä»¶ï¼Œå¦‚æœ`onTouch`äº‹ä»¶æ»¡è¶³æ¨ªæ»‘çš„æ¡ä»¶ï¼Œé‚£ä¹ˆ`TouchEventHandler`åˆ™ä¸º`SwipeTouchListener`ï¼ŒåŒæ—¶å‘é€`ACTION_CANCEL`äº‹ä»¶ç»™`DragAndDropHandler`ï¼Œä»¥åçš„`ACTION_MOVE`äº‹ä»¶éƒ½ä¼šäº¤ç”±`SwipeTouchListener`æ¥å¤„ç†ï¼Œç›´åˆ°`ACTION_UP`äº‹ä»¶æˆ–è€…`ACTION_CANCEL`äº‹ä»¶å‡ºç°ã€‚
 ```java
 public boolean dispatchTouchEvent(@NonNull final MotionEvent ev) {
     if (mCurrentHandlingTouchEventHandler == null) {
@@ -191,11 +192,11 @@ public boolean dispatchTouchEvent(@NonNull final MotionEvent ev) {
     }
 }
 ```
->* `TouchEventHandler` 
-ÉùÃ÷´¦Àí`onTouch`ÊÂ¼şµÄ`onTouchEvent`½Ó¿Ú·½·¨ºÍ`item`ÕıÔÚ±»´¦ÀíµÄ`isInteracting`½Ó¿Ú·½·¨¡£`DragAndDropHandler`ºÍ`SwipeTouchListener`¶¼ÊµÏÖÁË¸Ã½Ó¿Ú¡£
->* `DragAndDropHandler`
-ÊµÏÖ`TouchEventHandler`½Ó¿Ú£¬ÊµÏÖ`ListView`µÄ`Drag-and-Drop`¹¦ÄÜ¡£¸ÃÀàµÄ`onTouchEvent`·½·¨½ÓÊÕ`dispatchTouchEvent`·Ö·¢À´µÄ`onTouch`ÊÂ¼ş£¬µ±½ÓÊÕµ½`ACTION_DOWN`Ê±£¬¼ÇÂ¼ÊÖÖ¸°´Ñ¹µÄÎ»ÖÃ¡£
-µ±½ÓÊÕµ½`ACTION_MOVE`Ê±£¬Èç¹ûµ±Ç°»¹Î´¿ªÊ¼ÍÏ×§`item`£¬²¢ÇÒÊÖÖ¸ÊúÒÆ¾àÀë`deltaY`´óÓÚÁÙ½çÖµ`mSlop`£¬ÔòÍ¨¹ı`DraggableManage`ÀàÀ´ÅĞ¶ÏÊÇ·ñÂú×ãÍÏ×§`item`µÄÌõ¼ş£»Èç¹ûÒÑ¾­¿ªÊ¼ÍÏ×§`item`£¬ÔòÍ¨¹ıÊÖÖ¸ÍÏ×§¾àÀëÅĞ¶ÏÊÇ·ñ¿ÉÒÔÓëÏàÁÚ`item`»¥»»Î»ÖÃ£¬²¢¸ù¾İ`SDK`°æ±¾Ö´ĞĞÏàÓ¦¶¯»­¡£`Kitkat`¼°ÒÔÇ°µÄ°æ±¾Ö´ĞĞ`KitKatSwitchViewAnimator`¶¯»­£¬`Kitkat`Ö®ºóµÄ°æ±¾Ö´ĞĞ`LSwitchViewAnimator`¶¯»­¡£
+>* `TouchEventHandler`  
+å£°æ˜å¤„ç†`onTouch`äº‹ä»¶çš„`onTouchEvent`æ¥å£æ–¹æ³•å’Œ`item`æ­£åœ¨è¢«å¤„ç†çš„`isInteracting`æ¥å£æ–¹æ³•ã€‚`DragAndDropHandler`å’Œ`SwipeTouchListener`éƒ½å®ç°äº†è¯¥æ¥å£ã€‚  
+>* `DragAndDropHandler`  
+å®ç°`TouchEventHandler`æ¥å£ï¼Œå®ç°`ListView`çš„`Drag-and-Drop`åŠŸèƒ½ã€‚è¯¥ç±»çš„`onTouchEvent`æ–¹æ³•æ¥æ”¶`dispatchTouchEvent`åˆ†å‘æ¥çš„`onTouch`äº‹ä»¶ï¼Œå½“æ¥æ”¶åˆ°`ACTION_DOWN`æ—¶ï¼Œè®°å½•æ‰‹æŒ‡æŒ‰å‹çš„ä½ç½®ã€‚
+å½“æ¥æ”¶åˆ°`ACTION_MOVE`æ—¶ï¼Œå¦‚æœå½“å‰è¿˜æœªå¼€å§‹æ‹–æ‹½`item`ï¼Œå¹¶ä¸”æ‰‹æŒ‡ç«–ç§»è·ç¦»`deltaY`å¤§äºä¸´ç•Œå€¼`mSlop`ï¼Œåˆ™é€šè¿‡`DraggableManage`ç±»æ¥åˆ¤æ–­æ˜¯å¦æ»¡è¶³æ‹–æ‹½`item`çš„æ¡ä»¶ï¼›å¦‚æœå·²ç»å¼€å§‹æ‹–æ‹½`item`ï¼Œåˆ™é€šè¿‡æ‰‹æŒ‡æ‹–æ‹½è·ç¦»åˆ¤æ–­æ˜¯å¦å¯ä»¥ä¸ç›¸é‚»`item`äº’æ¢ä½ç½®ï¼Œå¹¶æ ¹æ®`SDK`ç‰ˆæœ¬æ‰§è¡Œç›¸åº”åŠ¨ç”»ã€‚`Kitkat`åŠä»¥å‰çš„ç‰ˆæœ¬æ‰§è¡Œ`KitKatSwitchViewAnimator`åŠ¨ç”»ï¼Œ`Kitkat`ä¹‹åçš„ç‰ˆæœ¬æ‰§è¡Œ`LSwitchViewAnimator`åŠ¨ç”»ã€‚
 ```java
 private boolean handleMoveEvent(@NonNull final MotionEvent event) {
     ...
@@ -204,7 +205,8 @@ private boolean handleMoveEvent(@NonNull final MotionEvent event) {
         if (position != AdapterView.INVALID_POSITION) {
             View downView = mWrapper.getChildAt(position - mWrapper.getFirstVisiblePosition());
             assert downView != null;
-            if (mDraggableManager.isDraggable(downView, position - mWrapper.getHeaderViewsCount(), event.getX() - downView.getX(), event.getY() - downView.getY())) {
+            if (mDraggableManager.isDraggable(downView, position - mWrapper.getHeaderViewsCount(), 
+                    event.getX() - downView.getX(), event.getY() - downView.getY())) {
                 startDragging(position - mWrapper.getHeaderViewsCount());
                 handled = true;
             }
@@ -218,13 +220,14 @@ private boolean handleMoveEvent(@NonNull final MotionEvent event) {
     return handled;
 }
 ```
-> µ±½ÓÊÕµ½`ACTION_UP`Ê±£¬¸ù¾İÊÖÖ¸ËÉ¿ªÊ±µÄµ±Ç°Î»ÖÃÀ´È·¶¨`item`µÄ×îÖÕÎ»ÖÃ.
+> å½“æ¥æ”¶åˆ°`ACTION_UP`æ—¶ï¼Œæ ¹æ®æ‰‹æŒ‡æ¾å¼€æ—¶çš„å½“å‰ä½ç½®æ¥ç¡®å®š`item`çš„æœ€ç»ˆä½ç½®.
 
->* `DraggableManager`
-ÅĞ¶ÏÓÃ»§ÊÇ·ñ¿ÉÒÔÍÏ×§`item`µÄ½Ó¿Ú¡£Í¨¹ıÊµÏÖ¸Ã½Ó¿ÚµÄisDraggable·½·¨£¬¿ÉÒÔ×Ô¶¨ÒåÂú×ãÍÏ×§µÄÌõ¼ş¡£
->* `TouchViewDraggableManager` ÊµÏÖÁË`DraggableManager`½Ó¿Ú£¬Í¨¹ıÊÇ·ñÓëÌØ¶¨µÄ`View`½Ó´¥À´ÅĞ¶ÏÓÃ»§¿ÉÒÔÍÏ×§`item`¡£
->* `SwipeTouchListener`
-ÊµÏÖ`OnTouchListener`½Ó¿ÚºÍ`TouchEventHandler`½Ó¿Ú£¬Ê¹µÃ`ListView`µÄ`item`ÄÜ¹»`swipeable`¡£×ÓÀàĞèÒªÊµÏÖ`afterViewFling`³éÏó·½·¨£¬ÒÔÃ÷È·ÊÖÖ¸ºá»¬ºóµÄ²Ù×÷¡£¸ÃÀàµÄ`onTouchEvent`·½·¨½ÓÊÕ`dispatchTouchEvent`·Ö·¢À´µÄ`onTouch`ÊÂ¼ş£¬µ±½ÓÊÕµ½`ACTION_DOWN`Ê±£¬Í¨¹ı`DismissableManager`ÀàÀ´ÅĞ¶Ï`item`ÊÇ·ñ¿ÉÒÔÉ¾³ı¡£Èç¹û`DynamicListView`µÄ¸¸´°¿ÚÒ²¿ÉÒÔË®Æ½·½Ïò¹ö¶¯£¬ÔòĞèÒªÍ¨¹ı`requestDisallowInterceptTouchEvent`À´ÇëÇó²»ÒªÀ¹½Ø`onTouch`ÊÂ¼ş¡£
+>* `DraggableManager`  
+åˆ¤æ–­ç”¨æˆ·æ˜¯å¦å¯ä»¥æ‹–æ‹½`item`çš„æ¥å£ã€‚é€šè¿‡å®ç°è¯¥æ¥å£çš„isDraggableæ–¹æ³•ï¼Œå¯ä»¥è‡ªå®šä¹‰æ»¡è¶³æ‹–æ‹½çš„æ¡ä»¶ã€‚
+>* `TouchViewDraggableManager`  
+å®ç°äº†`DraggableManager`æ¥å£ï¼Œé€šè¿‡æ˜¯å¦ä¸ç‰¹å®šçš„`View`æ¥è§¦æ¥åˆ¤æ–­ç”¨æˆ·å¯ä»¥æ‹–æ‹½`item`ã€‚
+>* `SwipeTouchListener`  
+å®ç°`OnTouchListener`æ¥å£å’Œ`TouchEventHandler`æ¥å£ï¼Œä½¿å¾—`ListView`çš„`item`èƒ½å¤Ÿ`swipeable`ã€‚å­ç±»éœ€è¦å®ç°`afterViewFling`æŠ½è±¡æ–¹æ³•ï¼Œä»¥æ˜ç¡®æ‰‹æŒ‡æ¨ªæ»‘åçš„æ“ä½œã€‚è¯¥ç±»çš„`onTouchEvent`æ–¹æ³•æ¥æ”¶`dispatchTouchEvent`åˆ†å‘æ¥çš„`onTouch`äº‹ä»¶ï¼Œå½“æ¥æ”¶åˆ°`ACTION_DOWN`æ—¶ï¼Œé€šè¿‡`DismissableManager`ç±»æ¥åˆ¤æ–­`item`æ˜¯å¦å¯ä»¥åˆ é™¤ã€‚å¦‚æœ`DynamicListView`çš„çˆ¶çª—å£ä¹Ÿå¯ä»¥æ°´å¹³æ–¹å‘æ»šåŠ¨ï¼Œåˆ™éœ€è¦é€šè¿‡`requestDisallowInterceptTouchEvent`æ¥è¯·æ±‚ä¸è¦æ‹¦æˆª`onTouch`äº‹ä»¶ã€‚
 ```java
 private boolean handleDownEvent(@Nullable final View view, @NonNull final MotionEvent motionEvent) {
     ...
@@ -241,7 +244,7 @@ private boolean handleDownEvent(@Nullable final View view, @NonNull final Motion
     ...
 }
 ```
-> µ±½ÓÊÕµ½`ACTION_MOVE`Ê±£¬ÅĞ¶ÏÊÖÖ¸ºá»¬¾àÀë`deltaX`ÊÇ·ñ´óÓÚÁÙ½çÖµ`mSlop`£¬Èç¹ûÊÇÔò¸ø`ListView`·¢ËÍÒ»¸ö`ACTION_CANCEL`ÊÂ¼ş£¬Ê¹µÃ`ListView`²»ÔÙ´¦Àí`ACTION_MOVE`ÊÂ¼ş£¬´Ó¶ø²»»á´¥·¢`item`µÄ±³¾°¸ßÁÁ£¬È»ºóÍ¨¹ıÊÖÖ¸ºá»¬µÄ¾àÀë¿ªÊ¼`item`ºáÏò»¬¶¯µÄ¶¯»­Ğ§¹û¡£
+> å½“æ¥æ”¶åˆ°`ACTION_MOVE`æ—¶ï¼Œåˆ¤æ–­æ‰‹æŒ‡æ¨ªæ»‘è·ç¦»`deltaX`æ˜¯å¦å¤§äºä¸´ç•Œå€¼`mSlop`ï¼Œå¦‚æœæ˜¯åˆ™ç»™`ListView`å‘é€ä¸€ä¸ª`ACTION_CANCEL`äº‹ä»¶ï¼Œä½¿å¾—`ListView`ä¸å†å¤„ç†`ACTION_MOVE`äº‹ä»¶ï¼Œä»è€Œä¸ä¼šè§¦å‘`item`çš„èƒŒæ™¯é«˜äº®ï¼Œç„¶åé€šè¿‡æ‰‹æŒ‡æ¨ªæ»‘çš„è·ç¦»å¼€å§‹`item`æ¨ªå‘æ»‘åŠ¨çš„åŠ¨ç”»æ•ˆæœã€‚
 ```java
 private boolean handleMoveEvent(@Nullable final View view, @NonNull final MotionEvent motionEvent) {
     ... 
@@ -273,17 +276,17 @@ private boolean handleMoveEvent(@Nullable final View view, @NonNull final Motion
     return false;
 }
 ```
-> µ±½ÓÊÕµ½`ACTION_CANCEL`ÊÂ¼şÊ±£¬`item`»á»Øµ½³õÊ¼×´Ì¬¡£
-> µ±½ÓÊÕµ½`ACTION_UP`ÊÂ¼şÊ±£¬Í¨¹ıÊÖÖ¸ºá»¬µÄ¾àÀëºÍËÙ¶ÈÀ´ÅĞ¶ÏÊÇ·ñĞèÒªÉ¾³ıµ±Ç°`item`£¬Èç¹ûĞèÒªÔòÏÔÊ¾`UndoView`£¬ÓÉÓÃ»§À´×îÖÕ¾ö¶¨ÊÇ·ñÉ¾³ıµ±Ç°`item`¡£
+> å½“æ¥æ”¶åˆ°`ACTION_CANCEL`äº‹ä»¶æ—¶ï¼Œ`item`ä¼šå›åˆ°åˆå§‹çŠ¶æ€ã€‚
+> å½“æ¥æ”¶åˆ°`ACTION_UP`äº‹ä»¶æ—¶ï¼Œé€šè¿‡æ‰‹æŒ‡æ¨ªæ»‘çš„è·ç¦»å’Œé€Ÿåº¦æ¥åˆ¤æ–­æ˜¯å¦éœ€è¦åˆ é™¤å½“å‰`item`ï¼Œå¦‚æœéœ€è¦åˆ™æ˜¾ç¤º`UndoView`ï¼Œç”±ç”¨æˆ·æ¥æœ€ç»ˆå†³å®šæ˜¯å¦åˆ é™¤å½“å‰`item`ã€‚
 
->* `SwipeDismissTouchListener`
-`SwipeTouchListener`µÄ×ÓÀà£¬ÊµÏÖÊÖÖ¸ºá»¬ºó`item`µÄÉ¾³ı²Ù×÷£¬É¾³ı³É¹¦ºóµ÷ÓÃ`OnDismissCallback`À´»Øµ÷¿ª·¢ÕßÊµÏÖµÄÂß¼­¡£
->* `SwipeUndoTouchListener`
-`SwipeDismissTouchListener`µÄ×ÓÀà£¬ÔÚÊÖÖ¸ºá»¬ºó¿ÉÒÔÈÃÓÃ»§Ñ¡ÔñÊÇ·ñ³·ÏúÉ¾³ı£¬¶ø²»ÊÇÖ±½ÓÉ¾³ı×ÓView¡£¿ÉÒÔÏÔÊ¾»òÕßÒş²Ø`UndoView`£¬µ±ÓÃ»§È·ÈÏ³·Ïú²Ù×÷Ê±ÏÔÊ¾³·Ïú¶¯»­¡£
->* `AnimateAdditionAdaptor`
-`BaseAdaperDecorator`µÄ×ÓÀà£¬ÊµÏÖ²åÈë`item`Ê±µÄ¶¯»­Ğ§¹û¡£¸ÃÀà×°ÊÎµÄ`rootAdapter`±ØĞëÊµÏÖ`Insertable`½Ó¿Ú£¬·ñÔò¹¹Ôì·½·¨»áÅ×³öÒì³£¡£
->* `SwipeDismissAdapter`
-`BaseAdapterDecorator`µÄ×ÓÀà£¬°üº¬³ÉÔ±±äÁ¿`mDismissTouchListener`ºÍ³ÉÔ±±äÁ¿`mOnDismissCallback`¡£Í¨¹ı¸Ã×°ÊÎÀà£¬ÆÕÍ¨µÄ`ListView`(²»ĞèÊ¹ÓÃ`DynamicListView`)Ò²¿ÉÒÔÊµÏÖ`Swipe-to-Dismiss`¹¦ÄÜ¡£ÖØĞ´¸¸Àà`setListViewWrapper`·½·¨³õÊ¼»¯³ÉÔ±±äÁ¿£¬`mDismissTouchListener`ÓÃÀ´¸ø`ListView`ÉèÖÃ`onTouch`¼àÌıÆ÷£¬`mOnDismissCallback`ÊÇÉ¾³ı`item`Ê±µÄ»Øµ÷½Ó¿Ú¡£
+>* `SwipeDismissTouchListener`  
+`SwipeTouchListener`çš„å­ç±»ï¼Œå®ç°æ‰‹æŒ‡æ¨ªæ»‘å`item`çš„åˆ é™¤æ“ä½œï¼Œåˆ é™¤æˆåŠŸåè°ƒç”¨`OnDismissCallback`æ¥å›è°ƒå¼€å‘è€…å®ç°çš„é€»è¾‘ã€‚
+>* `SwipeUndoTouchListener`  
+`SwipeDismissTouchListener`çš„å­ç±»ï¼Œåœ¨æ‰‹æŒ‡æ¨ªæ»‘åå¯ä»¥è®©ç”¨æˆ·é€‰æ‹©æ˜¯å¦æ’¤é”€åˆ é™¤ï¼Œè€Œä¸æ˜¯ç›´æ¥åˆ é™¤å­Viewã€‚å¯ä»¥æ˜¾ç¤ºæˆ–è€…éšè—`UndoView`ï¼Œå½“ç”¨æˆ·ç¡®è®¤æ’¤é”€æ“ä½œæ—¶æ˜¾ç¤ºæ’¤é”€åŠ¨ç”»ã€‚
+>* `AnimateAdditionAdaptor`  
+`BaseAdaperDecorator`çš„å­ç±»ï¼Œå®ç°æ’å…¥`item`æ—¶çš„åŠ¨ç”»æ•ˆæœã€‚è¯¥ç±»è£…é¥°çš„`rootAdapter`å¿…é¡»å®ç°`Insertable`æ¥å£ï¼Œå¦åˆ™æ„é€ æ–¹æ³•ä¼šæŠ›å‡ºå¼‚å¸¸ã€‚
+>* `SwipeDismissAdapter`  
+`BaseAdapterDecorator`çš„å­ç±»ï¼ŒåŒ…å«æˆå‘˜å˜é‡`mDismissTouchListener`å’Œæˆå‘˜å˜é‡`mOnDismissCallback`ã€‚é€šè¿‡è¯¥è£…é¥°ç±»ï¼Œæ™®é€šçš„`ListView`(ä¸éœ€ä½¿ç”¨`DynamicListView`)ä¹Ÿå¯ä»¥å®ç°`Swipe-to-Dismiss`åŠŸèƒ½ã€‚é‡å†™çˆ¶ç±»`setListViewWrapper`æ–¹æ³•åˆå§‹åŒ–æˆå‘˜å˜é‡ï¼Œ`mDismissTouchListener`ç”¨æ¥ç»™`ListView`è®¾ç½®`onTouch`ç›‘å¬å™¨ï¼Œ`mOnDismissCallback`æ˜¯åˆ é™¤`item`æ—¶çš„å›è°ƒæ¥å£ã€‚
 ```java
 public void setListViewWrapper(@NonNull final ListViewWrapper listViewWrapper) {
     super.setListViewWrapper(listViewWrapper);
@@ -300,13 +303,15 @@ public void setListViewWrapper(@NonNull final ListViewWrapper listViewWrapper) {
     listViewWrapper.getListView().setOnTouchListener(mDismissTouchListener);
 }
 ```
->* `UndoAdapter`
-ÉùÃ÷`getUndoView`½Ó¿Ú·½·¨ºÍ`getUndoClickView`½Ó¿Ú·½·¨¡£Èç¹ûĞèÒª`Undo`¹¦ÄÜ£¬±ØĞëÊµÏÖ¸Ã½Ó¿Ú·½·¨¡£
->* `SwipeUndoAdapter`
-`BaseAdaperDecorator`µÄ×ÓÀà£¬Îª`ListView`Ìí¼Ó`Swipe-Undo`ĞĞÎª¡£µ÷ÓÃ³ÉÔ±±äÁ¿`mSwipeUndoTouchListener`µÄ`undo`·½·¨Ö´ĞĞ³·Ïú¶¯»­²¢»Ö¸´`item`µÄ³õÊ¼×´Ì¬£¬»òÕßµ÷ÓÃ³ÉÔ±±äÁ¿`mSwipeUndoTouchListener`µÄ`dismiss`·½·¨É¾³ı¸ø¶¨Î»ÖÃµÄ`item`¡£
->* `SimpleSwipeUndoAdapter` ¼Ì³Ğ`SwipeUndoAdapter`Àà²¢ÊµÏÖ`UndoCallback`½Ó¿Ú£¬`getView`·½·¨ÖĞ»á½«`primaryView`»òÕß`undoView`ÏÔÊ¾ÓÚ`item`¡£Ëù×°ÊÎµÄ`Adapter`±ØĞëÊµÏÖ`UndoAdapter`½Ó¿Ú£¬·ñÔò»á²úÉúÒì³£¡£
+>* `UndoAdapter`  
+å£°æ˜`getUndoView`æ¥å£æ–¹æ³•å’Œ`getUndoClickView`æ¥å£æ–¹æ³•ã€‚å¦‚æœéœ€è¦`Undo`åŠŸèƒ½ï¼Œå¿…é¡»å®ç°è¯¥æ¥å£æ–¹æ³•ã€‚
+>* `SwipeUndoAdapter`  
+`BaseAdaperDecorator`çš„å­ç±»ï¼Œä¸º`ListView`æ·»åŠ `Swipe-Undo`è¡Œä¸ºã€‚è°ƒç”¨æˆå‘˜å˜é‡`mSwipeUndoTouchListener`çš„`undo`æ–¹æ³•æ‰§è¡Œæ’¤é”€åŠ¨ç”»å¹¶æ¢å¤`item`çš„åˆå§‹çŠ¶æ€ï¼Œæˆ–è€…è°ƒç”¨æˆå‘˜å˜é‡`mSwipeUndoTouchListener`çš„`dismiss`æ–¹æ³•åˆ é™¤ç»™å®šä½ç½®çš„`item`ã€‚
+>* `SimpleSwipeUndoAdapter`  
+ç»§æ‰¿`SwipeUndoAdapter`ç±»å¹¶å®ç°`UndoCallback`æ¥å£ï¼Œ`getView`æ–¹æ³•ä¸­ä¼šå°†`primaryView`æˆ–è€…`undoView`æ˜¾ç¤ºäº`item`ã€‚æ‰€è£…é¥°çš„`Adapter`å¿…é¡»å®ç°`UndoAdapter`æ¥å£ï¼Œå¦åˆ™ä¼šäº§ç”Ÿå¼‚å¸¸ã€‚
 ```java
-public View getView(final int position, @Nullable final View convertView, @NonNull final ViewGroup parent) {
+public View getView(final int position, @Nullable final View convertView, 
+        @NonNull final ViewGroup parent) {
     SwipeUndoView view = (SwipeUndoView) convertView;
     if (view == null) {
         view = new SwipeUndoView(mContext);
@@ -316,20 +321,20 @@ public View getView(final int position, @Nullable final View convertView, @NonNu
     View undoView = mUndoAdapter.getUndoView(position, view.getUndoView(), view);
     view.setUndoView(undoView);
     mUndoAdapter.getUndoClickView(undoView).setOnClickListener(new UndoClickListener(view, position));
-    /** ÏÔÊ¾primaryView»òÕßundoView */
+    /** æ˜¾ç¤ºprimaryViewæˆ–è€…undoView */
     boolean isInUndoState = mUndoPositions.contains(position);
     primaryView.setVisibility(isInUndoState ? View.GONE : View.VISIBLE);
     undoView.setVisibility(isInUndoState ? View.VISIBLE : View.GONE);
     return view;
 }
 ```
->* `ExpandableListItemAdapter`
-`ArrayAdapter`µÄ×ÓÀà£¬ÊµÏÖµã»÷`item`µÄ`Expandable`ĞĞÎª¡£¿ª·¢ÕßĞèÒª¼Ì³Ğ¸Ã³éÏóÀàÀà²¢ÊµÏÖ`getTitleView`·½·¨ºÍ`getContentView`·½·¨£¬`getTitleView`·½·¨·µ»ØÏÔÊ¾`Title`µÄÊÓÍ¼£¬`getContentView`·½·¨·µ»ØÏÔÊ¾`Content`µÄÊÓÍ¼¡£
+>* `ExpandableListItemAdapter`  
+`ArrayAdapter`çš„å­ç±»ï¼Œå®ç°ç‚¹å‡»`item`çš„`Expandable`è¡Œä¸ºã€‚å¼€å‘è€…éœ€è¦ç»§æ‰¿è¯¥æŠ½è±¡ç±»ç±»å¹¶å®ç°`getTitleView`æ–¹æ³•å’Œ`getContentView`æ–¹æ³•ï¼Œ`getTitleView`æ–¹æ³•è¿”å›æ˜¾ç¤º`Title`çš„è§†å›¾ï¼Œ`getContentView`æ–¹æ³•è¿”å›æ˜¾ç¤º`Content`çš„è§†å›¾ã€‚
 
-4.3 `lib-core-slh`£º¶ÔºËĞÄ¿âµÄÀ©Õ¹£¬ÓÃÓÚÖ§³Ö`StickListHeaders`¹¦ÄÜ
-`StickyListHeaders`Ê¹µÃÔÚ`Android`Ò²¿ÉÒÔÏñ`iOS`Ò»Ñù£¬¸ø`ListView`ÖĞÄÚÈİÌí¼Ó`Header`µÄ¿ªÔ´¿â£¬¿ÉÒÔ²Î¿¼±¾ÎÄºóµÄ×ÊÁÏÁ´½Ó¡£
->* `StickyListHeadersAdapterDecorator`
-¼Ì³ĞÓÚ`BaseAdapterDecorator`Àà²¢ÊµÏÖ`StickyListHeadersAdapter`½Ó¿Ú£¬ÔÚ`getHeaderView`·½·¨ÖĞ¸ø`headView`Ìí¼Ó¶¯»­¡£Ëù×°ÊÎµÄ`Adapter`±ØĞëÊµÏÖ`StickyListHeadersAdapter`½Ó¿Ú£¬·ñÔò»á²úÉúÒì³£¡£
+4.3 `lib-core-slh`ï¼šå¯¹æ ¸å¿ƒåº“çš„æ‰©å±•ï¼Œç”¨äºæ”¯æŒ`StickListHeaders`åŠŸèƒ½ã€‚  
+`StickyListHeaders`ä½¿å¾—åœ¨`Android`ä¹Ÿå¯ä»¥åƒ`iOS`ä¸€æ ·ï¼Œç»™`ListView`ä¸­å†…å®¹æ·»åŠ `Header`çš„å¼€æºåº“ï¼Œå¯ä»¥å‚è€ƒæœ¬æ–‡åçš„èµ„æ–™é“¾æ¥ã€‚
+>* `StickyListHeadersAdapterDecorator`  
+ç»§æ‰¿äº`BaseAdapterDecorator`ç±»å¹¶å®ç°`StickyListHeadersAdapter`æ¥å£ï¼Œåœ¨`getHeaderView`æ–¹æ³•ä¸­ç»™`headView`æ·»åŠ åŠ¨ç”»ã€‚æ‰€è£…é¥°çš„`Adapter`å¿…é¡»å®ç°`StickyListHeadersAdapter`æ¥å£ï¼Œå¦åˆ™ä¼šäº§ç”Ÿå¼‚å¸¸ã€‚
 ```java
 public View getHeaderView(final int position, final View convertView, final ViewGroup parent) {
     ...
@@ -338,15 +343,15 @@ public View getHeaderView(final int position, final View convertView, final View
     return itemView;
 }
 ```
->* `StickyListHeadersListViewWrapper`
-`StickyListHeadersListView`µÄ°ü×°Àà£¬ÊµÏÖ`ListViewWrapper`µÄ½Ó¿Ú·½·¨¡£
+>* `StickyListHeadersListViewWrapper`  
+`StickyListHeadersListView`çš„åŒ…è£…ç±»ï¼Œå®ç°`ListViewWrapper`çš„æ¥å£æ–¹æ³•ã€‚
 
-## 5. ÔÓÌ¸
-ÓÉÓÚ`ListViewAnimations`¿âÊµÏÖÖĞ³öÏÖĞí¶à°ü×°ÀàÒÔ¼°»Øµ÷½Ó¿Ú£¬´úÂë¿É¶ÁĞÔ²»¸ß¡£Í¨¹ı¶à¶ÁÔ´Âë£¬Í¬Ê±½áºÏ`Demo`Ñ§Ï°¸Ã¿â£¬¶ÔÁË½â`ListView`ÊµÏÖË¼Â·£¬`View`µÄÊÂ¼ş·Ö·¢»úÖÆ£¬Android¶¯»­»ù´¡ºÍÉè¼ÆÄ£Ê½»áÓĞËù°ïÖú¡£Ä¿Ç°RecyclerViewÒÔËü¶ÀÓĞµÄÓÅÊÆµÃµ½ÓúÀ´Óú¶àµÄÊ¹ÓÃ£¬`ListViewAnimations`¿âµÄ`feature_recyclervier`·ÖÖ§ÖĞÊµÏÖÁË¶Ô`RecyclerView`µÄÖ§³Ö¡£×÷Õß¿ÉÄÜÎªÁË±ÜÃâ`master`Ì«¸´ÔÓ¶ø´øÀ´µÄÊ¹ÓÃ²»±ã£¬»òÕß¾õµÃ`RecyclerView`¶Ô`item`¶¯»­µÄÖ§³ÖÒÑ¾­×ã¹»Áé»îºÍÓÅĞã£¬`mater`·ÖÖ§²¢Î´¿´µ½¶Ô`RecyclerView`µÄÖ§³Ö¡£
+## 5. æ‚è°ˆ
+ç”±äº`ListViewAnimations`åº“å®ç°ä¸­å‡ºç°è®¸å¤šåŒ…è£…ç±»ä»¥åŠå›è°ƒæ¥å£ï¼Œä»£ç å¯è¯»æ€§ä¸é«˜ã€‚é€šè¿‡å¤šè¯»æºç ï¼ŒåŒæ—¶ç»“åˆ`Demo`å­¦ä¹ è¯¥åº“ï¼Œå¯¹äº†è§£`ListView`å®ç°æ€è·¯ï¼Œ`View`çš„äº‹ä»¶åˆ†å‘æœºåˆ¶ï¼ŒAndroidåŠ¨ç”»åŸºç¡€å’Œè®¾è®¡æ¨¡å¼ä¼šæœ‰æ‰€å¸®åŠ©ã€‚ç›®å‰RecyclerViewä»¥å®ƒç‹¬æœ‰çš„ä¼˜åŠ¿å¾—åˆ°æ„ˆæ¥æ„ˆå¤šçš„ä½¿ç”¨ï¼Œ`ListViewAnimations`åº“çš„`feature_recyclervier`åˆ†æ”¯ä¸­å®ç°äº†å¯¹`RecyclerView`çš„æ”¯æŒã€‚ä½œè€…å¯èƒ½ä¸ºäº†é¿å…`master`å¤ªå¤æ‚è€Œå¸¦æ¥çš„ä½¿ç”¨ä¸ä¾¿ï¼Œæˆ–è€…è§‰å¾—`RecyclerView`å¯¹`item`åŠ¨ç”»çš„æ”¯æŒå·²ç»è¶³å¤Ÿçµæ´»å’Œä¼˜ç§€ï¼Œ`mater`åˆ†æ”¯å¹¶æœªçœ‹åˆ°å¯¹`RecyclerView`çš„æ”¯æŒã€‚
 
-### ²Î¿¼ÎÄÏ×
-1. [AndroidÉè¼ÆÄ£Ê½Ô´Âë½âÎöÖ®ÇÅ½ÓÄ£Ê½](https://github.com/simple-android-framework/android_design_patterns_analysis/tree/master/bridge/shen0834)
-1. [¹«¹²¼¼ÊõµãÖ® View ÊÂ¼ş´«µİ](http://a.codekk.com/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92)
-1. [¹«¹²¼¼ÊõµãÖ® Android ¶¯»­»ù´¡](http://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Android%20%E5%8A%A8%E7%94%BB%E5%9F%BA%E7%A1%80)
+### å‚è€ƒæ–‡çŒ®
+1. [Androidè®¾è®¡æ¨¡å¼æºç è§£æä¹‹æ¡¥æ¥æ¨¡å¼](https://github.com/simple-android-framework/android_design_patterns_analysis/tree/master/bridge/shen0834)
+1. [å…¬å…±æŠ€æœ¯ç‚¹ä¹‹ View äº‹ä»¶ä¼ é€’](http://a.codekk.com/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92)
+1. [å…¬å…±æŠ€æœ¯ç‚¹ä¹‹ Android åŠ¨ç”»åŸºç¡€](http://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Android%20%E5%8A%A8%E7%94%BB%E5%9F%BA%E7%A1%80)
 1. [StickyListHeaders](https://github.com/emilsjolander/StickyListHeaders)
 
