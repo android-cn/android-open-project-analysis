@@ -10,7 +10,7 @@
 [retrofit](https://github.com/square/retrofit) | [guoGavin](https://github.com/guoGavin) | | [lightSky](https://github.com/lightSky) | Done | Done | 07/27 | 08/7 | 08/17 | 08/27 
 [Retrofit2.0](https://github.com/square/retrofit) | [xxxzhi](https://github.com/xxxzhi) | [文档](../tool-lib/network/retrofit) | | Done | Done | Done | Done | Done | Done 
 [RxJava](https://github.com/ReactiveX/RxJava) | [ChrisZou](https://github.com/ChrisZou) | | | 07/12 | 07/19 | 07/26 | 08/02 | 08/09 | 08/16 
-[FlyRefresh](https://github.com/race604/FlyRefresh)| [skyacer](https://github.com/skyacer) | [文档](../view/list-view/fly-refresh) | | Done | Done | Done | Done | 08/23 | 08/30 
+[FlyRefresh](https://github.com/race604/FlyRefresh)| [skyacer](https://github.com/skyacer) | [文档](../view/list-view/fly-refresh) | | Done | Done | Done | Done | Done | Done 
 [Glide](https://github.com/bumptech/glide)| [lightSky](https://github.com/lightSky) | [文档](../tool-lib/image-cache/glide) | [Trinea](https://github.com/Trinea)| 08/06 | Done | Done | Done | Done | 09/07 
 [LitePal](https://github.com/LitePalFramework/LitePal)| [hongyangAndroid](https://github.com/hongyangAndroid) | | | 09/06 | 09/08 | 09/19 | 09/26 | 10/03 | 10/07 
 [android-async-http](https://github.com/loopj/android-async-http)| [yuanhuihui](https://github.com/yuanhuihui) | [文档](../tool-lib/network/android-async-http) | | 09/06 | 09/08 | 09/19 | 09/26 | 10/03 | 10/07 
