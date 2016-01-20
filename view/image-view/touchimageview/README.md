@@ -6,13 +6,13 @@ TouchImageView 源码解析
 
 
 ###1. 功能介绍  
-TouchImageView是基于ImageView实现的，支持图片缩放的ImageView控件。其主要功能如下：
+TouchImageView 是基于 ImageView 实现的，支持图片缩放的 ImageView 控件。其主要功能如下：
 * 双指缩放
 * 双击放大/还原
 * 图片拖拽、平移
 * 图片缩放到最大/最小边界时，有回弹动画（体验较好）
-* 支持和ViewPager一起使用
-* 支持和ImageLoader/Picasso等图片加载和缓存库一起使用（Glide不支持）
+* 支持和 ViewPager 一起使用
+* 支持和 ImageLoader/Picasso 等图片加载和缓存库一起使用（Glide 不支持）
 
 ###2. 详细设计
 ###2.1 类详细介绍
