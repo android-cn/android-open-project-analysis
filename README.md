@@ -3,7 +3,7 @@ Android 开源项目源码解析
 这是一个协作项目，最终多数开源库原理解析会在这里分享出来。  
 欢迎大家`Star`、`Fork`，让更多的人知道并加入进来！  
 
-**稳定版地址：**[android-cn/android-open-project-analysis](https://github.com/android-cn/android-open-project-analysis)。  
+**稳定版地址：**[android-cn/android-open-project-analysis](http://a.codekk.com)。  
 **开发版地址：**[aosp-exchange-group/android-open-project-analysis](https://github.com/aosp-exchange-group/android-open-project-analysis)，请参与者基于这个库提交。  
 
 **在线网站：[www.codekk.com](http://a.codekk.com)**  

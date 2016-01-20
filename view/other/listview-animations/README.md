@@ -1,9 +1,6 @@
-# ListViewAnimations源码解析
-
-
-
----
-本文为 [Android 开源项目源码解析](http://codekk.com/open-source-project-analysis) 中ListViewAnimations部分   
+ListViewAnimations源码解析
+----------------
+> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中ListViewAnimations部分   
 项目地址：[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)，分析的版本：[25124c5](https://github.com/nhaarman/ListViewAnimations/commit/25124c555c9d6ced81ce3e78b3d8a0e02fc274ce)，Demo 地址：[ListViewAnimations Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/listview-animations-demo)  
 分析者：[demonyan](https://github.com/demonyan)，分析状态：已完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始
 

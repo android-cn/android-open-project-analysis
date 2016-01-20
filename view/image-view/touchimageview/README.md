@@ -1,6 +1,6 @@
 TouchImageView 源码解析
 ====================================
-> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 TouchImageView 部分  
+> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 TouchImageView 部分  
  项目地址：[TouchImageView](https://github.com/MikeOrtiz/TouchImageView)，分析的版本：[6dbeac4](https://github.com/MikeOrtiz/TouchImageView/commit/6dbeac4f11936185ba374c73144ac431c23c9aab "Commit id is 6dbeac4f11936185ba374c73144ac431c23c9aab")，Demo 地址：[TouchImageView Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/touchimageview-demo)    
  分析者：[truistic](https://github.com/truistic)，分析状态：未完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始   
 

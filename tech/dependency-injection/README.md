@@ -1,6 +1,6 @@
 公共技术点之依赖注入
 ----------------
-> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 公共技术点中的 依赖注入 部分    
+> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 公共技术点中的 依赖注入 部分    
  分析者：[扔物线](https://github.com/rengwuxian)，校对者：[Trinea](https://github.com/Trinea)，校对状态：完成  
 
 ###1. 依赖

@@ -2,7 +2,7 @@
 android-async-http 源码原理解析
 ====================================
 
-> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 android-async-http 部分  
+> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 android-async-http 部分  
  项目地址：[android-async-http](https://github.com/loopj/android-async-http)，分析的版本：[1.4.8] ，Demo 地址：[sample](https://github.com/loopj/android-async-http/tree/1.4.8/sample/src/main/java/com/loopj/android/http/sample)    
  分析者：[samuelhehe](https://github.com/samuelhehe)，分析状态：未完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始   
 

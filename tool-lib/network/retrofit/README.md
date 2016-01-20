@@ -1,7 +1,7 @@
 Retrofit源码解析
 ======
 
-> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 Retrofit 部分  
+> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 Retrofit 部分  
 > 项目地址：[Retrofit](https://github.com/square/retrofit)，分析的版本：[35ce778](https://github.com/square/retrofit/commit/e68011938e92d7f50f8e2a64ad0e57788549dd5c)，Demo 地址：[Retrofit Demo](https://github.com/android-cn/android-open-project-demo/tree/master/Retrofit-demo)    
 > 分析者：[xxxzhi](https://github.com/xxxzhi)，分析状态：完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始   
 
