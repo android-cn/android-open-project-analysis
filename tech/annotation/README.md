@@ -60,7 +60,7 @@ c. 运行时动态处理，如得到注解信息
 
             Set<Person> set = new HashSet<Person>();
             for (int i = 0; i < 10; i++) {
-                set.add(new Person(1, "Jim"));
+                set.add(new Person(i, "Jim"));
             }
             System.out.println(set.size());
         }
