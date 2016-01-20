@@ -1,12 +1,12 @@
-ListViewAnimations源码解析
+ListViewAnimations 源码解析
 ----------------
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中ListViewAnimations部分   
+> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 ListViewAnimations 部分   
 项目地址：[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)，分析的版本：[25124c5](https://github.com/nhaarman/ListViewAnimations/commit/25124c555c9d6ced81ce3e78b3d8a0e02fc274ce)，Demo 地址：[ListViewAnimations Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/listview-animations-demo)  
 分析者：[demonyan](https://github.com/demonyan)，分析状态：已完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始
 
 ## 1. 功能介绍
 ### 1.1 ListViewAnimations
-`ListViewAnimations`开源库可以让Android开发者很方便为`ListView`(严格来说`AbsListView`更准确些，因为还包含`GridView`。但为了方便统称`ListView`，下同)添加动画效果。
+`ListViewAnimations`开源库可以让 Android 开发者很方便为`ListView`(严格来说`AbsListView`更准确些，因为还包含`GridView`。但为了方便统称`ListView`，下同)添加动画效果。
 `ListViewAnimations`提供`Alpha`，`Swing-RightIn`，`Swing-LeftIn`， `Swing-BottomIn`，`Swing-RightIn`和`ScaleIn`等内置动画效果。并支持`StickyListHeaders`
 ，`Swipe-to-Dismiss`和`Swipe-Undo`，`Drag-and-Drop`重排序，`ExpandableList`等常用功能。开发者可以组合库提供的动画，也可以继承库的抽象类实现自定义的动画。
 
@@ -31,22 +31,22 @@ ListViewAnimations源码解析
 ```java
 public void setListViewWrapper(@NonNull final ListViewWrapper listViewWrapper) {
     mListViewWrapper = listViewWrapper;
-    /** 递归初始化每个装饰角色的mListViewWrapper */
+    /** 递归初始化每个装饰角色的 mListViewWrapper */
     if (mDecoratedBaseAdapter instanceof ListViewWrapperSetter) {
         ((ListViewWrapperSetter) mDecoratedBaseAdapter).setListViewWrapper(listViewWrapper);
     }
 }
 ```
 >* `ArrayAdapter`  
-继承自BaseAdapter类，用于`ArrayList`适配，并实现`Swappable`和`Insertable`接口，也就是说使用该类作为`Adapter`，可以实现基本的`item`互换和增加删除`item`。
+继承自 BaseAdapter 类，用于`ArrayList`适配，并实现`Swappable`和`Insertable`接口，也就是说使用该类作为`Adapter`，可以实现基本的`item`互换和增加删除`item`。
 ```java
-/** 实现Swappable接口　*/
+/** 实现 Swappable 接口　*/
 public void swapItems(final int positionOne, final int positionTwo) {
     T firstItem = mItems.set(positionOne, getItem(positionTwo));
     notifyDataSetChanged();
     mItems.set(positionTwo, firstItem);
 }
-/** 实现Insertable接口　*/
+/** 实现 Insertable 接口　*/
 public void add(final int index, @NonNull final T item) {
     mItems.add(index, item);
     notifyDataSetChanged();
@@ -70,7 +70,7 @@ private void animateViewIfNecessary(final int position, @NonNull final View view
     Animator alphaAnimator = ObjectAnimator.ofFloat(view, ALPHA, 0, 1);
     /** 将动画组合起来 */
     Animator[] concatAnimators = AnimatorUtil.concatAnimators(childAnimators, animators, alphaAnimator);
-    /** 调用ViewAnimator的方法给item添加动画 */
+    /** 调用 ViewAnimator 的方法给 item 添加动画 */
     mViewAnimator.animateViewIfNecessary(position, view, concatAnimators);
 }
 ```
@@ -90,7 +90,7 @@ protected Animator getAnimator(@NonNull final ViewGroup parent, @NonNull final V
 }
 ```
 >* `ScaleInAnimationAdapter`  
-`AnimationAdatper`的子类，`getAnimator`方法返回scale动画。
+`AnimationAdatper`的子类，`getAnimator`方法返回 scale 动画。
 ```java
 protected Animator getAnimator(@NonNull final ViewGroup parent, @NonNull final View view) {
     ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, SCALE_X, mScaleFrom, 1f);
@@ -99,7 +99,7 @@ protected Animator getAnimator(@NonNull final ViewGroup parent, @NonNull final V
 }
 ```
 >* `SwingBottomInAnimationAdapter`  
-`AnimationAdatper`的子类，`getAnimator`方法返回Y轴方向从下往上的动画。
+`AnimationAdatper`的子类，`getAnimator`方法返回 Y 轴方向从下往上的动画。
 ```java
 protected Animator getAnimator(@NonNull final ViewGroup parent, @NonNull final View view) {
     return ObjectAnimator.ofFloat(view, TRANSLATION_Y, parent.getMeasuredHeight() >> 1, 0);
@@ -132,7 +132,7 @@ public void setAdapter(final ListAdapter adapter) {
     mSwipeUndoAdapter = null;
     if (adapter instanceof BaseAdapter) {
         BaseAdapter rootAdapter = (BaseAdapter) wrappedAdapter;
-        /** 遍历Adapter链获得rootAdapter */
+        /** 遍历 Adapter 链获得 rootAdapter */
         while (rootAdapter instanceof BaseAdapterDecorator) {
             if (rootAdapter instanceof SwipeUndoAdapter) {
                 mSwipeUndoAdapter = (SwipeUndoAdapter) rootAdapter;
@@ -223,7 +223,7 @@ private boolean handleMoveEvent(@NonNull final MotionEvent event) {
 > 当接收到`ACTION_UP`时，根据手指松开时的当前位置来确定`item`的最终位置.
 
 >* `DraggableManager`  
-判断用户是否可以拖拽`item`的接口。通过实现该接口的isDraggable方法，可以自定义满足拖拽的条件。
+判断用户是否可以拖拽`item`的接口。通过实现该接口的 isDraggable 方法，可以自定义满足拖拽的条件。
 >* `TouchViewDraggableManager`  
 实现了`DraggableManager`接口，通过是否与特定的`View`接触来判断用户可以拖拽`item`。
 >* `SwipeTouchListener`  
@@ -321,7 +321,7 @@ public View getView(final int position, @Nullable final View convertView,
     View undoView = mUndoAdapter.getUndoView(position, view.getUndoView(), view);
     view.setUndoView(undoView);
     mUndoAdapter.getUndoClickView(undoView).setOnClickListener(new UndoClickListener(view, position));
-    /** 显示primaryView或者undoView */
+    /** 显示 primaryView 或者 undoView */
     boolean isInUndoState = mUndoPositions.contains(position);
     primaryView.setVisibility(isInUndoState ? View.GONE : View.VISIBLE);
     undoView.setVisibility(isInUndoState ? View.VISIBLE : View.GONE);
@@ -350,7 +350,7 @@ public View getHeaderView(final int position, final View convertView, final View
 由于`ListViewAnimations`库实现中出现许多包装类以及回调接口，代码可读性不高。通过多读源码，同时结合`Demo`学习该库，对了解`ListView`实现思路，`View`的事件分发机制，`Android`动画基础和设计模式会有所帮助。目前`RecyclerView`以它独有的优势得到愈来愈多的使用，`ListViewAnimations`库的`feature_recyclervier`分支中实现了对`RecyclerView`的支持。作者可能为了避免`master`太复杂而带来的使用不便，或者觉得`RecyclerView`对`item`动画(`RecycleView`有`ItemAnimator`来实现各种动画)的支持已经足够灵活和优秀，`mater`分支并未看到对`RecyclerView`的支持。
 
 ### 参考文献
-1. [Android设计模式源码解析之桥接模式](https://github.com/simple-android-framework/android_design_patterns_analysis/tree/master/bridge/shen0834)
+1. [Android 设计模式源码解析之桥接模式](https://github.com/simple-android-framework/android_design_patterns_analysis/tree/master/bridge/shen0834)
 1. [公共技术点之 View 事件传递](http://a.codekk.com/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92)
 1. [公共技术点之 Android 动画基础](http://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Android%20%E5%8A%A8%E7%94%BB%E5%9F%BA%E7%A1%80)
 1. [StickyListHeaders](https://github.com/emilsjolander/StickyListHeaders)
