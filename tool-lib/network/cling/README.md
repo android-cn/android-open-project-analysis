@@ -1,6 +1,6 @@
 Cling 源码解析
 ====================================
-> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 Cling 部分  
+> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 Cling 部分  
 > 项目地址：[cling](https://github.com/4thline/cling)，分析的版本：[5fd60eb](https://github.com/4thline/cling/commit/5fd60eb9e2e87f2ae6d1cf049145c4187040518c)，Demo 地址：[BeyondUPnP](https://github.com/kevinshine/BeyondUPnP)  
 > 分析者：[kevinshine](https://github.com/kevinshine)，分析状态：完成，校对者：[Trinea](https://github.com/trinea)，校对状态：完成   
 

@@ -1,6 +1,6 @@
 Android Universal Image Loader 源码分析
 ====================================
-> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 Android Universal Image Loader 部分  
+> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 Android Universal Image Loader 部分  
 > 项目地址：[Android-Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader)，分析的版本：[eb794c3](https://github.com/nostra13/Android-Universal-Image-Loader/commit/eb794c306c1707a6cce80764b01f52109d5b9056)，Demo 地址：[UIL Demo](https://github.com/android-cn/android-open-project-demo/tree/master/universal-image-loader-demo)  
 > 分析者：[huxian99](https://github.com/huxian99)，校对者：[Grumoon](https://github.com/grumoon)、[Trinea](https://github.com/trinea)，校对状态：完成
 

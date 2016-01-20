@@ -1,6 +1,6 @@
 DiscreteSeekBar 源码解析
 ====================================
-> 本文为 [Android 开源项目源码解析](https://github.com/android-cn/android-open-project-analysis) 中 DiscreteSeekBar 部分  
+> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 DiscreteSeekBar 部分  
 > 项目地址：[discreteSeekBar](https://github.com/AnderWeb/discreteSeekBar)，分析的版本：[f54f0cd6](https://github.com/AnderWeb/discreteSeekBar/commit/f54f0cd64cd33da9effe9103d80bcc408178d171 "Commit id is f54f0cd64cd33da9effe9103d80bcc408178d171")，Demo 地址：[discrete-seek-bar-demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/discrete-seek-bar-demo)    
 > 分析者：[wangeason](https://github.com/wangeason)，分析状态：已完成，校对者：[Trinea](https://github.com/trinea)，[huxian99](https://github.com/huxian99) 校对状态：未开始   
 
