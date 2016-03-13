@@ -234,7 +234,7 @@ onCreate 函数，会在代理 Activity onCreate 函数中被调用，流程图�
 
 主要作用是根据是否被代理，确定一些函数直接走父类逻辑还是代理 Activity 或是空逻辑。  
 
-`DLBasePluginActivity`继承自`Activity`，同时实现了`DLPlugin`接口。这两个类大同小异，所以这里只分析`DLProxyActivity`。  
+`DLBasePluginActivity`继承自`Activity`，同时实现了`DLPlugin`接口。这两个类大同小异，所以这里只分析`DLBasePluginActivity`。  
 主要变量：  
 ```java
     protected Activity mProxyActivity;
