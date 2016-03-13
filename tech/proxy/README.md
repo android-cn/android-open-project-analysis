@@ -590,7 +590,7 @@ invoke(Object proxy, Method method, Object[] args)
 
 #### 4.2 基于 REST 的 Android 端网络请求框架 Retrofit  
 作用：简化网络请求操作。  
-一般情况下每个网络请求我们都需要调用一次`HttpURLConnection`或者`HttpClient`进行请求，或者像 [Volley](https://github.com/android-cn/android-open-project-analysis/tree/master/volley "Volley 源码解析") 一样丢进等待队列中，Retrofit 极大程度简化了这些操作，示例代码如下：  
+一般情况下每个网络请求我们都需要调用一次`HttpURLConnection`或者`HttpClient`进行请求，或者像 [Volley](http://a.codekk.com/detail/Android/grumoon/Volley%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90 "Volley 源码解析") 一样丢进等待队列中，Retrofit 极大程度简化了这些操作，示例代码如下：  
 ```java
 public interface GitHubService {
   @GET("/users/{user}/repos")
