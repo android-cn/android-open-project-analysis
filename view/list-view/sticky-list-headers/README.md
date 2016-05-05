@@ -12,7 +12,7 @@ Github：[MrBigBang](https://github.com/MrBigBang)
 （2）WrapperView继承自ViewGroup，其内部包含一个item（View）、一个header（View）和一个divider（drawable），但是header和divider是不能共存的有一个必为null。并实现了对item、header、divider的复用。  
 ###2.总体设计
 StickyListHeaders这个开源库结构还是比较简单的，总体结构图如下：  
-![UML](./img/uml.png)  
+![UML](./image/uml.png)  
 （1）主体为<code>**StickyListHeadersListView**</code>这个类，这个类继承值FrameLayout，其中有两个布局，一个就是ListView的子类<code>WrapperViewList</code>，另一个就是所谓的粘性Header（_下面统称为StickyHeader，防止和WrapperView中的header混淆_）。  
 &emsp;&emsp;这个类内部定义了三个接口，供外界实现交互： 
 <font color=red>   
