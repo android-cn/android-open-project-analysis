@@ -60,7 +60,7 @@ MeasureSpecs
 该方法就是我们自定义视图中实现测量逻辑的方法，该方法的参数是父视图对子视图的 width 和 height 的测量要求。在我们自身的自定义视图中，要做的就是根据该 widthMeasureSpec 和 heightMeasureSpec 计算视图的 width 和 height，不同的模式处理方式不同。
 
 - setMeasuredDimension()  
-测量阶段终极方法，在 `onMeasure(int widthMeasureSpec, int heightMeasureSpec)` 方法中调用，将计算得到的尺寸，传递给该方法，测量阶段即结束。该方法也是必须要调用的方法，否则会报异常。在我们在自定义视图的时候，不需要关心系统复杂的 Measure 过程的，只需调用`setMeasuredDimension()`设置根据 MeasureSpec 计算得到的尺寸即可，你可以参考 [ViewPagerIndicator](https://github.com/android-cn/android-open-project-analysis/tree/master/view-pager-indicator) 的 onMeasure 方法。  
+测量阶段终极方法，在 `onMeasure(int widthMeasureSpec, int heightMeasureSpec)` 方法中调用，将计算得到的尺寸，传递给该方法，测量阶段即结束。该方法也是必须要调用的方法，否则会报异常。在我们在自定义视图的时候，不需要关心系统复杂的 Measure 过程的，只需调用`setMeasuredDimension()`设置根据 MeasureSpec 计算得到的尺寸即可，你可以参考 [ViewPagerIndicator](http://a.codekk.com/detail/Android/lightSky/ViewPagerindicator%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90) 的 onMeasure 方法。  
 
 下面我们取 ViewGroup 的 `measureChildren（int widthMeasureSpec, int heightMeasureSpec)` 方法对复合 View 的 Measure 流程做一个分析：
 MeasureChild 的方法调用流程图：  

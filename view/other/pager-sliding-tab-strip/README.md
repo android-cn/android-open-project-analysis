@@ -201,7 +201,7 @@ for (int i = 0; i < tabCount; i++) {
 
 ###6.参考文献
 
-[ViewPagerindicator 源码解析](https://github.com/android-cn/android-open-project-analysis/tree/master/view-pager-indicator)
+[ViewPagerindicator 源码解析](http://a.codekk.com/detail/Android/lightSky/ViewPagerindicator%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90)
 
 ####View 的绘制：
 1. [How Android Draws Views](http://developer.android.com/guide/topics/ui/how-android-draws.html)
