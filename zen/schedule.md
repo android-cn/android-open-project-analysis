@@ -19,6 +19,7 @@
 [rxAndroid](https://github.com/ReactiveX/RxAndroid)|[zengfeng1993](https://github.com/zengfeng1993) | | | 12/7 |12/19 | 12/26 | 1/3 | 1/10 | 1/17 |
 [fresco](https://github.com/facebook/fresco/) | [desmond1121](https://github.com/desmond1121) | [文档](https://github.com/desmond1121/Fresco-Source-Analysis) | | Done | Done | Done | Done | Done | Done
 [circular-progress-button](https://github.com/dmytrodanylyk/circular-progress-button)| [kirilenkoo](https://github.com/kirilenkoo) | | | 10/23 | 10/25 | 11/01 | 11/6 | 11/8 | 11/15 
+[countly-sdk-android](https://github.com/Countly/countly-sdk-android)| [振之](https://github.com/Labmem003) | | | 06/29 | 06/29 | 06/30 | 06/30 | 06/30 | 07/02 
 
 ####3. 二期计划(已完成)
 大家根据自己的时间安排补充 Demo、功能介绍、详细设计、流程图、总体设计、完成 6个阶段的 DeadLine 时间点。  
