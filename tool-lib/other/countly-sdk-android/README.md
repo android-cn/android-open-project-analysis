@@ -1,5 +1,6 @@
->  项目地址：[countly-sdk-android](https://github.com/Countly/countly-sdk-android)，分析的版本：[16.02.01 Release](https://github.com/Countly/countly-sdk-android/commit/c105d06e573703d9e29d5c92068a41befa36f43f)，Demo 地址：[countly-sdk-android-demo](https://github.com/Labmem003/zhenzhi-open-project-analysis/tree/master/countly-sdk-android-demo)    
- 分析者：[振之](https://github.com/Labmem003)，分析状态：完成
+> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 countly-sdk-android 部分  
+ 项目地址：[countly-sdk-android](https://github.com/Countly/countly-sdk-android)，分析的版本：[16.02.01 Release](https://github.com/Countly/countly-sdk-android/commit/c105d06e573703d9e29d5c92068a41befa36f43f)，Demo 地址：[countly-sdk-android-demo](https://github.com/Labmem003/zhenzhi-open-project-analysis/tree/master/countly-sdk-android-demo)    
+ 分析者：[振之](https://github.com/Labmem003)，分析状态：完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始
 
 ### 1.功能介绍  
 #### Countly
