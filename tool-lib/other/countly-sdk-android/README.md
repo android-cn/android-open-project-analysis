@@ -1,12 +1,7 @@
 >  项目地址：[countly-sdk-android](https://github.com/Countly/countly-sdk-android)，分析的版本：[16.02.01 Release](https://github.com/Countly/countly-sdk-android/commit/c105d06e573703d9e29d5c92068a41befa36f43f)，Demo 地址：[countly-sdk-android-demo](https://github.com/Labmem003/zhenzhi-open-project-analysis/tree/master/countly-sdk-android-demo)    
  分析者：[振之](https://github.com/Labmem003)，分析状态：完成
 
-工作需要用到了一个叫Countly的开源移动应用实时统计分析系统，类似于友盟。挺好奇这类统计系统的实现机制的，于是读了一下源码。项目其实十分简单，功能性代码比较多。原理上并没有什么特别高深莫测的地方，跟我们平常写业务代码的套路是一样一样的。
-
-笔记如下，有需要／好奇的可以看看。
-
-读完大概需要15分钟。
-### 功能介绍  
+### 1.功能介绍  
 #### Countly
 Countly 是一款类似于友盟的移动&Web应用通用的实时统计分析系统，专注于易用性、扩展性和功能丰富程度。不同之处是 Countly 是开源的，任何人都可以将 Countly 客户端部署在自己的服务器并将开发工具包整合到他们的应用程序中。比友盟要简洁干净，关键是数据和程序都完全处于自己掌控之下，不愿被第三方掌握数据，或者有什么特殊需求的，可以自己满足自己了。
 
@@ -56,7 +51,7 @@ dependencies {
   Countly.sharedInstance().enableCrashReporting()
 ```
 更详细的使用，可参照我写的小 [Demo](https://github.com/Labmem003/zhenzhi-open-project-analysis/tree/master/countly-sdk-android-demo)。
-### 总体设计
+### 2.总体设计
 
 [![总体设计](http://blog.qiji.tech/wp-content/uploads/2016/06/CountlyDesign.png)](http://blog.qiji.tech/wp-content/uploads/2016/06/CountlyDesign.png)
 
@@ -72,23 +67,23 @@ ConnectionQueue 和 EventQueue 不是平常意义的 FIFO 队列，而是本地�
 ```
 OK, 接口地址知道，数据在手, 取出来按接口要求拼装好，fire the hole。
 
-### 流程图
+### 3.流程图
 
 [![流程图](http://blog.qiji.tech/wp-content/uploads/2016/06/CountlyFlowchartDiagram.png)](http://blog.qiji.tech/wp-content/uploads/2016/06/CountlyFlowchartDiagram.png)
 
-### 详细设计
-#### 类关系图
+### 4. 详细设计
+#### 4.1 类关系图
 [![classship](http://blog.qiji.tech/wp-content/uploads/2016/06/classship.png)](http://blog.qiji.tech/wp-content/uploads/2016/06/classship.png)  
-#### 类详细介绍
+#### 4.2 类详细介绍
 结构很简单，一共就两个包，countly 核心包和 openudid 包。
 
 [![structure](http://blog.qiji.tech/wp-content/uploads/2016/06/structure.png)](http://blog.qiji.tech/wp-content/uploads/2016/06/structure.png)
 
 countly 包解决统计什么，怎么实施统计；而 openudid 包解决如何标记统计的数据来自何方。
 
-##### openudid 包
+##### 4.2.1 openudid 包
 先来看看比较简单的 openudid 包，她是一个设备标识方案，能提供一个设备通用统一标识符（Unique Device IDentifier/UDID）。如果同一台设备上有多个 App 都用了这个包来生成 UDID，他们获取的 UDID 是一致的（即所谓设备标识）。当我们将统计数据发送给服务端时，会将 UDID 附上。不难想到，之后服务端算日活、描述用户特征、事件追踪等等各种后续的数据分析肯定都离不开 UDID ，算是很必要的基础设施。实际上她也是一个开源包[OpenUDID](https://github.com/vieux/OpenUDID)。
-###### OpenUDID_service.java
+###### 4.2.1.1 OpenUDID_service.java
 这个类很简单，就是一个只重写了 onTransact 方法的 Service，支持跨进程调用。
 
 ```
@@ -123,7 +118,7 @@ reply.writeInt(data.readInt()); //Return to the sender the input random number
   reply.writeString(preferences.getString(OpenUDID_manager.PREF_KEY, null));
 
 ```
-###### OpenUDID_manager.java
+###### 4.2.1.2 OpenUDID_manager.java
 调用 sync(Context context) 来初始化一个 udid, 策略是先看自己有木有，木有的话就从好基友那里拿，好基友也没有就只能自己撸一个出来。
 
 一切都撸完之后，调用 getOpenUDID 就可以得到一枚 UDID 了。
@@ -238,7 +233,7 @@ reply.writeInt(data.readInt()); //Return to the sender the input random number
 
 (5)public static String getOpenUDID(),就是getOpenUDID。
 
-##### countly 包
+##### 4.2.2 countly 包
 概念解释
 
 Event，事件，以键值方式记录，键为事件名，值记录次数。
@@ -248,10 +243,10 @@ Session，会话，定时更新；形成的会话流，代表应用的一次使�
 Crash，崩溃。
 
 Connection，连接；以上请求（事件、会话、崩溃）都会转换为 Connection 提交给服务器。
-###### OpenUDIDAdapter.java
+###### 4.2.2.1 OpenUDIDAdapter.java
 包装了 UDID 包，提供 sync（），getOpenUDID（）。但是是用动态反射的方法封装的，不明白为什么。官方的 commit message 说了一句：call OpenUDID dynamically so that including the OpenUDID source is not necessary to get the Countly Android SDK to work when an app provides it's own deviceID。
 看懂的请告诉我。
-###### DeviceId.java
+###### 4.2.2.2DeviceId.java
 代表设备 ID 的类。 
 
 （1）主要属性是
@@ -270,12 +265,12 @@ private Type type;//ID类型
   }
 ```
 openUDID 前面已介绍过，其他两种也是类似，不累述。
-###### DeviceInfo.java
+###### 4.2.2.3 DeviceInfo.java
 一个纯 POJO 类，用来存放设备信息，如设备名称、设备分辨率、版本号等。
 
 主要方法：
 static String getMetrics(final Context context)，返回 url-encoded 的属性 json 字符串。
-###### CrashDetails.java
+###### 4.2.2.4 CrashDetails.java
 提供了一些静态方法来获取运行时环境信息，结合 DeviceInfo 类, 为 Crash 时提供详细的参考信息。
 
 主要方法：
@@ -306,7 +301,7 @@ static String getMetrics(final Context context)，返回 url-encoded 的属性 j
     return result;
   }
 ```
-###### UserData.java
+###### 4.2.2.5 UserData.java
 类似 CrashDetail。
 
 ```
@@ -318,7 +313,7 @@ static String getMetrics(final Context context)，返回 url-encoded 的属性 j
     UserData.clear();
   }
 ```
-##### Event.java
+###### 4.2.2.6 Event.java
 定义了一个事件的数据结构
 
 ```
@@ -399,7 +394,7 @@ CountlyStore 是一个持久化存储类，EventQueue 类其实就是对 Countly
     countlyStore_.addEvent(key, segmentation, timestamp, hour, dow, count, sum);
   }
 ```
-###### CountlyStore.java
+###### 4.2.2.8 CountlyStore.java
 该类使用 SharePreference 为 Event, Connection, Location 3类数据提供持久化服务.
 介绍存储方式。
 
@@ -452,7 +447,7 @@ CountlyStore 是一个持久化存储类，EventQueue 类其实就是对 Countly
    public List<Event> eventsList()
 ```
 
-###### Countly.java
+###### 4.2.2.9 Countly.java
 暴露接口和驱动各个类工作的入口类。主要的属性是
 EventQueue，ConnectionQueue，和ScheduledExecutorService。
 （1）构造和 init
@@ -558,7 +553,7 @@ onStop 中，当 activityCount_＝＝0 时，应用退出前台， 结束 Sessio
   }
 ```
 
-###### ConnectionQueue.java
+###### 4.2.2.10 ConnectionQueue.java
 需要被发送的各种数据，包括前面说过的 event 和 crash 等，都在此提供发送接口，实际发送的时候都会被转换为 connection,持久化添加到connectionQueue 中，Tick 的时候由 ConnectionProcessor 从 Store 中取出发送到服务端。
 
 ```
@@ -603,7 +598,7 @@ tick，持久层有待发送连接且当前没有正在提交数据，则启动�
   void sendCrashReport(String error, boolean nonfatal)
   void sendUserData()
 ```
-###### ConnectionProcessor.java
+###### 4.2.2.11 ConnectionProcessor.java
 是个 Runnable，每次被 Run 的时候，从 Store 中取出当前所有的 Connections，用 http 发送。
 
 ```
