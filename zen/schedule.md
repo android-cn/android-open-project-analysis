@@ -1,6 +1,6 @@
 ﻿时间计划表
 ============
-####4. 三期计划(进行中)
+#### 4. 三期计划(进行中)
 
 开源库名 | 认领者 | 解析文档 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  
 :--|:-- |:--  |:--  |:--  |:--  |:--  |:--  |:--  |:--  |
@@ -20,7 +20,7 @@
 [fresco](https://github.com/facebook/fresco/) | [desmond1121](https://github.com/desmond1121) | [文档](https://github.com/desmond1121/Fresco-Source-Analysis) | | Done | Done | Done | Done | Done | Done
 [circular-progress-button](https://github.com/dmytrodanylyk/circular-progress-button)| [kirilenkoo](https://github.com/kirilenkoo) | | | 10/23 | 10/25 | 11/01 | 11/6 | 11/8 | 11/15 
 
-####3. 二期计划(已完成)
+#### 3. 二期计划(已完成)
 大家根据自己的时间安排补充 Demo、功能介绍、详细设计、流程图、总体设计、完成 6个阶段的 DeadLine 时间点。  
 
 预计时间可参考：[common README](./common/README.md)，另外为了详细设计更细致，该阶段大家可多预留时间。  
@@ -46,7 +46,7 @@
 [CircularReveal](https://github.com/ozodrukh/CircularReveal) | [Toaker](https://github.com/Toaker) | | | Done | 4/7 | 4/15 | 4/25 | 5/5 | 5/10 |     
 [ORMLite](https://github.com/j256/ormlite-android) | [zhoutailiang](https://github.com/zhoutailiang) | |  | 3/25 | 4/2 | 4/23 | 5/7 | 5/21 | 6/1 |
 
-####2. 一期计划(已完成)
+#### 2. 一期计划(已完成)
 **本期暂定截止事件为 2014 年 12 月 25 日，请大家在相应阶段完成后将时间改为`Done`，其中`校验阶段`由 Buddy 校验完成后改为 `Done`**  
 
 开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成 | 校验  
@@ -69,7 +69,7 @@
 ~~[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)~~ | [waylife](https://github.com/waylife) | | Done | Done | 11/23 | 11/30 | 12/7 | 12/14 |  
 ~~[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator)~~ | [longtaoge](https://github.com/longtaoge) | | Done | 11/30 | 12/05 | 12/10 | 12/15 | 12/20 |  
  
-####1. 一期开始的计划安排
+#### 1. 一期开始的计划安排
 这个只是作为纪念，时间估计有点保守，不存在参考的价值。  
 
 开源库名 | 认领者 | Buddy | Demo | 功能介绍 | 详细设计 | 流程图 | 总体设计 | 完成  

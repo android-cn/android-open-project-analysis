@@ -5,11 +5,11 @@ Retrofit 源码解析
 > 项目地址：[Retrofit](https://github.com/square/retrofit)，分析的版本：[35ce778](https://github.com/square/retrofit/commit/e68011938e92d7f50f8e2a64ad0e57788549dd5c)，Demo 地址：[Retrofit Demo](https://github.com/android-cn/android-open-project-demo/tree/master/Retrofit-demo)    
 > 分析者：[xxxzhi](https://github.com/xxxzhi)，分析状态：完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始   
 
-###1. 功能介绍
-####1.1 Retrofit
+### 1. 功能介绍
+#### 1.1 Retrofit
 Retrofit 是 Github 上面 squre 组织开发的一个类型安全的 Http 客户端，它可以在 Java 和 Android 上面使用。Retrofit 将描述请求的接口转换为对象，然后再由该对象去请求后台。Retrofit 将请求对象化了。目前已经发布了 2.0beta 版本。
 
-####1.2 特点
+#### 1.2 特点
 Retrofit 主要有以下功能特点
 
 1. 将 Http 请求对象化，函数化。让接口的函数代表具体请求。
@@ -19,7 +19,7 @@ Retrofit 主要有以下功能特点
 5. Retrofit 默认使用 OkHttp 开源库请求后台，用户也可以使用自定义的具体请求方式。方便扩展。
 6. 自带提供了异步处理 Http 请求的方式。
 
-####1.3 简单 Demo
+#### 1.3 简单 Demo
 这是一个简单的例子，访问[httpbin](https://httpbin.org/)网站。也可以看完整的[Retrofit Demo](https://github.com/android-cn/android-open-project-demo/tree/master/Retrofit-demo)
 首先声明一个 java 接口
 
@@ -48,7 +48,7 @@ Retrofit 主要有以下功能特点
      compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
 
 
-###2. 总体设计
+### 2. 总体设计
 Retrofit 可以分为注解解析（Request 生成），请求执行，请求回调（异步处理），响应体转化几个部分。其中请求执行与请求回调可以算作一个部分，并且请求回调也可以没有，Call 有直接执行的接口 execute。
 
 ![Retrofit 总体结构][1]
@@ -62,15 +62,15 @@ Retrofit 可以分为注解解析（Request 生成），请求执行，请求回
 
 注解（Annotation）是 Retrofit 预先定义的注解，包括 Http 的各个部分，比如 POST、GET、Query、QueryMap、Field 等等。
 
-###3. 流程图
+### 3. 流程图
 
 ![Retrofit 使用流程图][2]
 
 
 其中生成 Call 的部分可以看下面关于这个适配器的类图。
 
-###4. 详细设计
-####4.1 类图
+### 4. 详细设计
+#### 4.1 类图
 首先是整个项目的类图
 ![Retrofit UML 图][3]
 
@@ -81,10 +81,10 @@ Retrofit 可以分为注解解析（Request 生成），请求执行，请求回
 ExecutorCallback 代理的是用户自定义的 Callback。通过这种方式让 OkHttpCall 去执行 Call，让 ExecutorCallback 将用户自定义的 Callback 运行在指定线程上。
 
 
-####4.2 类功能详细介绍
+#### 4.2 类功能详细介绍
 在 Retrofit 开源库中，Retrofit 类是用户最基础的访问入口。然后 Converter 部分是由用户自己扩展的，而 Paraser 部分的相关类 RequestBuilder，RequestFactory 等则主要是负责解析接口并且生成 Request，而 Call，CallAdapter 等主要是负责底层的 Http 请求，以及请求后线程转换。
 
-#####4.2.1 Retrofit
+##### 4.2.1 Retrofit
 Retrofit 类是包含了一个构造器 Retrofit.Builder，由 Builder 指定 Retrofit 的相关参数，创建一个新的 Retrofit。Retrofit 中包含了很多重要的成员变量，而这些成员变量都是可以自设置的。
 
 Retrofit 包含以下成员变量：
@@ -113,7 +113,7 @@ Retrofit 重要方法:
 与 requestConverter 类似，不过该方法对应的是 Response。
 
 
-#####4.2.2 MethodHandler
+##### 4.2.2 MethodHandler
 MethodHandler 是 retrofit 中连接了解析部分，执行部分，转换部分的一个关键的中间类。不过 MethodHandler 的代码量很少。它可以说是连接各个部分的桥梁，也是接口方法的描述类。它有包含了 retrofit，requestFactory，callAdapter，responseConverter 成员变量。主要方法如下
 
 - create(Retrofit retrofit, Method method):MethodHandler<?> 
@@ -130,7 +130,7 @@ MethodHandler 是 retrofit 中连接了解析部分，执行部分，转换部�
   }
 ```
 
-#####4.2.3 Converter 与 Converter.Factory
+##### 4.2.3 Converter 与 Converter.Factory
 这两个类别都是在 Converter 文件下。Converter 是接口，Factory 抽象类，很简短。
 ```
 public interface Converter<F, T> {
@@ -151,7 +151,7 @@ public interface Converter<F, T> {
 ```
 Factory 主要是负责生成两种 Converter。Retrofit 实现了一个简单的 BuiltInConverters。
 
-#####4.2.4 Call
+##### 4.2.4 Call
 这是 Retrofit 的框架基础接口。它是 Retrofit 的发送请求给服务器并且返回响应体的调用。每个 Call 都有自己的 HTTP 请求和相匹配的响应。
 它有如下四个接口：
 
@@ -165,14 +165,14 @@ Factory 主要是负责生成两种 Converter。Retrofit 实现了一个简单�
 `Call<T> clone(); `
 
 
-#####4.2.5 CallAdapter
+##### 4.2.5 CallAdapter
 这是 Retrofit 的框架基础接口。CallAdapter 是将一个 Call 适配给另外一个 Call 的适配器接口。它有以下两个接口：
 - responseType 返回请求后，转化的参数 Type 类型。
 `Type responseType(); `
 - adapt 适配，将一个 Call 转换成另外一个 Call。
 `<R> T adapt(Call<R> call);`
 
-#####4.2.6 Callback
+##### 4.2.6 Callback
 请求结构的回调接口。在 Call 的 enquene 接口中使用 有如下两个方法
 
 - onResponse 返回响应体
@@ -180,7 +180,7 @@ Factory 主要是负责生成两种 Converter。Retrofit 实现了一个简单�
 - onFailure 请求失败的时候，比如网络或者一些难以预料的异常。
   `void onFailure(Throwable t);`
 
-#####4.2.7 OkHttpCall
+##### 4.2.7 OkHttpCall
 实现了 Call 接口，但同样是模版类。首先介绍一下 OkHttpCall 的主要函数：
 - createRawCall
 
@@ -197,20 +197,20 @@ Factory 主要是负责生成两种 Converter。Retrofit 实现了一个简单�
 
 OkHttpCall 是将 Request 放入到 okhttp 的 Call 里面执行，执行完成后，又将 okhttp 的 Call 返回的 Response 转化为 retrofit 的 Response，在此同时将 Body 里面的内容，通过 converter 转化为对应的对象。这个 OkHttpCall
 
-#####4.2.8 Response
+##### 4.2.8 Response
 这个类是包含了具体返回对象的响应体。里面包含了模版参数 T 类型的 body 对象，以及 okhttp 的 Response。
 
-#####4.2.9 注解类
+##### 4.2.9 注解类
 在 Retrofit 里面创建了 Body 注解，Filed 注解（Field，FieldMap），请求方法注解（DELETE，GET，PATCH，POST，PUT），请求头注解（HEAD，Header，Headers），multipart 注解（Part，Multipart，PartMap），接口加码（FormUrlEncoded），Url，Streaming，查询（Query，QueryMap），参数路径（Path），HTTP
 
-#####4.2.10 RequestBuilderAction
+##### 4.2.10 RequestBuilderAction
 这是一个抽象类，只有一个未实现的 perform 方法。
 
 `abstract void perform(RequestBuilder builder, Object value); `
 
 但是在 RequestBuilderAction 类里面有很多 RequestBuilderAction 的子类，分别对应注解类。Url，Header，Path，Query，QueryMap，Field，FieldMap，Part，PartMap，Body 都是在 RequestBuilderAction 的内部类，并且继承了 RequestBuilderAction。RequestBuilder 就是将对应注解的值给 RequestBuilder。
 
-#####4.2.11 RequestBuilder
+##### 4.2.11 RequestBuilder
 这是一个 okhttp.Request 的创建类。负责设置 HTTP 请求的相关信息，创建 Request。它主要有以下方法：
 
 - RequestBuilder
@@ -231,14 +231,14 @@ OkHttpCall 是将 Request 放入到 okhttp 的 Call 里面执行，执行完成�
 
 RequestBuilder 就是创建请求。
 
-#####4.2.12 RequestFactory
+##### 4.2.12 RequestFactory
 RequestFactory 是创建 Request，他有个 create 方法，
 
 `  Request create(Object... args) {`
 
 参数是接口函数对应的参数值，cerate 是创建 RequestBuilder，遍历 RequestFactory 的成员变量 requestBuilderActions，设置好 RequestBuilder，最后创建 Request 返回。
 
-#####4.2.13 RequestFactoryParser
+##### 4.2.13 RequestFactoryParser
 这个类主要是接口函数 Method 的每个注解。入口函数是 parse。
 ```
   static RequestFactory parse(Method method, Type responseType, Retrofit retrofit) {
@@ -253,7 +253,7 @@ RequestFactory 是创建 Request，他有个 create 方法，
 然后再解析方法参数注解（应用到方法参数上的注解），在解析方法参数注解的时候，会生成一个 requestBuilderActions 数组，对应到每个参数。每个 Action 都对应了每个函数参数的处理。等到具体函数调用的时候，跟函数具体的参数值对应。也就是 RequestFactory 与 Builder 的工作了，这部分是等到运行的时候才能够确定的。
 
 
-#####4.2.14 BuiltInConverters，OkHttpResponseBodyConverter，VoidConverter，OkHttpRequestBodyConverter
+##### 4.2.14 BuiltInConverters，OkHttpResponseBodyConverter，VoidConverter，OkHttpRequestBodyConverter
 BuiltInConverters 继承自 Converter.Factory，返回的 responseConverter 是 OkHttpResponseBodyConverter 或 VoidConverter，也就是接口方法返回的职能是 OkHttp 的 ResponseBody，或者 Void。
 返回的 requestConverter 是 OkHttpRequestBodyConverter，接口方法的参数中如果使用 Body，那 Body 也只能是 OkHttp 的 RequestBody。
 
@@ -261,7 +261,7 @@ VoidConverter： 将 OkHttp 的 ResponseBody 转化为 Void。
 OkHttpResponseBodyConverter：将 OkHttp 的 ResponseBody 转化为 OkHttp 的 ResponseBody。如果是 Streaming 标记的接口的话，利用 Utils.readBodyToBytesIfNecessary 缓冲整个 body。
 OkHttpRequestBodyConverter：将 OkHttp 的 RequestBody 转化为 OkHttp 的 RequestBody。
 
-#####4.2.15 PlatForm.Android.MainThreadExecutor
+##### 4.2.15 PlatForm.Android.MainThreadExecutor
 一个 Executor，通过 android Handler 将 Runnable 执行在 UI 线程中。
 ```
     static class MainThreadExecutor implements Executor {
@@ -273,7 +273,7 @@ OkHttpRequestBodyConverter：将 OkHttp 的 RequestBody 转化为 OkHttp 的 Req
     }
 ``` 
 
-#####4.2.16 Utils
+##### 4.2.16 Utils
 这是 Retrofit 中的一个工具类，里面包含了很多范型的检查、操作。另外以及一些基本的工具性的功能。下面是它里面的函数：
 
 - checkNotNull
@@ -316,10 +316,10 @@ OkHttpRequestBodyConverter：将 OkHttp 的 RequestBody 转化为 OkHttp 的 Req
 `static Type getCallResponseType(Type returnType) `
 获取返回 Call 的返回类型，必须是模版参数类型，并且 Call 的模版参数不能是 retrofit.Response.class。返回 getSingleParameterUpperBound(returnType)
 
-####4.3 扩展
+#### 4.3 扩展
 Retrofit 是很适合扩展的，里面设计的 Call，以及 Converter 就是为了方便扩展使用。
 
-#####4.3.1 Converter
+##### 4.3.1 Converter
 Retrofit 提供的默认的 Converter 只会返回 ResponseBody，如果我们想要返回具体的 Object，我们可以使用另外的第三方包，并且在创建 Retrofit 的时候添加对应的 ConverterFactory。这里有 6 个序列化第三方库:
 
 - Gson: com.squareup.retrofit:converter-gson
@@ -329,14 +329,14 @@ Retrofit 提供的默认的 Converter 只会返回 ResponseBody，如果我们�
 - Wire: com.squareup.retrofit:converter-wire
 - Simple XML: com.squareup.retrofit:converter-simplexml
 
-#####4.3.2 Rxjava
+##### 4.3.2 Rxjava
 retrofit 也可以与[Rxjava](https://github.com/ReactiveX/RxJava)联合起来使用，之前的版本使用范例可以参考[http://randomdotnext.com/retrofit-rxjava/](http://randomdotnext.com/retrofit-rxjava/)
 
 - adapter-Rxjava: com.squareup.retrofit:adapter-rxjava
 
 正在开发中，主要是通过扩展 CallAdapter，将之前 Call，转换为 rxjava 需要的 Observable<?>。
 
-###5 杂谈
+### 5 杂谈
   Retrofit 整体框架的代码并不多，主要是围绕着 converter，CallAdapter 设计的整个框架。花了两三天时间耐耐心心地把代码也是挺有收获。Retrofit 用到的基本技术是动态代理，Java 注解，Java 范型。另外如果对设计模式很熟悉的话，读起来感觉就会事半功倍。整个架构设计的非常好。
 
 

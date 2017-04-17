@@ -3,7 +3,7 @@
 > 本文为 [Android 开源项目源码解析](http://a.codekk.com) 公共技术点中的 Android 动画基础 部分  
  分析者：[lightSky](https://github.com/lightSky)，校对者：[Trinea](https://github.com/Trinea)，校对状态：未完成  
 
-###一  传统 View 动画(Tween/Frame)
+### 一  传统 View 动画(Tween/Frame)
 
 #### 1.1 Tween 动画##
 
@@ -258,14 +258,14 @@ rocketAnimation.start();
 
 ###  二. Property Animation
 
-####2.1 Property Animation 的工作方式
+#### 2.1 Property Animation 的工作方式
 
 Property Animation 动画有两个步聚：  
 1.计算属性值  
 2.为目标对象的属性设置属性值，即应用和刷新动画  
 
 
-####2.1.1 计算属性值
+#### 2.1.1 计算属性值
 
 ![属性值计算](./image/valuecaculate.png)
 
@@ -283,7 +283,7 @@ Property Animation 动画有两个步聚：
 
 ![属性动画类继承关系](./image/propertyanimhirachy.png) 
 
-####2.2.1 Interpolators
+#### 2.2.1 Interpolators
 
 插值器：时间的函数，定义了动画的变化律。  
 插值器只需实现一个方法：`getInterpolation(float input)`,其作用就是把 0 到 1 的 elapsed   fraction 变化映射到另一个 interpolated fraction。  Interpolator 接口的直接继承自`TimeInterpolator`，内部没有任何方法，而`TimeInterpolator`只有一个`getInterpolation`方法，所以所有的插值器只需实现`getInterpolation`方法即可。  
@@ -333,7 +333,7 @@ animation.setInterpolator(new CycleInterpolator(3));
 animation.start();
 ```
 
-####2.2.4 ObjectAnimator
+#### 2.2.4 ObjectAnimator
 继承自`ValueAnimator`，允许你指定要进行动画的对象以及该对象的一个属性。该类会根据计算得到的新值自动更新属性。也就是说上 Property Animation 的两个步骤都实现了。大多数的情况，你使用`ObjectAnimator`就足够了，因为它使得目标对象动画值的处理过程变得简单，不用再向`ValueAnimator`那样自己写动画更新的逻辑。但`ObjectAnimator`有一定的限制，比如它需要目标对象的属性提供指定的处理方法，这个时候你需要根据自己的需求在`ObjectAnimator`和`ValueAnimator`中做个选择了，看哪种实现更简便。  
 
 `ObjectAnimator`的自动更新功能，依赖于属性身上的`setter`和`getter`方法，所以为了让`ObjectAnimator`能够正确的更新属性值，你必须遵从以下规范:  
@@ -358,7 +358,7 @@ ObjectAnimator.ofFloat(targetObject, "propName", 1f)
 当你不希望向外暴露`Setter`方法的时候，或者希望获取到动画值统一做处理的话，亦或只需要一个简单的时序机制(拥有动画的各种值)的话，那么你可以选择使用`ValueAnimator`，它更简单。如果你就是希望更新动画，为了简便，可以使用`ObjectAnimator`，但自定义的属性必须有`setter`和`getter`方法，并且它们必须都是标准的驼峰式（确保内部能够调用），必须有结束值。你可以实现`Animator.AnimatorListener`接口根据自己的需求去更新 View。  
 
 
-####2.2.5 AnimatorSet
+#### 2.2.5 AnimatorSet
 提供组合动画能力的类。并可设置组中动画的时序关系，如同时播放、有序播放或延迟播放。`Elevator`会告诉属性动画系统如何计算一个属性的值，它们会从`Animator`类中获取时序数据，比如开始和结束值，并依据这些数据计算动画的属性值。  
 
 **小结：**
@@ -611,15 +611,15 @@ set.setTarget(myObject);
 set.start();  
 ```
 
-###三 View anim 与 property anim 的比较
+### 三 View anim 与 property anim 的比较
 
-####View anim 系统
+#### View anim 系统
 view animation system 提供的能力只能够为 View 添加动画。因此如果你想为非 View 对象添加动画，就必须自己去实现，
 view animation system 在 View 动画的展现方面也是有约束的，只暴露了 View 的很少方面。比如 View 支持缩放和旋转，但不支持背景颜色的动画。  
 view animation system 的另一劣势是，其改变的是 View 的绘制效果，真正的 View 的属性保持不变，比如无论你在对话中如何缩放 Button 的大小，Button 的有效点击区域还是没有应用到动画时的区域，其位置与大小都不变。  
 但是 View animation system 只需花费很少时间创建而且只需很少的代码。如果 View 动画完成了你所有的动作，或者你存在的代码已经达到了你想要的效果，就没必要使用 property 动画系统了。
 
-####property anim 系统
+#### property anim 系统
 完全弥补了 View anim System 的缺陷，你可以为一个对象的任何属性添加动画，（View 或者非 View），同时对象自己也会被修改。
 并且当属性变化的时候，property Anim 系统会自动的刷新屏幕。  
 属性动画系统在处理动画方面也更加强劲。更高级的，你可以指定动画的属性，比如颜色，位置，大小，定义动画的插值器并且同步多个动画。  

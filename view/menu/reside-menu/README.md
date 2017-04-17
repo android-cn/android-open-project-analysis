@@ -5,23 +5,23 @@ ResideMenu 源码解析
 > 分析者：[dkmeteor](https://github.com/dkmeteor)，校对者：[???]()，校对状态：未完成   
 
 
-###1. 功能介绍
+### 1. 功能介绍
 
-#####特性(Features)：
+##### 特性(Features)：
 通过手势滑动缩放主界面展现的侧边栏，类似QQ5.0+版本侧滑菜单的出现方式，支持左右双侧边栏。
 
 动效文字比较难以描述，请以演示效果Gif为例：
 
 ![demo gif](./image/residemenu-demo.gif)
 
-#####优势：
+##### 优势：
 - 性能优异，几乎没有额外的重绘和性能损耗。
 - 良好的结构设计，易于扩展和改写。
 - 与`DrawerLayout`或`SlidingMenu`相比，完全是另一种风格，第一次见到时给人眼前一亮的感觉。
 - 事件分发做了很好的处理，可以方便的与其它控件集成。
 
 
-###2. 总体设计
+### 2. 总体设计
 
 #### 2.1 View层次结构分析
 
@@ -37,12 +37,12 @@ View Tree：
 
 注意,缩放的中心点在屏幕外.
     
-###3. 事件分发流程图
+### 3. 事件分发流程图
 
 ![dispatchTouchEvent](./image/dispatchTouchEvent.png)
 
-###4. 详细设计
-###4.1 核心类功能介绍
+### 4. 详细设计
+### 4.1 核心类功能介绍
 
 ---
 ##### 4.1.1 ResideMenu
@@ -263,7 +263,7 @@ attachToActivity执行后
 
 请结合事件分发流程图一起理解这部分.
 
-###5. 杂谈
+### 5. 杂谈
 在分析`ResideMenu`的过程中，我也尝试自己写了一个ResideMenu的效果扩展来印证分析过程中的一些结论：
 ![Folder-ResideMenu](https://raw.githubusercontent.com/dkmeteor/Folder-ResideMenu/master/screenshot.png)
 

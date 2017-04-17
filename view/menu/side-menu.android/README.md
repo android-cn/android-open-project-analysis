@@ -4,24 +4,24 @@ Side Menu.Android 源码解析
 > 项目地址：[Side Menu.Android](https://github.com/Yalantis/Side-Menu.Android)，分析的版本：[2c23bff](https://github.com/Yalantis/Side-Menu.Android/commit/2c23bff1dbebb87b3a3291e3f7d629cc0d5efbfa)，Demo 地址：[side-menu-demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/side-menu-demo)    
 > 分析者：[cpacm](https://github.com/cpacm)，校对者：[lightSky](https://github.com/lightSky)，校对状态：完成 
 
-##1. 功能介绍  
+## 1. 功能介绍  
 一个交互的动画侧边菜单——`Side Menu`。
 
-####1.1 特点
+#### 1.1 特点
 提供了一个翻页动画——`Flip Animation`。    
 
 
-####1.2 要求
+#### 1.2 要求
 **（1）**主界面布局需要使用 DrawerLayout 作为容器        
 **（2）**内容界面需要继承 ScreenShotable 接口（如 demo 中的 ContentFragment），以便为 Reveal 效果提供 Bitmap 资源。  
 **（4）**主界面需要实现 ViewAnimator.ViewAnimatorListener 接口（如 demo 中的 myActivity）。
  
-##2. 流程图  
+## 2. 流程图  
 ![流程图](images/side_menu.jpg "流程图")
 
-##3. 详细设计  
-###3.1 核心类介绍
-####3.1.1 ViewAnimator SideMenu 的管理类
+## 3. 详细设计  
+### 3.1 核心类介绍
+#### 3.1.1 ViewAnimator SideMenu 的管理类
 其构造函数需要传入 5 个参数，分别为`作为主界面的 ActionBarActivity`、`子按钮列表`、`实现 ScreenShotable 接口的信息界面`、`DrawerLayout`、`实现 ViewAnimatorListener 接口的主界面`。 
   
 ```java
@@ -91,14 +91,14 @@ drawerLayout.closeDrawers();
     }
 ```
 
-####3.1.2 SlideMenuItem 选项按钮类
+#### 3.1.2 SlideMenuItem 选项按钮类
 一个按钮容器类，里面存放着两个变量，主要用来设置菜单按钮。
 
 ```java
     private String name;//名称
     private int imageRes;//图片 id
 ```
-####3.1.3 FlipAnimation 翻转动画
+#### 3.1.3 FlipAnimation 翻转动画
 一个翻转动画工具类，继承自 Animation 类。根据传入的参数来实现不同的翻转效果。
 
 ```java
@@ -109,7 +109,7 @@ drawerLayout.closeDrawers();
  ...
  }
 ```
-####3.1.4 Resourceble 选项接口
+#### 3.1.4 Resourceble 选项接口
 按钮选项必须继承该接口(如 SlideMenuItem 就继承了该接口)，用于存放资源。
 
 ```java
@@ -118,7 +118,7 @@ public interface Resourceble {
     public String getName();
 }
 ```
-####3.1.1 ScreenShotable
+#### 3.1.1 ScreenShotable
 用于信息变更的接口,实现切换效果，显示内容的 View 需要去实现它，该接口包含两个方法：
 
 ```java
@@ -131,10 +131,10 @@ public interface ScreenShotable {
 2、getBitmap()方法,获取 takeScreenShot 为当前界面创建的 Bitmap，用于 Reveal 效果。  
 
 
-####3.2 类关系图
+#### 3.2 类关系图
 ![类图](images/side_menu_class.jpg "类图")
 
-##4.个人总结
+## 4.个人总结
 一个很简单的一个项目，所以从难度上没有什么好讲的（自己的收获则是熟悉了在 Android5.0 下 Toolbar 的用法）。  
 我认为问题最大的是它的扩展性太差，从 ViewAnimator 类的构造函数就能发现这个库一定要在相应的环境下（ActionBarActivity,DrawerLayout）才会产生作用。  
 其次是动画类型不能让开发者进行二次定制，要想改变动画类型则要进 library 库进行修改。最后是 ViewAnimator 里的很多设置是通过回调函数返回给开发者自己设置，感觉变得更复杂了。  

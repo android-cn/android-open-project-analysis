@@ -20,11 +20,11 @@ TitlePagerIndicator 相对复杂，Android 系统提供的控件中没有类似�
 
 TabPageIndicator、IconPageIndicator 继承自 HorizontalScrollView 是由于它们各自的 ChildView 较多，而且具有相似性些，继承自 LinearLayout，通过 for 循环一个个 add 上去更简单，而且 HorizontalScrollView 具有水平滑动的功能，当 tab 比较多的时候，可以左右滑动。  
 ### 3. 详细设计    
-####3.1 类关系图
+#### 3.1 类关系图
 ![viewpagerindicator img](image/class_relation.png)  
-####3.2 自定义控件相关知识  
+#### 3.2 自定义控件相关知识  
 由于 ViewPagerIndicator 项目全部都是自定义 View，因此对于其原理的分析，就是对自定义 View 的分析，自定义 View 涉及到的核心部分有：View 的绘制机制和 Touch 事件传递机制。对于 View 的绘制机制，这里做了详细的阐述，这一部分在 Android 中为公共知识点，已经将这一部分的内容单独去了，在[tech](https://github.com/android-cn/android-open-project-analysis/tree/master/tech)目录下，而对于 Touch 事件，由于该项目只是 Indicator，因此没有涉及到复杂的 Touch 传递机制，该项目中与 Touch 机制相关只有 onTouch(Event)方法，因此只对该方法涉及到的相关知识进行介绍。
-####3.2.1 自定义控件步骤  
+#### 3.2.1 自定义控件步骤  
 
 1. 创建自定义的 View  
 	* 继承 View 或 View 的子类，添加必要的构造函数
@@ -38,7 +38,7 @@ TabPageIndicator、IconPageIndicator 继承自 HorizontalScrollView 是由于它
 3. 使 View 具有交互性  
 一个好的自定义 View 还应该具有交互性，使用户可以感受到 UI 上的微小变化，并且这些变化应该尽可能的和现实世界的物理规律保持一致，更自然。Android 提供一个输入事件模型，帮助你处理用户的输入事件,你可以借助 GestureDetector、Scroller、属性动画等使得过渡更加自然和流畅。 
 
-####3.2.2 Android 的拖拽事件  	
+#### 3.2.2 Android 的拖拽事件  	
 该项目使用的是 ViewPager，本来不用处理拖拽事件的，但项目中的 CirclePageIndicator、LinePageIndicator、UnderlinePageIndicator、TitlePageIndicator 都对 onTouchEvent 进行了处理，开始不明白，后来看到该项目的 Issue，有问到该问题的:[CirclePageIndicator consuming TouchEvents](https://github.com/JakeWharton/Android-ViewPagerIndicator/issues/213) 原来是模仿了 IOS 中 springboard 的 Indicator，使得点击 Indicator 的左 1/3 和右边 1/3 都可以切换 Page，如果你使用该项目同时又处理了 Touch 事件，有可能它们会出现冲突问题，下面是涉及到的拖拽事件相关的知识点：
 	
 ##### 3.2.2.1 区分原始点及之后的任意触摸点   
@@ -56,7 +56,7 @@ ACTION_POINTER_DOWN、ACTION_POINTER_UP:多触摸手势事件中的按下和抬�
 请直接参考[公共技术点 viewdrawflow](http://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E7%BB%98%E5%88%B6%E6%B5%81%E7%A8%8B)部分  
   
 ### 3.3 核心类及功能介绍
-#####3.3.1 CirclePageIndicator  
+##### 3.3.1 CirclePageIndicator  
 继承自 View 实现了 PageIndicator,整个绘制过程中用到的方法调用规则为：  
 ![circle_indicator_method_flow img](image/circle_indicator_method_flow.png)  
 **(1) 主要成员变量含义**  
@@ -132,7 +132,7 @@ View 在测量阶段的最终大小的设定是由 setMeasuredDimension()方法�
         }
         return result;
 ```
-#####3.3.2 IconPageIndicator、TabPageIndicator
+##### 3.3.2 IconPageIndicator、TabPageIndicator
 都是继承自 HorizontalScrollView，而且实现逻辑很相似，所以这里只对 IconPageIndicator 分析  
 
 **(1) 主要成员变量含义**  
@@ -145,7 +145,7 @@ View 在测量阶段的最终大小的设定是由 setMeasuredDimension()方法�
 3.`onAttachedToWindow` 该方法在 View attach 到 Window 的时候被调用，此时 View 拥有了一片可绘制区域，此时可以做一些初始化的操作，这里初始化了之前选定的 Icon。  
 4.`onDetachedFromWindow`该方法调用后，View 不再拥有可绘制的区域。此时可以对 View 进行一些清理操作。这里将 mIconSelector 从消息队列中移除。
 
-#####3.3.3 TitlePageIndicator  
+##### 3.3.3 TitlePageIndicator  
 由于效果的实时性和复杂性，整个 Indicator 全部都是绘制出来的，主要逻辑都在 onDraw 中。    
 **(1) 主要成员变量含义**    
 1.`mPaintText`绘制 Text 的 Paint  
@@ -161,13 +161,13 @@ View 在测量阶段的最终大小的设定是由 setMeasuredDimension()方法�
 
 ![title_indicator_draw_flow](image/title_indicator_draw_flow.png)
 
-#####3.3.4  LinePageIndicator、UnderLineIndicator
+##### 3.3.4  LinePageIndicator、UnderLineIndicator
 类似 CirclePageIndicator，可以参考 CirclePageIndicator 的分析。  
 
-####3.4 创建自定义 View 的步骤分析
+#### 3.4 创建自定义 View 的步骤分析
 这里以 CirclePageIndicator 为例
 
-#####3.4.1 继承自 View，实现构造函数  
+##### 3.4.1 继承自 View，实现构造函数  
 ```java
 CirclePageIndicator extends View implements PageIndicator {
     
@@ -186,7 +186,7 @@ CirclePageIndicator extends View implements PageIndicator {
 }
 ```
 
-#####3.4.2 定义属性
+##### 3.4.2 定义属性
 vpi_attrs.xml  
 ```xml
  <declare-styleable name="CirclePageIndicator">
@@ -197,7 +197,7 @@ vpi_attrs.xml
         ...
  </declare-styleable>
 ```  
-#####3.4.3 应用属性  
+##### 3.4.3 应用属性  
 在布局中应用
 ```xml
 <!--首先指定命名空间，属性才可以使用-->
@@ -228,11 +228,11 @@ vpi_attrs.xml
         a.recycle();//记得及时释放资源
     }
 ```
-#####3.4.4 自定义 View 的绘制
+##### 3.4.4 自定义 View 的绘制
 请参考上面的 CirclePageIndicator 的 onDraw，也可以参考 tech 下的[View 的绘制流程](http://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E7%BB%98%E5%88%B6%E6%B5%81%E7%A8%8B)的 Draw 部分。
-#####3.4.5 使 View 可交互
+##### 3.4.5 使 View 可交互
 请参考上面的 CirclePageIndicator 的 onTouch，这里只是简单的处理了 onTouch 事件，交互更好的自定义控件往往会加一些自然的动画等。
-##4. 杂谈
+## 4. 杂谈
 大多数的 App 中的导航都类似，ViewPagerIndicator 能够满足你开发的基本需求，如果不能满足，你可以在源码的基础上进行一些简单的改造。其中有一点是很多朋友提出的就是 LineIndicator 没有实现 TextView 颜色状态的联动。这个有已经实现的开源库:[PagerSlidingTabStrip](https://github.com/jpardogo/PagerSlidingTabStrip)，你可以作为参考。  
 对于什么时候需要自定义控件以及如何更好的进行自定义控件的定制，你可以参考这篇文章[深入解析 Android 的自定义布局](http://greenrobot.me/devpost/android-custom-layout) 相信会有一些启发。  
 整片文章看下来，确实比较多，也是花了一部分时间写的，其实之前是自己整理了一些相关知识，这次一下全部跟大家分享了。整篇文章都在讲 View 的绘制机制，三个过程也都很详细的通过源码分析介绍了。如果你对 View 的绘制机制还不清楚，而且希望将来往更高级的方向发展，这一步一定会经历的，那么请你耐心看完，你可以分多次研读，过程中出现问题或者原文分析不到位的地方，欢迎 PR。  

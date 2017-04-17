@@ -4,8 +4,8 @@ DynamicLoadApk 源码解析
 > 项目地址：[DynamicLoadApk](https://github.com/singwhatiwanna/dynamic-load-apk)，分析的版本：[144571b](https://github.com/singwhatiwanna/dynamic-load-apk/commit/144571b51a6b42fd18b6e5ecee1142fcb8dc17e5 "Commit id is 144571b51a6b42fd18b6e5ecee1142fcb8dc17e5")，Demo 地址：[DynamicLoadApk Demo](https://github.com/android-cn/android-open-project-demo/tree/master/dynamic-load-apk-demo)    
 > 分析者：[FFish](https://github.com/FFish)，分析状态：完成，校对者：[Trinea](https://github.com/trinea)，校对状态：初审完成   
 
-###1. 功能介绍  
-####1.1 简介
+### 1. 功能介绍  
+#### 1.1 简介
 DynamicLoadApk 是一个开源的 Android 插件化框架。  
 
 插件化的优点包括：(1) 模块解耦，(2) 动态升级，(3) 高效并行开发(编译速度更快) (4) 按需加载，内存占用更低等等。  
@@ -18,7 +18,7 @@ DynamicLoadApk 提供了 3 种开发方式，让开发者在无需理解其工�
 
 三种开发模式都可以在 demo 中看到。  
 
-####1.2 核心概念
+#### 1.2 核心概念
 **(1) 宿主：**主 App，可以加载插件，也称 Host。  
 **(2) 插件：**插件 App，被宿主加载的 App，也称 Plugin，可以是跟普通 App 一样的 Apk 文件。  
 
@@ -32,7 +32,7 @@ DynamicLoadApk 提供了 3 种开发方式，让开发者在无需理解其工�
 
 DynamicLoadApk 原理的核心思想可以总结为两个字：代理。通过在 Manifest 中注册代理组件，当启动插件组件时首先启动一个代理组件，然后通过这个代理组件来构建、启动插件组件。  
 
-###2. 总体设计
+### 2. 总体设计
 ![总体设计图](image/overall-design.png)   
 上面是 DynamicLoadApk 的总体设计图，DynamicLoadApk 主要分为四大模块：  
 **(1) DLPluginManager**   
@@ -44,22 +44,22 @@ DynamicLoadApk 原理的核心思想可以总结为两个字：代理。通过�
 **(4) Base Plugin**  
 插件组件的基类模块，目前包括 DLBasePluginActivity(插件 Activity 的基类)、DLBasePluginFragmentActivity(插件 FragmentActivity 的基类)、DLBasePluginService(插件 Service 的基类)。   
 
-###3. 流程图
+### 3. 流程图
 ![流程图](image/flow-chart.png)  
 上面是调用插件 Activity 的流程图，其他组件调用流程类似。   
 (1) 首先通过 DLPluginManager 的 loadApk 函数加载插件，这步每个插件只需调用一次。  
 (2) 通过 DLPluginManager 的 startPluginActivity 函数启动代理 Activity。  
 (3) 代理 Activity 启动过程中构建、启动插件 Activity。  
 
-###4. 详细设计 
-####4.1 类关系图
+### 4. 详细设计 
+#### 4.1 类关系图
 ![类关系图](image/class-relation.png)  
 以上是 DynamicLoadApk 主要类的关系图，跟总体设计中介绍的一样大致分为三部分。   
 (1) 对于 Proxy 部分，每个组件都存在 DLAttachable 接口，方便统一该组件不同类，如 Activity、FragmentActivity。每个组件的公共实现部分都统一放到了对应的 DLProxyImpl 中。  
 (2) 对于 Base Plugin 部分，每个组件都存在 DLPlugin 接口，同样是方便统一该组件不同类。  
 
-####4.2 类功能介绍
-#####4.2.1 DLPluginManager.java
+#### 4.2 类功能介绍
+##### 4.2.1 DLPluginManager.java
 DynamicLoadApk 框架的核心类，主要功能包括：  
 (1) 插件的加载和管理；  
 (2) 启动插件的组件，目前包括 Activity、Service。  
@@ -141,7 +141,7 @@ AssetManager 的无参构造函数以及`addAssetPath`函数都被`hide`了，�
 **(12) bindPluginService(…) unBindPluginService(…)**  
 bind 或是 unBind 插件 Service。逻辑与`startPluginService(…)`类似，不再赘述。  
 
-#####4.2.2 DLPluginPackage
+##### 4.2.2 DLPluginPackage
 插件信息对应的实体类，主要属性如下：  
 ```java
     public String packageName;
@@ -164,7 +164,7 @@ bind 或是 unBind 插件 Service。逻辑与`startPluginService(…)`类似，�
 `packageInfo`被`PackageManager`解析后的插件信息。  
 这些信息都会在`DLPluginManager#loadApk(…)`时初始化。  
 
-#####4.2.3 DLAttachable.java/DLServiceAttachable.java
+##### 4.2.3 DLAttachable.java/DLServiceAttachable.java
 DLServiceAttachable 与 DLAttachable 类似，下面先分析 DLAttachable.java。  
 
 DLAttachable 是一个接口，主要作用是以统一所有不同类型的代理 Activity，如`DLProxyActivity`、`DLProxyFragmentActivity`，方便作为同一接口统一处理。  
@@ -178,7 +178,7 @@ attach(DLPlugin pluginActivity, DLPluginManager pluginManager)
 
 同样 DLServiceAttachable 类似，作用是统一所有不同类型的代理 Service，实现插件`Service`和代理`Service`的绑定。虽然目前只有`DLProxyService`。  
 
-#####4.2.4 DLPlugin.java/DLServicePlugin.java
+##### 4.2.4 DLPlugin.java/DLServicePlugin.java
 DLPlugin 与 DLServicePlugin 类似，下面先分析 DLPlugin.java。  
 
 DLPlugin 是一个接口，包含`Activity`生命周期、触摸、菜单等抽象函数。  
@@ -187,7 +187,7 @@ DLBase*Activity 都实现了这个类，这样插件的 Activity 间接实现了
 
 同样 DLServicePlugin 主要作用是统一所有不同类型的插件 Service，方便作为统一接口统一处理，目前包含`Service`生命周期等抽象函数。  
 
-#####4.2.5 DLProxyActivity.java/DLProxyFragmentActivity.java
+##### 4.2.5 DLProxyActivity.java/DLProxyFragmentActivity.java
 代理 Activity，他们是在宿主 Manifest 中注册的组件，也是启动插件 Activity 时，真正被启动的 Activity，他们的内部会完成插件 Activity 的初始化和启动。  
 
 这两个类大同小异，所以这里只分析`DLProxyActivity`。  
@@ -202,7 +202,7 @@ DLBase*Activity 都实现了这个类，这样插件的 Activity 间接实现了
 **(2). DLProxyImpl impl**  
 主要封装了插件`Activity`的公用逻辑，如初始化插件 Activity 并和代理 Activity 绑定、获取资源等。  
 
-#####4.2.6 DLProxyImpl.java/DLServiceProxyImpl.java
+##### 4.2.6 DLProxyImpl.java/DLServiceProxyImpl.java
 DLProxyImpl 与 DLServiceProxyImpl 类似，下面先分析 DLProxyImpl.java。  
 
 DLProxyImpl 主要封装了插件`Activity`的公用逻辑，如初始化插件 Activity 并和代理 Activity 绑定、获取资源等，相当于把`DLProxyActivity`和`DLProxyFragmentActivity`的公共实现部分提出出来，核心逻辑位于下面介绍的 onCreate() 函数。  
@@ -229,7 +229,7 @@ onCreate 函数，会在代理 Activity onCreate 函数中被调用，流程图�
 
 同样 DLServiceProxyImpl 主要封装了插件`Service`的公用逻辑，如初始化插件 Service 并和代理 Activity 绑定。  
 
-#####4.2.7 DLBasePluginActivity.java/DLBasePluginFragmentActivity.java
+##### 4.2.7 DLBasePluginActivity.java/DLBasePluginFragmentActivity.java
 插件 Activity 基类，插件中的`Activity`都要继承 DLBasePluginActivity/DLBasePluginFragmentActivity 之一(目前尚不支持 ActionBarActivity)。  
 
 主要作用是根据是否被代理，确定一些函数直接走父类逻辑还是代理 Activity 或是空逻辑。  
@@ -248,34 +248,34 @@ onCreate 函数，会在代理 Activity onCreate 函数中被调用，流程图�
 `mProxyActivity`为代理 Activity，通过`attach(…)`函数绑定。  
 `that`与`mProxyActivity`等同，只是为了和`this`指针区分，表示真实的`Context`，这里真实指的是被代理情况下为代理 Activity，未被代理情况下等同于 this。  
 
-#####4.2.8 DLBasePluginService.java  
+##### 4.2.8 DLBasePluginService.java  
 插件 Service 基类，插件中的 Service 要继承这个基类，主要作用是根据是否被代理，确定一些函数直接走父类逻辑还是代理 Service 或是空逻辑。  
 
 主要变量含义与`DLBasePluginActivity`类似，不重复介绍。  
 PS：截止目前这个类还是不完善的，至少和`DLBasePluginActivity`对比，还不支持非代理的情况
 
-#####4.2.9 DLIntent.java
+##### 4.2.9 DLIntent.java
 继承自 Intent，封装了待启动组件的 PackageName 和 ClassName。  
 
-####4.2.10 SoLibManager.java
+#### 4.2.10 SoLibManager.java
 调用`SoLibManager`拷贝 so 库到 Native Library 目录。  
 
 **主要函数：**  
 **(1) copyPluginSoLib(Context context, String dexPath, String nativeLibDir)**  
 函数中以`ZipFile`形式加载插件，循环读取其中的文件，如果为`.so`结尾文件、符合当前平台 CPU 类型且尚未拷贝过最新版，则新建`Runnable`拷贝 so 文件。  
 
-####4.2.11 DLUtils.java
+#### 4.2.11 DLUtils.java
 这个类中大都是无用或是不该放在这里的函数，也许是大版本升级及维护人过多后对工具函数的维护不够所致。  
 
-###5. 杂谈
-###5.1 插件不能打包 dl-lib.jar
+### 5. 杂谈
+### 5.1 插件不能打包 dl-lib.jar
 原因是插件和宿主属于不同的 ClassLoader，如果同时打包 dl-lib.jar，会因为 ClassLoader 隔离导致类型转换错误，具体可见：[ClassLoader 隔离](http://www.trinea.cn/android/java-loader-common-class/)  
 
 Eclipse 打包解决方式见项目主页；  
 Android Studio 打包解决方式见 5.2；  
 Ant 打包需要修改 build.xml 中 dex target 引用到的 compileclasspath 属性。  
 
-####5.2 在 Android Studio 下使用 DynamicLoadApk
+#### 5.2 在 Android Studio 下使用 DynamicLoadApk
 在使用 DynamicLoadApk 时有个地方要注意，就是插件 Apk 在打包的时候不能把 dl-lib.jar 文件打包进去，不然会报错(java.lang.IllegalAccessError: Class ref in pre-verified class resolved to unexpected implementation)。换句话说，dl-lib.jar 要参与编译，但不参与打包。该框架作者已经给出了 Eclipse 下的解决方案。我这里再说下怎么在 Android Studio 里使用。
 ```groovy
     dependencies {
@@ -293,7 +293,7 @@ Ant 打包需要修改 build.xml 中 dex target 引用到的 compileclasspath �
 (7) 不支持 Provider；  
 (8) 插件不能直接用 this；  
 
-####5.4 其他插件化方案
+#### 5.4 其他插件化方案
 除了 DynamicLoadApk 用代理的方式实现外，目前还有两种插件化方案：  
 (1) 用 Fragment 以及 schema 的方式实现。  
 (2) 利用字节码库动态生成一个插件类 A 继承自待启动插件 Activity，启动插件 A。这个插件 A 名称固定且已经在 Manifest 中注册。  

@@ -4,27 +4,27 @@ SlidingMenu 源码解析
 > 项目地址：[SlidingMenu](https://github.com/jfeinstein10/SlidingMenu)，分析的版本：[4254fec](https://github.com/jfeinstein10/SlidingMenu/commit/4254feca3ece9397cd501921ee733f19ea0fdad8)，Demo 地址：[SlidingMenu Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/sliding-menu-demo)  
 > 分析者：[huxian99](https://github.com/huxian99)，分析状态：完成，校对者：[Trinea](https://github.com/trinea)，校对状态：进行中  
 
-###1. 功能介绍  
+### 1. 功能介绍  
 现在主流 App 的导航栏一般有两种，一种是主界面上面 3－4 个 Tab 下面搭配 ViewPager + Fragment，另一种就是侧边栏，如果主导航超过 3 个 Tab 时，建议使用侧边栏作为 App 的主导航。  
 SlidingMenu 是一个强大的侧边栏导航框架，并且已经被一些比较牛的 App 使用，主要特点如下：  
 (1) 侧边栏可以是一个 Fragment，包含任何 View  
 (2) 使用简单方便，支持左滑和右滑等  
 (3) 自定义侧边栏显示动画  
 
-###2. 总体设计  
+### 2. 总体设计  
 SlidingMenu 总体由三个主要的类组成。  
 (1) SlidingMenu 继承自 RelativeLayout，对外暴露 API 给用户，同时在添加 CustomViewAbove 和 CustomViewBehind  
 (2) CustomViewAbove 继承自 ViewGroup，主要用来处理`触摸屏事件`  
 (3) CustomViewBehind 继承自 ViewGroup，主要用来`配置参数`，`显示侧边栏的 Menu 部分`  
 
-##3. 流程图  
+## 3. 流程图  
 请参考 `4.2.2 CustomViewAbove 事件处理流程图`  
 
-###4. 详细设计  
-####4.1 类关系图  
+### 4. 详细设计  
+#### 4.1 类关系图  
 ![alt tex](./image/SlidingMenu.png)  
-###4.2 核心类功能介绍  
-####4.2.1 SlidingMenu.java  
+### 4.2 核心类功能介绍  
+#### 4.2.1 SlidingMenu.java  
 继承自 RelativeLayout，对外提供 API，用于配置侧边栏的侧滑模式，触摸模式，阴影，渐变及滑动效果等。  
 构造器中可以看到主要初始化了 mViewBehind，mViewAbove 及一些属性。  
 主要看 attachToActivity 方法  
@@ -83,11 +83,11 @@ public boolean isMenuShowing()
 // 检查第二个侧边栏是否打开  
 public boolean isSecondaryMenuShowing()  
 
-####4.2.2 CustomViewAbove.java  
+#### 4.2.2 CustomViewAbove.java  
 继承自 ViewGroup，主要用于处理 touch 事件。  
 事件处理流程图如下(暂不分析多点触控)：  
 ![alt tex](./image/touch_event.jpg)  
-####4.2.3 CustomViewBehind.java  
+#### 4.2.3 CustomViewBehind.java  
 主要的属性  
 ```java
 /** 第一个侧边栏，一般为左边栏 */  
@@ -119,7 +119,7 @@ public void drawShadow(View content, Canvas canvas)
 // 根据 openPercent 画 fade in/out 效果  
 public void drawFade(View content, Canvas canvas, float openPercent)  
 
-###5. 杂谈
+### 5. 杂谈
 关于 selector drawable 存在的一些不理解
 SlidingMenu 暴露几个关于 selector drawable 的 API 给用户, CustomViewBehind 的 drawSelector 方法具体实现如下：  
 ```java

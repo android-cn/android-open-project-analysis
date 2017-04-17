@@ -4,14 +4,14 @@ CircularFloatingActionMenu 源码解析
 > 项目地址：[CircularFloatingActionMenu](https://github.com/oguzbilgener/CircularFloatingActionMenu)，分析的版本：[8efb1aa](https://github.com/oguzbilgener/CircularFloatingActionMenu/commit/8efb1aab2b361ed9019fa4af6e5d43e77777bcb6)，Demo 地址：[CFAMenu-demo](https://github.com/android-cn/android-open-project-demo/tree/master/circular-floating-actionmenu-demo)    
 > 分析者：[cpacm](https://github.com/cpacm)，校对者：[dkmeteor](https://github.com/dkmeteor)、[Trinea](https://github.com/trinea)，校对状态：进行中   
 
-###1. 功能介绍  
+### 1. 功能介绍  
 一个与著名应用 [Path](https://play.google.com/store/apps/details?id=com.path) 菜单类似的圆形弹出菜单，可方便的定制菜单以及动画。  
 菜单可能是非完整圆形，本文统称为`圆形菜单`。  
 
-####1.1 特点
+#### 1.1 特点
 可自定义动画、菜单、角度范围、半径等。  
 
-####1.2 概念
+#### 1.2 概念
 ![Menu Demo](image/menu-demo.jpeg)  
 以上是简单的圆形弹出菜单示例，更详细的示例图见：[Screenshot](https://github.com/android-cn/android-open-project-demo/blob/master/circular-floating-actionmenu-demo/README.md#2-screenshot)。  
 **菜单按钮(Event)：**点击会弹出圆形菜单的控件，如上图的 + 对应控件，对应代码中的`FloatingActionButton.java`。  
@@ -22,15 +22,15 @@ CircularFloatingActionMenu 源码解析
 
 **菜单动画回调：**点击`菜单按钮`弹出`子菜单按钮`的动画设置的抽象类，对应代码中的`MenuAnimationHandler.java`。  
 
-###2. 总体设计
+### 2. 总体设计
 本项目较为简单，总体设计省略。  
 
-###3. 流程图
+### 3. 流程图
 ![设计流程图](image/circlemenu.jpg "流程图")  
 流程图如上图所示，中间最复杂的可能是计算`子菜单按钮`位置的地方。
 
-###4. 详细设计
-####4.1 类关系图
+### 4. 详细设计
+#### 4.1 类关系图
 ![uml](image/menu_uml.jpg "uml")  
 以上是`CircularFloatingActionMenu`主要类的关系图。  
 
@@ -38,14 +38,14 @@ CircularFloatingActionMenu 源码解析
 
 `FloatingActionMenu`由`FloatingActionButton`、`SubActionButton`以及`MenuAnimationHandler`等构成。  
 
-####4.2 类功能介绍
+#### 4.2 类功能介绍
 `CircularFloatingActionMenu`源码主要分成两部分，一部分是构成菜单的 View 部分，另一部分是动画的操作类。  
 
 View 部分包含我们上面提到的菜单按钮`FloatingActionButton.java`、子菜单按钮`SubActionButton.java`、菜单`FloatingActionMenu.java`。 
 
 动画部分包含菜单动画回调抽象类`MenuAnimationHandler.java`以及它默认的实现`DefaultAnimationHandler.java`。  
 
-#####4.2.1 SubActionButton.java 
+##### 4.2.1 SubActionButton.java 
 子菜单按钮，即按菜单键弹出来的选项按钮。这个类继承自`FrameLayout`，实现一个自定义图标的功能。  
 可以根据构造函数传进来的参数来选择不同风格的图案底纹，然后将其传给`FloatingActionMenu`以便控制。  
 首先是构造函数
@@ -133,7 +133,7 @@ public SubActionButton(Activity activity, LayoutParams layoutParams, int theme, 
 ```
 传入 activity，视图特性配置，主题的 id，背景图，imageview（子视图），imageview（子视图）的特性配置。用这些来配置选项按钮。
 
-#####4.2.2 FloatingActionButton.java
+##### 4.2.2 FloatingActionButton.java
 菜单按钮，点击会弹出圆形菜单的控件。   
 
 这个类跟`SubActionButton`基本相似，同样可以通过内部自定义的`build`构造器来定制自己的按钮。  
@@ -177,7 +177,7 @@ FloatingActionButton 的建造器
 ```
 比 SubActionButton 多了一个位置的属性。
 
-#####4.2.3 FloatingActionMenu.java
+##### 4.2.3 FloatingActionMenu.java
 那么最重要的类来了，`FloatingActionMenu`表示整个菜单，它存放着所有的按钮以及动画操作。  
 
 基本结构图如下：  
@@ -235,14 +235,14 @@ stateChangeListener 为状态变化的监听器，开关都会响应相应的方
     }
 ```
 
-#####4.2.4 MenuAnimationHandler.java
+##### 4.2.4 MenuAnimationHandler.java
 这是是所有动画类的父类，它主要定义了菜单打开，关闭，以及运行结束后状态的保存的方法。  
 
     animateMenuOpening(Point center)
     animateMenuClosing(Point center)   
     restoreSubActionViewAfterAnimation(FloatingActionMenu.Item subActionItem, ActionType actionType)
 
-#####4.2.5 DefaultAnimationHandler.java
+##### 4.2.5 DefaultAnimationHandler.java
 这一个默认的动画类，当我们不对动画做修改时就会默认使用这个类里面的动画效果。我们也可以参考这个类来进行设计新的动画效果。  
 动画效果主要是通过`ObjectAnimator.ofPropertyValuesHolder(menu.getSubActionItems().get(i).view, pvhX, pvhY, pvhR, pvhsX, pvhsY, pvhA)`来实现。  
 动画实现的主要类，继承自 MenuAnimationHandler    
@@ -262,7 +262,7 @@ stateChangeListener 为状态变化的监听器，开关都会响应相应的方
 Animator 属性动画以及其他动画的实现请参考我写的博客  
 [Android 的动画效果](http://www.cnblogs.com/cpacm/p/4067283.html)
 
-####4.3 如何使用
+#### 4.3 如何使用
         // Set up the white button on the lower right corner
         // more or less with default parameter
         ImageView fabIconNew = new ImageView(this);
@@ -304,5 +304,5 @@ Animator 属性动画以及其他动画的实现请参考我写的博客
 
 ![流程图](image/流程图.jpg "流程图")
 
-###5. 杂谈
+### 5. 杂谈
 动画的类型有点少，以及在屏幕尺寸异常的机子上测试时（如 mx3 的 1800x1080）会出现子选项偏离中心菜单键的问题，原因出在 view 的位置计算上，它没有考虑到一些特殊机型的机子。

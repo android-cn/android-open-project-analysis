@@ -4,7 +4,7 @@ CalendarListView 源码解析
 > 项目地址：[CalendarListView](https://github.com/traex/CalendarListview)，分析的版本：[063952b](https://github.com/traex/CalendarListview/commit/063952b3e6e109eebebebfceb52c8c2fc76c6844 "Commit id is 063952b3e6e109eebebebfceb52c8c2fc76c6844]")，Demo 地址：[calendar-list-view-demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/calendar-list-view-demo)  
 > 分析者：[Rogary](http://github.com/Rogary)，分析状态：未完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始  
 
-##1. 功能介绍  
+## 1. 功能介绍  
 
 calendarlistview 选取提供了一个 API 10+日历日期的简便方法  
 
@@ -12,12 +12,12 @@ calendarlistview 选取提供了一个 API 10+日历日期的简便方法
 
 使用控件 RecycleView 实现的日期选择器，可以选择时间段。  
 
-###1.1 **完成时间**  
+### 1.1 **完成时间**  
 
 - `2015-2-12`完成  
 
 
-###1.2 **集成指南**  
+### 1.2 **集成指南**  
 
 lib 已经上传至 Maven 库
 
@@ -133,9 +133,9 @@ dependencies {
 
 
 
-##2. 详细设计
+## 2. 详细设计
 
-###2.1 类详细介绍
+### 2.1 类详细介绍
 
 >#### 1.[`DayPickerView`](https://github.com/traex/CalendarListview/blob/master/library/src/main/java/com/andexert/calendarlistview/library/DayPickerView.java)  
 

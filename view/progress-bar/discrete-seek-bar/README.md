@@ -4,13 +4,13 @@ DiscreteSeekBar 源码解析
 > 项目地址：[discreteSeekBar](https://github.com/AnderWeb/discreteSeekBar)，分析的版本：[f54f0cd6](https://github.com/AnderWeb/discreteSeekBar/commit/f54f0cd64cd33da9effe9103d80bcc408178d171 "Commit id is f54f0cd64cd33da9effe9103d80bcc408178d171")，Demo 地址：[discrete-seek-bar-demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/discrete-seek-bar-demo)    
 > 分析者：[wangeason](https://github.com/wangeason)，分析状态：已完成，校对者：[Trinea](https://github.com/trinea)，[huxian99](https://github.com/huxian99) 校对状态：未开始   
 
-###1. 功能介绍  
+### 1. 功能介绍  
 
 DiscreteSeekBar 实现了类似 Material design 风格的 Discrete Slider。DiscreteSeekBar 可以在 2.1 以上的应用中使用，可以直接在 xml 中配置，使用方法类似 SeekBar，很简单。
 
 可以在 xml 中配置显示的格式，也可以在代码中自定义显示的数字或者指定显示字符。
 
-###2. 总体设计
+### 2. 总体设计
 
 这是一个材料设计的 seekbar，其主要的几个类分别对应了这个 seekbar 的几个主要组件。
 
@@ -29,13 +29,13 @@ PopupIndicator -> 最终被集成到 DiscreteSeekBar 类，保证 Floater 始终
 
 DiscreteSeekBar -> 集成了上述的组件的实例、OnProgressChangeListener 接口、从 xml 中获取设置、提供 api 方法。总之就是让这个 View 看着像一个 SeekBar；
 
-###3. 详细设计  
-###3.1 类关系图
+### 3. 详细设计  
+### 3.1 类关系图
 
 ![classes](image/classes.gif)
 
-###3.2 核心类功能介绍  
-####3.2.1 StateDrawable  
+### 3.2 核心类功能介绍  
+#### 3.2.1 StateDrawable  
 抽象类 StateDrawable 继承自 Drawable，根据状态切换 Drawable 的颜色
 ```java
 //根据状态判断是否应该刷新当前的色彩
@@ -44,11 +44,11 @@ private boolean updateTint(int[] state)
 abstract void doDraw(Canvas canvas, Paint paint);
 ```
 
-####3.2.2 AlmostRippleDrawable  
+#### 3.2.2 AlmostRippleDrawable  
 继承自抽象类 StateDrawable，顾名思义，总是有 Ripple 效果。  
 通过一个 mUpdater 的 Runnable 对象，不断地做 drawCircle，来达到低版本的 Ripple 效果。  
 
-####3.2.3 MarkerDrawable  
+#### 3.2.3 MarkerDrawable  
 ```java
 private void computePath(Rect bounds)
 ```  
@@ -74,17 +74,17 @@ private static int blendColors(int color1, int color2, float factor)
 ```  
 根据设置的开始和结束颜色，还有动画完成度，调出当前颜色，注意：这里的 factor 和 updateAnimation 中的 factor 不一样，已经是计算结果了。
 
-####3.2.4 ThumbDrawable
+#### 3.2.4 ThumbDrawable
 
 seekBar 上的圆形按钮，在按下以后调用 animateToPressed,100ms 以后不会再绘制，直到再次调用 animateToNormal，因为按下以后会绘制 marker。 这里有个疑问为什么要在 100ms 以后，作者的解释是：This special delay is meant to help avoiding frame glitches while the Marker is added to the Window。 这 100ms 用来绘制 Marker，避免同时绘制 Thumb 出现掉帧，感觉卡顿。
 
-####3.2.5 TrackRectDrawable
+#### 3.2.5 TrackRectDrawable
 绘制矩形，用来画 ProgressBar 和 Track
 
-####3.2.6 TrackOvalDrawable
+#### 3.2.6 TrackOvalDrawable
 没有调用和实现，应该是作者准备用来做圆形 seekBar 的。
 
-####3.2.7 Marker
+#### 3.2.7 Marker
 ```java
 public void resetSizes(String maxValue)
 ```  
@@ -105,7 +105,7 @@ public void setColors(int startColor, int endColor)
 ```  
 设置 MarkerDrawable 的动画开始和结束时的颜色。  
 
-####3.2.8 Floater  
+#### 3.2.8 Floater  
 PopupIndicator 的内部类，用来实现 Marker 的滑动
 ```java
 public void setFloatOffset(int x)
@@ -115,7 +115,7 @@ public void setFloatOffset(int x)
 <Li>MarkerAnimationListener 的实现  
 在 onClosingComplete()中，把 PopupIndicator 中的 Floater 删除了。  
 
-####3.2.9 PopupIndicator  
+#### 3.2.9 PopupIndicator  
 用来管理 Floater 的指示器  
 ```java
 public void updateSizes(String maxValue)
@@ -148,7 +148,7 @@ private void invokePopup(WindowManager.LayoutParams p)
 ```  
 添加 Floater，动画打开 Marker  
 
-####3.2.10 DiscreteSeekBar  
+#### 3.2.10 DiscreteSeekBar  
 onTouchEvent 事件主要调用了如下三个方法  
 ```java
 private boolean startDragging(MotionEvent ev, boolean ignoreTrackIfInScrollContainer)
@@ -215,7 +215,7 @@ private void updateThumbPos(int posX)
 ```  
 根据滑动的拖动的位置绘制进度条（mScruber）和 mThumb  
 
-###4. 杂谈
+### 4. 杂谈
 1. Marker 的宽度的设定太死板，当设定的 min 值得长度大于 max 值得时候 min 值就没法完整显示了。
 2. 进度条上没有标记点，可以考虑在背景 trackBar 上设置一些点，这些点着重突出出来，在 scruber 滑过这些点的时候，出一些效果。这个我准备完成以后再和大家分享。
 

@@ -5,23 +5,23 @@ NineOldAnimations 源码解析
 > 分析者：[Mr.Simple](https://github.com/bboyfeiyu)，校对者：[lightSky](https://github.com/lightSky)，校对状态：已完成   
  
 
-###1. 功能介绍  
+### 1. 功能介绍  
    NineOldAndroids 是一款支持在低版本(API 11 以下)使用 Android 属性动画以及 3D 旋转动画的框架，它提供了一系列如 ViewAnimator,ObjectAnimator,ViewPropertyAnimator 等 API 来完成这些动画,解决了 Android 动画框架在低版本的兼容性问题。在 API 11 (Honeycomb (Android 3.0))后 Android 推出了属性动画、X 轴翻转等动画效果，但是这些效果却不能运行在 API 11 以下,NineOldAndroids 的出现使得这些动画效果能够兼容低版本系统，保证动画在各个系统版本能够完美运行。     
    
    ![NineOldAndroids](./image/screens.png)      
    
-####1.1 系统属性动画与 NOA 简单比较  
+#### 1.1 系统属性动画与 NOA 简单比较  
 NineOldAndroids 提供了和系统属性一样的动画功能。看源码你可以发现，其实 NOA 的架构实现和系统属性动画实现架构其实是一样的。只是兼容的那一部分采用了 Matrix 实现了各种动画效果，中间多了一些辅助类，比如 PreHoneycombCompat，AnimatorProxy，ViewHelper，另外某些类对于兼容有些改动，其它的类几乎和系统属性动画部分是一样的。
 
-####1.2 实现原理
+#### 1.2 实现原理
 在[属性动画基础](http://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Android%20%E5%8A%A8%E7%94%BB%E5%9F%BA%E7%A1%80)中已经提到：ValueAnimator 的缺点是需要通过实现 AnimatorUpdateListener 自己手动去更新属性值，它的子类 ObjectAnimator 为用户实现了自动更新动画，但是对于自定义的属性，需要提供标准 JavaBean 的 setter 和 getter 方法，以便获取和更新属性值。NOA 也是遵循了这样的实现思路，对于 3.0 之前的系统来说，属性动画中所提供的属性都是新的，在实现的时候也就都属于自定义的。NOA 在 PreHoneycombCompat 中定义了这些属性，并在 get 和 setValue 中提供了标准的 setter 和 getter 方法用于设置和获取属性值，这里的 setter 和 getter 其实是直接调用 AnimatorProxy 类的方法。
 
-###2. 总体设计
+### 2. 总体设计
 ![整体设计](./image/arch.jpg)     
    以上是 NineoldAnimations 的整体设计图,其实就是系统属性动画的整体设计。Animator 通过 PropertyValuesHolder 来更新对象的目标属性。如果用户没有设置目标属性的 Property 对象,那么会通过反射的形式调用目标属性的 setter 方法来更新属性值;否则则通过 Property 的 set 方法来设置属性值。这个属性值则通过 KeyFrameSet 的计算得到,而 KeyFrameSet 又是通过时间插值器 TimeInterpolator 和类型估值器 TypeEvaluator 来计算。在动画执行过程中不断地计算当前时刻目标属性的值,然后更新属性值来达到动画效果。       
    
    
-###2.1 类详细介绍
+### 2.1 类详细介绍
 
 在进行下一步的分析之前，我们先来了解一下 NineOldAndroids 中一些核心的类以及它们的作用。    
 
@@ -99,7 +99,7 @@ animate(myButton).setDuration(2000).rotationYBy(720).x(100).y(100);
 更多使用可参考 lightSky 的一篇文章[PropertyAnim 实际应用](http://www.lightskystreet.com/2014/12/10/propertyview-anim-practice/),介绍了一些基本使用以及 GitHub 上使用了 NOA 的动画开源库
 
 
-###3. 流程图
+### 3. 流程图
 
 #### 3.1 ValueAnimator 流程图
 ![流程图](./image/value_anim_flow.jpg)   
@@ -109,7 +109,7 @@ animate(myButton).setDuration(2000).rotationYBy(720).x(100).y(100);
 ![View 的属性动画流程图](./image/view_obj_anim_flow.jpg)
 
 
-###4. 详细设计
+### 4. 详细设计
 
 ![详细设计](./uml/nineold-animations_uml.jpg)  
 上图左侧其实和系统属性动画的结构是一样的，右侧的 AnimatorProxy 和 ViewHelper 是 NOA 中特有的辅助类。
@@ -308,6 +308,6 @@ ObjectAnimator 是 ValueAnimator 的子类,ObjectAnimator 负责的是属性动�
    在动画执行时通过关键帧中的插值器和类型估值器来计算最新的属性值(见 calculatVealue 函数),然后通过反射调用 setter 方法或者 Property 对象的 set 方法设置给目标对象来更新目标属性,循环执行这个过程就实现了动画效果。   
    
 
-###5. 杂谈
+### 5. 杂谈
 NineoldAnimations 总得来说还是比较不错的，在开发过程中起到了很大的作用。但是从设计角度上看,它可能并不是特别的好,例如代码中到处充斥着没有进行类型检查的警告,也可能是这个库本身存在太多的可变性,导致难以周全。
 该项目目前已经标识为 DEPRECATED,作者的原意应该是不再更新该库,因为它已经比较稳定,希望朋友们不要误以为是不再建议使用该库的意思。       
