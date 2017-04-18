@@ -4,11 +4,11 @@ BaseAdapterHelper 源码分析
 > 项目地址：[BaseAdapterHelper](https://github.com/JoanZapata/base-adapter-helper)，分析的版本：[71b7ae2](https://github.com/JoanZapata/base-adapter-helper/commit/71b7ae2414f01dc4d43429586196e9e9735c77aa "Commit id is 71b7ae2414f01dc4d43429586196e9e9735c77aa")，Demo 地址：[base-adapter-helper Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/base-adapter-helper-demo)     
 > 分析者：[hongyangAndroid](https://github.com/hongyangAndroid)，分析状态：完成，校对者：[zhengtao620](https://github.com/zhengtao620)、[Trinea](https://github.com/trinea)，校对状态：完成   
 
-###1. 功能介绍  
-####1.1. base-adapter-helper  
+### 1. 功能介绍  
+#### 1.1. base-adapter-helper  
 base-adapter-helper 是对传统的 BaseAdapter ViewHolder 模式的一个封装。主要功能就是简化我们书写 AbsListView 的 Adapter 的代码，如 ListView，GridView。  
 
-####1.2 基本使用
+#### 1.2 基本使用
 ```java
 mListView.setAdapter(mAdapter = new QuickAdapter<Bean>(MainActivity.this, R.layout.item_list, mDatas) {
 
@@ -23,12 +23,12 @@ mListView.setAdapter(mAdapter = new QuickAdapter<Bean>(MainActivity.this, R.layo
 });
 ```
 
-####1.3 优点
+#### 1.3 优点
 (1) 提供 QucikAdapter，省去类似 getCount() 等抽象函数的书写，只需关注 Model 到 View 的显示。  
 (2) BaseAdapterHelper 中封装了大量用于为 View 操作的辅助方法，例如从网络加载图片：  
 `helper.setImageUrl(R.id.iv_photo, item.getPhotoUrl());`  
 
-####1.4 缺点
+#### 1.4 缺点
 (1) 与 Picasso 耦合，想替换为其他图片缓存需要修改源码。  
 可通过接口方式，供三方根据自己的图片缓存库实现图片获取，或者直接去掉`helper.setImageUrl(…)`函数。  
 
@@ -38,7 +38,7 @@ mListView.setAdapter(mAdapter = new QuickAdapter<Bean>(MainActivity.this, R.layo
 (3) 目前的方案也不支持`HeaderViewListAdapter`。  
 总体来说这个库比较简单，实现也有待改进。 
 
-###2. 总体设计
+### 2. 总体设计
 由于 base-adapter-helper 本质上仍然是 ViewHolder 模式，下面分别是 base-adapter-helper 的总体设计图和 ViewHolder 模式的设计图，通过两图的比较，可以看出 base-adapter-helper 对传统的`BaseAdapter`进行了初步的实现（`QuickAdapter`），并且其子类仅需实现`convert(…)`方法，在`convert(…)`中可以拿到`BaseAdapterHelper`,`BaseAdapterHelper`就相当于`ViewHolder`，但其内部提供了大量的辅助方法，用于设置 View 上的数据及事件等。
 
 ##### base-adapter-helpr
@@ -46,8 +46,8 @@ mListView.setAdapter(mAdapter = new QuickAdapter<Bean>(MainActivity.this, R.layo
 ##### ViewHolder Pattern
 ![ViewHolder Pattern](image/view_holder_pattern.png)  
 
-###3. 详细设计
-####3.1 类关系图
+### 3. 详细设计
+#### 3.1 类关系图
 ![类关系图](image/base-adapter-helper-ClassDiagram.jpg)  
 这是 base-adapter-helper 库的主要类关系图。  
 (1) 在 BaseQucikAdapter 中实现了 BaseAdapter 中通用的抽象方法；  
@@ -57,12 +57,12 @@ mListView.setAdapter(mAdapter = new QuickAdapter<Bean>(MainActivity.this, R.layo
 (5) BaseAdapterHelper 为用于获取 View 并进行内容、事件设置等相关操作的辅助类。其中多数用于设置的方法都采用链式编程，方便书写；  
 (6) 可以根据自己需要继承 BaseAdapterHelper 来扩展，做为 BaseQuickAdapter 子类的 H 泛型。  
 
-###3.2 核心类源码分析
-####3.2.1 BaseQucikAdapter.java 
+### 3.2 核心类源码分析
+#### 3.2.1 BaseQucikAdapter.java 
 该类继承自 BaseAdapter，完成 BaseAdapter 中部分通用抽象方法的实现，类似`ArrayAdapter`。  
 该类声明了两个泛型，其中 T 表示数据实体类(Bean)类型，H 表示 BaseAdapterHelper 或其子类，主要在扩展`BaseAdapterHelper`时使用。  
 
-#####(1) 构造方法 
+##### (1) 构造方法 
 ```java
 public BaseQuickAdapter(Context context, int layoutResId) {
     this(context, layoutResId, null);
@@ -76,7 +76,7 @@ public BaseQuickAdapter(Context context, int layoutResId, List<T> data) {
 ```
 Adapter 的必须元素 ItemView 的布局文件通过 layoutResId 指定，待展示数据通过 data 指定。  
 
-#####(2) 已经实现的主要方法
+##### (2) 已经实现的主要方法
 ```java
 @Override
 public int getCount() {
@@ -114,7 +114,7 @@ b. `getView(…)`方法的实现中首先通过抽象函数`getAdapterHelper(…
 
 这样`BaseQucikAdapter`子类只需要实现抽象函数`getAdapterHelper(…)`和`convert(…)`即可。  
 
-#####(3) 待实现的抽象方法
+##### (3) 待实现的抽象方法
 ```java
 protected abstract void convert(H helper, T item);
 
@@ -128,13 +128,13 @@ b. getAdapterHelper(int position, View convertView, ViewGroup parent)
 返回 BaseQuickAdapter 或其子类，绑定 item，然后返回值传递给上面的`convert(…)`函数。  
 关于`getAdapterHelper(…)`的实现见下面`QuickAdapter`的介绍。  
 
-####3.2.2 QucikAdapter.java 
+#### 3.2.2 QucikAdapter.java 
 这个类继承自`BaseQuickAdapter`，没什么代码，主要用于提供一个可快速使用的 Adapter。  
 
 对于`getAdapterHelper(…)`函数直接返回了`BaseAdapterHelper`，一般情况下直接用此类作为 Adapter 即可，如`1.2 基本使用`的示例。  
 但如果你扩展了`BaseAdapterHelper`，重写`getAdapterHelper(…)`函数将其返回，即可实现自己的 Adapter。  
 
-####3.2.3 EnhancedQuickAdapter.java 
+#### 3.2.3 EnhancedQuickAdapter.java 
 继承自`QuickAdapter`，仅仅是为`convert(…)`添加了一个参数`itemChanged`，表示 item 对应数据是否发生变化。  
 ```java
 @Override
@@ -148,12 +148,12 @@ protected abstract void convert(BaseAdapterHelper helper, T item, boolean itemCh
 ```
 可以看到它的实现是通过`helper.associatedObject`的`equals()`方法判断数据是否发生变化，associatedObject 即我们的 bean。在`BaseQuickAdapter.getView(…)`可以看到其赋值的代码。  
 
-####3.2.4 BaseAdapterHelper.java 
+#### 3.2.4 BaseAdapterHelper.java 
 可用于获取 View 并进行内容设置等相关操作的辅助类，该类的功能有：  
 (1) 充当了 ViewHolder 角色，KV 形式保存 convertView 中子 View 的 id 及其引用，方便查找。和 convertView 通过 tag 关联；  
 (2) 提供了一堆辅助方法，用于为子 View 设置内容、样式、事件等。  
 
-#####(1) 构造相关方法 
+##### (1) 构造相关方法 
 ```java
 protected BaseAdapterHelper(Context context, ViewGroup parent, int layoutId, int position) {
     this.context = context;
@@ -205,7 +205,7 @@ public View getView(int position, View convertView, ViewGroup parent) {
 
 在构造方法中 inflate 了一个布局作为`convertView`，并且保存 context 及 postion，将`convertView`与`BaseAdapterHelper`通过`tag`关联。  
 
-#####(2) 几个重要的方法 
+##### (2) 几个重要的方法 
 一般情况下，在我们重写`BaseQuickAdapter`的`convert(…)`时，需要得到 View，这时我们可以通过其入参`BaseAdapterHelper`的`getView(int viewId)`得到该`View`，代码如下：
 ```java
 public <T extends View> T getView(int viewId) {
@@ -226,7 +226,7 @@ protected <T extends View> T retrieveView(int viewId) {
 为 view id，value 为 view，缓存已经查找到的子 view。  
 每个`convertView`与一个`BaseAdapterHelper`绑定，每个`BaseAdapterHelper`中包含一个`views`属性，`views`中存储`convertView`的子 View 的引用。  
 
-#####(3) 辅助方法
+##### (3) 辅助方法
 一般情况下，通过`getView(int viewId)`拿到该`View`，然后进行赋值就可以了。但是此库考虑：既然是拿到 View 然后赋值，不如直接提供一些赋值的辅助方法。于是产生了一堆类似`setText(int viewId, String value)`的代码，内部首先通过 viewId 找到该 View，转为`TextView`然后调用`setText(value)`。部分代码如下：  
 ```java
 public BaseAdapterHelper setText(int viewId, String value) {
@@ -282,8 +282,8 @@ public BaseAdapterHelper setOnLongClickListener(int viewId, View.OnLongClickList
 ```
 这里仅仅列出一些常用的方法，如果有些控件的方法这里没有封装，可以通过`BaseAdapterHelper.getView(viewId)`得到控件去操作，或者继承`BaseAdapterHelper`实现自己的`BaseAdapterHelper`。  
 
-###4. 杂谈
-####4.1 耦合严重
+### 4. 杂谈
+#### 4.1 耦合严重
 (1) 与 Picasso 耦合，想替换为其他图片缓存需要修改源码  
 可通过新增接口方式，供三方自己根据自己的图片缓存库实现图片获取，或者直接去掉`helper.setImageUrl(…)`函数。  
 
@@ -292,17 +292,17 @@ public BaseAdapterHelper setOnLongClickListener(int viewId, View.OnLongClickList
 
 总体来说这个库比较简单，实现也有待改进。 
 
-####4.2 目前的方案也不支持`HeaderViewListAdapter`
+#### 4.2 目前的方案也不支持`HeaderViewListAdapter`
 
-####4.3 扩展多种 Item 布局
+#### 4.3 扩展多种 Item 布局
 通过`3.2.1 BaseQucikAdapter.java`的分析，可以看出 base-adapter-helper 并不支持多种布局 Item 的情况，虽然大多数情况下一个种样式即可，但是要是让我用这么简单的方式写 Adapter，忽然来个多种布局 Item 的 ListView 又要 按传统的方式去写，这反差就太大了。下面我们介绍，如何在本库的基础上添加多布局 Item 的支持。
 
-#####(1) 分析
+##### (1) 分析
 对于多种布局的 Item，大家都清楚，需要去复写`BaseAdapter`的`getViewTypeCount()`和`getItemViewType()`。并且需要在`getView()`里面进行判断并选取不同布局文件，不同的布局也需要采用不同的`ViewHolder`。  
 
 我们可以在构造`QucikAdapter`时，去设置`getViewTypeCount()`和`getItemViewType()`的值，进一步将其抽象为一个接口，提供几个方法，如果需要使用多种 Item 布局，进行设置即可。  
 
-#####(2) 扩展
+##### (2) 扩展
 
 * 添加接口 `MultiItemTypeSupport`
 ```java
@@ -413,7 +413,7 @@ static BaseAdapterHelper get(Context context, View convertView,
 ```
 我们在 helper 中存储了当前的 layoutId，如果 layoutId 不一致，则重新创建。  
 
-#####(3) 测试
+##### (3) 测试
 下面展示核心代码
 ```java
 mListView = (ListView) findViewById(R.id.id_lv_main);

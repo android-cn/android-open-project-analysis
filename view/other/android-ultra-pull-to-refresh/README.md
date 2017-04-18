@@ -4,14 +4,14 @@ android-Ultra-Pull-To-Refresh 源码解析
 > 项目地址：[android-Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh)，分析的版本：[508c632](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/tree/508c63266de51ad8c010ac9912f7592b2f2da8fc)，Demo 地址：[android-Ultra-Pull-To-Refresh Demo](https://github.com/android-cn/android-open-project-demo/tree/master/android-ultra-pull-to-refresh-demo)  
 > 分析者：[Grumoon](https://github.com/grumoon)，校对者：[lightSky](https://github.com/lightSky)，校对状态：已完成  
 
-###1. 功能介绍  
+### 1. 功能介绍  
 下拉刷新，几乎是每个 Android 应用都会需要的功能。 android-Ultra-Pull-To-Refresh （以下简称 UltraPTR ）便是一个强大的 Andriod 下拉刷新框架。  
 主要特点：  
 (1).继承于 ViewGroup， Content 可以包含任何 View。  
 (2).简洁完善的 Header 抽象，方便进行拓展，构建符合需求的头部。  
 > 对比 [Android-PullToRefresh](https://github.com/chrisbanes/Android-PullToRefresh) 项目，UltraPTR 没有实现 **加载更多** 的功能，但我认为 **下拉刷新** 和 **加载更多** 不是同一层次的功能， **下拉刷新** 有更广泛的需求，可以适用于任何页面。而 **加载更多** 的功能应该交由具体的 Content 自己去实现。这应该是和 Google 官方推出 SwipeRefreshLayout 是相同的设计思路，但对比 SwipeRefreshLayout， UltraPTR 更灵活，更容易拓展。
 
-###2. 总体设计
+### 2. 总体设计
 UltraPTR 总体设计比较简单清晰。  
 首先抽象出了两个接口，功能接口和 UI 接口。  
 PtrHandler 代表下拉刷新的功能接口，包含刷新功能回调方法以及判断是否可以下拉的方法。用户实现此接口来进行数据刷新工作。   
@@ -20,13 +20,13 @@ PtrUIHandler 代表下拉刷新的 UI 接口，包含准备下拉，下拉中，
 PtrFrameLayout 继承自 ViewGroup，有且只能有两个子 View，头部 Header 和内容 Content。通常情况下 Header 会实现 PtrUIHandler 接口， Content 可以为任意的 View。  
 和所有的自定义控件一样， PtrFrameLayout 通过重写 onFinishInflate， onMeasure， onLayout 来确定控件大小和位置。通过重写 dispatchTouchEvent 来确定控件的下拉行为。  
 
-###3. 流程图
+### 3. 流程图
 请参照 `4.1.5 PtrFrameLayout 事件拦截流程图`
 
-###4. 详细设计
-###4.1 核心类功能介绍
+### 4. 详细设计
+### 4.1 核心类功能介绍
 
-####4.1.1 PtrHandler.java
+#### 4.1.1 PtrHandler.java
 下拉刷新功能接口，对下拉刷新功能的抽象，包含以下两个方法。  
 ```java
 public void onRefreshBegin(final PtrFrameLayout frame)
@@ -41,7 +41,7 @@ public boolean checkCanDoRefresh(final PtrFrameLayout frame, final View content,
 如果 Content 是 ListView，当第一条在顶部时返回 true，表示可以下拉刷新。  
 如果 Content 是 ScrollView，当滑动到顶部时返回 true，表示可以刷新。  
 
-####4.1.2 PtrDefaultHandler.java
+#### 4.1.2 PtrDefaultHandler.java
 抽象类，实现了 PtrHandler.java 接口，给出了 `checkCanDoRefresh` 的默认实现，给出了常见 View 是否可以下拉的判断方法。  
 ```java
 @Override

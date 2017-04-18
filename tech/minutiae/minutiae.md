@@ -3,16 +3,16 @@ Android 开源项目源码解析细节点
 > 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 细节点 部分  
 > 分析者：[Trinea](https://github.com/trinea)，校对者：[Trinea](https://github.com/trinea)，校对状态：未完成
 
-###1. Volley 细节点
-####(1) HttpURLConnection 与 HttpClient
+### 1. Volley 细节点
+#### (1) HttpURLConnection 与 HttpClient
 
-###2. Android Universal Image Loader 细节点
-####(1) FlushedInputStream.java
+### 2. Android Universal Image Loader 细节点
+#### (1) FlushedInputStream.java
 为了解决早期 Android 版本`BitmapFactory.decodeStream(…)`在慢网络情况下 decode image 异常的 Bug。  
 主要通过重写`FilterInputStream`的 skip(long n) 函数解决，确保 skip(long n) 始终跳过了 n 个字节。如果返回结果即跳过的字节数小于 n，则不断循环直到 skip(long n) 跳过 n 字节或到达文件尾。  
 见：http://code.google.com/p/android/issues/detail?id=6066
 
-###(2). BaseImageDownloader.getStreamFromNetwork(String imageUri, Object extra)
+### (2). BaseImageDownloader.getStreamFromNetwork(String imageUri, Object extra)
 通过`HttpURLConnection`从网络获取图片的`InputStream`。支持 response code 为 3xx 的重定向。这里有个小细节代码如下：  
 ```java
 try {
@@ -26,7 +26,7 @@ try {
 在发生异常时会调用`conn.getErrorStream()`继续读取 Error Stream，这是为了利于网络连接回收及复用。但有意思的是在 Froyo(2.2) 之前，HttpURLConnection 有个重大 Bug，调用 close() 函数会影响连接池，导致连接复用失效，不少库通过在 2.3 之前使用 AndroidHttpClient 解决这个问题。  
 见：http://docs.oracle.com/javase/6/docs/technotes/guides/net/http-keepalive.html  
 
-####(3). ViewAware.ViewAware(View view, boolean checkActualViewSize)
+#### (3). ViewAware.ViewAware(View view, boolean checkActualViewSize)
 构造函数。  
 `view`表示需要显示图片的对象。  
 `checkActualViewSize`表示通过`getWidth()`和`getHeight()`获取图片宽高时返回真实的宽和高，还是`LayoutParams`的宽高，true 表示返回真实宽和高。  

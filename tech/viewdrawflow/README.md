@@ -4,7 +4,7 @@
  分析者：[lightSky](https://github.com/lightSky)  
 
 #### View 绘制机制  
-#####1. View 树的绘图流程
+##### 1. View 树的绘图流程
 当 Activity 接收到焦点的时候，它会被请求绘制布局,该请求由 Android framework 处理.绘制是从根节点开始，对布局树进行 measure 和 draw。整个 View 树的绘图流程在`ViewRoot.java`类的`performTraversals()`函数展开，该函数所做 的工作可简单概况为是否需要重新计算视图大小(measure)、是否需要重新安置视图的位置(layout)、以及是否需要重绘(draw)，流程图如下：  
 ![viewdrawflow img](image/view_mechanism_flow.png)  
 
@@ -13,7 +13,7 @@
 图片来自 https://plus.google.com/+ArpitMathur/posts/cT1EuBbxEgN  
 需要说明的是，用户主动调用 request，只会出发 measure 和 layout 过程，而不会执行 draw 过程
 
-#####2. 概念 
+##### 2. 概念 
 
 **measure 和 layout**  
 
@@ -52,7 +52,7 @@ MeasureSpecs
 - AT_MOST  
 父视图为子视图指定一个最大尺寸。子视图必须确保它自己所有子视图可以适应在该尺寸范围内，对应的属性为 wrap_content，这种模式下，父控件无法确定子 View 的尺寸，只能由子控件自己根据需求去计算自己的尺寸，这种模式就是我们自定义视图需要实现测量逻辑的情况。
  
-#####3. measure 核心方法  
+##### 3. measure 核心方法  
 - measure(int widthMeasureSpec, int heightMeasureSpec)  
 该方法定义在`View.java`类中，为 final 类型，不可被复写，但 measure 调用链最终会回调 View/ViewGroup 对象的 `onMeasure()`方法，因此自定义视图时，只需要复写 `onMeasure()` 方法即可。
 
@@ -142,7 +142,7 @@ MeasureChild 的方法调用流程图：
 ```
 
 
-#####4. layout 相关概念及核心方法  
+##### 4. layout 相关概念及核心方法  
 首先要明确的是，子视图的具体位置都是相对于父视图而言的。View 的 onLayout 方法为空实现，而 ViewGroup 的 onLayout 为 abstract 的，因此，如果自定义的 View 要继承 ViewGroup 时，必须实现 onLayout 函数。  
 
 在 layout 过程中，子视图会调用`getMeasuredWidth()`和`getMeasuredHeight()`方法获取到 measure 过程得到的 mMeasuredWidth 和 mMeasuredHeight，作为自己的 width 和 height。然后调用每一个子视图的`layout(l, t, r, b)`函数，来确定每个子视图在父视图中的位置。    
@@ -195,7 +195,7 @@ MeasureChild 的方法调用流程图：
      	...
      }
 ```
-#####5. 绘制流程相关概念及核心方法    
+##### 5. 绘制流程相关概念及核心方法    
 先来看下与 draw 过程相关的函数：  
 
 - View.draw(Canvas canvas)：

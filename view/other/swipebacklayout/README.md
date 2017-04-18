@@ -4,17 +4,17 @@ Picasso 源码分析
 > 项目地址：[SwipeBackLayout](https://github.com/ikew0ng/SwipeBackLayout)，分析的版本：，Demo 地址：
 > 分析者：[Neocomb](https://github.com/Neocomb)，分析状态：进行中。校对者：，校对状态：未开始
 
-###1. 功能介绍
-####1.1 SwipeBackLayout
+### 1. 功能介绍
+#### 1.1 SwipeBackLayout
 	这是一个让你的 Activity 具有滑动返回手势的库
-####1.2 基本使用
+#### 1.2 基本使用
 	1. 确保当前 Activity 所使用的主题添加了 <item name="android:windowIsTranslucent">true</item> 来使背景透明
 	2. 使 Activity 继承 SwipeBackActivity 
 
-###2. 总体设计
+### 2. 总体设计
 ![类图](image/SwipeBackLayout.png)
 
-###3. 流程图
+### 3. 流程图
 #### 3.1 使 Activity 透明 ####
 ![时序图](image/Activity.png)
 

@@ -5,13 +5,13 @@ Fresco 源码解析
  分析者：[blackiedm](https://github.com/blackiedm)，分析状态：未完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始
 
 
-###1. 功能介绍
-####1.1 Fresco
+### 1. 功能介绍
+#### 1.1 Fresco
 Fresco 是一个强大的图片加载和显示组件。支持从网络、本地文件系统、本地资源下载图片。
 
 它有三级缓存(两级内存、一级磁盘缓存)。并且支持Android2.3(API level 9) 及其以上系统。
 
-####1.2 特性
+#### 1.2 特性
 - 出色的内存管理。当图片不显示即离屏时，占用的内存将会被释放（在Android5.0以下的系统）。
 - 支持渐进式图片格式(Progressive JPEG)。
 - 支持Gif和WebP图片格式。（而且还支持其动画）
@@ -30,8 +30,8 @@ Fresco 是一个强大的图片加载和显示组件。支持从网络、本地�
     - 支持处理加载完成的图片
     - 支持WebP格式图片
 
-####1.3 基本使用
-#####1.3.1 Manifest 配置 和 Gradle依赖
+#### 1.3 基本使用
+##### 1.3.1 Manifest 配置 和 Gradle依赖
 在Manifest里面添加权限：
 
 ```xml
@@ -46,13 +46,13 @@ dependencies{
 compile 'com.facebook.fresco:fresco:x.x.x'
 }
 ```
-#####1.3.2 初始化
+##### 1.3.2 初始化
 在Application初始化时，调用：
 
 ```java
 Fresco.initialize(context);
 ```
-#####1.3.3 基本使用
+##### 1.3.3 基本使用
 一般情况下，使用SimpleDraweeView基本可完成你所需要的功能。
 
 1. XML自定义使用：
@@ -118,115 +118,115 @@ Fresco.initialize(context);
  具体使用可参考[Fresco demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/fresco-demo)
 
 
-###2. 详细设计
-####2.1 类关系图
-####2.2 类详细介绍
+### 2. 详细设计
+#### 2.1 类关系图
+#### 2.2 类详细介绍
 
-#####2.2.1 SimpleDraweeView
+##### 2.2.1 SimpleDraweeView
 官方推荐使用的显示图片类，输入一个URI,即可显示图片。可通过xml自定义图片的展示样式，也可以通过代码`.setHierarchy(hierarchy)`和`.setController(controller)`自定义。
 
-#####(1) initialize(Supplier<? extends SimpleDraweeControllerBuilder> draweeControllerBuilderSupplier)
+##### (1) initialize(Supplier<? extends SimpleDraweeControllerBuilder> draweeControllerBuilderSupplier)
 初始化`mSimpleDraweeControllerBuilder`的供应器`sDraweeControllerBuilderSupplier`。需要在使用`SimpleDraweeView`前调用，官方把该初始化放在`Fresco.initializeDrawee(Context context)`。
-#####(2) setImageURI(Uri uri, Object callerContext)
+##### (2) setImageURI(Uri uri, Object callerContext)
 设置URI。内部通过调用``mSimpleDraweeControllerBuilder`构建一个控制器同时为控制器设置URI，然后调用`setController(controller)`为绘图层设置控制器,函数参数:
 **uri:** 图片的 uri。支持的URIs: http://, https://, file://, content://, asset://, res://。具体介绍可见[Supported URIs](http://frescolib.org/docs/supported-uris.html#_)。
 **callerContext:** 调用上下文。可以为`null`。
-#####(3) setImageURI(Uri uri)
+##### (3) setImageURI(Uri uri)
 内部调用`setImageURI(Uri uri, Object callerContext)`，`callerContext`设为空
-#####(4) shutDown()
+##### (4) shutDown()
 关闭供应器。把`sDraweeControllerBuilderSupplier`设为空
 
-#####2.2.2 GenericDraweeHierarchy
+##### 2.2.2 GenericDraweeHierarchy
 视图层，用于组织和维护最终绘制和呈现的`Drawable`对象。可自定义占位图、加载失败占位图、重新加载占位图、进度条、背景、叠加图、按压状态下的叠加图等多个呈现效果。
-#####(1) getActualImageBounds(RectF outBounds)
+##### (1) getActualImageBounds(RectF outBounds)
 获取实际图片的后缩放边界。注：返回的边界不裁剪。参数：
 **outBounds:** 用于填充边界
-#####(2) getRoundingParams()
+##### (2) getRoundingParams()
 获取圆形配置参数`RoundingParams`。
-#####(3) getTopLevelDrawable()
+##### (3) getTopLevelDrawable()
 返回视图层最顶部的`drawable`。
-#####(4) reset()
+##### (4) reset()
 恢复初始状态。通过`controller`调用。
-#####(5) setActualImageColorFilter(ColorFilter colorfilter)
+##### (5) setActualImageColorFilter(ColorFilter colorfilter)
 为实际图片添加颜色过滤器。参数：
 **colorfilter:** 颜色过滤器。
-#####(6) setActualImageFocusPoint(PointF focusPoint)
+##### (6) setActualImageFocusPoint(PointF focusPoint)
 设置实际图片聚焦点。参数：
 **focusPoint:** 聚焦点。同时需要把实际图片的缩放类型设置为`ScaleType.FOCUS_CROP`。范围：左上角为(0,0)，右下角为(1,1)。
-#####(7) setActualImageScaleType(ScalingUtils.ScaleType scaleType)
+##### (7) setActualImageScaleType(ScalingUtils.ScaleType scaleType)
 设置实际图片的缩放类型。参数：
 **scaleType:** 缩放类型。具体可见`2.2.4 ScalingUtils.ScaleType`
-#####(8) setControllerOverlay(Drawable drawable)
+##### (8) setControllerOverlay(Drawable drawable)
 设置控制器覆盖层。由`controller`调用。参数：
 **drawable:** 用作展示控制器覆盖层。
-#####(9) setFailure(Throwable throwable)
+##### (9) setFailure(Throwable throwable)
 当实际图片完全获取失败，则显示对应的占位符。由`controller`调用。参数：
 **throwable:** 失败异常
-#####(10) setImage(Drawable drawable, boolean immediate, int progress)
+##### (10) setImage(Drawable drawable, boolean immediate, int progress)
 设置实际图片。由`controller`调用。参数：
 **drawable:** 实际图片`drawable`。
 **immediate:** 如果为`true`，则立即显示图片(没有渐变效果)。
 **progress:** 进度条数值，范围［0，100］。当设置了`mProgressBarImage`，该值才有效。
-#####(11) setPlaceholderImage((int resourceId)
+##### (11) setPlaceholderImage((int resourceId)
 设置占位图`drawable`。缩放类型不变。
-#####(12) setPlaceholderImage(Drawable drawable)
+##### (12) setPlaceholderImage(Drawable drawable)
 参考(11)。
-#####(13) setProgress(int progress, boolean immediate)
+##### (13) setProgress(int progress, boolean immediate)
 更新进度条。由`controller`调用。参数：
 **progress:** 进度条数值，范围［0，100］。当设置了`mProgressBarImage`，该值才有效。如果需要隐藏进度条，可把值设为100。
 **immediate:** 如果为`true`，则立即显示图片(没有渐变效果)。
-#####(14) setRetry(Throwable throwable)
+##### (14) setRetry(Throwable throwable)
 渐显重新加载占位图`mRetryImage`，如果`mRetryImage`没设置则显示占位图`mPlaceholderImage`。由`controller`调用。
-#####(15) setRoundingParams(RoundingParams roundingParams)
+##### (15) setRoundingParams(RoundingParams roundingParams)
 设置圆形参数。
 
-#####2.2.3 GenericDraweeHierarchyBuilder
+##### 2.2.3 GenericDraweeHierarchyBuilder
 Builder模式，用于构建`GenericDraweeHierarchy`。
 
 **主要属性：** 
-#####(1). static final int DEFAULT_FADE_DURATION
+##### (1). static final int DEFAULT_FADE_DURATION
 渐变效果时间默认时间为300。
-#####(2). static final ScalingUtils.ScaleType DEFAULT_SCALE_TYPE
+##### (2). static final ScalingUtils.ScaleType DEFAULT_SCALE_TYPE
 默认缩放类型为`ScaleType.CENTER_INSIDE`。
-#####(3). static final ScalingUtils.ScaleType DEFAULT_ACTUAL_IMAGE_SCALE_TYPE
+##### (3). static final ScalingUtils.ScaleType DEFAULT_ACTUAL_IMAGE_SCALE_TYPE
 默认实际占位图缩放类型为`ScaleType.CENTER_CROP`。
-#####(4). int mFadeDuration
+##### (4). int mFadeDuration
 渐变效果时间。默认为`DEFAULT_FADE_DURATION`。
-#####(5). Drawable mPlaceholderImage
+##### (5). Drawable mPlaceholderImage
 占位图`drawable`。默认为`null`。
-#####(6). ScaleType mPlaceholderImageScaleType
+##### (6). ScaleType mPlaceholderImageScaleType
 占位图缩放类型。默认为`null`。
-#####(7). Drawable mRetryImage
+##### (7). Drawable mRetryImage
 重新加载占位图。默认为`null`。
-#####(8). ScaleType mRetryImageScaleType
+##### (8). ScaleType mRetryImageScaleType
 重新加载占位图缩放类型。默认为`null`。
-#####(9). Drawable mFailureImage
+##### (9). Drawable mFailureImage
 失败占位图。默认为`null`。
-#####(10). ScaleType mFailureImageScaleType
+##### (10). ScaleType mFailureImageScaleType
 失败占位图缩放类型。默认为`null`。
-#####(11). Drawable mProgressBarImage
+##### (11). Drawable mProgressBarImage
 进度条占位图。默认为`null`。
-#####(12). ScaleType mProgressBarImageScaleType
+##### (12). ScaleType mProgressBarImageScaleType
 进度条占位图缩放类型。默认为`null`。
-#####(13). ScaleType mActualImageScaleType
+##### (13). ScaleType mActualImageScaleType
 实际图片缩放类型。默认为`DEFAULT_ACTUAL_IMAGE_SCALE_TYPE`。
-#####(14). Matrix mActualImageMatrix
+##### (14). Matrix mActualImageMatrix
 实际图片变换矩阵。默认为`null`。
-#####(15). PointF mActualImageFocusPoint
+##### (15). PointF mActualImageFocusPoint
 实际图片缩放聚焦点。当缩放类型为`FOCUS_CROP`才有效。默认为`null`。
-#####(16). ColorFilter mActualImageColorFilter
+##### (16). ColorFilter mActualImageColorFilter
 实际图片颜色过滤器。默认为`null`。
-#####(17). List<Drawable> mBackgrounds
+##### (17). List<Drawable> mBackgrounds
 背景图片队列。默认为`null`。
-#####(18). List<Drawable> mOverlays
+##### (18). List<Drawable> mOverlays
 覆盖层队列。默认为`null`。
-#####(19). Drawable mPressedStateOverlay
+##### (19). Drawable mPressedStateOverlay
 按压状态下的覆盖层。默认为`null`。
-#####(20). RoundingParams mRoundingParams
+##### (20). RoundingParams mRoundingParams
 圆角配置参数。默认为`null`。
 
 **主要函数：**
-#####(1). GenericDraweeHierarchy build()
+##### (1). GenericDraweeHierarchy build()
 构建`GenericDraweeHierarchy`。代码如下：
 ```java
   public GenericDraweeHierarchy build() {
@@ -234,48 +234,48 @@ Builder模式，用于构建`GenericDraweeHierarchy`。
     return new GenericDraweeHierarchy(this);
   }
 ```
-#####(2). reset()
+##### (2). reset()
 Builder模式，重置`builder`状态。内部调用`init()`。
-#####(3). setActualImageColorFilter(ColorFilter colorFilter)
+##### (3). setActualImageColorFilter(ColorFilter colorFilter)
 Builder模式，设置实际图片颜色过滤器。
-#####(4). setActualImageFocusPoint(PointF focusPoint)
+##### (4). setActualImageFocusPoint(PointF focusPoint)
 Builder模式，设置实际图片聚焦点。
-#####(5). setActualImageMatrix(Matrix actualImageMatrix)
+##### (5). setActualImageMatrix(Matrix actualImageMatrix)
 Builder模式，设置实际图片的变换矩阵，并移除缩放类型。
-#####(6). setActualImageScaleType(ScalingUtils.ScaleType actualImageScaleType)
+##### (6). setActualImageScaleType(ScalingUtils.ScaleType actualImageScaleType)
 Builder模式，设置实际图片的缩放类型，并移除变换矩阵。
-#####(7). setBackground(Drawable background)
+##### (7). setBackground(Drawable background)
 Builder模式，设置单一背景。
-#####(8). setBackground(List<Drawable> backgrounds)
+##### (8). setBackground(List<Drawable> backgrounds)
 Builder模式，设置背景。在层级结构和覆盖层被绘制前，按队列顺序绘制背景，第一个背景绘制在最底层。
-#####(9). setFadeDuration(int fadeDuration)
+##### (9). setFadeDuration(int fadeDuration)
 Builder模式，设置渐变动画的时间。
-#####(10). setFailureImage(Drawable failureDrawable)
+##### (10). setFailureImage(Drawable failureDrawable)
 Builder模式，设置失败占位图，其默认缩放类型为`DEFAULT_SCALE_TYPE`。
-#####(11). setFailureImage(Drawable failureDrawable, ScalingUtils.ScaleType failureImageScaleType)
+##### (11). setFailureImage(Drawable failureDrawable, ScalingUtils.ScaleType failureImageScaleType)
 Builder模式，设置失败占位图和其缩放类型。
-#####(12). setOverlay(Drawable overlay)
+##### (12). setOverlay(Drawable overlay)
 Builder模式，设置单一覆盖层。
-#####(13). setOverlay(List<Drawable> overlays)
+##### (13). setOverlay(List<Drawable> overlays)
 Builder模式，设置覆盖层。在层级结构和背景层被绘制后，按队列顺序绘制覆盖层，最后一个覆盖层绘制在最顶层。
-#####(14). setPlaceholderImage(Drawable placeholderDrawable, ScalingUtils.ScaleType placeholderImageScaleType)
+##### (14). setPlaceholderImage(Drawable placeholderDrawable, ScalingUtils.ScaleType placeholderImageScaleType)
 Builder模式，设置占位图和其缩放类型。默认使用透明的`ColorDrawable`。
-#####(15). setPlaceholderImage(Drawable placeholderDrawable)
+##### (15). setPlaceholderImage(Drawable placeholderDrawable)
 Builder模式，设置占位图，其默认缩放类型为`DEFAULT_SCALE_TYPE`。占位图默认使用透明的`ColorDrawable`。
-#####(16). setPressedStateOverlay(Drawable drawable)
+##### (16). setPressedStateOverlay(Drawable drawable)
 Builder模式，设置按压状态下的覆盖层。
-#####(17). setProgressBarImage(Drawable progressBarImage, ScalingUtils.ScaleType progressBarImageScaleType)
+##### (17). setProgressBarImage(Drawable progressBarImage, ScalingUtils.ScaleType progressBarImageScaleType)
 Builder模式，设置进度条和其缩放类型。
-#####(18). setProgressBarImage(Drawable progressBarImage)
+##### (18). setProgressBarImage(Drawable progressBarImage)
 Builder模式，设置进度条，其默认缩放类型为`DEFAULT_SCALE_TYPE`。
-#####(19). setRetryImage(Drawable retryDrawable, ScalingUtils.ScaleType retryImageScaleType)
+##### (19). setRetryImage(Drawable retryDrawable, ScalingUtils.ScaleType retryImageScaleType)
 Builder模式，设置重新加载占位图和其缩放类型。
-#####(20). setRetryImage(Drawable retryDrawable)
+##### (20). setRetryImage(Drawable retryDrawable)
 Builder模式，设置重新加载占位图，其默认缩放类型为`DEFAULT_SCALE_TYPE`。
-#####(21). setRoundingParams(RoundingParams roundingParams)
+##### (21). setRoundingParams(RoundingParams roundingParams)
 Builder模式，设置圆角参数。
 
-#####2.2.4 ScalingUtils.ScaleType
+##### 2.2.4 ScalingUtils.ScaleType
 图片缩放类型:
 
 - CENTER:边界内居中,不缩放。
@@ -288,67 +288,67 @@ Builder模式，设置圆角参数。
 - FOCUS_CROP:缩放子类使得两个尺寸(宽和高)大于或等于父类对应尺寸，并且至少有一个尺寸完全适合。
 在父类边界内，尽可能不留空白区域，以子类的聚焦点居中。如果聚焦点设置为（0.5F，0.5F），则相当于CENTER_CROP。
 
-#####2.2.5 DraweeController
+##### 2.2.5 DraweeController
 视图层控制器接口。把视图`view`的事件转发到控制器，控制器基于这些事件控制层级绘制。
 主要接口:
-#####(1).  Animatable getAnimatable()
+##### (1).  Animatable getAnimatable()
 返回`Animatable`,让客户端能够控制该动画。
-#####(2). DraweeHierarchy getHierarchy()
+##### (2). DraweeHierarchy getHierarchy()
 返回`hierarchy`。
-#####(3). onAttach()
+##### (3). onAttach()
 当包含层级结构`hierarchy`的视图被暂时或永久附加到`window`窗口时的回调接口。
-#####(4). onDetach()
+##### (4). onDetach()
 当包含层级结构`hierarchy`的视图暂时或永久与`window`窗口分离时的回调接口。
-#####(5). onTouchEvent(MotionEvent event) 
+##### (5). onTouchEvent(MotionEvent event) 
 当包含层级结构`hierarchy`的视图接收到一个触摸事件时的回调接口。参数：
 **event:** 触摸事件。
-#####(6). setHierarchy(DraweeHierarchy hierarchy)
+##### (6). setHierarchy(DraweeHierarchy hierarchy)
 设置新的层级结构`hierarchy`。
 
-#####2.2.6 SimpleDraweeControllerBuilder
+##### 2.2.6 SimpleDraweeControllerBuilder
 简单的视图控制生成器接口。
-#####(1). DraweeController build()
+##### (1). DraweeController build()
 生成视图控制器。
-#####(2). setCallerContext(Object callerContext)
+##### (2). setCallerContext(Object callerContext)
 Builder模式，设置回调上下文。
-#####(3). setOldController(DraweeController oldController)
+##### (3). setOldController(DraweeController oldController)
 Builder模式，设置新的视图控制器时，需要重用旧的视图控制器的内存，这样可节省不必要的内存分配。
-#####(4). setUri(Uri uri)
+##### (4). setUri(Uri uri)
 Builder模式，设置图片`uri`。
  
-#####2.2.7 DraweeHierarchy
+##### 2.2.7 DraweeHierarchy
 `drawee hierarchy` 接口。视图结构层的基类，用于组织和维护最终绘制和呈现的Drawable对象。
-#####(1). Drawable getTopLevelDrawable()
+##### (1). Drawable getTopLevelDrawable()
 返回是涂层顶部`drawable`。
 
-#####2.2.6 DraweeHolder
+##### 2.2.6 DraweeHolder
 视图控制器`DraweeController`和视图结构器`DraweeHierarchy`的持有者，用于处理`DraweeView`的回调事件。
-#####(1). static DraweeHolder<DH> create(DH hierarchy, Context context)
+##### (1). static DraweeHolder<DH> create(DH hierarchy, Context context)
 创建一个新的`DraweeHolder`实例。当`activity`触发`onStop`和`onStart`方法时，将会通知该实例回调控制器`onDetach`或`onAttach`方法。
 参数：
 **hierarchy:** 视图结构层`DraweeHierarchy`。在`DraweeHolder`类里，只有一个`DraweeHierarchy`单例。
 **context:** 官方建议转换为`ListenableActivity`作为上下文`contetxt`。该方法将会调用`registerWithContext(contetxt)`，不过已经被弃用。
-#####(2). DraweeController getController()
+##### (2). DraweeController getController()
 返回控制器`controller`，如果没设置则返回`null`。
-#####(3). DH getHierarchy()
+##### (3). DH getHierarchy()
 返回`hierarchy`，，如果没设置则抛出空指针异常。
-#####(4). Drawable getTopLevelDrawable()
+##### (4). Drawable getTopLevelDrawable()
 返回顶层视图，如果没设置则返回`null`。
-#####(5). boolean hasHierarchy()
+##### (5). boolean hasHierarchy()
 判断是否设置视图结构层`hierarchy`。
-#####(6). void onAttach()
+##### (6). void onAttach()
 通知控制器进入展示图片状态。在`DraweeView`中，`onFinishTemporaryDetach()`和`onAttachedToWindow()`必须调用此方法。
-#####(7). void onDetach()
+##### (7). void onDetach()
 释放使用的图片资源。在`DraweeView`中，`onStartTemporaryDetach()`和`onDetachedFromWindow()`必须调用此方法。
-#####(8). void onDraw()
+##### (8). void onDraw()
 顶部视图`draw(canvas)`的回调接口。
-#####(9). boolean onTouchEvent(MotionEvent event)
+##### (9). boolean onTouchEvent(MotionEvent event)
 `view`的触摸事件，内部调用`controller`的`onTouchEvent`方法。
-#####(10). void onVisibilityChange(boolean isVisible)
+##### (10). void onVisibilityChange(boolean isVisible)
 顶部视图可见性改变的回调接口。
-#####(11). void registerWithContext (Context context)
+##### (11). void registerWithContext (Context context)
 已弃用。
-#####(12). void setController (DraweeController draweeController)
+##### (12). void setController (DraweeController draweeController)
 设置新的控制器。
-#####(13) void setHierarchy (DH hierarchy)
+##### (13) void setHierarchy (DH hierarchy)
 设置`drawee hierarchy`。

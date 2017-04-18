@@ -7,17 +7,17 @@
 > 分析者：[skyacer](http://github.com/skyacer)，分析状态：完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始  
 
 
-##1. 功能介绍  
+## 1. 功能介绍  
 
 >FlyRefresh 是一个非常漂亮的下拉刷新的框架，下拉后会有纸飞机在顶部转一圈然后如果有新的item则会增加一条。添加方法只需要在你的布局中添加 FlyRefreshLayout 即可，使用的RecyclerView实现。
 
-###1.1 **完成时间**  
+### 1.1 **完成时间**  
 
 - `2015-08-19`更新 
 
 
 
-###1.2 **集成指南**  
+### 1.2 **集成指南**  
 
 
 >在 gradle 中
@@ -34,7 +34,7 @@ dependencies {
 
 ### 1.3 **使用指南**
 
-####1.在你的布局 XML 声明一个`FlyRefreshLayout`  
+#### 1.在你的布局 XML 声明一个`FlyRefreshLayout`  
 
 
 
@@ -54,7 +54,7 @@ dependencies {
      </com.race604.flyrefresh.FlyRefreshLayout>
 ```    
 
-####2.在你的Activity或者Fragment中引入`FlyRefreshLayout`，然后你需要设置下拉监听
+#### 2.在你的Activity或者Fragment中引入`FlyRefreshLayout`，然后你需要设置下拉监听
 ```  java
        flyrefreshLayout.setOnPullRefreshListener(new FlyRefreshLayout.OnPullRefreshListener() {
              @Override
@@ -94,10 +94,10 @@ convert -coalesce animation.gif frame.png
 头部动画部分，这里会有一些不同的设计，变化最大的部分。但是有一个共同点，就是头部显示会根据内容块的滑动情况来变化。在软件上，设计出接口，不同的动画，实现此接口就可以。`FlyRefresh` 的动画只是这个接口的一个具体实现。如果要实现其他的刷新动画，并不需要做多大的改动。
 
 
-##2. 详细设计
+## 2. 详细设计
 类图设计：![ClassStructure](image/ClassStructure.jpg)  
 
-###2.1 类详细介绍
+### 2.1 类详细介绍
 
 #### 1.[`HeaderController`](https://github.com/race604/FlyRefresh/blob/master/library/src/main/java/com/race604/flyrefresh/HeaderController.java)
 
@@ -372,6 +372,6 @@ convert -coalesce animation.gif frame.png
 
 >这里我们可以看到实现动画的代码之前也有提到过类似的，这里其实就是一个动画集合，使用到了插值器，主要的动画是icon 的晃动和内容的 3D 旋转
 
-##3. 流程设计
+## 3. 流程设计
 
 >![FlowChart](image/FlyRfresh-flow-chart.png)  

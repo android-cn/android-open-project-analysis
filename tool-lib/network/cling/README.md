@@ -4,15 +4,15 @@ Cling 源码解析
 > 项目地址：[cling](https://github.com/4thline/cling)，分析的版本：[5fd60eb](https://github.com/4thline/cling/commit/5fd60eb9e2e87f2ae6d1cf049145c4187040518c)，Demo 地址：[BeyondUPnP](https://github.com/kevinshine/BeyondUPnP)  
 > 分析者：[kevinshine](https://github.com/kevinshine)，分析状态：完成，校对者：[Trinea](https://github.com/trinea)，校对状态：完成   
 
-###1. 功能介绍  
-####1.1 Cling
+### 1. 功能介绍  
+#### 1.1 Cling
 Cling 类库是由 Java 实现的 DLNA/UPnP 协议栈。基于 DLNA/UPnP 可以开发出类似多屏互动、资源共享、远程控制等功能的应用，通过 Android 应用管理一个或多个设备，将音频、视频、图片推送到指定设备显示。  
 
 UPnP 的实现类库有很多，如 CyberGarage，Intel UPnP stack，在 [http://www.upnp.org](http://upnp.org/certification/toolsoverview/sdks/) 上有详细列表，比较有名的有：  
 - Platinum UPnP，基于 C++ 开发，可以支持 Windows，iOS，Android 等平台，XBMC 就是使用的此库。  
 - Cling，基于 Java 开发，也是后续要介绍的，市面上很多支持 DLNA 功能的 App 都是使用的此库，如 BubbleUPnP。  
 
-####1.2 UPnP 介绍
+#### 1.2 UPnP 介绍
 官方解释为：UPnP 是各种各样的智能设备、无线设备和个人电脑等实现遍布全球的对等网络连接（P2P）的结构。
 UPnP 实际使用场景多用于小范围对等网络内（连接至同一路由器的多个设备）之间的相互发现、控制。如使用手机控制电视盒子的音频，视频播放等。  
 
@@ -38,7 +38,7 @@ UPnP 的工作过程大概分为 6 个步骤：
 控制点可以从设备获取一个 HTML 页面，用于控制设备或展现设备信息，是对上面`(3) 控制`和`(4) 事件`过程的一个补充。  
 更详细的介绍可以参考：[UPnP 简介、优点及工作几大步骤介绍](http://www.trinea.cn/other/upnp-desc-advantage-process/)  
 
-####1.3	Cling 基本使用
+#### 1.3	Cling 基本使用
 Cling 库包括两个模块：  
 - Cling Core  
 核心类库，基于 UDA1.0，实现了定义服务，设备发现，通过 ControlPoint 发送指令等 UPnP 的基本功能。  
@@ -87,11 +87,11 @@ if (avtService != null) {
 
 **注：上述只涵盖了使用中的几个关键点，详细内容可参考我开源的项目[BeyondUPnP](https://github.com/kevinshine/BeyondUPnP)**  
 
-###2 总体设计
-####2.1 概述
+### 2 总体设计
+#### 2.1 概述
 Cling 作为 UPnP 协议栈，其主旨即是在设备的发现，控制等过程中对不同的协议及内容进行处理。UPnP 协议栈由多个层组成，Cling 只关心底层的 TCP/IP 协议以及包含 SSDP（设备发现），SOAP（设备控制），GENA（设备事件）协议的层。  
 
-###2.2 使用场景
+### 2.2 使用场景
 以一个简单的设备使用场景为例：  
 
 > 用户将手机 A 中的媒体内容播放到电视 B 上，前提：A、B 在同一个局域网中。
@@ -104,21 +104,21 @@ Cling 作为 UPnP 协议栈，其主旨即是在设备的发现，控制等过�
 在整个过程中 A 通过 Cling 既充当了 DMC(Digital Media Controller) 又作为 DMS(Digital Media Server)，而 B 作为 DMR(Digital Media Renderer) 播放媒体内容。  
 关于 DMS、DMC、DMR 是指对电子设备的分类，具体可见：[DLNA 简介 设备分类 场景举例 协议栈层次](http://www.trinea.cn/other/dlna-desc-classes-architecture/)  
 
-###3 流程图
-####3.1 设备发现及控制流程
+### 3 流程图
+#### 3.1 设备发现及控制流程
 ![control_flow](images/control_flow.png)
 
-####3.2 媒体播放流程
+#### 3.2 媒体播放流程
 ![playback_flow](images/playback_flow.png)
 
-###4 详细设计
-####4.1 类关系图
+### 4 详细设计
+#### 4.1 类关系图
 ![overview](images/api_overview.png)
 
-####4.2 类功能详细介绍
+#### 4.2 类功能详细介绍
 由类图可知，Cling 的一切都是从 UpnpService 开始的，其中包含了 ControlPoint，ProtocolFactory，Registry，Router 四个核心模块，以及一个配置信息类 UpnpServiceConfiguration。  
 
-####4.2.1 ControlPoint
+#### 4.2.1 ControlPoint
 控制点的接口，主要功能是异步执行搜索，设备控制订阅等指令。  
 此接口定义了查找设备，向设备发送指令，订阅设备变更，其实现类只有一个为 ControlPointImpl。  
 
@@ -143,7 +143,7 @@ public void execute(SubscriptionCallback callback)
 ``` 
 将 SubscriptionCallback 放入 DefaultUpnpServiceConfiguration 中定义的线程池 ClingExecutor 执行，执行完毕回调 ActionCallback 中定义的 established、failed、ended 等函数。   
 
-####4.2.2 ProtocolFactory
+#### 4.2.2 ProtocolFactory
 UPnP 协议的工厂类，用于根据收到的 UPnP 协议或是本地设备的 meta 信息，创建一个可执行的协议。  
 使用简单工厂模式封装协议内容的处理，实现类为 ProtocolFactoryImpl，主要根据接收报文和发送报文两大类创建不同协议。  
 在该类中 UDP 包通过 createReceivingAsync 方法对传递来的 IncomingDatagramMessage 进行处理，如 NOTIFY--ReceivingNotification，MSEARCH--ReceivingSearch。  
@@ -171,11 +171,11 @@ b. 生产 SendingSearch 实例的工厂方法，SendingSearch 中定义了查询
 public SendingSearch createSendingSearch(UpnpHeader searchTarget, int mxSeconds)
 ```
 
-####4.2.3 Registry
+#### 4.2.3 Registry
 设备资源管理器，用于设备、资源、订阅消息的管理，包括添加、更新、移除、查询。可将新设备时加入 Registry 中，在设备失效后从 Registry 中移除。目前实现类为 RegistryImpl。  
 关联类包括：RegistryListener、Resource、RegistryItem、RegistryItems、LocalItems、RemoteItems、ExpirationDetails、RegistryMaintainer。  
 
-####4.2.4 RegistryListener
+#### 4.2.4 RegistryListener
 设备状态监听类，包含本地/远程设备的发现、添加、更新、移除等回调函数。可通过  
 ```
 addListener(RegistryListener listener)
@@ -183,27 +183,27 @@ addListener(RegistryListener listener)
 添加，保存在`RegistryListener`的 Set\<RegistryListener\> registryListener 参数内。  
 实现类有空实现的 DefaultRegistryListener 以及通过注入属性实现的 RegistryListenerAdapter。  
 
-####4.2.5 Resource  
+#### 4.2.5 Resource  
 资源的父类。该类中定义资源的 URI，model 等属性。  
 
-####4.2.6 RegistryItem  
+#### 4.2.6 RegistryItem  
 KV 形式的数据项，在 RegistryImpl 中用于包装设备、资源、订阅消息等。  
 
-####4.2.7 RegistryItems  
+#### 4.2.7 RegistryItems  
 `RegistryImpl`中设备、资源集合的父类，定义了对元素的增删查改等操作。  
 包含`deviceItems`和`subscriptionItems`两个属性，分别表示设备集合和订阅消息集合，集合元素为`RegistryItem`。  
 子类有`LocalItems`和`RemoteItems`分别表示本地设备和远程设备集合。  
 
-####4.2.8 LocalItems  
+#### 4.2.8 LocalItems  
 继承自 RegistryItems，key 为 LocalDevice，value 为 LocalGENASubscription。存储本地设备及其订阅消息。  
 
-####4.2.9 RemoteItems  
+#### 4.2.9 RemoteItems  
 继承自 RegistryItems，key 为 RemoteDevice，value 为 RemoteGENASubscription。存储远程设备及其订阅消息。  
 
-####4.2.10 ExpirationDetails  
+#### 4.2.10 ExpirationDetails  
 为 RegistryItem 的属性，记录上次刷新和最大超时时间，从而判断对象是否过期。  
 
-####4.2.11 RegistryMaintainer  
+#### 4.2.11 RegistryMaintainer  
 资源管理器中元素有效期的定期维护，每隔 1000ms 调用一次 registry.maintain() 方法，该方法执行的操作有：  
 (1) 判断过期的 item，并从 resourceItems 中移除；  
 (2) 遍历 resourceItems，对其中的每个 Resource 调用其 maintain() 方法；  
@@ -211,7 +211,7 @@ KV 形式的数据项，在 RegistryImpl 中用于包装设备、资源、订阅
 (4) localItems.maintain() 对 local 进行维护；  
 (5) runPendingExecutions 执行异步任务。  
 
-####4.2.12 Router
+#### 4.2.12 Router
 数据传输层接口，负责接收和发送 UPnP 和 UDP 消息，或者将接收到的数据流广播给局域网内的其他设备。  
 目前实现类为 RouterImpl 和 MockRouter，其中 MockRouter 仅用来作为测试时的 Mock 接口，RouterImpl 作为默认的数据传输层实现。  
 **(1) enable()**  
@@ -237,11 +237,11 @@ send(StreamRequestMessage msg) 通过 StreamClient 发送 TCP 包。
 send(OutgoingDatagramMessage msg) 向所有 datagramIO 发送 UDP 包。  
 broadcast(byte[] bytes) 向所有 datagramIO 广播发送数据。  
 
-####4.2.13 StreamClient
+#### 4.2.13 StreamClient
 StreamClient 具体实现类为 AbstractStreamClient 以及其子类 StreamClientImpl。  
 在 Android 系统下使用的 Jetty 实现。在该类中具体的 http 协议处理由 HttpClient 实现，核心方法 sendRequest 用于创建请求并获取返回 response，请求及返回值通过 HttpContentExchange 封装，每一个 StreamRequestMessage 及其对应的 HttpContentExchange 通过 createCallable 方法封装为 Callable 对象，并将其压入 DefaultUpnpServiceConfiguration 中的 defaultExecutorService。在 call() 中调用 client.send(exchange) 发送 request 并获取 response。  
 
-####4.2.14 StreamServer
+#### 4.2.14 StreamServer
 StreamServer 用来接收 HTTP 请求并进行处理。在 AndroidUpnpServiceConfiguration 中进行初始化：  
 ```
 public StreamServer createStreamServer(NetworkAddressFactory networkAddressFactory) {
@@ -256,11 +256,11 @@ public StreamServer createStreamServer(NetworkAddressFactory networkAddressFacto
 ```
 本质上是由 Jetty 实现的 servlet 容器。从 HttpServletRequest 中获取数据流并传递给 Router 的 received(UpnpStream stream) 进行处理。JettyServletContainer 使用了单例模式，其中定义 Server 的具体实现，并使用 synchronized 同步 Server 属性变更操作。  
 
-####4.2.15 ReceivingNotification
+#### 4.2.15 ReceivingNotification
 处理接收到的 notification 消息。如 ALIVE，BYEBYE。当接收到 ALIVE 消息后，会在后台启动一个线程执行 RetrieveRemoteDescriptors 获取该设备的信息。  
 
-####4.2.16 RetrieveRemoteDescriptors
+#### 4.2.16 RetrieveRemoteDescriptors
 用来主动获取远端介绍详情，并返回 RemoteService 加入到 Registry 中。  
 
-###5 结语
+### 5 结语
 Cling 作为一款优秀的开源 UPnP 协议栈实现，从之前的 1.x 版本发展到现在的 2.x，在稳定性易扩展等方面有着显著的提升，由于对 Android 平台有着较好的支持，越来越多的产品使用 Cling 作为解决方案，如 BubbleUPnP 等。当然它本身也还存在着如 Router 切换 WIFI 时注册设备清除失败等问题，但瑕不掩瑜，本着学习的态度还是可以从中受益良多。  

@@ -8,16 +8,16 @@ Android 开源项目源码解析
 
 **在线网站：[www.codekk.com](http://a.codekk.com)**  
 
-###1. 如何加入
+### 1. 如何加入
 以`你想分析的开源库库名`作为验证信息，申请加入 QQ 群（485334692）即可  
 
-###2. 具体编写步骤
+### 2. 具体编写步骤
 具体步骤请见：[编写步骤](./zen/procedure.md)  
 
-###3. 开源项目源码分析
+### 3. 开源项目源码分析
 目前参与者 [Author](author.md)  
 
-####3.2 第二期成果
+#### 3.2 第二期成果
 
 分析文档 | 作者 
 :------------- | :------------- 
@@ -34,7 +34,7 @@ Android 开源项目源码解析
 [公共技术点之 Android 动画基础](http://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Android%20%E5%8A%A8%E7%94%BB%E5%9F%BA%E7%A1%80) | [lightSky](https://github.com/lightSky)
 [公共技术点之 Java 反射](http://a.codekk.com/detail/Android/Mr.Simple/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E5%8F%8D%E5%B0%84%20Reflection) | [Mr.Simple](https://github.com/bboyfeiyu)
 
-####3.2 第一期成果
+#### 3.2 第一期成果
 
 分析文档 | 作者 
 :------------- | :------------- 
@@ -54,7 +54,7 @@ Android 开源项目源码解析
 [公共技术点之依赖注入](http://a.codekk.com/detail/Android/%E6%89%94%E7%89%A9%E7%BA%BF/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5) | [扔物线](https://github.com/rengwuxian)
 [公共技术点之 View 事件传递](http://a.codekk.com/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92) | [Trinea](https://github.com/Trinea)
 
-###4 加入我们
+### 4 加入我们
 - 如果你在用各种开源库  
 - 如果你有兴趣去深挖它们优雅的实现  
 - 如果你希望知其然知其所以然提高自己  

@@ -5,44 +5,44 @@ PhotoView 源码解析
 > 分析者：[dkmeteor](https://github.com/dkmeteor)，校对者：[cpacm](https://github.com/cpacm)，校对状态：完成   
 
 
-###1. 功能介绍
+### 1. 功能介绍
 
-#####特性(Features)：
+##### 特性(Features)：
 - 支持 Pinch 手势自由缩放。
 - 支持双击放大/还原。
 - 支持平滑滚动。
 - 在滑动父控件下能够运行良好。（例如：ViewPager）
 - 支持基于 Matrix 变化（放大/缩小/移动）的事件监听。
 
-#####优势：
+##### 优势：
 - PhotoView 是 ImageView 的子类，自然的支持所有 ImageView 的源生行为。
 - 任意项目可以非常方便的从 ImageView 升级到 PhotoView，不用做任何额外的修改。
 - 可以非常方便的与 ImageLoader/Picasso 之类的异步网络图片读取库集成使用。
 - 事件分发做了很好的处理，可以方便的与 ViewPager 等同样支持滑动手势的控件集成。
 
 
-###2. 总体设计
+### 2. 总体设计
 
 PhotoView 这个库实际上比较简单,关键点其实就是 Touch 事件处理和 Matrix 图形变换的应用.
 
-#####2.1 TouchEvent 及手势事件处理
+##### 2.1 TouchEvent 及手势事件处理
 对 TouchEvent 分发流程不了解的建议先阅读 [Android Touch 事件传递机制](http://www.trinea.cn/android/touch-event-delivery-mechanism/)
 
 本库中对 Touch 事件的处理流程请参考第三部分的流程图，会有一个比较直观的认识。
 
-#####2.2 Matrix
+##### 2.2 Matrix
 由于 Matrix 是 Android 系统源生 API,很多开发者对此都比较熟悉,为了不影响阅读效果，故不在此详细叙述,如果对其不是很了解,可以查看本文档末尾的 Matrix 补充说明
 
     
-###3. 流程图
+### 3. 流程图
 Touch 及手势事件判定及传递流程：
 
 ![流程图](images/flow.png)
 
 如图，从架构上看，干净利落的将事件层层分离，交由不同的 Detector 处理，最后再将处理结果回调给 PhtotViewAttacher 中的 Matrix 去实现图形变换效果。
 
-###4. 详细设计
-###4.1 核心类功能介绍
+### 4. 详细设计
+### 4.1 核心类功能介绍
 
 ### Core 核心类
 ---
@@ -342,17 +342,17 @@ OnGestureListener 接口回调的实现方法.
 具体调用栈请参考总体设计中调用流程图,注意一点,PhotoViewAttacher 本身就实现了 OnGestureListener 接口,实际的缩放操作是由 PhotoViewAttacher 完成的,而不是这里声明的各个 GestureDetector.
 
  
-###4.2 类关系图
+### 4.2 类关系图
 
 ![PhotoView](images/startuml.jpg)
 
 
-###5. 杂谈
+### 5. 杂谈
 该库唯一缺少的可能是 手势旋转 功能(可以参考 QQ). 不过由于 PhotoView 中已将各级事件分开处理,从架构上来看可扩展性良好,自定义一个 RotateGestureDetector 来捕获旋转手势也可行.
 但如何在不与 ScaleGestureDetector 冲突的情况下完成该功能会稍微有些麻烦.
 如果不需要手势旋转的话，该库提供了单独的接口可以用代码设置旋转角度。
 
-###6. Matrix 补充说明
+### 6. Matrix 补充说明
 Matrix 是一个 3x3 矩阵,使用 Matrix 可以对 Bitmap/Canvas 进行 4 类基本图形变换,使用起来非常简便，如果你对 Matrix 的抽象变换不熟悉，还可以使用 android.graphics.Camera 类进行辅助计算。
 Camera 类可以将矩阵变换抽象成 视点（摄像机） 在三维空间内的移动，更易于直观的理解其效果。
 
@@ -368,7 +368,7 @@ Camera 类可以将矩阵变换抽象成 视点（摄像机） 在三维空间�
 
 虚影为原始位置，实图为变换后位置.
 
-####API 
+#### API 
 
 - public void setTranslate(float dx, float dy)
 
@@ -398,6 +398,6 @@ Camera 类可以将矩阵变换抽象成 视点（摄像机） 在三维空间�
 	![skew](images/skew.png)
 
 
-####原理
+#### 原理
 
 如果你对矩阵变换背后的数学原理感兴趣且`线性代数`的内容没忘光的话，推荐这篇 [文章](http://www.cnblogs.com/qiengo/archive/2012/06/30/2570874.html).

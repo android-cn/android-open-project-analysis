@@ -4,13 +4,13 @@ Android Lock Pattern 源码解析
 > 项目地址：[android-lockpattern](https://github.com/haibison/android-lockpattern)，分析的版本：[40293d2250c2](https://code.google.com/p/android-lockpattern/source/detail?r=40293d2250c2b273223ba25e4aeb3d290a0fdfad)，Demo 地址：等待添加    
 > 分析者：[爱早起](https://github.com/liang7)，校对者：[Trinea](https://github.com/Trinea)，校对状态：未完成   
 
-###1. 介绍
+### 1. 介绍
 
-####1.1 关于
+#### 1.1 关于
 
 Android 的图案密码解锁，通过手势连接 3 * 3 的点矩阵绘制图案表示解锁密码。基于 [Android Source Code](https://android.googlesource.com/platform/frameworks/base/+/master/core/java/com/android/internal/widget/LockPatternView.java)。  
 
-####1.2 特点
+#### 1.2 特点
 
 - 支持: Android 1.6+ (API 4+)。
 - 无特殊依赖。
@@ -22,9 +22,9 @@ Android 的图案密码解锁，通过手势连接 3 * 3 的点矩阵绘制图�
   - Dark/Light dialogs
 - 有验证码模式。
 
-####1.3 使用
+#### 1.3 使用
 
-#####1.3.1 Manifest 配置
+##### 1.3.1 Manifest 配置
 
 ```
 <activity
@@ -32,7 +32,7 @@ Android 的图案密码解锁，通过手势连接 3 * 3 的点矩阵绘制图�
     android:theme="@style/Alp.42447968.Theme.Dark" />
 ```
 
-#####1.3.2 创建图形锁模式
+##### 1.3.2 创建图形锁模式
 
 ```	
 private static final int REQ_CREATE_PATTERN = 1;
@@ -58,7 +58,7 @@ protected void onActivityResult(int requestCode, int resultCode,
 }
 ```
 
-#####1.3.3 验证图形锁
+##### 1.3.3 验证图形锁
 
 ```
 private static final int REQ_ENTER_PATTERN = 2;
@@ -102,29 +102,29 @@ protected void onActivityResult(int requestCode, int resultCode,
 }
 ```
 
-###2. 总体设计
+### 2. 总体设计
 
 本项目较为简单，总体设计略过，具体实现请参考下面的分析。  
 
-###3. 流程图
+### 3. 流程图
 
-####3.1 创建解锁图案流程图
+#### 3.1 创建解锁图案流程图
 
 ![Create Pattern](image/CreatePattern.png)  
 
-####3.2 验证解锁图案流程图
+#### 3.2 验证解锁图案流程图
 
 ![Compare Pattern](image/ComparePattern.png)  
 
-###4. 详细设计
+### 4. 详细设计
 
-####4.1 类关系图
+#### 4.1 类关系图
 
 ![Class Diagraph](image/Main.png)  
 
-####4.2 核心类功能介绍
+#### 4.2 核心类功能介绍
 
-#####4.2.1 LockPatternActivity.java
+##### 4.2.1 LockPatternActivity.java
 
 `LockPatternActivity`类负责所有外部请求，根据`ACTION_CREATE_PATTERN` `ACTION_COMPARE_PATTERN` `ACTION_VERIFY_CAPTCHA` 等`Action`选择操作模式，加载设置后初始化`LockPatternView`，在用户完成操作后退出并返回结果。
 
@@ -143,7 +143,7 @@ protected void onActivityResult(int requestCode, int resultCode,
 * private void finishWithResultOk(char[] pattern)  
 * private void finishWithNegativeResult(int resultCode)  
 
-#####4.2.2 LockPatternView.java
+##### 4.2.2 LockPatternView.java
 
 `LockPatternView`类主要是显示解锁的图形界面，在用户操作的时候显示连线与动画，用户操作完成后根据结果做提示。  
 
@@ -173,7 +173,7 @@ protected void onActivityResult(int requestCode, int resultCode,
 * private void handleActionUp(MotionEvent event)  
 检查 pattern list 如果不为空则停止添加，发送完成消息，全局刷新。  
 
-#####4.2.3 LockPatternUtils.java
+##### 4.2.3 LockPatternUtils.java
 
 **图形摘要并加密**
 
@@ -182,21 +182,21 @@ protected void onActivityResult(int requestCode, int resultCode,
 * public static String patternToString(List<LockPatternView.Cell> pattern)  
 把 pattern list 进行信息摘要，从左上角起编号为 00，至右下角止编号为 08，按照 list 中点的顺序生成编号序列，返回序列。
 
-####5. 安全性分析
+#### 5. 安全性分析
 
 android-lockpattern 默认的加密存储流程与 Android 系统的图形解锁是一致的，以 Android 系统为例来破解图形锁。
 
-#####5.1 加密存储过程
+##### 5.1 加密存储过程
 
 ![Compare Pattern](image/sec.png) 
 
-#####5.2 破解思路
+##### 5.2 破解思路
 
 * 图案总数固定：至少四个点、最多九个点、无重复点
 * 加密较弱：单次 SHA-1
 * 最快的方法：暴力猜解
 
-#####5.3 实战
+##### 5.3 实战
 
 首先获取系统图形锁加密摘要文件  
 
