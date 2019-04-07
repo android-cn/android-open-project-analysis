@@ -1,7 +1,7 @@
 Retrofit 源码解析
 ======
 
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 Retrofit 部分  
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 中 Retrofit 部分  
 > 项目地址：[Retrofit](https://github.com/square/retrofit)，分析的版本：[35ce778](https://github.com/square/retrofit/commit/e68011938e92d7f50f8e2a64ad0e57788549dd5c)，Demo 地址：[Retrofit Demo](https://github.com/android-cn/android-open-project-demo/tree/master/Retrofit-demo)    
 > 分析者：[xxxzhi](https://github.com/xxxzhi)，分析状态：完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始   
 
@@ -344,5 +344,5 @@ retrofit 也可以与[Rxjava](https://github.com/ReactiveX/RxJava)联合起来�
   [2]: image/flow-draw.png
   [3]: /tool-lib/network/retrofit/image/retrofit-uml.png
   [4]: /tool-lib/network/retrofit/image/call-adapter-uml.png
-  [5]: http://a.codekk.com/detail/Android/Caij/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86
+  [5]: https://a.codekk.com/detail/Android/Caij/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86
 

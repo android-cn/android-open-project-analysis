@@ -1,6 +1,6 @@
 ViewPagerindicator 源码解析
 ----------------
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 ViewPagerindicator 部分  
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 中 ViewPagerindicator 部分  
 > 项目地址：[ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator/)，分析的版本：[8cd549f](https://github.com/JakeWharton/Android-ViewPagerIndicator/commit/8cd549f23f3d20ff920e19a2345c54983f65e26b "Commit id is 8cd549f23f3d20ff920e19a2345c54983f65e26b")，Demo 地址：[ViewPagerIndicator Demo](https://github.com/android-cn/android-open-project-demo/tree/master/viewpager-indicator-demo)  
 > 分析者：[lightSky](https://github.com/lightSky)，校对者：[aaronplay](https://github.com/AaronPlay)，校对状态：完成   
 
@@ -53,7 +53,7 @@ ACTION_POINTER_DOWN、ACTION_POINTER_UP:多触摸手势事件中的按下和抬�
 在本项目中，对于 onTouche 的处理是模板方法，因为没有复杂的交互，仅仅是追踪有效的手势以及确定 Page 的切换时机。官方文档中在拖拽与缩放中有详细的讲解[Dragging and Scaling](http://developer.android.com/training/gestures/scale.html) 本项目中的 onTouchEvent 中的代码就是官方文档的模板代码，就是为了确保获取到可用、可信的点，然后对 ViewPager 相应处理。
     
 #### 3.2.3 View 绘制机制  
-请直接参考[公共技术点 viewdrawflow](http://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E7%BB%98%E5%88%B6%E6%B5%81%E7%A8%8B)部分  
+请直接参考[公共技术点 viewdrawflow](https://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E7%BB%98%E5%88%B6%E6%B5%81%E7%A8%8B)部分  
   
 ### 3.3 核心类及功能介绍
 ##### 3.3.1 CirclePageIndicator  
@@ -229,7 +229,7 @@ vpi_attrs.xml
     }
 ```
 ##### 3.4.4 自定义 View 的绘制
-请参考上面的 CirclePageIndicator 的 onDraw，也可以参考 tech 下的[View 的绘制流程](http://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E7%BB%98%E5%88%B6%E6%B5%81%E7%A8%8B)的 Draw 部分。
+请参考上面的 CirclePageIndicator 的 onDraw，也可以参考 tech 下的[View 的绘制流程](https://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E7%BB%98%E5%88%B6%E6%B5%81%E7%A8%8B)的 Draw 部分。
 ##### 3.4.5 使 View 可交互
 请参考上面的 CirclePageIndicator 的 onTouch，这里只是简单的处理了 onTouch 事件，交互更好的自定义控件往往会加一些自然的动画等。
 ## 4. 杂谈

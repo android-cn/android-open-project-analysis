@@ -1,6 +1,6 @@
 Android Universal Image Loader 源码分析
 ====================================
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 Android Universal Image Loader 部分  
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 中 Android Universal Image Loader 部分  
 > 项目地址：[Android-Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader)，分析的版本：[eb794c3](https://github.com/nostra13/Android-Universal-Image-Loader/commit/eb794c306c1707a6cce80764b01f52109d5b9056)，Demo 地址：[UIL Demo](https://github.com/android-cn/android-open-project-demo/tree/master/universal-image-loader-demo)  
 > 分析者：[huxian99](https://github.com/huxian99)，校对者：[Grumoon](https://github.com/grumoon)、[Trinea](https://github.com/trinea)，校对状态：完成
 
@@ -432,7 +432,7 @@ void onProgressUpdate(String imageUri, View view, int current, int total)
 否则判断`imageAware`是否被复用，如果是直接调用取消加载回调接口`ImageLoadingListener.onLoadingCancelled(…)`；  
 否则调用`displayer`显示图片，并将`imageAware`从正在加载的 map 中移除。调用加载成功回调接口`ImageLoadingListener.onLoadingComplete(…)`。  
 
-对于 ListView 或是 GridView 这类会缓存 Item 的 View 来说，单个 Item 中如果含有 ImageView，在滑动过程中可能因为异步加载及 View 复用导致图片错乱，这里对`imageAware`是否被复用的判断就能很好的解决这个问题。原因类似：[Android ListView 滑动过程中图片显示重复错位闪烁问题原因及解决方案](http://www.trinea.cn/android/android-listview-display-error-image-when-scroll/)。  
+对于 ListView 或是 GridView 这类会缓存 Item 的 View 来说，单个 Item 中如果含有 ImageView，在滑动过程中可能因为异步加载及 View 复用导致图片错乱，这里对`imageAware`是否被复用的判断就能很好的解决这个问题。原因类似：[Android ListView 滑动过程中图片显示重复错位闪烁问题原因及解决方案](https://www.trinea.cn/android/android-listview-display-error-image-when-scroll/)。  
 
 ##### 4.2.19 ProcessAndDisplayImageTask.java
 处理并显示图片的`Task`，实现了`Runnable`接口。  

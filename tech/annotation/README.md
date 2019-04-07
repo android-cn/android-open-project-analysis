@@ -1,6 +1,6 @@
 公共技术点之 Java 注解 Annotation
 ----------------
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 公共技术点中的 注解 部分  
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 公共技术点中的 注解 部分  
  分析者：[Trinea](https://github.com/Trinea)，校对者：[Trinea](https://github.com/Trinea)，校对状态：完成  
 
 不少开源库都用到了注解的方式来简化代码提高开发效率。  
@@ -219,7 +219,7 @@ process 函数返回值表示这组 annotations 是否被这个 Processor 接受
     
 [RestMethodInfo.java](https://github.com/square/retrofit/blob/master/retrofit/src/main/java/retrofit/RestMethodInfo.java) 的 parseMethodAnnotations 方法如上，会检查每个方法的每个 Annotation， 看是否被 RestMethod 这个 Annotation 修饰的 Annotation 修饰，这个有点绕，就是是否被 GET、DELETE、POST、PUT、HEAD、PATCH 这些 Annotation 修饰，然后得到 Annotation 信息，在对接口进行动态代理时会掉用到这些 Annotation 信息从而完成调用。  
 
-Retrofit 原理涉及到[动态代理](http://a.codekk.com/detail/Android/Caij/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86)，这里原理都只介绍 Annotation，具体原理分析请见 [Android 开源项目实现原理解析](http://a.codekk.com)   
+Retrofit 原理涉及到[动态代理](https://a.codekk.com/detail/Android/Caij/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86)，这里原理都只介绍 Annotation，具体原理分析请见 [Android 开源项目实现原理解析](https://a.codekk.com)   
 
 #### 6.2 Annotation — Butter Knife  
 (1) 调用
@@ -262,7 +262,7 @@ Retrofit 原理涉及到[动态代理](http://a.codekk.com/detail/Android/Caij/%
 
 
 [ButterKnifeProcessor.java](https://github.com/JakeWharton/butterknife/blob/master/butterknife/src/main/java/butterknife/internal/ButterKnifeProcessor.java) 的 process 方法如上，编译时，在此方法中过滤 InjectView 这个 Annotation 到 targetClassMap 后，会根据 targetClassMap 中元素生成不同的 class 文件到最终的 APK 中，然后在运行时调用 ButterKnife.inject(x) 函数时会到之前编译时生成的类中去找。
-这里原理都只介绍 Annotation，具体原理分析请见 [Android 开源项目实现原理解析](http://a.codekk.com)   
+这里原理都只介绍 Annotation，具体原理分析请见 [Android 开源项目实现原理解析](https://a.codekk.com)   
 
 #### 6.3 Annotation — ActiveAndroid  
 (1) 调用  
@@ -301,5 +301,5 @@ Retrofit 原理涉及到[动态代理](http://a.codekk.com/detail/Android/Caij/%
  
 [TableInfo.java](https://github.com/pardom/ActiveAndroid/blob/master/src/com/activeandroid/TableInfo.java) 的构造函数如上，运行时，得到所有行信息并存储起来用来构件表信息。  
 
-这里原理都只介绍 Annotation，具体原理分析请见 [Android 开源项目实现原理解析](http://a.codekk.com)   
+这里原理都只介绍 Annotation，具体原理分析请见 [Android 开源项目实现原理解析](https://a.codekk.com)   
 

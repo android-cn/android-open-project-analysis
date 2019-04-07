@@ -1,6 +1,6 @@
 PhotoView 源码解析
 ====================================
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 PhotoView 部分  
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 中 PhotoView 部分  
 > 项目地址：[PhotoView](https://github.com/chrisbanes/PhotoView)，分析的版本：[48427bf](https://github.com/chrisbanes/PhotoView/commit/48427bff9bb1a408cfebf6697aa019c0788ded76)，Demo 地址：[PhotoView-demo](https://github.com/android-cn/android-open-project-demo/tree/master/photoview-demo)    
 > 分析者：[dkmeteor](https://github.com/dkmeteor)，校对者：[cpacm](https://github.com/cpacm)，校对状态：完成   
 
@@ -26,7 +26,7 @@ PhotoView 源码解析
 PhotoView 这个库实际上比较简单,关键点其实就是 Touch 事件处理和 Matrix 图形变换的应用.
 
 ##### 2.1 TouchEvent 及手势事件处理
-对 TouchEvent 分发流程不了解的建议先阅读 [Android Touch 事件传递机制](http://www.trinea.cn/android/touch-event-delivery-mechanism/)
+对 TouchEvent 分发流程不了解的建议先阅读 [Android Touch 事件传递机制](https://www.trinea.cn/android/touch-event-delivery-mechanism/)
 
 本库中对 Touch 事件的处理流程请参考第三部分的流程图，会有一个比较直观的认识。
 

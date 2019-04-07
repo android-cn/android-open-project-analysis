@@ -1,6 +1,6 @@
 android-Ultra-Pull-To-Refresh 源码解析
 ====================================
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 android-Ultra-Pull-To-Refresh 部分  
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 中 android-Ultra-Pull-To-Refresh 部分  
 > 项目地址：[android-Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh)，分析的版本：[508c632](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh/tree/508c63266de51ad8c010ac9912f7592b2f2da8fc)，Demo 地址：[android-Ultra-Pull-To-Refresh Demo](https://github.com/android-cn/android-open-project-demo/tree/master/android-ultra-pull-to-refresh-demo)  
 > 分析者：[Grumoon](https://github.com/grumoon)，校对者：[lightSky](https://github.com/lightSky)，校对状态：已完成  
 
@@ -187,7 +187,7 @@ UltraPTR 的核心类，自定义控件类。
   
 下面从 **显示** 和 **行为** 两个方面分析此类。  
 **（1）显示（ View 绘制）**    
-参考技术点，[公共技术点之 View 绘制流程](http://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E7%BB%98%E5%88%B6%E6%B5%81%E7%A8%8B)  
+参考技术点，[公共技术点之 View 绘制流程](https://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E7%BB%98%E5%88%B6%E6%B5%81%E7%A8%8B)  
 ```java
 @Override
 protected void onFinishInflate() {...}
@@ -237,7 +237,7 @@ final int top = paddingTop + lp.topMargin + offsetX;
 代码中有个 `offsetX` 变量（我认为改为 `offsetY` 好些），初始时为 0，随着下拉的过程， `offsetX` 会逐渐增大，这样 Header 和 Content 都会向下移动， Header 会显示出来，出现下拉的位置移动效果。 
 
 **（2）行为（ View 事件）**  
-参考技术点，[公共技术点之 View 事件传递](http://a.codekk.com/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92)  
+参考技术点，[公共技术点之 View 事件传递](https://a.codekk.com/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92)  
 ViewGroup 的事件处理，通常重写 onInterceptTouchEvent 方法或者 dispatchTouchEvent 方法，PtrFrameLayout 重写了 dispatchTouchEvent 方法。  
 **事件处理流程图** 如下：  
 ![UltraPTR-dispatchTouchEvent-flow-chart](image/UltraPTR-dispatchTouchEvent-flow-chart.png)  

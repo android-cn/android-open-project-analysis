@@ -1,6 +1,6 @@
 ListViewAnimations 源码解析
 ----------------
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 ListViewAnimations 部分   
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 中 ListViewAnimations 部分   
 项目地址：[ListViewAnimations](https://github.com/nhaarman/ListViewAnimations)，分析的版本：[25124c5](https://github.com/nhaarman/ListViewAnimations/commit/25124c555c9d6ced81ce3e78b3d8a0e02fc274ce)，Demo 地址：[ListViewAnimations Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/listview-animations-demo)  
 分析者：[demonyan](https://github.com/demonyan)，分析状态：已完成，校对者：[Trinea](https://github.com/trinea)，校对状态：未开始
 
@@ -351,7 +351,7 @@ public View getHeaderView(final int position, final View convertView, final View
 
 ### 参考文献
 1. [Android 设计模式源码解析之桥接模式](https://github.com/simple-android-framework/android_design_patterns_analysis/tree/master/bridge/shen0834)
-1. [公共技术点之 View 事件传递](http://a.codekk.com/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92)
-1. [公共技术点之 Android 动画基础](http://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Android%20%E5%8A%A8%E7%94%BB%E5%9F%BA%E7%A1%80)
+1. [公共技术点之 View 事件传递](https://a.codekk.com/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92)
+1. [公共技术点之 Android 动画基础](https://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Android%20%E5%8A%A8%E7%94%BB%E5%9F%BA%E7%A1%80)
 1. [StickyListHeaders](https://github.com/emilsjolander/StickyListHeaders)
 

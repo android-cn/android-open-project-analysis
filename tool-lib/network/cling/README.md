@@ -1,6 +1,6 @@
 Cling 源码解析
 ====================================
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 Cling 部分  
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 中 Cling 部分  
 > 项目地址：[cling](https://github.com/4thline/cling)，分析的版本：[5fd60eb](https://github.com/4thline/cling/commit/5fd60eb9e2e87f2ae6d1cf049145c4187040518c)，Demo 地址：[BeyondUPnP](https://github.com/kevinshine/BeyondUPnP)  
 > 分析者：[kevinshine](https://github.com/kevinshine)，分析状态：完成，校对者：[Trinea](https://github.com/trinea)，校对状态：完成   
 
@@ -36,7 +36,7 @@ UPnP 的工作过程大概分为 6 个步骤：
 
 (5) 展现(Presentation)  
 控制点可以从设备获取一个 HTML 页面，用于控制设备或展现设备信息，是对上面`(3) 控制`和`(4) 事件`过程的一个补充。  
-更详细的介绍可以参考：[UPnP 简介、优点及工作几大步骤介绍](http://www.trinea.cn/other/upnp-desc-advantage-process/)  
+更详细的介绍可以参考：[UPnP 简介、优点及工作几大步骤介绍](https://www.trinea.cn/other/upnp-desc-advantage-process/)  
 
 #### 1.3	Cling 基本使用
 Cling 库包括两个模块：  
@@ -102,7 +102,7 @@ Cling 作为 UPnP 协议栈，其主旨即是在设备的发现，控制等过�
 - A 通过 AVTransport Service 将媒体内容推送到 B 并播放
 
 在整个过程中 A 通过 Cling 既充当了 DMC(Digital Media Controller) 又作为 DMS(Digital Media Server)，而 B 作为 DMR(Digital Media Renderer) 播放媒体内容。  
-关于 DMS、DMC、DMR 是指对电子设备的分类，具体可见：[DLNA 简介 设备分类 场景举例 协议栈层次](http://www.trinea.cn/other/dlna-desc-classes-architecture/)  
+关于 DMS、DMC、DMR 是指对电子设备的分类，具体可见：[DLNA 简介 设备分类 场景举例 协议栈层次](https://www.trinea.cn/other/dlna-desc-classes-architecture/)  
 
 ### 3 流程图
 #### 3.1 设备发现及控制流程

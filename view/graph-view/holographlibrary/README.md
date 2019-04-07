@@ -1,6 +1,6 @@
 HoloGraphLibrary 源码解析
 ====================================
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 HoloGraphLibrary 部分  
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 中 HoloGraphLibrary 部分  
 > 项目地址：[HoloGraphLibrary](https://github.com/Androguide/HoloGraphLibrary)，分析的版本：[028cd2a](https://github.com/Androguide/HoloGraphLibrary/commit/028cd2ae6916308bbb96472aafa9ecd8b1343d5c "Commit id is 028cd2ae6916308bbb96472aafa9ecd8b1343d5c")，Demo 地址：[HoloGraphLibrary Demo](https://github.com/android-cn/android-open-project-demo/tree/master/holo-graph-library-demo)    
 > 分析者：[AaronPlay](https://github.com/AaronPlay)，校对者：[lightSky](https://github.com/lightSky)，校对状态：完成   
 
@@ -117,4 +117,4 @@ b. 绘制计算过程（详细看源码）
 #### 5. 杂谈
 其实，这个项目的代码并不适写的很好，但无碍我们的使用，有兴趣的同学可以重构一下，也有开发者 fork 之后扩展得更加有趣。[->链接](https://bitbucket.org/danielnadeau/holographlibrary)。对于控件类的开源库，可以把重点放在绘制以及事件处理上。  
 
-**延伸：**关于 View 绘制的原理请浏览：[View 绘制流程](http://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E7%BB%98%E5%88%B6%E6%B5%81%E7%A8%8B)  
+**延伸：**关于 View 绘制的原理请浏览：[View 绘制流程](https://a.codekk.com/detail/Android/lightSky/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E7%BB%98%E5%88%B6%E6%B5%81%E7%A8%8B)  

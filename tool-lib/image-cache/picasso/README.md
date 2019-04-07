@@ -1,6 +1,6 @@
 Picasso 源码分析
 ====================================
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 Picasso 部分  
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 中 Picasso 部分  
 > 项目地址：[Picasso](https://github.com/square/picasso)，分析的版本：[10bac5b](https://github.com/square/picasso/commit/10bac5ba59c7379eb4be4a2e7af074edc4bd9200)，Demo 地址：[Picasso Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/picasso-demo)  
 > 分析者：[Trinea](https://github.com/Trinea)，分析状态：进行中。校对者：，校对状态：未开始
 

@@ -1,6 +1,6 @@
 ResideMenu 源码解析
 ====================================
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 ResideMenu 部分  
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 中 ResideMenu 部分  
 > 项目地址：[ResideMenu](https://github.com/SpecialCyCi/AndroidResideMenu)，分析的版本：[70d46c2](https://github.com/SpecialCyCi/AndroidResideMenu/commit/70d46c2ed49c8123847bb07d2f0761e57bb3bc04)，Demo 地址：[ResideMenu-demo]()    
 > 分析者：[dkmeteor](https://github.com/dkmeteor)，校对者：[???]()，校对状态：未完成   
 
@@ -237,7 +237,7 @@ attachToActivity执行后
 
 ##### 4.1.3 TouchDisableView
 该类本身的功能非常单纯，在本项目中起一个容器的作用,通过重载`onInterceptTouchEvent`方法并返回指定值来控制是否拦截内部子`View`的`Touch`事件。
-如果读者不了解`onInterceptTouchEvent`的运作机制,可以参考 [View 事件传递](http://a.codekk.com/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92)
+如果读者不了解`onInterceptTouchEvent`的运作机制,可以参考 [View 事件传递](https://a.codekk.com/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20View%20%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92)
 
 以ResideMenu中的AnimatorListener回调为例:
 

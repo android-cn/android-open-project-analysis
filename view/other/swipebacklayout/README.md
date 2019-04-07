@@ -1,6 +1,6 @@
 Picasso 源码分析
 ====================================
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 SwipeBackLayout 部分  
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 中 SwipeBackLayout 部分  
 > 项目地址：[SwipeBackLayout](https://github.com/ikew0ng/SwipeBackLayout)，分析的版本：，Demo 地址：
 > 分析者：[Neocomb](https://github.com/Neocomb)，分析状态：进行中。校对者：，校对状态：未开始
 
@@ -150,5 +150,5 @@ SwipeBackLayout.java:
 
 
 #### 参考 ####
-[Touch 事件传递](http://codekk.com/blogs/detail/54cfab086c4761e5001b253e) <br>
+[Touch 事件传递](https://codekk.com/blogs/detail/54cfab086c4761e5001b253e) <br>
 [http://blog.csdn.net/shaw1994/article/details/44536667](http://blog.csdn.net/shaw1994/article/details/44536667)

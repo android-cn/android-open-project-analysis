@@ -1,6 +1,6 @@
 EventBus 源码解析
 ----------------
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 EventBus 部分  
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 中 EventBus 部分  
 > 项目地址：[EventBus](https://github.com/greenrobot/EventBus)，分析的版本：[ccc2771](https://github.com/greenrobot/EventBus/commit/ccc2771199f958a34bd4ea6c90d0a8c671c2e70a "Commit id is ccc2771199f958a34bd4ea6c90d0a8c671c2e70a")，Demo 地址：[EventBus Demo](https://github.com/android-cn/android-open-project-demo/tree/master/event-bus-demo)    
 > 分析者：[Trinea](https://github.com/trinea)，校对者：[扔物线](https://github.com/rengwuxian)，校对状态：完成   
 

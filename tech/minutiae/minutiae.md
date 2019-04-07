@@ -1,6 +1,6 @@
 Android 开源项目源码解析细节点
 ====================================
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 细节点 部分  
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 中 细节点 部分  
 > 分析者：[Trinea](https://github.com/trinea)，校对者：[Trinea](https://github.com/trinea)，校对状态：未完成
 
 ### 1. Volley 细节点

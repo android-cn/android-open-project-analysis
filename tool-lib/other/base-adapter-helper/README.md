@@ -1,6 +1,6 @@
 BaseAdapterHelper 源码分析
 ====================================
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 BaseAdapterHelper 部分  
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 中 BaseAdapterHelper 部分  
 > 项目地址：[BaseAdapterHelper](https://github.com/JoanZapata/base-adapter-helper)，分析的版本：[71b7ae2](https://github.com/JoanZapata/base-adapter-helper/commit/71b7ae2414f01dc4d43429586196e9e9735c77aa "Commit id is 71b7ae2414f01dc4d43429586196e9e9735c77aa")，Demo 地址：[base-adapter-helper Demo](https://github.com/aosp-exchange-group/android-open-project-demo/tree/master/base-adapter-helper-demo)     
 > 分析者：[hongyangAndroid](https://github.com/hongyangAndroid)，分析状态：完成，校对者：[zhengtao620](https://github.com/zhengtao620)、[Trinea](https://github.com/trinea)，校对状态：完成   
 

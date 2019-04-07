@@ -1,6 +1,6 @@
 公共技术点之依赖注入
 ----------------
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 公共技术点中的 依赖注入 部分    
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 公共技术点中的 依赖注入 部分    
  分析者：[扔物线](https://github.com/rengwuxian)，校对者：[Trinea](https://github.com/Trinea)，校对状态：完成  
 
 ### 1. 依赖
@@ -56,4 +56,4 @@ public class Human {
 
 上面这段代码看起来很神奇：只是增加了一个注解，Father 对象就能自动注入了？这个注入过程是怎么完成的？
 
-实质上，如果你只是写了一个 @Inject 注解，Father 并不会被自动注入。你还需要使用一个依赖注入框架，并进行简单的配置。现在 Java 语言中较流行的依赖注入框架有 [Google Guice](https://github.com/google/guice)、[Spring](http://projects.spring.io/spring-framework/) 等，而在 Android 上比较流行的有 [RoboGuice](https://github.com/roboguice/roboguice)、[Dagger](http://square.github.io/dagger/) 等。其中 Dagger 是我现在正在项目中使用的。如果感兴趣，你可以到 [Dagger 实现原理解析](http://a.codekk.com/detail/Android/%E6%89%94%E7%89%A9%E7%BA%BF/Dagger%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90) 了解更多依赖注入和 Dagger 实现原理相关信息。
+实质上，如果你只是写了一个 @Inject 注解，Father 并不会被自动注入。你还需要使用一个依赖注入框架，并进行简单的配置。现在 Java 语言中较流行的依赖注入框架有 [Google Guice](https://github.com/google/guice)、[Spring](http://projects.spring.io/spring-framework/) 等，而在 Android 上比较流行的有 [RoboGuice](https://github.com/roboguice/roboguice)、[Dagger](http://square.github.io/dagger/) 等。其中 Dagger 是我现在正在项目中使用的。如果感兴趣，你可以到 [Dagger 实现原理解析](https://a.codekk.com/detail/Android/%E6%89%94%E7%89%A9%E7%BA%BF/Dagger%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90) 了解更多依赖注入和 Dagger 实现原理相关信息。

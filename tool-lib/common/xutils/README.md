@@ -1,6 +1,6 @@
 xUtils 源码解析
 ====================================
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 xUtils 部分。  
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 中 xUtils 部分。  
 > 项目地址：[xUtils](https://github.com/wyouflf/xUtils)，分析的版本：[192c2a886c](https://github.com/wyouflf/xUtils/commit/192c2a886c2d467e50718c6e469de63696f5cded)，Demo 地址：[xUtils Demo](https://github.com/android-cn/android-open-project-demo/tree/master/xutils-demo)  
 > 分析者：[Caij](https://github.com/Caij)，校对者：[maogy](https://github.com/maogy)，校对状态：未完成   
 
@@ -22,7 +22,7 @@ xUtils 一个 Android 公共库框架，主要包括四个部分：View，Db, Ht
 ##### 2.1.2 流程图
 ![流程图](image/view_sque.png)
 ##### 2.1.3 核心类功能介绍
-###### 请先了解[注解](http://a.codekk.com/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E6%B3%A8%E8%A7%A3%20Annotation)，[动态代理](http://a.codekk.com/detail/Android/Caij/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86)  可以帮助到您， 如果已经了解请忽略。
+###### 请先了解[注解](https://a.codekk.com/detail/Android/Trinea/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E6%B3%A8%E8%A7%A3%20Annotation)，[动态代理](https://a.codekk.com/detail/Android/Caij/%E5%85%AC%E5%85%B1%E6%8A%80%E6%9C%AF%E7%82%B9%E4%B9%8B%20Java%20%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86)  可以帮助到您， 如果已经了解请忽略。
 注解和反射知识是这个模块的主要内容
 ##### 1.ViewUtils.java  
 View 和各种事件的注入以及资源的注入。

@@ -1,6 +1,6 @@
 Volley 源码解析
 ====================================
-> 本文为 [Android 开源项目源码解析](http://a.codekk.com) 中 Volley 部分  
+> 本文为 [Android 开源项目源码解析](https://a.codekk.com) 中 Volley 部分  
 > 项目地址：[Volley](https://android.googlesource.com/platform/frameworks/volley/)，分析的版本：[35ce778](https://android.googlesource.com/platform/frameworks/volley/+/35ce77836d8e1e951b8e4b2ec43e07fb7336dab6)，Demo 地址：[Volley Demo](https://github.com/android-cn/android-open-project-demo/tree/master/volley-demo)    
 > 分析者：[grumoon](https://github.com/grumoon)，校对者：[huxian99](https://github.com/huxian99)、[Trinea](https://github.com/trinea)，校对状态：完成   
 
@@ -104,7 +104,7 @@ return queue;
 
 **(3). 关于 User Agent**  
 通过代码我们发现如果是使用 AndroidHttpClient，Volley 还会将请求头中的 User-Agent 字段设置为 App 的 ${packageName}/${versionCode}，如果异常则使用 "volley/0"，不过这个获取 User-Agent 的操作应该放到 if else 内部更合适。而对于 HttpURLConnection 却没有任何操作，为什么呢？  
-如果用 [Fiddler 或 Charles](http://www.trinea.cn/android/android-network-sniffer/) 对数据抓包我们会发现，我们会发现 HttpURLConnection 默认是有 User-Agent 的，类似：  
+如果用 [Fiddler 或 Charles](https://www.trinea.cn/android/android-network-sniffer/) 对数据抓包我们会发现，我们会发现 HttpURLConnection 默认是有 User-Agent 的，类似：  
 ```xml
 Dalvik/1.6.0 (Linux; U; Android 4.1.1; Google Nexus 4 - 4.1.1 - API 16 - 768x1280_1 Build/JRO03S)
 ```
